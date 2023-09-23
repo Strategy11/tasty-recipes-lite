@@ -7,7 +7,7 @@
 
 namespace Tasty\Recipes\Lite;
 
-use Tasty_Recipes;
+use TastyRecipesLiteMain;
 
 /**
  * Manages Classic editor metabox.
@@ -134,7 +134,7 @@ class MetaBox {
 	 * @return void
 	 */
 	public function print_metabox_html() {
-		Tasty_Recipes::echo_template_part(
+		TastyRecipesLiteMain::echo_template_part(
 			'parts/metabox',
 			array(
 				'dismissed_converters' => Editor::get_dismissed_converters(),

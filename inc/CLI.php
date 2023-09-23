@@ -7,8 +7,8 @@
 
 namespace Tasty\Recipes\Lite;
 
-use Tasty_Recipes;
-use Tasty_Recipes\Utils;
+use TastyRecipesLiteMain;
+use Tasty\Recipes\Lite\Utils;
 use WP_CLI;
 use WP_Comment_Query;
 
@@ -47,7 +47,7 @@ class CLI {
 
 		foreach ( $posts as $post ) {
 			// Only process when there is one embedded recipe in a post.
-			$recipes = Tasty_Recipes::get_recipes_for_post( $post->ID );
+			$recipes = TastyRecipesLiteMain::get_recipes_for_post( $post->ID );
 			if ( empty( $recipes ) ) {
 				WP_CLI::log( sprintf( 'No recipes found in %s (%d), skipping.', $post->post_title, $post->ID ) );
 				continue;
@@ -228,7 +228,7 @@ class CLI {
 		$results = array();
 
 		foreach ( $posts as $post ) {
-			$recipes = Tasty_Recipes::get_recipes_for_post( $post->ID );
+			$recipes = TastyRecipesLiteMain::get_recipes_for_post( $post->ID );
 
 			foreach ( $recipes as $recipe ) {
 				$results[] = array(

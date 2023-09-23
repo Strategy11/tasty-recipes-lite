@@ -7,8 +7,9 @@
 
 namespace Tasty\Recipes\Lite\Integrations;
 
-use Tasty_Recipes\Utils;
-use Tasty_Recipes\Shortcodes;
+use Tasty\Recipes\Lite\Assets;
+use Tasty\Recipes\Lite\Utils;
+use Tasty\Recipes\Lite\Shortcodes;
 
 /**
  * Integrates Tasty Recipes with Thrive.
@@ -41,7 +42,7 @@ class Thrive {
 		add_action(
 			'wp_footer',
 			function() {
-				\Tasty_Recipes\Assets::action_admin_footer_render_template();
+				Assets::action_admin_footer_render_template();
 			}
 		);
 	}

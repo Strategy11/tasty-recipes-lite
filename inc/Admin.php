@@ -8,7 +8,7 @@
 namespace Tasty\Recipes\Lite;
 
 use Tasty\Framework\Utils\Url;
-use Tasty_Recipes;
+use TastyRecipesLiteMain;
 
 /**
  * Manages interactions with the admin.
@@ -122,79 +122,33 @@ class Admin {
 	private static $editor_id = 'tasty-recipes-settings';
 
 	/**
-	 * Registers the updater object.
-	 */
-	public static function action_admin_init() {
-		new Updater(
-			self::STORE_URL,
-			TASTY_RECIPES_PLUGIN_FILE,
-			array(
-				'version'   => TASTY_RECIPES_PLUGIN_VERSION,
-				'license'   => get_option( Tasty_Recipes::LICENSE_KEY_OPTION ),
-				'item_name' => self::ITEM_NAME,
-				'author'    => self::ITEM_AUTHOR,
-			)
-		);
-		if ( get_option( Tasty_Recipes::PLUGIN_ACTIVATION_OPTION, false ) ) {
-			delete_option( Tasty_Recipes::PLUGIN_ACTIVATION_OPTION );
-			if ( empty( Utils::get_param( 'activate-multi' ) ) ) {
-				wp_safe_redirect( add_query_arg( 'tab', 'about', menu_page_url( self::PAGE_SLUG, false ) ) );
-				exit;
-			}
-		}
-	}
-
-	/**
-	 * Includes PHP and plugin versions in the user agent for update checks.
-	 *
-	 * @param array  $r   An array of HTTP request arguments.
-	 * @param string $url The request URL.
-	 * @return array
-	 */
-	public static function filter_http_request_args( $r, $url ) {
-		if ( self::STORE_URL !== $url
-			|| 'POST' !== $r['method']
-			|| empty( $r['body'] )
-			|| ! is_array( $r['body'] )
-			|| empty( $r['body']['item_name'] )
-			|| self::ITEM_NAME !== $r['body']['item_name'] ) {
-			return $r;
-		}
-
-		$r['user-agent'] = rtrim( $r['user-agent'], ';' )
-			. '; PHP/' . PHP_VERSION . '; '
-			. self::ITEM_NAME . '/' . TASTY_RECIPES_PLUGIN_VERSION;
-		return $r;
-	}
-
-	/**
 	 * Registers used settings.
 	 */
 	public static function action_admin_menu() {
 		register_setting(
 			self::SETTINGS_SECTION_CARD_DESIGN,
-			Tasty_Recipes::CUSTOMIZATION_OPTION,
+			TastyRecipesLiteMain::CUSTOMIZATION_OPTION,
 			array(
 				'sanitize_callback' => array( __CLASS__, 'sanitize_customization_option' ),
 			)
 		);
 		register_setting(
 			self::SETTINGS_SECTION_CARD_DESIGN,
-			Tasty_Recipes::TEMPLATE_OPTION,
+			TastyRecipesLiteMain::TEMPLATE_OPTION,
 			array(
 				'sanitize_callback' => 'sanitize_title',
 			)
 		);
 		register_setting(
 			self::SETTINGS_GROUP_CARD,
-			Tasty_Recipes::QUICK_LINKS_OPTION,
+			TastyRecipesLiteMain::QUICK_LINKS_OPTION,
 			array(
 				'sanitize_callback' => array( __CLASS__, 'sanitize_quick_links' ),
 			)
 		);
 		register_setting(
 			self::SETTINGS_GROUP_CARD,
-			Tasty_Recipes::CARD_BUTTONS_OPTION,
+			TastyRecipesLiteMain::CARD_BUTTONS_OPTION,
 			array(
 				'sanitize_callback' => array( __CLASS__, 'sanitize_card_buttons' ),
 			)
@@ -202,7 +156,7 @@ class Admin {
 
 		register_setting(
 			self::SETTINGS_GROUP_CARD,
-			Tasty_Recipes::UNIT_CONVERSION_OPTION,
+			TastyRecipesLiteMain::UNIT_CONVERSION_OPTION,
 			array(
 				'sanitize_callback' => 'sanitize_title',
 			)
@@ -210,7 +164,7 @@ class Admin {
 
 		register_setting(
 			self::SETTINGS_GROUP_CARD,
-			Tasty_Recipes::AUTOMATIC_UNIT_CONVERSION_OPTION,
+			TastyRecipesLiteMain::AUTOMATIC_UNIT_CONVERSION_OPTION,
 			array(
 				'sanitize_callback' => 'sanitize_title',
 			)
@@ -218,7 +172,7 @@ class Admin {
 
 		register_setting(
 			self::SETTINGS_GROUP_CARD,
-			Tasty_Recipes::INGREDIENT_CHECKBOXES_OPTION,
+			TastyRecipesLiteMain::INGREDIENT_CHECKBOXES_OPTION,
 			array(
 				'sanitize_callback' => 'sanitize_title',
 			)
@@ -226,7 +180,7 @@ class Admin {
 
 		register_setting(
 			self::SETTINGS_GROUP_CARD,
-			Tasty_Recipes::COOK_MODE_OPTION,
+			TastyRecipesLiteMain::COOK_MODE_OPTION,
 			array(
 				'sanitize_callback' => 'sanitize_title',
 			)
@@ -234,7 +188,7 @@ class Admin {
 
 		register_setting(
 			self::SETTINGS_GROUP_CARD,
-			Tasty_Recipes::COOK_MODE_HELPER_OPTION,
+			TastyRecipesLiteMain::COOK_MODE_HELPER_OPTION,
 			array(
 				'sanitize_callback' => 'sanitize_text_field',
 			)
@@ -242,7 +196,7 @@ class Admin {
 
 		register_setting(
 			self::SETTINGS_GROUP_CARD,
-			Tasty_Recipes::INSTACART_OPTION,
+			TastyRecipesLiteMain::INSTACART_OPTION,
 			array(
 				'sanitize_callback' => 'sanitize_title',
 			)
@@ -250,7 +204,7 @@ class Admin {
 
 		register_setting(
 			self::SETTINGS_GROUP_CARD,
-			Tasty_Recipes::INSTACART_AFFILIATE_ID_OPTION,
+			TastyRecipesLiteMain::INSTACART_AFFILIATE_ID_OPTION,
 			array(
 				'sanitize_callback' => 'sanitize_title',
 			)
@@ -258,7 +212,7 @@ class Admin {
 
 		register_setting(
 			self::SETTINGS_GROUP_CARD,
-			Tasty_Recipes::DISABLE_SCALING_OPTION,
+			TastyRecipesLiteMain::DISABLE_SCALING_OPTION,
 			array(
 				'sanitize_callback' => 'sanitize_title',
 			)
@@ -266,7 +220,7 @@ class Admin {
 
 		register_setting(
 			self::SETTINGS_GROUP_CARD,
-			Tasty_Recipes::COPY_TO_CLIPBOARD_OPTION,
+			TastyRecipesLiteMain::COPY_TO_CLIPBOARD_OPTION,
 			array(
 				'sanitize_callback' => 'sanitize_title',
 			)
@@ -274,27 +228,18 @@ class Admin {
 
 		register_setting(
 			self::SETTINGS_GROUP_CARD,
-			Tasty_Recipes::DEFAULT_AUTHOR_LINK_OPTION,
+			TastyRecipesLiteMain::DEFAULT_AUTHOR_LINK_OPTION,
 			array(
 				'sanitize_callback' => 'esc_url_raw',
 			)
 		);
 		register_setting(
 			self::SETTINGS_GROUP_CARD,
-			Tasty_Recipes::SHAREASALE_OPTION,
+			TastyRecipesLiteMain::SHAREASALE_OPTION,
 			array(
 				'sanitize_callback' => 'sanitize_text_field',
 			)
 		);
-	}
-
-	/**
-	 * Renders the admin notice nag when license key isn't set or invalid.
-	 *
-	 * @deprecated 3.10
-	 */
-	public static function action_admin_notices_license_key() {
-		_deprecated_function( __METHOD__, '3.10' );
 	}
 
 	/**
@@ -333,7 +278,7 @@ class Admin {
 	public static function action_manage_posts_custom_column( $column_name, $post_id ) {
 		switch ( $column_name ) {
 			case 'tasty_recipe':
-				$recipe_ids = Tasty_Recipes::get_recipe_ids_for_post( $post_id );
+				$recipe_ids = TastyRecipesLiteMain::get_recipe_ids_for_post( $post_id );
 				if ( ! empty( $recipe_ids ) ) {
 					$recipe_id = array_shift( $recipe_ids );
 					echo '<button class="button tasty-recipes-edit-button" data-recipe-id="' . esc_attr( $recipe_id ) . '">' . esc_html__( 'Edit Tasty Recipe', 'tasty-recipes' ) . '</button>';
@@ -367,27 +312,6 @@ class Admin {
 	}
 
 	/**
-	 * Activates the license when the option is updated.
-	 *
-	 * @deprecated 3.10
-	 */
-	public static function action_update_option_register_license() {
-		_deprecated_function( __METHOD__, '3.10' );
-	}
-
-	/**
-	 * Clears the license and version check cache when license key is updated.
-	 */
-	public static function action_update_option_clear_transient() {
-		delete_transient( self::LICENSE_CHECK_CACHE_KEY );
-		$cache_key = md5( 'edd_plugin_' . sanitize_key( plugin_basename( TASTY_RECIPES_PLUGIN_FILE ) ) . '_version_info' );
-		delete_site_transient( $cache_key );
-		$cache_key = 'edd_api_request_' . substr( md5( serialize( basename( TASTY_RECIPES_PLUGIN_FILE, '.php' ) ) ), 0, 15 ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
-		delete_site_transient( $cache_key );
-		delete_site_transient( 'update_plugins' );
-	}
-
-	/**
 	 * Adds 'Settings' and 'Remove license' links to plugin settings.
 	 *
 	 * @param array $links Existing plugin action links.
@@ -397,18 +321,6 @@ class Admin {
 		$links['tr_settings']        = '<a href="' . esc_url( add_query_arg( 'tab', 'settings', menu_page_url( self::PAGE_SLUG, false ) ) ) . '">' . esc_html__( 'Settings', 'tasty-recipes' ) . '</a>';
 		$links['tr_license_manager'] = '<a href="' . esc_url( Url::get_main_admin_url() ) . '">' . esc_html__( 'License manager', 'tasty-recipes' ) . '</a>';
 		return $links;
-	}
-
-	/**
-	 * Handles a request to remove the license key.
-	 *
-	 * @deprecated 3.10
-	 */
-	public static function handle_wp_ajax_remove_license_key() {
-		_deprecated_function( __METHOD__, '3.10' );
-
-		wp_safe_redirect( admin_url( 'plugins.php' ) );
-		exit;
 	}
 
 	/**
@@ -426,7 +338,7 @@ class Admin {
 			'tasty-recipes-display',
 		);
 
-		$shareasale = get_option( Tasty_Recipes::SHAREASALE_OPTION );
+		$shareasale = get_option( TastyRecipesLiteMain::SHAREASALE_OPTION );
 		if ( $shareasale ) {
 			$wrapper_classes[] = 'tasty-recipes-has-plug';
 		}
@@ -441,13 +353,13 @@ class Admin {
 		$nutrifox_display_style = ! empty( $get_nutrifox_display_style ) && in_array( $get_nutrifox_display_style, array( 'label', 'card' ), true ) ? $get_nutrifox_display_style : null;
 		$footer_social_platform = ! empty( $get_footer_social_platform ) && in_array( $get_footer_social_platform, array( 'instagram', 'pinterest', 'facebook' ), true ) ? $get_footer_social_platform : '';
 
-		$settings = Tasty_Recipes::get_filtered_customization_settings();
+		$settings = TastyRecipesLiteMain::get_filtered_customization_settings();
 
 		$styles  = Shortcodes::get_styles_as_string( $custom_design );
-		$styles .= Utils::get_contents( dirname( TASTY_RECIPES_PLUGIN_FILE ) . '/assets/dist/ratings.css' );
-		$styles .= Utils::get_contents( dirname( TASTY_RECIPES_PLUGIN_FILE ) . '/assets/dist/recipe-card-preview.css' );
+		$styles .= Utils::get_contents( dirname( TASTY_RECIPES_LITE_PLUGIN_FILE ) . '/assets/dist/ratings.css' );
+		$styles .= Utils::get_contents( dirname( TASTY_RECIPES_LITE_PLUGIN_FILE ) . '/assets/dist/recipe-card-preview.css' );
 
-		$custom_path = dirname( TASTY_RECIPES_PLUGIN_FILE ) . '/templates/designs/' . $custom_design . '/tasty-recipes.php';
+		$custom_path = dirname( TASTY_RECIPES_LITE_PLUGIN_FILE ) . '/templates/designs/' . $custom_design . '/tasty-recipes.php';
 		if ( $custom_design && file_exists( $custom_path ) ) {
 			$template = $custom_path;
 		} else {
@@ -457,7 +369,7 @@ class Admin {
 		$stylesheet = get_option( 'stylesheet' );
 		// Clean up Feast directory names.
 		$stylesheet  = preg_replace( '#-v[\d]+$#', '', $stylesheet );
-		$compat_file = dirname( TASTY_RECIPES_PLUGIN_FILE ) . '/assets/css/theme-compat-card-previews/' . $stylesheet . '.css';
+		$compat_file = dirname( TASTY_RECIPES_LITE_PLUGIN_FILE ) . '/assets/css/theme-compat-card-previews/' . $stylesheet . '.css';
 		if ( file_exists( $compat_file ) ) {
 			$styles .= Utils::get_contents( $compat_file );
 		}
@@ -529,7 +441,7 @@ EOT;
 			$nutrifox_id            = 26460;
 			$nutrifox_iframe_url    = sprintf(
 				'%s/embed/label/%d',
-				Tasty_Recipes::nutrifox_url(),
+				TastyRecipesLiteMain::nutrifox_url(),
 				$nutrifox_id
 			);
 			$nutrifox_resize_script = Utils::get_contents( dirname( dirname( __FILE__ ) ) . '/assets/js/nutrifox-resize.js' );
@@ -544,7 +456,6 @@ EOT;
 
 		$template_vars = array(
 			'recipe'                        => $recipe,
-			'recipe_styles'                 => '',
 			'recipe_scripts'                => '',
 			'recipe_json'                   => $recipe_json,
 			'recipe_title'                  => 'Almond Butter Cups',
@@ -618,11 +529,11 @@ EOT;
 			'recipe_video_embed'            => '',
 			'recipe_nutrition'              => $recipe_nutrition,
 			'recipe_hidden_nutrition'       => array(),
-			'copy_ingredients'              => get_option( Tasty_Recipes::COPY_TO_CLIPBOARD_OPTION ) ? '<button aria-label="' . __( 'Copy ingredients to clipboard', 'tasty-recipes' ) . '" class="tasty-recipes-copy-button" id="copy-ingredients" data-text="' . __( 'Copy ingredients', 'tasty-recipes' ) . '">' . Utils::get_contents( dirname( dirname( __FILE__ ) ) . '/assets/images/icons/icon-copy-to-clipboard.svg' ) . '</button>' : false,
+			'copy_ingredients'              => get_option( TastyRecipesLiteMain::COPY_TO_CLIPBOARD_OPTION ) ? '<button aria-label="' . __( 'Copy ingredients to clipboard', 'tasty-recipes' ) . '" class="tasty-recipes-copy-button" id="copy-ingredients" data-text="' . __( 'Copy ingredients', 'tasty-recipes' ) . '">' . Utils::get_contents( dirname( dirname( __FILE__ ) ) . '/assets/images/icons/icon-copy-to-clipboard.svg' ) . '</button>' : false,
 			'first_button'                  => Shortcodes::get_card_button( $recipe, 'first', $custom_design ),
 			'second_button'                 => Shortcodes::get_card_button( $recipe, 'second', $custom_design ),
-			'instagram_handle'              => get_option( Tasty_Recipes::INSTAGRAM_HANDLE_OPTION ),
-			'instagram_hashtag'             => get_option( Tasty_Recipes::INSTAGRAM_HASHTAG_OPTION ),
+			'instagram_handle'              => get_option( TastyRecipesLiteMain::INSTAGRAM_HANDLE_OPTION ),
+			'instagram_hashtag'             => get_option( TastyRecipesLiteMain::INSTAGRAM_HASHTAG_OPTION ),
 			'footer_social_platform'        => $footer_social_platform,
 			'footer_heading'                => $settings['footer_heading'],
 			'footer_description'            => $settings['footer_description'],
@@ -653,7 +564,7 @@ EOT;
 			$ret .= ' data-tasty-recipes-customization="' . esc_attr( $customizations ) . '"';
 		}
 		$ret .= '>' . PHP_EOL;
-		$ret .= Tasty_Recipes::get_template_part( $template, $template_vars );
+		$ret .= TastyRecipesLiteMain::get_template_part( $template, $template_vars );
 		$ret .= '</div>';
 		$ret .= '<script type="text/javascript">' . PHP_EOL . Utils::get_contents( dirname( dirname( __FILE__ ) ) . '/assets/dist/settings-recipe-card-preview.build.js' ) . PHP_EOL . '</script>';
 		$ret .= '</body></html>';
@@ -675,7 +586,7 @@ EOT;
 		}
 
 		$class      = false;
-		$converters = Tasty_Recipes::get_converters();
+		$converters = TastyRecipesLiteMain::get_converters();
 		$get_type   = Utils::get_param( 'type' );
 
 		if ( ! empty( $get_type ) && isset( $converters[ $get_type ] ) ) {
@@ -709,7 +620,7 @@ EOT;
 		}
 
 		$class      = false;
-		$converters = Tasty_Recipes::get_converters();
+		$converters = TastyRecipesLiteMain::get_converters();
 		$get_type   = Utils::get_param( 'type' );
 
 		if ( ! empty( $get_type ) && isset( $converters[ $get_type ] ) ) {
@@ -753,15 +664,6 @@ EOT;
 	}
 
 	/**
-	 * Renders in the admin header.
-	 *
-	 * @deprecated 3.10
-	 */
-	public static function action_in_admin_header() {
-		_deprecated_function( __METHOD__, '3.10' );
-	}
-
-	/**
 	 * Renders the Tasty Recipes settings page.
 	 */
 	public static function handle_settings_page() {
@@ -772,13 +674,13 @@ EOT;
 			self::PAGE_SLUG
 		);
 		add_settings_field(
-			Tasty_Recipes::QUICK_LINKS_OPTION,
+			TastyRecipesLiteMain::QUICK_LINKS_OPTION,
 			__( 'Quick Links', 'tasty-recipes' ),
 			array( __CLASS__, 'render_multiselect_checkboxes_field' ),
 			self::PAGE_SLUG,
 			self::SETTINGS_SECTION_CARD_DESIGN,
 			array(
-				'name'           => Tasty_Recipes::QUICK_LINKS_OPTION,
+				'name'           => TastyRecipesLiteMain::QUICK_LINKS_OPTION,
 				'description'    => __( 'Enable or disable quick links below the post title.', 'tasty-recipes' ),
 				'default_values' => array(
 					'jump',
@@ -792,30 +694,30 @@ EOT;
 			)
 		);
 		add_settings_field(
-			Tasty_Recipes::CARD_BUTTONS_OPTION,
+			TastyRecipesLiteMain::CARD_BUTTONS_OPTION,
 			__( 'Recipe Card Buttons', 'tasty-recipes' ),
 			array( __CLASS__, 'render_card_buttons_field' ),
 			self::PAGE_SLUG,
 			self::SETTINGS_SECTION_CARD_DESIGN
 		);
 		add_settings_field(
-			Tasty_Recipes::UNIT_CONVERSION_OPTION,
+			TastyRecipesLiteMain::UNIT_CONVERSION_OPTION,
 			__( 'Unit Conversion', 'tasty-recipes' ),
 			array( __CLASS__, 'render_select_field' ),
 			self::PAGE_SLUG,
 			self::SETTINGS_SECTION_CARD_DESIGN,
 			array(
-				'name'              => Tasty_Recipes::UNIT_CONVERSION_OPTION,
+				'name'              => TastyRecipesLiteMain::UNIT_CONVERSION_OPTION,
 				'description'       => __( 'Allow visitors to convert between US Customary and Metric.', 'tasty-recipes' ),
 				'options'           => array(
 					false => __( 'Off', 'tasty-recipes' ),
 					true  => __( 'On', 'tasty-recipes' ),
 				),
 				'after_description' => function() {
-					$value = get_option( Tasty_Recipes::AUTOMATIC_UNIT_CONVERSION_OPTION, false );
+					$value = get_option( TastyRecipesLiteMain::AUTOMATIC_UNIT_CONVERSION_OPTION, false );
 					echo '<p class="description tasty-recipes-automatic-unit-conversion-container" style="display:none;">';
 					echo '<label>';
-					echo '<input type="checkbox" name="' . esc_attr( Tasty_Recipes::AUTOMATIC_UNIT_CONVERSION_OPTION ) . '" ' .
+					echo '<input type="checkbox" name="' . esc_attr( TastyRecipesLiteMain::AUTOMATIC_UNIT_CONVERSION_OPTION ) . '" ' .
 						checked( (bool) $value, true, false ) .
 						'>';
 					esc_html_e( 'Automatically apply unit conversion to existing recipes.', 'tasty-recipes' );
@@ -844,13 +746,13 @@ EOT;
 			)
 		);
 		add_settings_field(
-			Tasty_Recipes::INGREDIENT_CHECKBOXES_OPTION,
+			TastyRecipesLiteMain::INGREDIENT_CHECKBOXES_OPTION,
 			__( 'Ingredient Checkboxes', 'tasty-recipes' ),
 			array( __CLASS__, 'render_select_field' ),
 			self::PAGE_SLUG,
 			self::SETTINGS_SECTION_CARD_DESIGN,
 			array(
-				'name'        => Tasty_Recipes::INGREDIENT_CHECKBOXES_OPTION,
+				'name'        => TastyRecipesLiteMain::INGREDIENT_CHECKBOXES_OPTION,
 				'description' => __( 'Allow visitors to check off recipe ingredients.', 'tasty-recipes' ),
 				'options'     => array(
 					false => __( 'Off', 'tasty-recipes' ),
@@ -860,13 +762,13 @@ EOT;
 		);
 
 		add_settings_field(
-			Tasty_Recipes::COOK_MODE_OPTION,
+			TastyRecipesLiteMain::COOK_MODE_OPTION,
 			__( 'Enable Cook Mode', 'tasty-recipes' ),
 			array( __CLASS__, 'render_select_field' ),
 			self::PAGE_SLUG,
 			self::SETTINGS_SECTION_CARD_DESIGN,
 			array(
-				'name'              => Tasty_Recipes::COOK_MODE_OPTION,
+				'name'              => TastyRecipesLiteMain::COOK_MODE_OPTION,
 				'description'       => __( 'Show Cook Mode toggle to let visitors prevent sleep mode for supported devices.', 'tasty-recipes' ),
 				'options'           => array(
 					true  => __( 'On', 'tasty-recipes' ),
@@ -880,25 +782,25 @@ EOT;
 		);
 
 		add_settings_field(
-			Tasty_Recipes::COOK_MODE_HELPER_OPTION,
+			TastyRecipesLiteMain::COOK_MODE_HELPER_OPTION,
 			__( 'Cook Mode description', 'tasty-recipes' ),
 			array( __CLASS__, 'render_input_field' ),
 			self::PAGE_SLUG,
 			self::SETTINGS_SECTION_CARD_DESIGN,
 			array(
-				'name'          => Tasty_Recipes::COOK_MODE_HELPER_OPTION,
+				'name'          => TastyRecipesLiteMain::COOK_MODE_HELPER_OPTION,
 				'default_value' => esc_html__( 'Prevent your screen from going dark', 'tasty-recipes' ),
 			)
 		);
 
 		add_settings_field(
-			Tasty_Recipes::DISABLE_SCALING_OPTION,
+			TastyRecipesLiteMain::DISABLE_SCALING_OPTION,
 			__( 'Scaling', 'tasty-recipes' ),
 			array( __CLASS__, 'render_select_field' ),
 			self::PAGE_SLUG,
 			self::SETTINGS_SECTION_CARD_DESIGN,
 			array(
-				'name'        => Tasty_Recipes::DISABLE_SCALING_OPTION,
+				'name'        => TastyRecipesLiteMain::DISABLE_SCALING_OPTION,
 				'description' => __( 'Allow visitors to scale the recipe 1x, 2x, or 3x.', 'tasty-recipes' ),
 				'options'     => array(
 					true  => __( 'Off', 'tasty-recipes' ),
@@ -907,13 +809,13 @@ EOT;
 			)
 		);
 		add_settings_field(
-			Tasty_Recipes::COPY_TO_CLIPBOARD_OPTION,
+			TastyRecipesLiteMain::COPY_TO_CLIPBOARD_OPTION,
 			__( 'Copy to Clipboard', 'tasty-recipes' ),
 			array( __CLASS__, 'render_select_field' ),
 			self::PAGE_SLUG,
 			self::SETTINGS_SECTION_CARD_DESIGN,
 			array(
-				'name'        => Tasty_Recipes::COPY_TO_CLIPBOARD_OPTION,
+				'name'        => TastyRecipesLiteMain::COPY_TO_CLIPBOARD_OPTION,
 				'description' => __( 'Allow visitors to copy ingredients to clipboard.', 'tasty-recipes' ),
 				'options'     => array(
 					false => __( 'Off', 'tasty-recipes' ),
@@ -922,24 +824,24 @@ EOT;
 			)
 		);
 		add_settings_field(
-			Tasty_Recipes::DEFAULT_AUTHOR_LINK_OPTION,
+			TastyRecipesLiteMain::DEFAULT_AUTHOR_LINK_OPTION,
 			__( 'Default Author Link', 'tasty-recipes' ),
 			array( __CLASS__, 'render_input_field' ),
 			self::PAGE_SLUG,
 			self::SETTINGS_SECTION_CARD_DESIGN,
 			array(
-				'name' => Tasty_Recipes::DEFAULT_AUTHOR_LINK_OPTION,
+				'name' => TastyRecipesLiteMain::DEFAULT_AUTHOR_LINK_OPTION,
 			)
 		);
 
 		add_settings_field(
-			Tasty_Recipes::INSTACART_OPTION,
+			TastyRecipesLiteMain::INSTACART_OPTION,
 			__( 'Add an Instacart button', 'tasty-recipes' ),
 			array( __CLASS__, 'render_select_field' ),
 			self::PAGE_SLUG,
 			self::SETTINGS_SECTION_CARD_DESIGN,
 			array(
-				'name'          => Tasty_Recipes::INSTACART_OPTION,
+				'name'          => TastyRecipesLiteMain::INSTACART_OPTION,
 				'description'   => sprintf(
 					// translators: %1$s opening anchor tag, %2$s closing tag.
 					esc_html__( 'By turning this on, you agree to the %1$sInstacart terms of service%2$s, available in the US only at the moment.', 'tasty-recipes' ),
@@ -955,13 +857,13 @@ EOT;
 		);
 
 		add_settings_field(
-			Tasty_Recipes::INSTACART_AFFILIATE_ID_OPTION,
+			TastyRecipesLiteMain::INSTACART_AFFILIATE_ID_OPTION,
 			__( 'Instacart Tastemakers Affiliate ID', 'tasty-recipes' ),
 			array( __CLASS__, 'render_input_field' ),
 			self::PAGE_SLUG,
 			self::SETTINGS_SECTION_CARD_DESIGN,
 			array(
-				'name'        => Tasty_Recipes::INSTACART_AFFILIATE_ID_OPTION,
+				'name'        => TastyRecipesLiteMain::INSTACART_AFFILIATE_ID_OPTION,
 				'description' => sprintf(
 					// translators: %1$s opening anchor tag, %2$s closing tag.
 					__( '%1$sGet commissions%2$s when visitors order ingredients.', 'tasty-recipes' ),
@@ -972,18 +874,18 @@ EOT;
 		);
 
 		add_settings_field(
-			Tasty_Recipes::SHAREASALE_OPTION,
+			TastyRecipesLiteMain::SHAREASALE_OPTION,
 			__( 'ShareASale Affiliate ID', 'tasty-recipes' ),
 			array( __CLASS__, 'render_input_field' ),
 			self::PAGE_SLUG,
 			self::SETTINGS_SECTION_CARD_DESIGN,
 			array(
-				'name'        => Tasty_Recipes::SHAREASALE_OPTION,
+				'name'        => TastyRecipesLiteMain::SHAREASALE_OPTION,
 				// translators: Various links.
 				'description' => sprintf( __( '<a href="%1$s" target="_blank">Apply for the affiliate program</a>, or <a href="%2$s" target="_blank">find your affiliate ID</a>.', 'tasty-recipes' ), 'https://www.wptasty.com/affiliate', 'https://www.wptasty.com/affiliate-id' ),
 			)
 		);
-		Tasty_Recipes::echo_template_part( 'settings' );
+		TastyRecipesLiteMain::echo_template_part( 'settings' );
 		if ( ! did_action( 'admin_footer' ) && ! doing_action( 'admin_footer' ) ) {
 			add_action( 'admin_footer', array( __CLASS__, 'action_admin_footer_render_template' ) );
 		}
@@ -1252,7 +1154,7 @@ EOT;
 
 		$args['checked'] = get_option( $args['name'], $args['default_values'] );
 
-		Tasty_Recipes::echo_template_part(
+		TastyRecipesLiteMain::echo_template_part(
 			'admin/settings/multiselect-checkbox',
 			apply_filters( 'tasty_recipes_admin_settings_field_args', $args )
 		);
@@ -1272,11 +1174,11 @@ EOT;
 			'mediavine'   => esc_html__( 'Mediavine Grow.me Save', 'tasty-recipes' ),
 		);
 
-		$value = Tasty_Recipes::get_card_button_settings();
+		$value = TastyRecipesLiteMain::get_card_button_settings();
 		?>
 		<div>
 			<?php foreach ( array( 'first', 'second' ) as $position ) : ?>
-				<select name="<?php echo esc_attr( Tasty_Recipes::CARD_BUTTONS_OPTION . '[' . $position . ']' ); ?>">
+				<select name="<?php echo esc_attr( TastyRecipesLiteMain::CARD_BUTTONS_OPTION . '[' . $position . ']' ); ?>">
 				<?php foreach ( $options as $key => $label ) : ?>
 					<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $key, $value[ $position ] ); ?>><?php echo esc_html( $label ); ?></option>
 					<?php endforeach; ?>
@@ -1284,19 +1186,6 @@ EOT;
 			<?php endforeach; ?>
 		</div>
 		<?php
-	}
-
-	/**
-	 * Gets the license check object.
-	 *
-	 * @deprecated 3.10
-	 *
-	 * @return object|bool
-	 */
-	public static function get_license_check() {
-		_deprecated_function( __METHOD__, '3.10' );
-
-		return false;
 	}
 
 	/**
@@ -1323,7 +1212,7 @@ EOT;
 	 * @return bool
 	 */
 	public static function is_cook_mode_enabled() {
-		return (bool) get_option( Tasty_Recipes::COOK_MODE_OPTION, self::can_enable_cook_mode() );
+		return (bool) get_option( TastyRecipesLiteMain::COOK_MODE_OPTION, self::can_enable_cook_mode() );
 	}
 
 	/**
@@ -1349,7 +1238,7 @@ EOT;
 	 * @return string
 	 */
 	public static function get_cook_mode_helper() {
-		return get_option( Tasty_Recipes::COOK_MODE_HELPER_OPTION, __( 'Prevent your screen from going dark', 'tasty-recipes' ) );
+		return get_option( TastyRecipesLiteMain::COOK_MODE_HELPER_OPTION, __( 'Prevent your screen from going dark', 'tasty-recipes' ) );
 	}
 
 	/**
@@ -1378,7 +1267,7 @@ EOT;
 	 * @return bool
 	 */
 	public static function can_show_instacart_button() {
-		return (bool) get_option( Tasty_Recipes::INSTACART_OPTION, false );
+		return (bool) get_option( TastyRecipesLiteMain::INSTACART_OPTION, false );
 	}
 
 	/**
@@ -1393,47 +1282,7 @@ EOT;
 			return;
 		}
 
-		echo '<p><a href=""><img src="' . esc_attr( plugins_url( 'assets/images/instacart.svg', TASTY_RECIPES_PLUGIN_FILE ) ) . '"/></a></p>';
-	}
-
-	/**
-	 * Filter quick links admin field to handle the removed item "both"
-	 * and cast the string option to an array.
-	 *
-	 * @param array $args Admin field args.
-	 *
-	 * @return array
-	 */
-	public static function filter_quick_links_backward_compatibility( $args ) {
-		if ( Tasty_Recipes::QUICK_LINKS_OPTION !== $args['name'] ) {
-			return $args;
-		}
-
-		$args['checked'] = self::handle_quick_links_backward_compatibility( $args['checked'] );
-
-		return $args;
-	}
-
-	/**
-	 * Handle the removed item "both" and cast the string option to an array.
-	 *
-	 * @param mixed $option_value Option value to be handled.
-	 *
-	 * @return array|string[]
-	 */
-	public static function handle_quick_links_backward_compatibility( $option_value ) {
-		if ( empty( $option_value ) ) {
-			return array();
-		}
-
-		if ( 'both' === $option_value ) {
-			return array(
-				'jump',
-				'print',
-			);
-		}
-
-		return (array) $option_value;
+		echo '<p><a href=""><img src="' . esc_attr( plugins_url( 'assets/images/instacart.svg', TASTY_RECIPES_LITE_PLUGIN_FILE ) ) . '"/></a></p>';
 	}
 
 }

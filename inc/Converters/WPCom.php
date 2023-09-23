@@ -7,8 +7,8 @@
 
 namespace Tasty\Recipes\Lite\Converters;
 
-use Tasty_Recipes\Utils;
-use Tasty_Recipes\Objects\Recipe;
+use Tasty\Recipes\Lite\Utils;
+use Tasty\Recipes\Lite\Objects\Recipe;
 
 /**
  * Converter class for WordPress.com Recipe shortcode.

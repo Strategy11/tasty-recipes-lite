@@ -1,0 +1,154 @@
+/** Only applies inside of the print controls iframe **/
+@import "reset.scss";
+
+#tr-control-form {
+	padding: 10px;
+	font-family: Arial, sans-serif;
+
+	&:not(.tasty-recipes-show-controls) {
+		fieldset.tasty-recipes-print-display-controls,
+		fieldset.tasty-recipes-print-text-size-controls {
+			display: none;
+		}
+	}
+
+	button,
+	fieldset.tasty-recipes-print-display-controls label {
+		border: 2px solid #5E5E71;
+		border-radius: 5px;
+		color: #666677;
+		font-size: 12px;
+		display: inline-block;
+		padding-top: 5px;
+		padding-bottom: 5px;
+		padding-left: 8px;
+		padding-right: 8px;
+		letter-spacing: 0.1em;
+	}
+
+	button,
+	label {
+		cursor: pointer;
+		text-transform: uppercase;
+		background-color: transparent;
+	}
+
+	button#tasty-recipes-print,
+	button#tasty-recipes-options {
+		margin-right: 10px;
+		svg {
+			top: 2px;
+			position: relative;
+			margin-right: 2px;
+		}
+	}
+
+	button:hover,
+	button.active {
+		background-color: #5E5E71;
+		color: #FFF;
+	}
+
+	fieldset {
+		border: none;
+		margin-top: 18px;
+		&:first-child {
+			margin-top: 0;
+		}
+
+		legend {
+			font-weight: bold;
+			color: #666677;
+			font-size: 14px;
+		}
+
+		input[type='checkbox'] + label,
+		input[type='radio'] + label {
+			display: inline-block;
+			position: relative;
+			vertical-align: middle;
+		}
+
+		input[type='checkbox'],
+		input[type='radio'] {
+			position: absolute !important;
+			height: 1px;
+			width: 1px;
+			overflow: hidden;
+			clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
+			clip: rect(1px, 1px, 1px, 1px);
+		}
+
+		input[type='checkbox']:checked + label,
+		input[type='radio']:checked + label {
+			background-color: #5E5E71;
+			color: #FFF;
+		}
+	}
+
+	fieldset.tasty-recipes-print-buttons {
+		display: flex;
+	}
+
+	fieldset.tasty-recipes-print-display-controls {
+		label {
+			margin-top: 10px;
+			margin-right: 10px;
+		}
+		input[type='checkbox']:checked + label:before {
+			display: inline-block;
+			content: "";
+			height: 9px;
+			width: 16px;
+			background-image: url("data:image/svg+xml,%3Csvg width='13' height='9' viewBox='0 0 13 9' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.05469 8.8125C5.28906 9.04688 5.6875 9.04688 5.92188 8.8125L12.8125 1.92188C13.0469 1.6875 13.0469 1.28906 12.8125 1.05469L11.9688 0.210938C11.7344 -0.0234375 11.3594 -0.0234375 11.125 0.210938L5.5 5.83594L2.85156 3.21094C2.61719 2.97656 2.24219 2.97656 2.00781 3.21094L1.16406 4.05469C0.929688 4.28906 0.929688 4.6875 1.16406 4.92188L5.05469 8.8125Z' fill='white'/%3E%3C/svg%3E%0A");
+			background-repeat: no-repeat;
+			background-position: left center;
+			margin-right: 2px;
+		}
+	}
+
+	fieldset.tasty-recipes-print-text-size-controls {
+		div {
+			width: 100%;
+			display: flex;
+			margin-top: 10px;
+		}
+		label {
+			border-top: 2px solid #5E5E71;
+			border-bottom: 2px solid #5E5E71;
+			color: #5E5E71;
+			font-size: 12px;
+			line-height: 14px;
+			padding-top: 5px;
+			padding-bottom: 5px;
+			padding-left: 8px;
+			padding-right: 8px;
+			flex-grow: 1;
+			text-align: center;
+			letter-spacing: 0.1em;
+		}
+		label:nth-of-type(1) {
+			border-left: 2px solid #5E5E71;
+			border-top-left-radius: 5px;
+			border-bottom-left-radius: 5px;
+			font-size: 10px;
+			letter-spacing: 0.1em;
+		}
+		label:nth-of-type(2) {
+			border-left: 2px solid #5E5E71;
+			border-right: 2px solid #5E5E71;
+		}
+		label:nth-of-type(3) {
+			border-right: 2px solid #5E5E71;
+			border-top-right-radius: 5px;
+			border-bottom-right-radius: 5px;
+			font-size: 14px;
+			letter-spacing: 0.1em;
+		}
+		input[type='radio']:checked + label {
+			background-color: #5E5E71;
+			color: #FFF;
+		}
+	}
+
+}

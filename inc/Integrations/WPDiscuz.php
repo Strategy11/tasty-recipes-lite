@@ -7,6 +7,9 @@
 
 namespace Tasty\Recipes\Lite\Integrations;
 
+use Tasty\Recipes\Lite\Ratings;
+use TastyRecipesLiteMain;
+
 /**
  * Integrates Tasty Recipes with wpDiscuz.
  */
@@ -19,13 +22,13 @@ class WPDiscuz {
 	 */
 	public static function action_wpdiscuz_after_comment_post( $comment ) {
 		// Only process when there is one embedded recipe in a post.
-		$recipes = \Tasty_Recipes::get_recipes_for_post( $comment->comment_post_ID );
+		$recipes = TastyRecipesLiteMain::get_recipes_for_post( $comment->comment_post_ID );
 		if ( 1 !== count( $recipes ) ) {
 			return;
 		}
 
 		$recipe = reset( $recipes );
-		\Tasty_Recipes\Ratings::update_recipe_rating( $recipe, $comment->comment_post_ID );
+		Ratings::update_recipe_rating( $recipe, $comment->comment_post_ID );
 	}
 
 }

@@ -30,12 +30,12 @@ class RecipeControl extends Base_Data_Control {
 		global $post;
 
 		wp_enqueue_editor();
-		$time = filemtime( dirname( TASTY_RECIPES_PLUGIN_FILE ) . '/assets/js/elementor.js' );
+		$time = filemtime( dirname( TASTY_RECIPES_LITE_PLUGIN_FILE ) . '/assets/js/elementor.js' );
 		wp_enqueue_script(
 			'tasty-recipe-elementor-control',
-			plugins_url( 'assets/js/elementor.js?r=' . (int) $time, TASTY_RECIPES_PLUGIN_FILE ),
+			plugins_url( 'assets/js/elementor.js', TASTY_RECIPES_LITE_PLUGIN_FILE ),
 			array( 'elementor-editor' ),
-			'1.0.0',
+			(int) $time,
 			true
 		);
 

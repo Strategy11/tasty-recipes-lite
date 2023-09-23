@@ -9,6 +9,7 @@ namespace Tasty\Recipes\Lite\Integrations\Elementor;
 
 use Tasty\Recipes\Lite\Shortcodes;
 use Elementor\Widget_Base;
+use Elementor\Controls_Manager;
 
 /**
  * Tasty Recipes widget for Elementor.
@@ -59,7 +60,7 @@ class RecipeWidget extends Widget_Base {
 			'content_section',
 			array(
 				'label' => __( 'Content', 'tasty-recipes' ),
-				'tab'   => \Elementor\Controls_Manager::TAB_CONTENT,
+				'tab'   => Controls_Manager::TAB_CONTENT,
 			)
 		);
 

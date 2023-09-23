@@ -7,9 +7,9 @@
 
 namespace Tasty\Recipes\Lite\Converters;
 
-use Tasty_Recipes\Distribution_Metadata;
-use Tasty_Recipes\Objects\Recipe;
-use Tasty_Recipes\Utils;
+use Tasty\Recipes\Lite\DistributionMetadata;
+use Tasty\Recipes\Lite\Objects\Recipe;
+use Tasty\Recipes\Lite\Utils;
 
 /**
  * Converter class for WP Recipe Maker.
@@ -223,7 +223,7 @@ class WPRecipeMaker extends Converter {
 					if ( '' !== $value && 0 !== (int) $value ) {
 						// WPRM stores in minutes.
 						$time  = (int) $value * 60;
-						$value = Distribution_Metadata::format_time_for_human( $time );
+						$value = DistributionMetadata::format_time_for_human( $time );
 					}
 					break;
 				case 'wprm_nutrition':

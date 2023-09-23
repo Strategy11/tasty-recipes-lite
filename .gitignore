@@ -1,0 +1,11 @@
+.DS_Store
+.phpunit.result.*
+Thumbs.db
+wp-cli.local.yml
+mix-manifest.json
+assets/dist/
+node_modules/
+*.sql
+*.zip
+
+/vendor/

@@ -7,7 +7,7 @@
 
 namespace Tasty\Recipes\Lite;
 
-use \Tasty_Recipes\Objects\Recipe;
+use Tasty\Recipes\Lite\Objects\Recipe;
 use WP_Post;
 
 /**
@@ -30,21 +30,21 @@ class BlockEditor {
 			return;
 		}
 		Assets::register_modal_editor_script();
-		$time = filemtime( dirname( dirname( __FILE__ ) ) . '/assets/js/nutrifox-resize.js' );
+		$time = filemtime( dirname( TASTY_RECIPES_LITE_PLUGIN_FILE ) . '/assets/js/nutrifox-resize.js' );
 		wp_register_script(
 			'tasty-recipes-nutrifox-resize',
-			plugins_url( 'assets/js/nutrifox-resize.js', dirname( __FILE__ ) ),
+			plugins_url( 'assets/js/nutrifox-resize.js', TASTY_RECIPES_LITE_PLUGIN_FILE ),
 			array(),
 			$time,
 			true
 		);
 		$time = 0;
-		if ( file_exists( dirname( dirname( __FILE__ ) ) . '/assets/dist/block-editor.build.js' ) ) {
-			$time = filemtime( dirname( dirname( __FILE__ ) ) . '/assets/dist/block-editor.build.js' );
+		if ( file_exists( dirname( TASTY_RECIPES_LITE_PLUGIN_FILE ) . '/assets/dist/block-editor.build.js' ) ) {
+			$time = filemtime( dirname( TASTY_RECIPES_LITE_PLUGIN_FILE ) . '/assets/dist/block-editor.build.js' );
 		}
 		wp_register_script(
 			'tasty-recipes-block-editor',
-			plugins_url( 'assets/dist/block-editor.build.js', dirname( __FILE__ ) ),
+			plugins_url( 'assets/dist/block-editor.build.js', TASTY_RECIPES_LITE_PLUGIN_FILE ),
 			array(
 				'tasty-recipes-editor-modal',
 				'tasty-recipes-nutrifox-resize',

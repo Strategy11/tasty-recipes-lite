@@ -7,9 +7,8 @@
 
 namespace Tasty\Recipes\Lite\Converters;
 
-use Tasty_Recipes\Distribution_Metadata;
-use Tasty_Recipes\Utils;
-use Tasty_Recipes\Objects\Recipe;
+use Tasty\Recipes\Lite\DistributionMetadata;
+use Tasty\Recipes\Lite\Objects\Recipe;
 
 /**
  * Converter class for Mediavine Create.
@@ -120,13 +119,13 @@ class MediavineCreate extends Converter {
 			}
 
 			if ( in_array( $mc, array( 'prep_time', 'active_time', 'total_time' ), true ) ) {
-				$value = Distribution_Metadata::format_time_for_human( $value );
+				$value = DistributionMetadata::format_time_for_human( $value );
 			}
 
 			if ( 'additional_time' === $mc ) {
 				$converted_data['additional_time_label'] = $existing->additional_time_label ? $existing->additional_time_label : 'Additional Time';
 
-				$value = Distribution_Metadata::format_time_for_human( $value );
+				$value = DistributionMetadata::format_time_for_human( $value );
 			}
 
 			if ( 'external_video' === $mc ) {

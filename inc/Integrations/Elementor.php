@@ -7,7 +7,10 @@
 
 namespace Tasty\Recipes\Lite\Integrations;
 
-use WP_Post;
+use Tasty\Recipes\Lite\Assets;
+use Tasty\Recipes\Lite\Integrations\Elementor\RecipeControl;
+use Tasty\Recipes\Lite\Integrations\Elementor\RecipeWidget;
+use Elementor\Plugin;
 
 /**
  * Integrates Tasty Recipes with Elementor.
@@ -64,8 +67,8 @@ class Elementor {
 	 * Registers the controls.
 	 */
 	public static function action_controls_registered() {
-		\Elementor\Plugin::instance()->controls_manager->register(
-			new \Tasty_Recipes\Integrations\Elementor\Recipe_Control()
+		Plugin::instance()->controls_manager->register(
+			new RecipeControl()
 		);
 	}
 
@@ -73,8 +76,8 @@ class Elementor {
 	 * Registers the widgets.
 	 */
 	public static function action_widgets_registered() {
-		\Elementor\Plugin::instance()->widgets_manager->register(
-			new \Tasty_Recipes\Integrations\Elementor\Recipe_Widget()
+		Plugin::instance()->widgets_manager->register(
+			new RecipeWidget()
 		);
 	}
 
@@ -103,7 +106,7 @@ class Elementor {
 	 * Renders the editor modal template
 	 */
 	public static function action_editor_footer() {
-		\Tasty_Recipes\Assets::action_admin_footer_render_template();
+		Assets::action_admin_footer_render_template();
 	}
 
 	/**

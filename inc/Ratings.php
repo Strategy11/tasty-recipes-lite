@@ -7,7 +7,8 @@
 
 namespace Tasty\Recipes\Lite;
 
-use Tasty_Recipes;
+use Tasty\Recipes\Lite\Objects\Recipe;
+use TastyRecipesLiteMain;
 
 /**
  * Manages ratings integration with comments.
@@ -71,7 +72,7 @@ class Ratings {
 	 * @return string
 	 */
 	private static function get_css_vars() {
-		$settings = Tasty_Recipes::get_filtered_customization_settings();
+		$settings = TastyRecipesLiteMain::get_filtered_customization_settings();
 		$css_vars = array(
 			'--tr-star-color' => $settings['star_color'],
 		);
@@ -94,7 +95,7 @@ class Ratings {
 		if ( ! self::is_enabled() ) {
 			return;
 		}
-		$styles = Utils::get_contents( dirname( dirname( __FILE__ ) ) . '/assets/dist/ratings.css' );
+		$styles = Utils::get_contents( dirname( TASTY_RECIPES_LITE_PLUGIN_FILE ) . '/assets/dist/ratings.css' );
 		echo '<style type="text/css">' . PHP_EOL . self::get_css_vars() . $styles . PHP_EOL . '</style>' . PHP_EOL; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
@@ -105,7 +106,7 @@ class Ratings {
 		if ( ! self::is_enabled() ) {
 			return;
 		}
-		$styles = Utils::get_contents( dirname( dirname( __FILE__ ) ) . '/assets/dist/ratings.css' );
+		$styles = Utils::get_contents( dirname( TASTY_RECIPES_LITE_PLUGIN_FILE ) . '/assets/dist/ratings.css' );
 		echo '<style type="text/css">' . PHP_EOL . $styles . PHP_EOL . '</style>' . PHP_EOL; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
@@ -122,7 +123,7 @@ class Ratings {
 		}
 
 		// Only process when there is one embedded recipe in a post.
-		$recipes = Tasty_Recipes::get_recipes_for_post( $comment->comment_post_ID );
+		$recipes = TastyRecipesLiteMain::get_recipes_for_post( $comment->comment_post_ID );
 		if ( 1 !== count( $recipes ) ) {
 			return;
 		}
@@ -233,7 +234,7 @@ class Ratings {
 		if ( ! self::is_enabled() || ! $post_id ) {
 			return $comment_form;
 		}
-		$recipes = Tasty_Recipes::get_recipes_for_post( $post_id );
+		$recipes = TastyRecipesLiteMain::get_recipes_for_post( $post_id );
 		if ( 1 !== count( $recipes ) ) {
 			return $comment_form;
 		}
@@ -271,7 +272,7 @@ class Ratings {
 
 		if ( ! self::is_enabled()
 			|| ! $comment
-			|| ! Tasty_Recipes::has_recipe( $comment->comment_post_ID ) ) {
+			|| ! TastyRecipesLiteMain::has_recipe( $comment->comment_post_ID ) ) {
 			return $comment_text;
 		}
 
@@ -312,7 +313,7 @@ class Ratings {
 		}
 
 		if ( is_null( $style ) ) {
-			$settings = Tasty_Recipes::get_customization_settings();
+			$settings = TastyRecipesLiteMain::get_customization_settings();
 			$style    = $settings['star_ratings_style'];
 		}
 		if ( 'solid' === $style ) {
@@ -386,7 +387,7 @@ class Ratings {
 		if ( ! comments_open() ) {
 			return '';
 		}
-		return Tasty_Recipes::get_template_part(
+		return TastyRecipesLiteMain::get_template_part(
 			'parts/ratings',
 			array(
 				'no_ratings'       => $no_ratings,
@@ -394,42 +395,6 @@ class Ratings {
 				'remove_new_lines' => true,
 			)
 		);
-	}
-
-	/**
-	 * Allow empty comment when rating is more than 3.
-	 *
-	 * @param bool  $allow Whether to allow empty comments. Default false.
-	 * @param array $comment_data Array of comment data to be sent to wp_insert_comment().
-	 *
-	 * @return bool
-	 */
-	public static function filter_allow_rating_empty_comment( $allow, $comment_data ) {
-		$recipes = Tasty_Recipes::get_recipes_for_post( (int) $comment_data['comment_post_ID'] );
-		if ( 1 !== count( $recipes ) ) {
-			return $allow;
-		}
-
-		$minimum_rating_without_comment = self::get_minimum_rating_without_comment( $comment_data );
-		$post_rating                    = (int) Utils::get_post_value( 'tasty-recipes-rating' );
-		return ! empty( $post_rating ) && $post_rating >= $minimum_rating_without_comment;
-	}
-
-	/**
-	 * Get minimum rating value without requiring comment (filtered).
-	 *
-	 * @param array $comment_data Comment data if found.
-	 *
-	 * @return int
-	 */
-	public static function get_minimum_rating_without_comment( $comment_data = array() ) {
-		/**
-		 * Control minimum rating number where comment is not mandatory.
-		 *
-		 * @param int $min_rating Rating minimum integer value, default is 4.
-		 * @param array $comment_data Array of comment data.
-		 */
-		return (int) apply_filters( 'tasty_recipes_min_rating_without_comment', 4, $comment_data );
 	}
 
 }

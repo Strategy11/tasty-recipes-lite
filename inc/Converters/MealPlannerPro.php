@@ -7,10 +7,8 @@
 
 namespace Tasty\Recipes\Lite\Converters;
 
-use Tasty_Recipes\Distribution_Metadata;
-use Tasty_Recipes\Objects\Recipe;
-use Tasty_Recipes\Ratings;
-use Tasty_Recipes\Shortcodes;
+use Tasty\Recipes\Lite\DistributionMetadata;
+use Tasty\Recipes\Lite\Objects\Recipe;
 
 /**
  * Converter class for Meal Planner Pro.
@@ -85,7 +83,7 @@ class MealPlannerPro extends Converter {
 			}
 
 			if ( in_array( $tr, array( 'prep_time', 'cook_time', 'total_time' ), true ) ) {
-				$value = Distribution_Metadata::get_time_for_duration( $value );
+				$value = DistributionMetadata::get_time_for_duration( $value );
 			}
 
 			if ( 'image_id' === $tr ) {

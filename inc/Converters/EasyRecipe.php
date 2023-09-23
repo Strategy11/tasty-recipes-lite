@@ -7,9 +7,7 @@
 
 namespace Tasty\Recipes\Lite\Converters;
 
-use Tasty_Recipes\Objects\Recipe;
-use Tasty_Recipes\Ratings;
-use Tasty_Recipes\Shortcodes;
+use Tasty\Recipes\Lite\Objects\Recipe;
 
 /**
  * Converter class for Easy Recipe.

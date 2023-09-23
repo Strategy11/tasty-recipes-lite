@@ -7,8 +7,8 @@
 
 namespace Tasty\Recipes\Lite;
 
-use Tasty_Recipes;
-use Tasty_Recipes\Objects\Recipe;
+use TastyRecipesLiteMain;
+use Tasty\Recipes\Lite\Objects\Recipe;
 use WP_Post;
 
 /**
@@ -31,7 +31,7 @@ class Shortcodes {
 	const RECIPE_SHORTCODE = 'tasty-recipe';
 
 	/**
-	 * Whether or not we're currently doing the excerpt.
+	 * Whether we're currently doing the excerpt.
 	 *
 	 * @var boolean
 	 */
@@ -112,7 +112,7 @@ class Shortcodes {
 	 * @return string
 	 */
 	private static function prepended_quick_links( $post, $content ) {
-		$recipe_ids = Tasty_Recipes::get_recipe_ids_for_post( $post->ID );
+		$recipe_ids = TastyRecipesLiteMain::get_recipe_ids_for_post( $post->ID );
 
 		switch ( true ) {
 			case empty( $recipe_ids ):
@@ -120,7 +120,8 @@ class Shortcodes {
 				$quick_links = array();
 				break;
 			default:
-				$quick_links = Admin::handle_quick_links_backward_compatibility( get_option( Tasty_Recipes::QUICK_LINKS_OPTION, array( 'jump', 'print' ) ) );
+				//$quick_links = Admin::handle_quick_links_backward_compatibility( get_option( Tasty_Recipes::QUICK_LINKS_OPTION, array( 'jump', 'print' ) ) );
+				$quick_links = get_option( TastyRecipesLiteMain::QUICK_LINKS_OPTION, array( 'jump', 'print' ) );
 				break;
 		}
 
@@ -128,7 +129,7 @@ class Shortcodes {
 		 * Filter to allow for more granular control over whether 'Jump to'
 		 * should appear.
 		 *
-		 * @param boolean $quick_links Whether or not to prepend.
+		 * @param boolean $quick_links Whether to prepend.
 		 * @param integer $post_id     ID for the recipe's post.
 		 * @param array   $recipe_ids  Recipe IDs within the post.
 		 */
@@ -152,7 +153,7 @@ class Shortcodes {
 		if ( false === stripos( $output, 'data-tasty-recipes-customization' ) ) {
 			return $output;
 		}
-		$settings = Tasty_Recipes::get_filtered_customization_settings();
+		$settings = TastyRecipesLiteMain::get_filtered_customization_settings();
 		$output   = preg_replace_callback(
 			'#<[a-z]+[^>]+data-tasty-recipes-customization=[\'"](?<options>[^\'"]+)[\'"][^>]*>#U',
 			function( $matches ) use ( $settings ) {
@@ -237,7 +238,7 @@ class Shortcodes {
 		// Ensures the shortcode preview has access to the full recipe data.
 		$recipe_json = $recipe->to_json();
 
-		Tasty_Recipes::get_instance()->recipe_json = $recipe_json;
+		TastyRecipesLiteMain::get_instance()->recipe_json = $recipe_json;
 
 		// There are some dependencies on the parent post.
 		$current_post = get_post();
@@ -253,7 +254,7 @@ class Shortcodes {
 		}
 
 		$image_size = 'thumbnail';
-		if ( 'snap' === get_option( Tasty_Recipes::TEMPLATE_OPTION, '' ) ) {
+		if ( 'snap' === get_option( TastyRecipesLiteMain::TEMPLATE_OPTION, '' ) ) {
 			$image_size = 'medium_large';
 		}
 		/**
@@ -288,7 +289,7 @@ class Shortcodes {
 		if ( file_exists( get_stylesheet_directory() . '/tasty-recipes.php' ) ) {
 			$template = get_stylesheet_directory() . '/tasty-recipes.php';
 		} else {
-			$custom_design = get_option( Tasty_Recipes::TEMPLATE_OPTION, '' );
+			$custom_design = get_option( TastyRecipesLiteMain::TEMPLATE_OPTION, '' );
 			$custom_path   = dirname( TASTY_RECIPES_PLUGIN_FILE ) . '/templates/designs/' . $custom_design . '/tasty-recipes.php';
 			if ( $custom_design && file_exists( $custom_path ) ) {
 				$template = $custom_path;
@@ -301,7 +302,7 @@ class Shortcodes {
 			$wrapper_classes[] = 'easyrecipe';
 		}
 
-		$shareasale = get_option( Tasty_Recipes::SHAREASALE_OPTION );
+		$shareasale = get_option( TastyRecipesLiteMain::SHAREASALE_OPTION );
 		if ( $shareasale ) {
 			$wrapper_classes[] = 'tasty-recipes-has-plug';
 		}
@@ -347,7 +348,7 @@ class Shortcodes {
 		$orig_ingredients = $recipe_json['ingredients'];
 		$ingredients      = $orig_ingredients;
 		$nutrifox_convert = get_post_meta( $recipe->get_id(), 'nutrifox_conversion_response', true );
-		if ( get_option( Tasty_Recipes::UNIT_CONVERSION_OPTION )
+		if ( get_option( TastyRecipesLiteMain::UNIT_CONVERSION_OPTION )
 			&& ! empty( $nutrifox_convert['processed'] )
 			&& empty( $atts['disable_unit_conversion'] ) ) {
 			$ingredients = $nutrifox_convert['processed'];
@@ -374,7 +375,7 @@ class Shortcodes {
 		}
 
 		$error = get_post_meta( $recipe->get_id(), 'nutrifox_conversion_error', true );
-		if ( get_option( Tasty_Recipes::UNIT_CONVERSION_OPTION )
+		if ( get_option( TastyRecipesLiteMain::UNIT_CONVERSION_OPTION )
 			&& empty( $atts['disable_unit_conversion'] )
 			&& $error && self::is_error_message_showable() ) {
 			$message_text = sprintf( 'Ingredient units were not converted: %s. Try saving the recipe again, or contact Tasty Recipes support if the error persists.', $error->get_error_message() );
@@ -387,7 +388,7 @@ class Shortcodes {
 		}
 
 		$ingredients = self::process_ingredients_annotate_with_spans( $ingredients );
-		if ( ! get_option( Tasty_Recipes::DISABLE_SCALING_OPTION )
+		if ( ! get_option( TastyRecipesLiteMain::DISABLE_SCALING_OPTION )
 			&& empty( $atts['disable_scaling'] )
 			&& ! is_feed() && false !== stripos( $ingredients, 'data-amount' ) ) {
 			$scalable_amounts = array(
@@ -416,7 +417,7 @@ class Shortcodes {
 			$recipe_scalable = false;
 		}
 
-		if ( get_option( Tasty_Recipes::INGREDIENT_CHECKBOXES_OPTION )
+		if ( get_option( TastyRecipesLiteMain::INGREDIENT_CHECKBOXES_OPTION )
 			&& ! is_feed() && ! tasty_recipes_is_print() ) {
 			$ingredients = self::process_ingredients_for_checkboxes( $ingredients );
 		}
@@ -427,7 +428,7 @@ class Shortcodes {
 		}
 
 		/** Build the button to copy ingredients to clipboard if `copy to clipboard` is turned on. */
-		if ( ! is_feed() && get_option( Tasty_Recipes::COPY_TO_CLIPBOARD_OPTION ) ) {
+		if ( ! is_feed() && get_option( TastyRecipesLiteMain::COPY_TO_CLIPBOARD_OPTION ) ) {
 			$copy_ingredients = '<button aria-label="' . __( 'Copy ingredients to clipboard', 'tasty-recipes' ) . '" class="tasty-recipes-copy-button" data-text="' . __( 'Copy ingredients', 'tasty-recipes' ) . '" data-success="' . __( 'Copied!', 'tasty-recipes' ) . '">' . Utils::get_contents( dirname( dirname( __FILE__ ) ) . '/assets/images/icons/icon-copy-to-clipboard.svg' ) . '</button>';
 		} else {
 			$copy_ingredients = false;
@@ -442,7 +443,7 @@ class Shortcodes {
 
 		$recipe_author_name = '';
 		if ( ! empty( $recipe_json['author_name'] ) ) {
-			$link = ! empty( $atts['author_link'] ) ? $atts['author_link'] : get_option( Tasty_Recipes::DEFAULT_AUTHOR_LINK_OPTION, '' );
+			$link = ! empty( $atts['author_link'] ) ? $atts['author_link'] : get_option( TastyRecipesLiteMain::DEFAULT_AUTHOR_LINK_OPTION, '' );
 			if ( $link ) {
 				$recipe_author_name = '<a data-tasty-recipes-customization="detail-value-color.color" class="tasty-recipes-author-name" href="' . esc_url( $link ) . '">' . $recipe_json['author_name'] . '</a>';
 			} else {
@@ -450,7 +451,7 @@ class Shortcodes {
 			}
 		}
 
-		$settings = Tasty_Recipes::get_customization_settings();
+		$settings = TastyRecipesLiteMain::get_customization_settings();
 
 		$template_vars = array(
 			'recipe'                        => $recipe,
@@ -468,7 +469,7 @@ class Shortcodes {
 			'recipe_instructions_has_video' => false,
 			'recipe_convertable'            => $recipe_convertable,
 			'recipe_scalable'               => $recipe_scalable,
-			'recipe_instructions'           => Distribution_Metadata::apply_instruction_step_numbers( apply_filters( 'tasty_recipes_the_content', self::do_caption_shortcode( $recipe_json['instructions'] ), 'instructions' ) ),
+			'recipe_instructions'           => DistributionMetadata::apply_instruction_step_numbers( apply_filters( 'tasty_recipes_the_content', self::do_caption_shortcode( $recipe_json['instructions'] ), 'instructions' ) ),
 			'recipe_keywords'               => $recipe_json['keywords'],
 			'recipe_notes'                  => $recipe_json['notes_rendered'],
 			'recipe_nutrifox_id'            => $recipe_json['nutrifox_id'],
@@ -479,8 +480,8 @@ class Shortcodes {
 			'copy_ingredients'              => $copy_ingredients,
 			'first_button'                  => self::get_card_button( $recipe, 'first' ),
 			'second_button'                 => self::get_card_button( $recipe, 'second' ),
-			'instagram_handle'              => get_option( Tasty_Recipes::INSTAGRAM_HANDLE_OPTION ),
-			'instagram_hashtag'             => get_option( Tasty_Recipes::INSTAGRAM_HASHTAG_OPTION ),
+			'instagram_handle'              => get_option( TastyRecipesLiteMain::INSTAGRAM_HANDLE_OPTION ),
+			'instagram_hashtag'             => get_option( TastyRecipesLiteMain::INSTAGRAM_HASHTAG_OPTION ),
 			'footer_social_platform'        => $settings['footer_social_platform'],
 			'footer_heading'                => $settings['footer_heading'],
 			'footer_description'            => $settings['footer_description'],
@@ -489,7 +490,7 @@ class Shortcodes {
 		/**
 		 * Enable responsive iframes by default, but permit disabling on a site.
 		 *
-		 * @param boolean $responsive_iframes Whether or not to enable responsive iframes.
+		 * @param boolean $responsive_iframes Whether to enable responsive iframes.
 		 */
 		$responsive_iframes = apply_filters( 'tasty_recipes_enable_responsive_iframes', true );
 		$responsive_styles  = '';
@@ -657,7 +658,7 @@ class Shortcodes {
 			$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( dirname( __FILE__ ) ) . '/assets/js/video-toggle.js' );
 		}
 
-		if ( get_option( Tasty_Recipes::INGREDIENT_CHECKBOXES_OPTION ) ) {
+		if ( get_option( TastyRecipesLiteMain::INGREDIENT_CHECKBOXES_OPTION ) ) {
 			$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( dirname( __FILE__ ) ) . '/assets/js/ingredient-checkboxes.js' );
 		}
 
@@ -706,7 +707,7 @@ class Shortcodes {
 			$value = $recipe_json[ $attribute ];
 			if ( 'yield' === $attribute && $recipe_scalable ) {
 				$old_value = $value;
-				$value     = Unit_Amount_Parser::annotate_string_with_spans( $value );
+				$value     = UnitAmountParser::annotate_string_with_spans( $value );
 				if ( $value !== $old_value ) {
 					$value .= ' <span class="tasty-recipes-yield-scale"><span data-amount="1">1</span>x</span>';
 				}
@@ -786,7 +787,7 @@ class Shortcodes {
 			$nutrifox_id            = (int) $recipe_json['nutrifox_id'];
 			$nutrifox_iframe_url    = sprintf(
 				'%s/embed/label/%d',
-				Tasty_Recipes::nutrifox_url(),
+				TastyRecipesLiteMain::nutrifox_url(),
 				$nutrifox_id
 			);
 			$nutrifox_resize_script = Utils::get_contents( dirname( dirname( __FILE__ ) ) . '/assets/js/nutrifox-resize.js' );
@@ -807,7 +808,7 @@ EOT;
 		 * @param object $recipe Recipe object.
 		 */
 		$template_vars = apply_filters( 'tasty_recipes_recipe_template_vars', $template_vars, $recipe );
-		$ret          .= Tasty_Recipes::get_template_part( $template, $template_vars );
+		$ret          .= TastyRecipesLiteMain::get_template_part( $template, $template_vars );
 		$ret          .= '</div>';
 
 		if ( $shareasale ) {
@@ -853,7 +854,8 @@ EOT;
 			'links' => 'jump,print',
 		);
 		if ( ! empty( $atts['links'] ) ) {
-			$atts['links'] = implode( '|', Admin::handle_quick_links_backward_compatibility( $atts['links'] ) );
+			//$atts['links'] = implode( '|', Admin::handle_quick_links_backward_compatibility( $atts['links'] ) );
+			$atts['links'] = implode( '|', $atts['links'] );
 		}
 		$atts = array_merge( $defaults, (array) $atts );
 
@@ -864,7 +866,7 @@ EOT;
 			return '';
 		}
 
-		$recipe_ids = Tasty_Recipes::get_recipe_ids_for_post( $post->ID );
+		$recipe_ids = TastyRecipesLiteMain::get_recipe_ids_for_post( $post->ID );
 		if ( empty( $recipe_ids ) ) {
 			return '';
 		}
@@ -956,20 +958,20 @@ EOT;
 	 * @return string
 	 */
 	public static function get_card_button( $recipe, $position, $template = null ) {
-		$settings = Tasty_Recipes::get_card_button_settings( $template );
+		$settings = TastyRecipesLiteMain::get_card_button_settings( $template );
 		if ( empty( $settings[ $position ] ) ) {
 			return '';
 		}
 		$customization = '';
 		if ( null === $template ) {
-			$template = get_option( Tasty_Recipes::TEMPLATE_OPTION, '' );
+			$template = get_option( TastyRecipesLiteMain::TEMPLATE_OPTION, '' );
 		}
 		if ( in_array( $template, array( 'bold', 'fresh' ), true ) ) {
 			$customization = 'button-color.background button-text-color.color';
 		} else {
 			$customization = 'button-color.border-color button-color.background button-text-color.color';
 		}
-		return Tasty_Recipes::get_template_part(
+		return TastyRecipesLiteMain::get_template_part(
 			'buttons/' . $settings[ $position ],
 			array(
 				'recipe'        => $recipe,
@@ -1013,10 +1015,10 @@ EOT;
 		$ingredients = preg_replace_callback(
 			'#(<li[^\>]*>)(.*)(<\/li>)#U',
 			function( $m ) {
-				if ( Unit_Amount_Parser::string_has_non_numeric_amount( $m[2] ) ) {
+				if ( UnitAmountParser::string_has_non_numeric_amount( $m[2] ) ) {
 					$m[1] = str_replace( '<li', '<li data-has-non-numeric-amount', $m[1] );
 				}
-				return $m[1] . Unit_Amount_Parser::annotate_string_with_spans( $m[2] ) . $m[3];
+				return $m[1] . UnitAmountParser::annotate_string_with_spans( $m[2] ) . $m[3];
 			},
 			$ingredients,
 			-1,
@@ -1028,7 +1030,7 @@ EOT;
 		// Fall back when there weren't list items.
 		$bits = explode( PHP_EOL, $ingredients );
 		foreach ( $bits as $i => $bit ) {
-			if ( Distribution_Metadata::get_heading( $bit ) ) {
+			if ( DistributionMetadata::get_heading( $bit ) ) {
 				continue;
 			}
 			$start = '';
@@ -1039,11 +1041,11 @@ EOT;
 				$end   = $matches[3];
 				$bit   = $matches[2];
 			}
-			if ( Unit_Amount_Parser::string_has_non_numeric_amount( $bit ) ) {
+			if ( UnitAmountParser::string_has_non_numeric_amount( $bit ) ) {
 				$bits[ $i ] = $start . '<span data-has-non-numeric-amount>' . $bit . '</span>' . $end;
 				continue;
 			}
-			$bits[ $i ] = $start . Unit_Amount_Parser::annotate_string_with_spans( $bit ) . $end;
+			$bits[ $i ] = $start . UnitAmountParser::annotate_string_with_spans( $bit ) . $end;
 		}
 		return implode( PHP_EOL, $bits );
 	}
@@ -1062,7 +1064,7 @@ EOT;
 				$start = $m[1];
 				$end   = $m[3];
 				$bit   = $m[2];
-				if ( Distribution_Metadata::is_empty( $bit ) ) {
+				if ( DistributionMetadata::is_empty( $bit ) ) {
 					return '';
 				}
 
@@ -1082,7 +1084,7 @@ EOT;
 		// Fall back when there weren't list items.
 		$bits = explode( PHP_EOL, $ingredients );
 		foreach ( $bits as $i => $bit ) {
-			if ( Distribution_Metadata::get_heading( $bit ) ) {
+			if ( DistributionMetadata::get_heading( $bit ) ) {
 				continue;
 			}
 			$start = '';
@@ -1275,7 +1277,7 @@ EOT;
 			return;
 		}
 
-		Tasty_Recipes::echo_template_part(
+		TastyRecipesLiteMain::echo_template_part(
 			'parts/cookmode',
 			array(
 				'recipe_unique_id'            => uniqid( 'tasty_recipes_' ),
@@ -1283,25 +1285,6 @@ EOT;
 				'recipe_show_cook_mode_help'  => Admin::get_cook_mode_helper(),
 			)
 		);
-	}
-
-	/**
-	 * Get common recipe scripts, like JS vars needed for other scripts.
-	 *
-	 * @return string
-	 */
-	private static function get_common_recipe_scripts() {
-		$vars = array(
-			'tasty_recipes_min_rating' => Ratings::get_minimum_rating_without_comment(),
-		);
-
-		$output = '';
-
-		foreach ( $vars as $var_key => $var_value ) {
-			$output .= 'window.' . $var_key . ' = ' . $var_value . ';';
-		}
-
-		return $output;
 	}
 
 }

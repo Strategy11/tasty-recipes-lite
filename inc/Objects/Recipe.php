@@ -7,8 +7,8 @@
 
 namespace Tasty\Recipes\Lite\Objects;
 
-use Tasty_Recipes\Distribution_Metadata;
-use Tasty_Recipes\Utils;
+use Tasty\Recipes\Lite\DistributionMetadata;
+use Tasty\Recipes\Lite\Utils;
 
 /**
  * Model for the Recipe object.
@@ -787,15 +787,15 @@ class Recipe {
 		$time  = time();
 		$total = 0;
 		if ( '' !== $prep ) {
-			$total += Distribution_Metadata::strtotime( $prep, $time ) - $time;
+			$total += DistributionMetadata::strtotime( $prep, $time ) - $time;
 		}
 		if ( '' !== $addl ) {
-			$total += Distribution_Metadata::strtotime( $addl, $time ) - $time;
+			$total += DistributionMetadata::strtotime( $addl, $time ) - $time;
 		}
 		if ( '' !== $cook ) {
-			$total += Distribution_Metadata::strtotime( $cook, $time ) - $time;
+			$total += DistributionMetadata::strtotime( $cook, $time ) - $time;
 		}
-		return Distribution_Metadata::format_time_for_human( $total );
+		return DistributionMetadata::format_time_for_human( $total );
 	}
 
 	/**

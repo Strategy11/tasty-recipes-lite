@@ -7,8 +7,8 @@
 
 namespace Tasty\Recipes\Lite;
 
-use Tasty_Recipes;
-use Tasty_Recipes\Objects\Recipe;
+use TastyRecipesLiteMain;
+use Tasty\Recipes\Lite\Objects\Recipe;
 use WP_Post;
 
 /**
@@ -203,7 +203,7 @@ class Editor {
 		// Correct Windows-style line endings.
 		$content = str_replace( "\r\n", "\n", $content );
 		$content = str_replace( "\r", "\n", $content );
-		foreach ( Tasty_Recipes::get_converters() as $key => $config ) {
+		foreach ( TastyRecipesLiteMain::get_converters() as $key => $config ) {
 			$class = $config['class'];
 			if ( ! $class::get_existing_to_convert( $content ) ) {
 				continue;
@@ -424,7 +424,7 @@ class Editor {
 
 		$recipe     = false;
 		$type       = ! empty( Utils::get_param( 'is_block_editor' ) ) ? 'block' : 'shortcode';
-		$converters = Tasty_Recipes::get_converters();
+		$converters = TastyRecipesLiteMain::get_converters();
 		$get_type   = Utils::get_param( 'type' );
 		if ( isset( $converters[ $get_type ] ) ) {
 			$class  = $converters[ $get_type ]['class'];
@@ -634,7 +634,7 @@ class Editor {
 
 		$image_id = $recipe->get_image_id();
 		if ( $image_id ) {
-			Content_Model::generate_attachment_image_sizes( $image_id );
+			ContentModel::generate_attachment_image_sizes( $image_id );
 		}
 
 		$shortcode = Shortcodes::get_shortcode_for_recipe( $recipe );
@@ -660,7 +660,7 @@ class Editor {
 			);
 		}
 
-		$recipe_json = Tasty_Recipes::get_instance()->recipe_json;
+		$recipe_json = TastyRecipesLiteMain::get_instance()->recipe_json;
 		/**
 		 * Permit modification of the recipe JSON before it's returned.
 		 *
@@ -701,7 +701,7 @@ class Editor {
 			return array();
 		}
 
-		return array_unique( Tasty_Recipes::get_recipe_ids_from_content( $post->post_content ) );
+		return array_unique( TastyRecipesLiteMain::get_recipe_ids_from_content( $post->post_content ) );
 	}
 
 	/**
@@ -714,7 +714,7 @@ class Editor {
 	 * @return bool
 	 */
 	private static function post_has_recipes( $post ) {
-		return has_shortcode( $post->post_content, Shortcodes::RECIPE_SHORTCODE ) || Block_Editor::post_has_recipes( $post );
+		return has_shortcode( $post->post_content, Shortcodes::RECIPE_SHORTCODE ) || BlockEditor::post_has_recipes( $post );
 	}
 
 	/**
@@ -827,7 +827,7 @@ class Editor {
 			return array();
 		}
 
-		$all_converters = Tasty_Recipes::get_converters();
+		$all_converters = TastyRecipesLiteMain::get_converters();
 		$output         = array();
 
 		foreach ( $all_converters as $converter_key => $converter ) {

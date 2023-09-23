@@ -7,8 +7,8 @@
 
 namespace Tasty\Recipes\Lite;
 
-use Tasty_Recipes;
-use Tasty_Recipes\Objects\Recipe;
+use TastyRecipesLiteMain;
+use Tasty\Recipes\Lite\Objects\Recipe;
 
 /**
  * Registers all scripts and styles.
@@ -34,10 +34,10 @@ class Assets {
 		}
 
 		if ( 'wp-tasty_page_tasty-recipes' === $screen->id ) {
-			$time = filemtime( dirname( dirname( __FILE__ ) ) . '/assets/js/settings.js' );
+			$time = filemtime( dirname( TASTY_RECIPES_LITE_PLUGIN_FILE ) . '/assets/js/settings.js' );
 			wp_enqueue_script(
 				'tasty-recipes-settings',
-				plugins_url( 'assets/js/settings.js', dirname( __FILE__ ) ),
+				plugins_url( 'assets/js/settings.js', TASTY_RECIPES_LITE_PLUGIN_FILE ),
 				array( 'jquery', 'wp-util' ),
 				$time,
 				true
@@ -51,17 +51,17 @@ class Assets {
 					'isNutrifoxUser' => $wpdb->get_var( "SELECT meta_value FROM {$wpdb->postmeta} WHERE meta_key='nutrifox_id';" ), // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 				)
 			);
-			$time = filemtime( dirname( dirname( __FILE__ ) ) . '/assets/dist/settings.css' );
+			$time = filemtime( dirname( TASTY_RECIPES_LITE_PLUGIN_FILE ) . '/assets/dist/settings.css' );
 			wp_enqueue_style(
 				'tasty-recipes-settings',
-				plugins_url( 'assets/dist/settings.css', dirname( __FILE__ ) ),
+				plugins_url( 'assets/dist/settings.css', TASTY_RECIPES_LITE_PLUGIN_FILE ),
 				array( 'editor-buttons' ),
 				$time
 			);
-			$time = filemtime( dirname( dirname( __FILE__ ) ) . '/assets/dist/settings.build.js' );
+			$time = filemtime( dirname( TASTY_RECIPES_LITE_PLUGIN_FILE ) . '/assets/dist/settings.build.js' );
 			wp_enqueue_script(
 				'tasty-recipes-settings-v2',
-				plugins_url( 'assets/dist/settings.build.js', dirname( __FILE__ ) ),
+				plugins_url( 'assets/dist/settings.build.js', TASTY_RECIPES_LITE_PLUGIN_FILE ),
 				array( 'wp-i18n', 'wp-util', 'wplink' ),
 				$time,
 				true
@@ -71,10 +71,10 @@ class Assets {
 		if ( 'edit' === $screen->base ) {
 			self::register_modal_editor_script();
 			wp_enqueue_media();
-			$time = filemtime( dirname( dirname( __FILE__ ) ) . '/assets/js/manage-posts.js' );
+			$time = filemtime( dirname( TASTY_RECIPES_LITE_PLUGIN_FILE ) . '/assets/js/manage-posts.js' );
 			wp_enqueue_script(
 				'tasty-recipes-manage-posts',
-				plugins_url( 'assets/js/manage-posts.js', dirname( __FILE__ ) ),
+				plugins_url( 'assets/js/manage-posts.js', TASTY_RECIPES_LITE_PLUGIN_FILE ),
 				array(
 					'jquery',
 					'tasty-recipes-editor-modal',
@@ -86,7 +86,7 @@ class Assets {
 				'recipeDataStore' => array(),
 			);
 			foreach ( $GLOBALS['wp_query']->posts as $post ) {
-				foreach ( Tasty_Recipes::get_recipes_for_post( $post->ID ) as $recipe ) {
+				foreach ( TastyRecipesLiteMain::get_recipes_for_post( $post->ID ) as $recipe ) {
 					/**
 					 * Permit modification of the recipe JSON before it's returned.
 					 *
@@ -107,10 +107,10 @@ class Assets {
 				}
 			}
 			wp_localize_script( 'tasty-recipes-manage-posts', 'tastyRecipesManagePosts', $script_data );
-			$time = filemtime( dirname( dirname( __FILE__ ) ) . '/assets/dist/editor.css' );
+			$time = filemtime( dirname( TASTY_RECIPES_LITE_PLUGIN_FILE ) . '/assets/dist/editor.css' );
 			wp_enqueue_style(
 				'tasty-recipes-editor',
-				plugins_url( 'assets/dist/editor.css', dirname( __FILE__ ) ),
+				plugins_url( 'assets/dist/editor.css', TASTY_RECIPES_LITE_PLUGIN_FILE ),
 				array( 'editor-buttons' ),
 				$time
 			);
@@ -132,7 +132,7 @@ class Assets {
 					'defaultAuthorName' => $default_author_name,
 					'parseNonce'        => wp_create_nonce( 'tasty_recipes_parse_shortcode' ),
 					'modifyNonce'       => wp_create_nonce( 'tasty_recipes_modify_recipe' ),
-					'pluginURL'         => plugins_url( '', dirname( __FILE__ ) ),
+					'pluginURL'         => plugins_url( '', TASTY_RECIPES_LITE_PLUGIN_FILE ),
 				)
 			);
 			/**
@@ -156,10 +156,10 @@ class Assets {
 		}
 
 		self::register_modal_editor_script();
-		$time = filemtime( dirname( dirname( __FILE__ ) ) . '/assets/js/editor.js' );
+		$time = filemtime( dirname( TASTY_RECIPES_LITE_PLUGIN_FILE ) . '/assets/js/editor.js' );
 		wp_enqueue_script(
 			'tasty-recipes-editor',
-			plugins_url( 'assets/js/editor.js', dirname( __FILE__ ) ),
+			plugins_url( 'assets/js/editor.js', TASTY_RECIPES_LITE_PLUGIN_FILE ),
 			array(
 				'jquery',
 				'mce-view',
@@ -168,10 +168,10 @@ class Assets {
 			$time,
 			true
 		);
-		$time = filemtime( dirname( dirname( __FILE__ ) ) . '/assets/dist/editor.css' );
+		$time = filemtime( dirname( TASTY_RECIPES_LITE_PLUGIN_FILE ) . '/assets/dist/editor.css' );
 		wp_enqueue_style(
 			'tasty-recipes-editor',
-			plugins_url( 'assets/dist/editor.css', dirname( __FILE__ ) ),
+			plugins_url( 'assets/dist/editor.css', TASTY_RECIPES_LITE_PLUGIN_FILE ),
 			array(),
 			$time
 		);
@@ -187,7 +187,7 @@ class Assets {
 				'defaultAuthorName'   => wp_get_current_user() ? wp_get_current_user()->display_name : '',
 				'parseNonce'          => wp_create_nonce( 'tasty_recipes_parse_shortcode' ),
 				'modifyNonce'         => wp_create_nonce( 'tasty_recipes_modify_recipe' ),
-				'pluginURL'           => plugins_url( '', dirname( __FILE__ ) ),
+				'pluginURL'           => plugins_url( '', TASTY_RECIPES_LITE_PLUGIN_FILE ),
 				'dismissedConverters' => Editor::get_dismissed_converters(),
 			)
 		);
@@ -213,7 +213,7 @@ class Assets {
 		);
 		$post_id     = self::get_current_post_id();
 		if ( $post_id ) {
-			foreach ( Tasty_Recipes::get_recipes_for_post( $post_id ) as $recipe ) {
+			foreach ( TastyRecipesLiteMain::get_recipes_for_post( $post_id ) as $recipe ) {
 				/**
 				 * Permit modification of the recipe JSON before it's returned.
 				 *
@@ -243,12 +243,12 @@ class Assets {
 	public static function register_modal_editor_script() {
 
 		$time = 0;
-		if ( file_exists( dirname( dirname( __FILE__ ) ) . '/assets/dist/recipe-editor.build.js' ) ) {
-			$time = filemtime( dirname( dirname( __FILE__ ) ) . '/assets/dist/recipe-editor.build.js' );
+		if ( file_exists( dirname( TASTY_RECIPES_LITE_PLUGIN_FILE ) . '/assets/dist/recipe-editor.build.js' ) ) {
+			$time = filemtime( dirname( TASTY_RECIPES_LITE_PLUGIN_FILE ) . '/assets/dist/recipe-editor.build.js' );
 		}
 		wp_register_script(
 			'tasty-recipes-recipe-editor',
-			plugins_url( 'assets/dist/recipe-editor.build.js', dirname( __FILE__ ) ),
+			plugins_url( 'assets/dist/recipe-editor.build.js', TASTY_RECIPES_LITE_PLUGIN_FILE ),
 			array( 'wp-util', 'wplink' ),
 			$time,
 			true
@@ -275,7 +275,7 @@ class Assets {
 			'tasty-recipes-recipe-editor',
 			'tastyRecipesRecipeEditorData',
 			array(
-				'pluginURL'              => plugins_url( '', dirname( __FILE__ ) ),
+				'pluginURL'              => plugins_url( '', TASTY_RECIPES_LITE_PLUGIN_FILE ),
 				'after_video_url_markup' => $after_video_url_markup,
 				'labels'                 => array(
 					'select_image'      => esc_html__( 'Select Image', 'tasty-recipes' ),
@@ -307,10 +307,10 @@ class Assets {
 				),
 			)
 		);
-		$time = filemtime( dirname( dirname( __FILE__ ) ) . '/assets/js/editor-modal.js' );
+		$time = filemtime( dirname( TASTY_RECIPES_LITE_PLUGIN_FILE ) . '/assets/js/editor-modal.js' );
 		wp_register_script(
 			'tasty-recipes-editor-modal',
-			plugins_url( 'assets/js/editor-modal.js', dirname( __FILE__ ) ),
+			plugins_url( 'assets/js/editor-modal.js', TASTY_RECIPES_LITE_PLUGIN_FILE ),
 			array( 'jquery', 'tasty-recipes-recipe-editor' ),
 			$time,
 			true
@@ -333,7 +333,7 @@ class Assets {
 				'defaultAuthorName' => $default_author_name,
 				'modifyNonce'       => wp_create_nonce( 'tasty_recipes_modify_recipe' ),
 				'parseNonce'        => wp_create_nonce( 'tasty_recipes_parse_shortcode' ),
-				'pluginURL'         => plugins_url( '', dirname( __FILE__ ) ),
+				'pluginURL'         => plugins_url( '', TASTY_RECIPES_LITE_PLUGIN_FILE ),
 			)
 		);
 	}
@@ -342,16 +342,16 @@ class Assets {
 	 * Stomp on all registered styles in the print view for a recipe.
 	 */
 	public static function action_wp_print_styles() {
-		$recipe_id = (int) get_query_var( Content_Model::get_print_query_var() );
+		$recipe_id = (int) get_query_var( ContentModel::get_print_query_var() );
 		if ( is_singular() && $recipe_id ) {
-			$recipe_ids = Tasty_Recipes::get_recipe_ids_for_post( get_queried_object_id() );
+			$recipe_ids = TastyRecipesLiteMain::get_recipe_ids_for_post( get_queried_object_id() );
 			if ( in_array( $recipe_id, $recipe_ids, true ) ) {
 				show_admin_bar( false );
 				remove_action( 'wp_head', '_admin_bar_bump_cb' );
-				$time = filemtime( dirname( dirname( __FILE__ ) ) . '/assets/dist/print.css' );
+				$time = filemtime( dirname( TASTY_RECIPES_LITE_PLUGIN_FILE ) . '/assets/dist/print.css' );
 				wp_enqueue_style(
 					'tasty-recipes-print',
-					plugins_url( 'assets/dist/print.css', dirname( __FILE__ ) ),
+					plugins_url( 'assets/dist/print.css', TASTY_RECIPES_LITE_PLUGIN_FILE ),
 					array(),
 					$time
 				);
@@ -380,7 +380,7 @@ class Assets {
 			)
 		);
 		ob_get_clean();
-		Tasty_Recipes::echo_template_part( 'recipe-editor' );
+		TastyRecipesLiteMain::echo_template_part( 'recipe-editor' );
 	}
 
 	/**
@@ -419,16 +419,16 @@ class Assets {
 			}
 		}
 		$external_plugins['tr_heading'] = plugins_url(
-			'assets/js/tinymce-tr-heading.js?v=' . TASTY_RECIPES_PLUGIN_VERSION,
-			dirname( __FILE__ )
+			'assets/js/tinymce-tr-heading.js',
+			TASTY_RECIPES_LITE_PLUGIN_FILE
 		);
 		$external_plugins['tr_image']   = plugins_url(
-			'assets/js/tinymce-tr-image.js?v=' . TASTY_RECIPES_PLUGIN_VERSION,
-			dirname( __FILE__ )
+			'assets/js/tinymce-tr-image.js',
+			TASTY_RECIPES_LITE_PLUGIN_FILE
 		);
 		$external_plugins['tr_video']   = plugins_url(
-			'assets/js/tinymce-tr-video.js?v=' . TASTY_RECIPES_PLUGIN_VERSION,
-			dirname( __FILE__ )
+			'assets/js/tinymce-tr-video.js',
+			TASTY_RECIPES_LITE_PLUGIN_FILE
 		);
 		$mce_init['external_plugins']   = wp_json_encode( $external_plugins );
 		return $mce_init;

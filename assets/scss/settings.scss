@@ -1,0 +1,139 @@
+@import "components/design-settings";
+
+/*   Header bar for Settings   */
+
+.tasty-recipes-header {
+	background-color: #353547;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 5px 20px;
+	margin: 0 0 15px -20px;
+}
+
+.tasty-recipes-header h1 {
+	color: #fff;
+}
+
+.tasty-recipes-header img {
+	max-height: 35px;
+}
+
+/*   Navigation Tabs   */
+
+.tasty-recipes-nav .nav-support:hover #tasty-pins-external-link {
+	fill: #22CFC6;
+}
+
+.tasty-recipes-design-settings-app,
+.tasty-recipes-about,
+.tasty-recipes-settings,
+.tasty-recipes-converter,
+.tasty-recipes-custom-template-notice {
+	background: #fff;
+	padding: 20px;
+	color: #353547;
+}
+
+.tasty-recipes-custom-template-notice {
+	min-height: 200px;
+	p {
+		font-size: 14px;
+	}
+}
+
+.tasty-recipes-notice {
+	background: #fff;
+	border-left: 4px solid #fff;
+	box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+	margin: 5px 0px 2px;
+	padding: 1px 12px;
+	p {
+		margin: .5em 0;
+		padding: 2px;
+	}
+}
+
+.tasty-recipes-converter-wrap {
+	max-width: 680px;
+	width: 100%;
+	margin-top: 20px;
+	display: flex;
+	.tasty-recipes-converter-column {
+		float: left;
+	}
+	.tasty-recipes-converter-panel {
+		padding: 12px;
+		flex: 1;
+		.tasty-recipes-converter-welcome,
+		.tasty-recipes-converter-control {
+			position: relative;
+			h3, h4 {
+				margin: 0;
+				padding-top: 0;
+				padding-bottom: 12px;
+			}
+		}
+		.tasty-recipes-converter-close {
+			position: absolute;
+			top: 0;
+			right: 0;
+			width: 20px;
+			height: 20px;
+			padding: 0;
+			z-index: 1000;
+			-webkit-transition: color 0.1s ease-in-out,background 0.1s ease-in-out;
+			transition: color 0.1s ease-in-out,background 0.1s ease-in-out;
+			margin: 0;
+			-webkit-box-shadow: none;
+			box-shadow: none;
+			border: 0;
+			-webkit-border-radius: 0;
+			border-radius: 0;
+			background: none;
+			outline: none;
+			cursor: pointer;
+			.tasty-recipes-converter-icon:before {
+				content: "\f158";
+				font: 400 20px/1 dashicons;
+				speak: none;
+				vertical-align: middle;
+				-webkit-font-smoothing: antialiased;
+				-moz-osx-font-smoothing: grayscale;
+				color: #666;
+			}
+		}
+	}
+	.tasty-recipes-converter-options {
+		margin: 0;
+		li {
+			margin: 0;
+			&:hover {
+				cursor: pointer;
+			}
+			button {
+				width: 100%;
+				border-radius: 0;
+				display: block;
+				padding-top: 4px;
+				padding-bottom: 5px;
+				height: auto;
+				background-color: #FFF;
+				&[disabled] {
+					font-style: italic;
+					background-color: inherit;
+				}
+			}
+		}
+	}
+	&:after {
+		content: " ";
+		display: table;
+		clear: both;
+	}
+}
+
+.tasty-recipes-settings-error{
+	color: red;
+	margin-top: 5px;
+}

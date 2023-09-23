@@ -7,9 +7,7 @@
 
 namespace Tasty\Recipes\Lite\Converters;
 
-use Tasty_Recipes\Distribution_Metadata;
-use Tasty_Recipes\Utils;
-use Tasty_Recipes\Objects\Recipe;
+use Tasty\Recipes\Lite\Objects\Recipe;
 
 /**
  * Converter class for WP Ultimate Recipe.

@@ -7,9 +7,11 @@
 
 namespace Tasty\Recipes\Lite\Integrations;
 
+use Tasty\Recipes\Lite\DistributionMetadata;
 use WPSEO_Schema_IDs;
 use WPSEO_Graph_Piece;
 use WPSEO_Schema_Context;
+use TastyRecipesLiteMain;
 
 /**
  * Integrates Tasty Recipes with Yoast SEO's Open Graph.
@@ -31,7 +33,7 @@ class RecipeGraphPiece implements WPSEO_Graph_Piece {
 	private $recipe;
 
 	/**
-	 * Whether or not an article is present on this page too.
+	 * Whether an article is present on this page too.
 	 *
 	 * @var boolean
 	 */
@@ -73,7 +75,7 @@ class RecipeGraphPiece implements WPSEO_Graph_Piece {
 		if ( ! is_singular() ) {
 			return false;
 		}
-		$recipes = \Tasty_Recipes::get_recipes_for_post(
+		$recipes = TastyRecipesLiteMain::get_recipes_for_post(
 			$this->context->id,
 			array(
 				'disable-json-ld' => false,
@@ -92,7 +94,7 @@ class RecipeGraphPiece implements WPSEO_Graph_Piece {
 	 * @return array|boolean Recipe data on success, false on failure.
 	 */
 	public function generate() {
-		$schema                     = \Tasty_Recipes\Distribution_Metadata::get_enriched_google_schema_for_recipe( $this->recipe, get_post( $this->context->id ) );
+		$schema                     = DistributionMetadata::get_enriched_google_schema_for_recipe( $this->recipe, get_post( $this->context->id ) );
 		$schema['@id']              = $this->context->canonical . '#recipe';
 		$schema['isPartOf']         = array(
 			'@id' => $this->using_article ? $this->context->canonical . WPSEO_Schema_IDs::ARTICLE_HASH : $this->context->canonical . WPSEO_Schema_IDs::WEBPAGE_HASH,

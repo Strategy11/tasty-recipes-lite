@@ -7,11 +7,11 @@
 
 namespace Tasty\Recipes\Lite\Converters;
 
-use Tasty_Recipes\Block_Editor;
-use Tasty_Recipes\Objects\Recipe;
-use Tasty_Recipes\Ratings;
-use Tasty_Recipes\Shortcodes;
-use Tasty_Recipes\Utils;
+use Tasty\Recipes\Lite\BlockEditor;
+use Tasty\Recipes\Lite\Objects\Recipe;
+use Tasty\Recipes\Lite\Ratings;
+use Tasty\Recipes\Lite\Shortcodes;
+use Tasty\Recipes\Lite\Utils;
 
 /**
  * Base converter class.
@@ -183,7 +183,7 @@ abstract class Converter {
 			$shortcode = PHP_EOL . Shortcodes::get_shortcode_for_recipe( $recipe ) . PHP_EOL;
 			$content   = str_replace( $existing, $shortcode, $content );
 		} elseif ( 'block' === $type ) {
-			$block   = PHP_EOL . Block_Editor::get_block_for_recipe( $recipe ) . PHP_EOL;
+			$block   = PHP_EOL . BlockEditor::get_block_for_recipe( $recipe ) . PHP_EOL;
 			$content = str_replace( $existing, $block, $content );
 		}
 		wp_update_post(

@@ -7,9 +7,10 @@
 
 namespace Tasty\Recipes\Lite;
 
+use Tasty\Recipes\Lite\Integrations\RecipeGraphPiece;
+use Tasty\Recipes\Lite\Integrations\RecipeGraphPieceYoast;
 use Tasty_Recipes;
 use Tasty_Recipes\Content_Model;
-use Tasty_Recipes\Utils;
 use Tasty_Recipes\Objects\Recipe;
 
 /**
@@ -158,12 +159,12 @@ class DistributionMetadata {
 		}
 
 		if ( self::is_new_yoast() ) {
-			$pieces[] = new \Tasty_Recipes\Integrations\Recipe_Graph_Piece_Yoast( $context );
+			$pieces[] = new RecipeGraphPieceYoast( $context );
 			return $pieces;
 		}
 
 		if ( self::is_old_yoast() ) {
-			$pieces[] = new \Tasty_Recipes\Integrations\Recipe_Graph_Piece( $context );
+			$pieces[] = new RecipeGraphPiece( $context );
 			return $pieces;
 		}
 

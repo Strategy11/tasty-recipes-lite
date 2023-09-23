@@ -1,0 +1,121 @@
+.tasty-recipes-design-settings {
+	margin-bottom: 40px;
+	flex-wrap: wrap;
+
+	.tasty-recipes-card-preview-container {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		order: 2;
+		width: fit-content;
+
+		iframe {
+			padding: var(--gap-sm);
+			overflow-y: hidden;
+			&.hidden {
+				display: none;
+			}
+		}
+		.tasty-recipes-card-chooser {
+			display: flex;
+			justify-content: center;
+			svg {
+				width: 24px;
+				height: 24px;
+				opacity: 0.2;
+				&:hover {
+					opacity: 0.4;
+				}
+			}
+			button {
+				background: none;
+				border: none;
+			}
+			h3 {
+				min-width: 320px;
+				text-align: center;
+			}
+		}
+	}
+	.tasty-recipes-card-customization-container {
+		flex: 1;
+
+		hr {
+			margin: 20px 0 30px 0;
+		}
+		.tasty-recipes-customizer-note {
+			font-size: 11px;
+		}
+	}
+	.tasty-recipes-card-customization-sticky {
+		position: sticky;
+		top: 0;
+	}
+	.tasty-recipes-card-field-container {
+		flex-wrap: wrap;
+		min-width: 225px;
+
+		fieldset {
+			min-width: 225px;
+		}
+	}
+	.w-full {
+		width: 100%;
+	}
+
+	.tasty-recipes-nutrifox-field-container {
+		margin-top: 1em;
+		background-color: #F2F2F2;
+		border: 1px solid #E0E0E0;
+		border-radius: 6px;
+		padding-top: 12px;
+		padding-bottom: 8px;
+		padding-left: 12px;
+		padding-right: 12px;
+		@media screen and (min-width: 1080px){
+			display: flex;
+			justify-content: space-between;
+		}
+		h3 {
+			margin-top: 0;
+		}
+		fieldset {
+			label {
+				margin-right: 8px;
+				margin-bottom: 10px;
+				display: inline-block;
+				@media screen and (min-width: 1080px){
+					margin-bottom: 0px;
+				}
+			}
+		}
+		.nutrifox-logo {
+			display: block;
+			text-align: right;
+		}
+		.nutrifox-try {
+			margin-top: auto;
+			font-weight: bold;
+			display: block;
+			font-size: 12px;
+			text-decoration: none;
+			text-align: right;
+			&:hover {
+				text-decoration: underline;
+			}
+			svg {
+				margin-left: 4px;
+				height: 11px;
+				width: 11px;
+			}
+		}
+		.nutrifox-cta {
+			display: flex;
+			flex-direction: column;
+		}
+		> div {
+			margin-bottom: 8px;
+		}
+	}
+}
+
