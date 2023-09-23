@@ -1,0 +1,57 @@
+{
+	"name": "strategy11/tasty-framework",
+	"description": "Common functionality between all WP Tasty plugins.",
+	"homepage": "https://github.com/Strategy11/tasty-framework",
+	"license": "GPL-2.0+",
+	"authors": [
+		{
+			"name": "WP Tasty team",
+			"email": "support@wptasty.com",
+			"homepage": "https://wptasty.com"
+		}
+	],
+	"type": "wordpress-plugin",
+	"config": {
+		"sort-packages": true,
+		"allow-plugins": {
+			"composer/installers": true,
+			"dealerdirect/phpcodesniffer-composer-installer": true
+		}
+	},
+	"support": {
+		"issues": "https://github.com/Strategy11/tasty-framework/issues",
+		"source": "https://github.com/Strategy11/tasty-framework"
+	},
+	"require-dev": {
+		"php": "^8",
+		"brain/monkey": "^2.0",
+		"coenjacobs/mozart": "^0.7",
+		"dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
+		"phpcompatibility/phpcompatibility-wp": "^2.0",
+		"phpunit/phpunit": "^8",
+		"wp-coding-standards/wpcs": "^3"
+	},
+	"autoload": {},
+	"autoload-dev": {
+	  "psr-4": {
+		"Tasty\\Tests\\": "Tests/"
+	  }
+	},
+	"scripts": {
+		"test-unit": "\"vendor/bin/phpunit\" --configuration tests/Unit/phpunit.xml.dist",
+		"test-integration": "\"vendor/bin/phpunit\" --configuration tests/Integration/phpunit.xml.dist",
+		"run-tests": [
+			"@test-unit",
+			"@test-integration"
+		],
+		"install-codestandards": "Dealerdirect\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\Plugin::run",
+		"phpcs": "phpcs --basepath=.",
+		"phpcs:fix": "phpcbf",
+		"post-install-cmd": [
+		  "composer dump-autoload"
+		],
+		"post-update-cmd": [
+		  "composer dump-autoload"
+		]
+	}
+}
