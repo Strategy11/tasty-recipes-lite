@@ -16,6 +16,7 @@ use Tasty_Recipes\MetaBox;
 use Tasty_Recipes\Frontend;
 use Tasty_Recipes\Utils;
 use Tasty_Recipes\Integrations\Akismet;
+use Tasty\Recipes\Lite\ContentModel;
 
 define( 'TASTY_RECIPES_LITE_PLUGIN_VERSION', '0.0.1' );
 define( 'TASTY_RECIPES_LITE_PLUGIN_FILE', __FILE__ );
@@ -415,7 +416,7 @@ class TastyRecipesLiteMain {
 	 */
 	public function plugin_activation() {
 		$this->require_files();
-		\Tasty\Recipes\Lite\ContentModel::action_init_register_rewrite_rules();
+		ContentModel::action_init_register_rewrite_rules();
 		flush_rewrite_rules();
 		update_option( self::PLUGIN_ACTIVATION_OPTION, true );
 	}
