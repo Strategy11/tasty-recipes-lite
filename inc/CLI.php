@@ -5,7 +5,7 @@
  * @package Tasty_Recipes
  */
 
-namespace Tasty_Recipes;
+namespace Tasty\Recipes\Lite;
 
 use Tasty_Recipes;
 use Tasty_Recipes\Utils;
