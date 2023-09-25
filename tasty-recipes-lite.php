@@ -25,6 +25,18 @@ use Tasty\Recipes\Lite\Ratings;
 use Tasty\Recipes\Lite\Admin;
 use Tasty\Recipes\Lite\Editor;
 use Tasty\Recipes\Lite\Integrations\Elementor;
+use Tasty\Recipes\Lite\Objects\Recipe;
+use Tasty\Recipes\Lite\Converters\Cookbook;
+use Tasty\Recipes\Lite\Converters\MediavineCreate;
+use Tasty\Recipes\Lite\Converters\EasyRecipe;
+use Tasty\Recipes\Lite\Converters\MealPlannerPro;
+use Tasty\Recipes\Lite\Converters\SimpleRecipePro;
+use Tasty\Recipes\Lite\Converters\WPCom;
+use Tasty\Recipes\Lite\Converters\WPRecipeMaker;
+use Tasty\Recipes\Lite\Converters\WPUltimateRecipe;
+use Tasty\Recipes\Lite\Converters\Yummly;
+use Tasty\Recipes\Lite\Converters\YumPrint;
+use Tasty\Recipes\Lite\Converters\ZipList;
 
 define( 'TASTY_RECIPES_LITE_PLUGIN_VERSION', '0.0.1' );
 define( 'TASTY_RECIPES_LITE_PLUGIN_FILE', __FILE__ );
@@ -495,7 +507,7 @@ class TastyRecipesLiteMain {
 		$options  = array_merge( $defaults, $options );
 
 		$recipes = array();
-		if ( preg_match_all( '#\[' . Tasty_Recipes\Shortcodes::RECIPE_SHORTCODE . '(.+)\]#Us', $content, $matches ) ) {
+		if ( preg_match_all( '#\[' . Shortcodes::RECIPE_SHORTCODE . '(.+)\]#Us', $content, $matches ) ) {
 			foreach ( $matches[0] as $i => $shortcode ) {
 				$atts = shortcode_parse_atts( $matches[1][ $i ] );
 				if ( empty( $atts['id'] ) ) {
@@ -551,7 +563,7 @@ class TastyRecipesLiteMain {
 				}
 			}
 			if ( is_array( $block ) && ! empty( $block['blockName'] )
-				&& Tasty_Recipes\Block_Editor::RECIPE_BLOCK_TYPE === $block['blockName'] ) {
+				&& BlockEditor::RECIPE_BLOCK_TYPE === $block['blockName'] ) {
 				$disable_json = isset( $block['attrs']['disableJSON'] ) ? (bool) $block['attrs']['disableJSON'] : false;
 				if ( false === $options['disable-json-ld'] && $disable_json ) {
 					continue;
@@ -578,47 +590,47 @@ class TastyRecipesLiteMain {
 	public static function get_converters() {
 		return array(
 			'cookbook'       => array(
-				'class' => 'Tasty_Recipes\Converters\Cookbook',
+				'class' => Cookbook::class,
 				'label' => 'Cookbook',
 			),
 			'create'         => array(
-				'class' => 'Tasty_Recipes\Converters\Mediavine_Create',
+				'class' => MediavineCreate::class,
 				'label' => 'Mediavine Create',
 			),
 			'easyrecipe'     => array(
-				'class' => 'Tasty_Recipes\Converters\EasyRecipe',
+				'class' => EasyRecipe::class,
 				'label' => 'EasyRecipe',
 			),
 			'mealplannerpro' => array(
-				'class' => 'Tasty_Recipes\Converters\MealPlannerPro',
+				'class' => MealPlannerPro::class,
 				'label' => 'Meal Planner Pro',
 			),
 			'srp'            => array(
-				'class' => 'Tasty_Recipes\Converters\Simple_Recipe_Pro',
+				'class' => SimpleRecipePro::class,
 				'label' => 'Simple Recipe Pro',
 			),
 			'wpcom'          => array(
-				'class' => 'Tasty_Recipes\Converters\WPCom',
+				'class' => WPCom::class,
 				'label' => 'WordPress.com',
 			),
 			'wprm'           => array(
-				'class' => 'Tasty_Recipes\Converters\WP_Recipe_Maker',
+				'class' => WPRecipeMaker::class,
 				'label' => 'WP Recipe Maker',
 			),
 			'wpur'           => array(
-				'class' => 'Tasty_Recipes\Converters\WP_Ultimate_Recipe',
+				'class' => WPUltimateRecipe::class,
 				'label' => 'WP Ultimate Recipe',
 			),
 			'yummly'         => array(
-				'class' => 'Tasty_Recipes\Converters\Yummly',
+				'class' => Yummly::class,
 				'label' => 'Yummly',
 			),
 			'yumprint'       => array(
-				'class' => 'Tasty_Recipes\Converters\YumPrint',
+				'class' => YumPrint::class,
 				'label' => 'YumPrint Recipe Card',
 			),
 			'ziplist'        => array(
-				'class' => 'Tasty_Recipes\Converters\ZipList',
+				'class' => ZipList::class,
 				'label' => 'ZipList (or Zip Recipes)',
 			),
 		);
@@ -634,7 +646,7 @@ class TastyRecipesLiteMain {
 	public static function get_recipes_for_post( $post_id, $options = array() ) {
 		$recipes = array();
 		foreach ( self::get_recipe_ids_for_post( $post_id, $options ) as $id ) {
-			$recipe = Tasty_Recipes\Objects\Recipe::get_by_id( $id );
+			$recipe = Recipe::get_by_id( $id );
 			if ( $recipe ) {
 				$recipes[] = $recipe;
 			}

@@ -854,8 +854,7 @@ EOT;
 			'links' => 'jump,print',
 		);
 		if ( ! empty( $atts['links'] ) ) {
-			//$atts['links'] = implode( '|', Admin::handle_quick_links_backward_compatibility( $atts['links'] ) );
-			$atts['links'] = implode( '|', $atts['links'] );
+			$atts['links'] = implode( '|', Admin::handle_quick_links_backward_compatibility( $atts['links'] ) );
 		}
 		$atts = array_merge( $defaults, (array) $atts );
 

@@ -9,9 +9,9 @@ namespace Tasty\Recipes\Lite;
 
 use Tasty\Recipes\Lite\Integrations\RecipeGraphPiece;
 use Tasty\Recipes\Lite\Integrations\RecipeGraphPieceYoast;
-use Tasty_Recipes;
-use Tasty_Recipes\Content_Model;
-use Tasty_Recipes\Objects\Recipe;
+use Tasty\Recipes\Lite\ContentModel;
+use Tasty\Recipes\Lite\Objects\Recipe;
+use TastyRecipesLiteMain;
 
 /**
  * Generates distribution metadata.
@@ -65,7 +65,7 @@ class DistributionMetadata {
 			return;
 		}
 
-		$recipes = Tasty_Recipes::get_recipes_for_post(
+		$recipes = TastyRecipesLiteMain::get_recipes_for_post(
 			get_queried_object()->ID,
 			array(
 				'disable-json-ld' => false,
@@ -222,7 +222,7 @@ class DistributionMetadata {
 				'@type' => 'Person',
 				'name'  => $recipe_json['author_name'],
 			);
-			$url    = get_option( Tasty_Recipes::DEFAULT_AUTHOR_LINK_OPTION, '' );
+			$url    = get_option( TastyRecipesLiteMain::DEFAULT_AUTHOR_LINK_OPTION, '' );
 			if ( $url ) {
 				$author['url'] = $url;
 			}
@@ -529,7 +529,7 @@ class DistributionMetadata {
 		}
 
 		if ( isset( $schema['author'] ) ) {
-			$shortcodes = Tasty_Recipes::get_recipe_ids_from_content( $post->post_content, array( 'full-result' => true ) );
+			$shortcodes = TastyRecipesLiteMain::get_recipe_ids_from_content( $post->post_content, array( 'full-result' => true ) );
 			$shortcodes = wp_filter_object_list( $shortcodes, array( 'id' => (string) $recipe->get_id() ) );
 			if ( ! empty( $shortcodes[0]['author_link'] ) ) {
 				$schema['author']['url'] = $shortcodes[0]['author_link'];
@@ -675,7 +675,7 @@ class DistributionMetadata {
 			$shortcode_inner = substr( str_replace( '[tr-adthrive-in-post-video-player', '', $video_url ), 0, -1 );
 			$atts            = shortcode_parse_atts( $shortcode_inner );
 			if ( ! empty( $atts['video_id'] ) ) {
-				$oembed_data = Tasty_Recipes::get_template_part(
+				$oembed_data = TastyRecipesLiteMain::get_template_part(
 					'video/adthrive-oembed-response',
 					array(
 						'video_id'    => $atts['video_id'],
@@ -710,7 +710,7 @@ class DistributionMetadata {
 				update_post_meta( $post->ID, $ttl_key, time() + ( 1 * DAY_IN_SECONDS ) );
 				return false;
 			}
-			$response_data = Content_Model::apply_youtube_enrichment_to_response_data( $video_url, $response_data );
+			$response_data = ContentModel::apply_youtube_enrichment_to_response_data( $video_url, $response_data );
 			update_post_meta( $post->ID, $cache_key, $response_data );
 			$cache = $response_data;
 			update_post_meta( $post->ID, $ttl_key, time() + ( 7 * DAY_IN_SECONDS ) );

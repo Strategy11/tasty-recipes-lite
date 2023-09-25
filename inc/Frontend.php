@@ -7,8 +7,8 @@
 
 namespace Tasty\Recipes\Lite;
 
-use Tasty_Recipes;
-use Tasty_Recipes\Objects\Recipe;
+use TastyRecipesLiteMain;
+use Tasty\Recipes\Lite\Objects\Recipe;
 use WP_Post;
 
 /**
@@ -66,10 +66,10 @@ class Frontend {
 			return;
 		}
 
-		Tasty_Recipes::echo_template_part(
+		TastyRecipesLiteMain::echo_template_part(
 			'parts/instacart',
 			array(
-				'instacart_affiliate_id' => get_option( Tasty_Recipes::INSTACART_AFFILIATE_ID_OPTION ),
+				'instacart_affiliate_id' => get_option( TastyRecipesLiteMain::INSTACART_AFFILIATE_ID_OPTION ),
 			)
 		);
 	}
@@ -86,8 +86,8 @@ class Frontend {
 			return;
 		}
 
-		$instacart_filemtime = filemtime( plugin_dir_path( TASTY_RECIPES_PLUGIN_FILE ) . '/assets/js/instacart.js' );
-		wp_enqueue_script( 'tasty-recipes-instacart', plugins_url( 'assets/js/instacart.js', TASTY_RECIPES_PLUGIN_FILE ), array(), $instacart_filemtime, true );
+		$instacart_filemtime = filemtime( plugin_dir_path( TASTY_RECIPES_LITE_PLUGIN_FILE ) . '/assets/js/instacart.js' );
+		wp_enqueue_script( 'tasty-recipes-instacart', plugins_url( 'assets/js/instacart.js', TASTY_RECIPES_LITE_PLUGIN_FILE ), array(), $instacart_filemtime, true );
 	}
 
 	/**

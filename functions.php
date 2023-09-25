@@ -33,7 +33,7 @@ function tasty_recipes_get_print_url( $post_id, $recipe_id ) {
 			$permalink = $bits[0];
 			$args      = $bits[1];
 		}
-		$permalink = trailingslashit( $permalink ) . Content_Model::get_print_query_var() . '/' . $recipe_id;
+		$permalink = trailingslashit( $permalink ) . ContentModel::get_print_query_var() . '/' . $recipe_id;
 		if ( $args ) {
 			$permalink .= '?' . $args;
 		}

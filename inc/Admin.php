@@ -1281,8 +1281,29 @@ EOT;
 		if ( ! self::can_show_instacart_button() ) {
 			return;
 		}
-error_log( var_export( wp_debug_backtrace_summary(), true ) );
 		echo '<p><a href=""><img src="' . esc_attr( plugins_url( 'assets/images/instacart.svg', TASTY_RECIPES_LITE_PLUGIN_FILE ) ) . '"/></a></p>';
+	}
+
+	/**
+	 * Handle the removed item "both" and cast the string option to an array.
+	 *
+	 * @param mixed $option_value Option value to be handled.
+	 *
+	 * @return array|string[]
+	 */
+	public static function handle_quick_links_backward_compatibility( $option_value ) {
+		if ( empty( $option_value ) ) {
+			return array();
+		}
+
+		if ( 'both' === $option_value ) {
+			return array(
+				'jump',
+				'print',
+			);
+		}
+
+		return (array) $option_value;
 	}
 
 }
