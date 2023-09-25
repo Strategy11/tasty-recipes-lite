@@ -40,7 +40,7 @@ $pin_url = add_query_arg(
 <script>
 	const share_pin_buttons = document.getElementsByClassName( 'share-pin button' );
 	if ( share_pin_buttons ) {
-		for ( let share_key = 0; share_key <= share_pin_buttons.length; share_key++ ) {
+		for ( let share_key = 0; share_key < share_pin_buttons.length; share_key++ ) {
 			share_pin_buttons[share_key].addEventListener( 'click', (e) => {
 				e.stopPropagation();
 				window.open(e.target.dataset.href,'targetWindow','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=500,height=500');

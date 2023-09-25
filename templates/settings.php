@@ -85,7 +85,7 @@ $debug      = Utils::sanitize_get_key( 'debug' );
 				?>
 				<tasty-recipes-design-settings
 					recipe-card-preview-url-base="<?php echo esc_url( $recipe_card_preview_url_base ); ?>"
-					:template-options="<?php echo esc_attr( wp_json_encode( Admin::TEMPLATE_OPTIONS ) ); ?>"
+					:template-options="<?php echo esc_attr( wp_json_encode( Admin::get_design_templates() ) ); ?>"
 					:initial-options="<?php echo esc_attr( wp_json_encode( $initial_options ) ); ?>"></tasty-recipes-design-settings>
 			</form>
 			<?php

@@ -5,16 +5,19 @@
  * @package Tasty_Recipes
  */
 
+use Tasty\Recipes\Lite\Utils;
+use Tasty\Recipes\Lite\Ratings;
+
 $print_view_options = tasty_recipes_get_print_view_options();
 ?>
 
 <?php echo $recipe_styles; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 
-<h2 class="tasty-recipes-title" data-tasty-recipes-customization="h2-color.color h2-transform.text-transform"><?php \Tasty_Recipes\Utils::kses( $recipe_title, true ); ?></h2>
+<h2 class="tasty-recipes-title" data-tasty-recipes-customization="h2-color.color h2-transform.text-transform"><?php Utils::kses( $recipe_title, true ); ?></h2>
 <div class="tasty-recipes-image-button-container">
 	<?php if ( ! empty( $recipe_image ) && isset( $print_view_options['images'] ) ) : ?>
 		<div class="tasty-recipes-image">
-			<?php \Tasty_Recipes\Utils::kses( $recipe_image, true ); ?>
+			<?php Utils::kses( $recipe_image, true ); ?>
 		</div>
 	<?php endif; ?>
 	<div class="tasty-recipes-buttons">
@@ -32,16 +35,16 @@ $print_view_options = tasty_recipes_get_print_view_options();
 </div>
 <?php if ( ! empty( $recipe_rating_icons ) || ! empty( $recipe_rating_label ) ) : ?>
 	<div class="tasty-recipes-rating" data-tasty-recipes-customization="body-color.color">
-		<?php if ( Tasty_Recipes\Ratings::is_enabled() ) : ?>
+		<?php if ( Ratings::is_enabled() ) : ?>
 			<a href="#respond">
 		<?php endif; ?>
 			<?php if ( ! empty( $recipe_rating_icons ) ) : ?>
 				<p><?php echo $recipe_rating_icons; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
 			<?php endif; ?>
 			<?php if ( ! empty( $recipe_rating_label ) ) : ?>
-				<p><?php \Tasty_Recipes\Utils::kses( $recipe_rating_label, true ); ?></p>
+				<p><?php Utils::kses( $recipe_rating_label, true ); ?></p>
 			<?php endif; ?>
-		<?php if ( Tasty_Recipes\Ratings::is_enabled() ) : ?>
+		<?php if ( Ratings::is_enabled() ) : ?>
 			</a>
 		<?php endif; ?>
 	</div>
@@ -53,7 +56,7 @@ $print_view_options = tasty_recipes_get_print_view_options();
 
 <?php if ( ! empty( $recipe_description ) && isset( $print_view_options['description'] ) ) : ?>
 	<div class="tasty-recipes-description" data-tasty-recipes-customization="body-color.color">
-		<?php \Tasty_Recipes\Utils::kses( $recipe_description, true ); ?>
+		<?php Utils::kses( $recipe_description, true ); ?>
 	</div>
 <?php endif; ?>
 
@@ -61,7 +64,7 @@ $print_view_options = tasty_recipes_get_print_view_options();
 	<div class="tasty-recipes-details" data-tasty-recipes-customization="body-color.color">
 		<ul>
 			<?php foreach ( $recipe_details as $detail ) : ?>
-				<li class="<?php echo esc_attr( $detail['class'] ); ?>"><strong data-tasty-recipes-customization="detail-label-color.color" class="tasty-recipes-label"><?php echo esc_html( $detail['label'] ); ?>:</strong> <?php \Tasty_Recipes\Utils::kses( $detail['value'], true ); ?></li>
+				<li class="<?php echo esc_attr( $detail['class'] ); ?>"><strong data-tasty-recipes-customization="detail-label-color.color" class="tasty-recipes-label"><?php echo esc_html( $detail['label'] ); ?>:</strong> <?php Utils::kses( $detail['value'], true ); ?></li>
 			<?php endforeach; ?>
 		</ul>
 	</div>
@@ -80,13 +83,13 @@ $print_view_options = tasty_recipes_get_print_view_options();
 				<?php if ( ! empty( $recipe_convertable ) ) : ?>
 					<span class="tasty-recipes-convert-container">
 						<span class="tasty-recipes-convert-label"><?php esc_html_e( 'Units', 'tasty-recipes' ); ?></span>
-						<?php \Tasty_Recipes\Utils::kses( $recipe_convertable, true ); ?>
+						<?php Utils::kses( $recipe_convertable, true ); ?>
 					</span>
 				<?php endif; ?>
 				<?php if ( ! empty( $recipe_scalable ) ) : ?>
 					<span class="tasty-recipes-scale-container">
 						<span class="tasty-recipes-scale-label"><?php esc_html_e( 'Scale', 'tasty-recipes' ); ?></span>
-						<?php \Tasty_Recipes\Utils::kses( $recipe_scalable, true ); ?>
+						<?php Utils::kses( $recipe_scalable, true ); ?>
 					</span>
 				<?php endif; ?>
 			</div>
@@ -136,7 +139,7 @@ if ( ! empty( $recipe_equipment ) ) :
 	?>
 	<div class="tasty-recipes-equipment">
 		<h3 data-tasty-recipes-customization="h3-color.color h3-transform.text-transform"><?php esc_html_e( 'Equipment', 'tasty-recipes' ); ?></h3>
-		<?php \Tasty_Recipes\Utils::kses( $recipe_equipment, true ); ?>
+		<?php Utils::kses( $recipe_equipment, true ); ?>
 	</div>
 <?php endif; ?>
 
@@ -144,7 +147,7 @@ if ( ! empty( $recipe_equipment ) ) :
 	<div class="tasty-recipes-notes">
 		<h3 data-tasty-recipes-customization="h3-color.color h3-transform.text-transform"><?php esc_html_e( 'Notes', 'tasty-recipes' ); ?></h3>
 		<div class="tasty-recipes-notes-body" data-tasty-recipes-customization="body-color.color">
-			<?php \Tasty_Recipes\Utils::kses( $recipe_notes, true ); ?>
+			<?php Utils::kses( $recipe_notes, true ); ?>
 		</div>
 	</div>
 <?php endif; ?>
@@ -162,7 +165,7 @@ if ( ! empty( $recipe_equipment ) ) :
 		<h3 data-tasty-recipes-customization="h3-color.color h3-transform.text-transform"><?php esc_html_e( 'Nutrition', 'tasty-recipes' ); ?></h3>
 		<ul>
 			<?php foreach ( $recipe_nutrition as $nutrition ) : ?>
-				<li><strong class="tasty-recipes-label" data-tasty-recipes-customization="body-color.color"><?php echo esc_html( $nutrition['label'] ); ?>:</strong> <?php \Tasty_Recipes\Utils::kses( $nutrition['value'], true ); ?></li>
+				<li><strong class="tasty-recipes-label" data-tasty-recipes-customization="body-color.color"><?php echo esc_html( $nutrition['label'] ); ?>:</strong> <?php Utils::kses( $nutrition['value'], true ); ?></li>
 			<?php endforeach; ?>
 		</ul>
 	</div>
@@ -170,13 +173,13 @@ if ( ! empty( $recipe_equipment ) ) :
 
 <?php if ( ! empty( $recipe_keywords ) ) : ?>
 	<div class="tasty-recipes-keywords" data-tasty-recipes-customization="detail-value-color.color">
-		<p><em><strong data-tasty-recipes-customization="detail-label-color.color"><?php esc_html_e( 'Keywords', 'tasty-recipes' ); ?>:</strong> <?php \Tasty_Recipes\Utils::kses( $recipe_keywords, true ); ?></em></p>
+		<p><em><strong data-tasty-recipes-customization="detail-label-color.color"><?php esc_html_e( 'Keywords', 'tasty-recipes' ); ?>:</strong> <?php Utils::kses( $recipe_keywords, true ); ?></em></p>
 	</div>
 <?php endif; ?>
 
 <footer class="tasty-recipes-entry-footer">
 	<h3 data-tasty-recipes-customization="footer-heading-color.color h3-transform.text-transform footer-heading.innerText"><?php echo esc_html( $footer_heading ); ?></h3>
-	<div data-tasty-recipes-customization="footer-description-color.color footer-description.innerHTML"><?php \Tasty_Recipes\Utils::kses( $footer_description, true ); ?></div>
+	<div data-tasty-recipes-customization="footer-description-color.color footer-description.innerHTML"><?php Utils::kses( $footer_description, true ); ?></div>
 </footer>
 
 <?php if ( tasty_recipes_is_print() && get_post() ) : ?>

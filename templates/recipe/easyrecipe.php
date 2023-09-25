@@ -5,6 +5,7 @@
  * @package Tasty_Recipes
  */
 
+use Tasty\Recipes\Lite\Utils;
 ?>
 <?php echo $recipe_styles; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 
@@ -18,13 +19,13 @@
 </div>
 <?php endif; ?>
 
-<div itemprop="name" class="ERSName"><?php \Tasty_Recipes\Utils::kses( $recipe_json['title_rendered'], true ); ?></div>
+<div itemprop="name" class="ERSName"><?php Utils::kses( $recipe_json['title_rendered'], true ); ?></div>
 
 <div class="ERSClear"></div>
 
 <div class="ERSDetails">
 	<?php if ( ! empty( $recipe_details['author'] ) ) : ?>
-	<div class="ERSAuthor"><?php echo esc_html( $recipe_details['author']['label'] ); ?>:&nbsp;<?php \Tasty_Recipes\Utils::kses( $recipe_details['author']['value'], true ); ?></div>
+	<div class="ERSAuthor"><?php echo esc_html( $recipe_details['author']['label'] ); ?>:&nbsp;<?php Utils::kses( $recipe_details['author']['value'], true ); ?></div>
 	<?php endif; ?>
 	<?php
 	foreach ( array( 'category', 'cuisine' ) as $detail ) :
@@ -32,7 +33,7 @@
 			continue;
 		}
 		?>
-		<div class="ERSHead"><?php echo esc_html( $recipe_details[ $detail ]['label'] ); ?>:&nbsp;<?php \Tasty_Recipes\Utils::kses( $recipe_details[ $detail ]['value'], true ); ?></div>
+		<div class="ERSHead"><?php echo esc_html( $recipe_details[ $detail ]['label'] ); ?>:&nbsp;<?php Utils::kses( $recipe_details[ $detail ]['value'], true ); ?></div>
 	<?php endforeach; ?>
 	<div class="ERSClear"></div>
 	<?php
@@ -45,13 +46,13 @@
 					continue;
 				}
 				?>
-			<div class="ERSHead"><?php echo esc_html( $recipe_details[ $detail ]['label'] ); ?>:&nbsp;<?php \Tasty_Recipes\Utils::kses( $recipe_details[ $detail ]['value'], true ); ?></div>
+			<div class="ERSHead"><?php echo esc_html( $recipe_details[ $detail ]['label'] ); ?>:&nbsp;<?php Utils::kses( $recipe_details[ $detail ]['value'], true ); ?></div>
 		<?php endforeach; ?>
 		</div>
 		<div class="ERSClear"></div>
 	<?php endif; ?>
 	<?php if ( ! empty( $recipe_details['yield'] ) ) : ?>
-	<div class="ERSHead"><?php echo esc_html( $recipe_details['yield']['label'] ); ?>:&nbsp;<?php \Tasty_Recipes\Utils::kses( $recipe_details['yield']['value'], true ); ?></div>
+	<div class="ERSHead"><?php echo esc_html( $recipe_details['yield']['label'] ); ?>:&nbsp;<?php Utils::kses( $recipe_details['yield']['value'], true ); ?></div>
 	<div class="ERSClear"></div>
 	<?php endif; ?>
 </div>
@@ -61,7 +62,7 @@
 		<div class="ERSIngredientsHeader ERSHeading"><?php esc_html_e( 'Ingredients', 'tasty-recipes' ); ?></div>
 		<?php
 		$recipe_ingredients = str_replace( '<li', '<li class="ingredient"', $recipe_ingredients );
-		\Tasty_Recipes\Utils::kses( $recipe_ingredients, true );
+		Utils::kses( $recipe_ingredients, true );
 		?>
 		<div class="ERSClear"></div>
 	</div>
@@ -72,7 +73,7 @@
 		<div class="ERSInstructionsHeader ERSHeading"><?php esc_html_e( 'Instructions', 'tasty-recipes' ); ?></div>
 		<?php
 		$recipe_instructions = str_replace( '<li', '<li class="instruction"', $recipe_instructions );
-		\Tasty_Recipes\Utils::kses( $recipe_instructions, true );
+		Utils::kses( $recipe_instructions, true );
 		?>
 		<div class="ERSClear"></div>
 	</div>
@@ -82,7 +83,7 @@
 	<div class="ERSNotesDiv">
 		<div class="ERSNotesHeader"><?php esc_html_e( 'Notes', 'tasty-recipes' ); ?></div>
 		<div class="ERSNotes">
-			<?php \Tasty_Recipes\Utils::kses( $recipe_notes, true ); ?>
+			<?php Utils::kses( $recipe_notes, true ); ?>
 		</div>
 		<div class="ERSClear"></div>
 	</div>
@@ -101,7 +102,7 @@
 		<div class="ERSNutritionHeader"><?php esc_html_e( 'Nutrition', 'tasty-recipes' ); ?></div>
 		<div class="ERSNutrionDetails">
 			<?php foreach ( $recipe_nutrition as $nutrition ) : ?>
-				<?php echo esc_html( $nutrition['label'] ); ?>:</strong>&nbsp;<?php \Tasty_Recipes\Utils::kses( $nutrition['value'], true ); ?>&nbsp;
+				<?php echo esc_html( $nutrition['label'] ); ?>:</strong>&nbsp;<?php Utils::kses( $nutrition['value'], true ); ?>&nbsp;
 			<?php endforeach; ?>
 		</div>
 	</div>

@@ -106,12 +106,8 @@ class Admin {
 	 */
 	const TEMPLATE_OPTIONS = array(
 		''               => 'Default',
-		'bold'           => 'Bold',
 		'snap'           => 'Snap',
-		'fresh'          => 'Fresh',
 		'simple'         => 'Simple',
-		'modern-compact' => 'Modern Compact',
-		'elegant'        => 'Elegant',
 	);
 
 	/**
@@ -348,7 +344,7 @@ class Admin {
 		$get_nutrifox_display_style = Utils::get_param( 'nutrifox_display_style', 'sanitize_key' );
 		$get_footer_social_platform = Utils::get_param( 'footer_social_platform', 'sanitize_key' );
 
-		$custom_design          = ! empty( $get_template ) && array_key_exists( $get_template, self::TEMPLATE_OPTIONS ) ? $get_template : '';
+		$custom_design          = ! empty( $get_template ) && array_key_exists( $get_template, self::get_design_templates() ) ? $get_template : '';
 		$star_ratings_style     = ! empty( $get_star_ratings_style ) && in_array( $get_star_ratings_style, array( 'solid', 'outline' ), true ) ? $get_star_ratings_style : null;
 		$nutrifox_display_style = ! empty( $get_nutrifox_display_style ) && in_array( $get_nutrifox_display_style, array( 'label', 'card' ), true ) ? $get_nutrifox_display_style : null;
 		$footer_social_platform = ! empty( $get_footer_social_platform ) && in_array( $get_footer_social_platform, array( 'instagram', 'pinterest', 'facebook' ), true ) ? $get_footer_social_platform : '';
@@ -1304,6 +1300,10 @@ EOT;
 		}
 
 		return (array) $option_value;
+	}
+
+	public static function get_design_templates() {
+		return (array) apply_filters( 'tasty_recipes_design_templates', self::TEMPLATE_OPTIONS );
 	}
 
 }

@@ -636,7 +636,7 @@ class Shortcodes {
 		}
 		$template_vars['recipe_styles'] = '<style type="text/css" style="display: none !important;">' . PHP_EOL . Utils::minify_css( $styles ) . PHP_EOL . '</style>' . PHP_EOL;
 
-		$template_vars['recipe_scripts'] .= PHP_EOL . self::get_common_recipe_scripts();
+		//$template_vars['recipe_scripts'] .= PHP_EOL . self::get_common_recipe_scripts(); @Todo: move to pro
 
 		if ( $recipe_convertable || $recipe_scalable ) {
 			$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( dirname( __FILE__ ) ) . '/assets/js/frac.js' );

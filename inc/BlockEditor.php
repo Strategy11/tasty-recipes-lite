@@ -90,7 +90,7 @@ class BlockEditor {
 					),
 				),
 				'editor_script'   => 'tasty-recipes-block-editor',
-				'render_callback' => array( 'Tasty_Recipes\Shortcodes', 'render_tasty_recipe_shortcode' ),
+				'render_callback' => array( Shortcodes::class, 'render_tasty_recipe_shortcode' ),
 			)
 		);
 	}
