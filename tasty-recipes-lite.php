@@ -279,15 +279,11 @@ class TastyRecipesLiteMain {
 
 		add_filter( 'tasty_recipes_customization_settings', array( Ratings::class, 'apply_default_rating_stars_color' ) );
 
-		if ( is_admin() || Utils::is_rest_api_request() ) {
-			add_action( 'tasty_recipes_card_after_ingredients', array( Admin::class, 'print_mock_instacart_html' ) );
-		} else {
+		if ( ! is_admin() && ! Utils::is_rest_api_request() ) {
 			Frontend::get_instance();
 		}
 
 		// Admin.
-		//add_action( 'admin_init', array( Admin::class, 'action_admin_init' ) );
-		//add_action( 'http_request_args', array( Admin::class, 'filter_http_request_args' ), 10, 2 );
 		add_action( 'admin_menu', array( Admin::class, 'action_admin_menu' ) );
 		add_filter( 'manage_posts_columns', array( Admin::class, 'action_manage_posts_columns' ) );
 		add_filter( 'manage_pages_columns', array( Admin::class, 'action_manage_posts_columns' ) );
@@ -339,7 +335,6 @@ class TastyRecipesLiteMain {
 		add_filter( 'tasty_recipes_the_title', 'convert_chars' );
 		add_filter( 'tasty_recipes_the_title', 'trim' );
 		add_filter( 'tasty_recipes_the_content', array( $wp_embed, 'autoembed' ), 8 );
-		//add_filter( 'tasty_recipes_the_content', array( ContentModel::class, 'autoembed_advanced' ), 8 );
 		add_filter( 'tasty_recipes_the_content', 'wptexturize' );
 		add_filter( 'tasty_recipes_the_content', 'convert_smilies', 20 );
 		add_filter( 'tasty_recipes_the_content', 'wpautop' );
@@ -357,23 +352,19 @@ class TastyRecipesLiteMain {
 		add_filter( 'tasty_recipes_the_content', array( Shortcodes::class, 'add_inside_ingredients' ), 10, 2 );
 		add_filter( 'tasty_recipes_recipe_card_output', array( Shortcodes::class, 'inside_ingredients_handler' ), 10, 3 );
 		add_action( 'tasty_recipes_card_after_ingredients', array( Shortcodes::class, 'run_after_ingredients' ) );
-		add_action( 'tasty_recipes_card_after_ingredients', array( Shortcodes::class, 'print_cook_mode' ) );
 
 		// Plugin-specific filters.
 		add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( Admin::class, 'filter_plugin_action_links' ) );
 		add_filter( 'teeny_mce_buttons', array( Admin::class, 'filter_teeny_mce_buttons' ), 10, 2 );
 		add_filter( 'teeny_mce_buttons', array( Assets::class, 'filter_teeny_mce_buttons' ), 10, 2 );
 		add_filter( 'teeny_mce_before_init', array( Assets::class, 'filter_teeny_mce_before_init' ), 10, 2 );
-		//add_filter( 'update_post_metadata', array( ContentModel::class, 'filter_update_post_metadata_nutrifox_id' ), 10, 4 );
-		//add_filter( 'update_post_metadata', array( ContentModel::class, 'filter_update_post_metadata_ingredients' ), 10, 4 );
-		//add_filter( 'update_post_metadata', array( ContentModel::class, 'filter_update_post_metadata_video_url' ), 10, 4 );
+
 		add_filter( 'update_post_metadata', array( ContentModel::class, 'filter_update_post_metadata_thumbnail_id' ), 10, 4 );
 		add_filter( 'template_include', array( ContentModel::class, 'filter_template_include' ), 1000 );
 		add_filter( 'allow_empty_comment', array( Ratings::class, 'filter_allow_rating_empty_comment' ), 10, 2 );
 		add_filter( 'preprocess_comment', array( Ratings::class, 'filter_preprocess_comment' ), 0 );
 		add_filter( 'comment_form_field_comment', array( Ratings::class, 'filter_comment_form_field_comment' ) );
 		add_filter( 'comment_text', array( Ratings::class, 'filter_comment_text' ), 10, 2 );
-		//add_filter( 'tasty_recipes_admin_settings_field_args', array( Admin::class, 'filter_quick_links_backward_compatibility' ) );
 
 		if ( is_admin() ) {
 			add_filter( 'tasty_framework_admin_menu_items', array( Admin::class, 'add_menu_item' ) );

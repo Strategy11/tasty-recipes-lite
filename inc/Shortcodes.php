@@ -1264,26 +1264,4 @@ EOT;
 		return ob_get_clean();
 	}
 
-	/**
-	 * Print cook mode html.
-	 *
-	 * @since 3.8
-	 *
-	 * @return void
-	 */
-	public static function print_cook_mode() {
-		if ( ! Admin::is_cook_mode_enabled() ) {
-			return;
-		}
-
-		TastyRecipesLiteMain::echo_template_part(
-			'parts/cookmode',
-			array(
-				'recipe_unique_id'            => uniqid( 'tasty_recipes_' ),
-				'recipe_show_cook_mode_label' => __( 'Cook Mode', 'tasty-recipes' ),
-				'recipe_show_cook_mode_help'  => Admin::get_cook_mode_helper(),
-			)
-		);
-	}
-
 }
