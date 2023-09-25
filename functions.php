@@ -5,7 +5,7 @@
  * @package Tasty_Recipes
  */
 
-use \Tasty_Recipes\Content_Model;
+use Tasty\Recipes\Lite\ContentModel;
 
 /**
  * Whether or not the recipe is being displayed for print.
@@ -13,7 +13,7 @@ use \Tasty_Recipes\Content_Model;
  * @return boolean
  */
 function tasty_recipes_is_print() {
-	return (bool) get_query_var( Content_Model::get_print_query_var() );
+	return (bool) get_query_var( ContentModel::get_print_query_var() );
 }
 
 /**

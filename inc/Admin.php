@@ -1281,7 +1281,7 @@ EOT;
 		if ( ! self::can_show_instacart_button() ) {
 			return;
 		}
-
+error_log( var_export( wp_debug_backtrace_summary(), true ) );
 		echo '<p><a href=""><img src="' . esc_attr( plugins_url( 'assets/images/instacart.svg', TASTY_RECIPES_LITE_PLUGIN_FILE ) ) . '"/></a></p>';
 	}
 

@@ -100,7 +100,7 @@ $debug      = Utils::sanitize_get_key( 'debug' );
 		<div class="tasty-recipes-converter-wrap postbox">
 			<div class="tasty-recipes-converter-column">
 				<ul class="tasty-recipes-converter-options">
-					<?php foreach ( Tasty_Recipes::get_converters() as $converter => $config ) : ?>
+					<?php foreach ( TastyRecipesLiteMain::get_converters() as $converter => $config ) : ?>
 						<li><button disabled class="button" data-label="<?php echo esc_attr( $config['label'] ); ?>" data-type="<?php echo esc_attr( $converter ); ?>"><?php echo esc_html( $config['label'] ); ?></button></li>
 					<?php endforeach; ?>
 				</ul>
@@ -193,8 +193,8 @@ $debug      = Utils::sanitize_get_key( 'debug' );
 	<div class="tasty-recipes-settings tasty-settings tasty-tab-content">
 		<form method="POST" action="<?php echo esc_url( admin_url( 'options.php' ) ); ?>">
 		<?php
-			settings_fields( Tasty_Recipes\Admin::SETTINGS_GROUP_CARD );
-			do_settings_sections( Tasty_Recipes\Admin::PAGE_SLUG );
+			settings_fields( Admin::SETTINGS_GROUP_CARD );
+			do_settings_sections( Admin::PAGE_SLUG );
 		?>
 		<?php submit_button(); ?>
 		</form>

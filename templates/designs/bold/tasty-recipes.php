@@ -5,6 +5,9 @@
  * @package Tasty_Recipes
  */
 
+use Tasty\Recipes\Lite\Utils;
+use Tasty\Recipes\Lite\Ratings;
+
 $print_view_options = tasty_recipes_get_print_view_options();
 ?>
 <?php
@@ -17,7 +20,7 @@ $other_details = '';
 <?php
 if ( '.svg' === $ext ) {
 	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	echo str_replace( array( "\n", "\t" ), '', \Tasty_Recipes\Utils::get_contents( __DIR__ . '/images/icon-sprite.svg' ) );
+	echo str_replace( array( "\n", "\t" ), '', Utils::get_contents( __DIR__ . '/images/icon-sprite.svg' ) );
 }
 ?>
 
@@ -26,24 +29,24 @@ if ( '.svg' === $ext ) {
 		<div class="tasty-recipes-image">
 			<?php
 			$recipe_image = str_replace( '<img ', '<img data-tasty-recipes-customization="primary-color.border-color" ', $recipe_image );
-			\Tasty_Recipes\Utils::kses( $recipe_image, true );
+			Utils::kses( $recipe_image, true );
 			?>
 		</div>
 	<?php endif; ?>
-	<h2 class="tasty-recipes-title" data-tasty-recipes-customization="h2-color.color h2-transform.text-transform"><?php \Tasty_Recipes\Utils::kses( $recipe_title, true ); ?></h2>
+	<h2 class="tasty-recipes-title" data-tasty-recipes-customization="h2-color.color h2-transform.text-transform"><?php Utils::kses( $recipe_title, true ); ?></h2>
 	<hr data-tasty-recipes-customization="secondary-color.border-color secondary-color.background-color">
 	<?php if ( ! empty( $recipe_rating_icons ) || ! empty( $recipe_rating_label ) ) : ?>
 		<div class="tasty-recipes-rating">
-			<?php if ( Tasty_Recipes\Ratings::is_enabled() ) : ?>
+			<?php if ( Ratings::is_enabled() ) : ?>
 				<a href="#respond">
 			<?php endif; ?>
 				<?php if ( ! empty( $recipe_rating_icons ) ) : ?>
 					<p><?php echo $recipe_rating_icons; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
 				<?php endif; ?>
 				<?php if ( ! empty( $recipe_rating_label ) ) : ?>
-					<p><?php \Tasty_Recipes\Utils::kses( $recipe_rating_label, true ); ?></p>
+					<p><?php Utils::kses( $recipe_rating_label, true ); ?></p>
 				<?php endif; ?>
-			<?php if ( Tasty_Recipes\Ratings::is_enabled() ) : ?>
+			<?php if ( Ratings::is_enabled() ) : ?>
 				</a>
 			<?php endif; ?>
 		</div>
@@ -91,7 +94,7 @@ if ( '.svg' === $ext ) {
 								}
 							}
 							?>
-							<?php echo esc_html( $detail['label'] ); ?>:</span> <?php \Tasty_Recipes\Utils::kses( $detail['value'], true ); ?>
+							<?php echo esc_html( $detail['label'] ); ?>:</span> <?php Utils::kses( $detail['value'], true ); ?>
 						</li>
 							<?php
 					else :
@@ -137,7 +140,7 @@ if ( '.svg' === $ext ) {
 		<div class="tasty-recipes-description">
 			<h3 data-tasty-recipes-customization="h3-color.color h3-transform.text-transform"><?php esc_html_e( 'Description', 'tasty-recipes' ); ?></h3>
 			<div class="tasty-recipes-description-body" data-tasty-recipes-customization="body-color.color">
-				<?php \Tasty_Recipes\Utils::kses( $recipe_description, true ); ?>
+				<?php Utils::kses( $recipe_description, true ); ?>
 			</div>
 		</div>
 	<?php endif; ?>
@@ -165,13 +168,13 @@ if ( '.svg' === $ext ) {
 					<?php if ( ! empty( $recipe_convertable ) ) : ?>
 						<span class="tasty-recipes-convert-container">
 							<span class="tasty-recipes-convert-label"><?php esc_html_e( 'Units', 'tasty-recipes' ); ?></span>
-							<?php \Tasty_Recipes\Utils::kses( $recipe_convertable, true ); ?>
+							<?php Utils::kses( $recipe_convertable, true ); ?>
 						</span>
 					<?php endif; ?>
 					<?php if ( ! empty( $recipe_scalable ) ) : ?>
 						<span class="tasty-recipes-scale-container">
 							<span class="tasty-recipes-scale-label"><?php esc_html_e( 'Scale', 'tasty-recipes' ); ?></span>
-							<?php \Tasty_Recipes\Utils::kses( $recipe_scalable, true ); ?>
+							<?php Utils::kses( $recipe_scalable, true ); ?>
 						</span>
 					<?php endif; ?>
 				</div>
@@ -241,7 +244,7 @@ if ( '.svg' === $ext ) {
 		?>
 		<div class="tasty-recipes-equipment">
 			<h3 data-tasty-recipes-customization="h3-color.color h3-transform.text-transform"><?php esc_html_e( 'Equipment', 'tasty-recipes' ); ?></h3>
-			<?php \Tasty_Recipes\Utils::kses( $recipe_equipment, true ); ?>
+			<?php Utils::kses( $recipe_equipment, true ); ?>
 		</div>
 	<?php endif; ?>
 
@@ -249,7 +252,7 @@ if ( '.svg' === $ext ) {
 		<div class="tasty-recipes-notes" data-tasty-recipes-customization="secondary-color.background-color">
 			<h3 data-tasty-recipes-customization="h3-color.color h3-transform.text-transform"><?php esc_html_e( 'Notes', 'tasty-recipes' ); ?></h3>
 			<div class="tasty-recipes-notes-body" data-tasty-recipes-customization="body-color.color">
-				<?php \Tasty_Recipes\Utils::kses( $recipe_notes, true ); ?>
+				<?php Utils::kses( $recipe_notes, true ); ?>
 			</div>
 		</div>
 	<?php endif; ?>
@@ -257,7 +260,7 @@ if ( '.svg' === $ext ) {
 	<?php if ( $other_details ) : ?>
 		<div class="tasty-recipes-other-details" data-tasty-recipes-customization="secondary-color.background-color">
 			<ul>
-				<?php \Tasty_Recipes\Utils::kses( $other_details, true ); ?>
+				<?php Utils::kses( $other_details, true ); ?>
 			</ul>
 		</div>
 	<?php endif; ?>
@@ -275,7 +278,7 @@ if ( '.svg' === $ext ) {
 			<h3 data-tasty-recipes-customization="h3-color.color h3-transform.text-transform"><?php esc_html_e( 'Nutrition', 'tasty-recipes' ); ?></h3>
 			<ul>
 				<?php foreach ( $recipe_nutrition as $nutrition ) : ?>
-					<li><strong class="tasty-recipes-label" data-tasty-recipes-customization="body-color.color"><?php echo esc_html( $nutrition['label'] ); ?>:</strong> <?php \Tasty_Recipes\Utils::kses( $nutrition['value'], true ); ?></li>
+					<li><strong class="tasty-recipes-label" data-tasty-recipes-customization="body-color.color"><?php echo esc_html( $nutrition['label'] ); ?>:</strong> <?php Utils::kses( $nutrition['value'], true ); ?></li>
 				<?php endforeach; ?>
 			</ul>
 			</div>
@@ -283,7 +286,7 @@ if ( '.svg' === $ext ) {
 
 	<?php if ( ! empty( $recipe_keywords ) ) : ?>
 		<div class="tasty-recipes-keywords" data-tasty-recipes-customization="secondary-color.background-color">
-			<p data-tasty-recipes-customization="detail-value-color.color"><span class="tasty-recipes-label" data-tasty-recipes-customization="detail-label-color.color"><?php esc_html_e( 'Keywords', 'tasty-recipes' ); ?>:</span> <?php \Tasty_Recipes\Utils::kses( $recipe_keywords, true ); ?></p>
+			<p data-tasty-recipes-customization="detail-value-color.color"><span class="tasty-recipes-label" data-tasty-recipes-customization="detail-label-color.color"><?php esc_html_e( 'Keywords', 'tasty-recipes' ); ?>:</span> <?php Utils::kses( $recipe_keywords, true ); ?></p>
 		</div>
 	<?php endif; ?>
 

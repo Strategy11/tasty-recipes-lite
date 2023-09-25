@@ -290,7 +290,7 @@ class Shortcodes {
 			$template = get_stylesheet_directory() . '/tasty-recipes.php';
 		} else {
 			$custom_design = get_option( TastyRecipesLiteMain::TEMPLATE_OPTION, '' );
-			$custom_path   = dirname( TASTY_RECIPES_PLUGIN_FILE ) . '/templates/designs/' . $custom_design . '/tasty-recipes.php';
+			$custom_path   = dirname( TASTY_RECIPES_LITE_PLUGIN_FILE ) . '/templates/designs/' . $custom_design . '/tasty-recipes.php';
 			if ( $custom_design && file_exists( $custom_path ) ) {
 				$template = $custom_path;
 			} else {
@@ -989,7 +989,7 @@ EOT;
 	public static function get_styles_as_string( $custom_design ) {
 		$styles = Utils::get_contents( dirname( dirname( __FILE__ ) ) . '/assets/dist/recipe.css' );
 		if ( $custom_design ) {
-			$custom_path = dirname( TASTY_RECIPES_PLUGIN_FILE ) . '/templates/designs/' . $custom_design . '/tasty-recipes.css';
+			$custom_path = dirname( TASTY_RECIPES_LITE_PLUGIN_FILE ) . '/templates/designs/' . $custom_design . '/tasty-recipes.css';
 			if ( file_exists( $custom_path ) ) {
 				$styles .= PHP_EOL . PHP_EOL . Utils::get_contents( $custom_path );
 			}
@@ -1218,7 +1218,7 @@ EOT;
 	 * @return void
 	 */
 	public static function run_after_ingredients() {
-		remove_filter( 'tasty_recipes_recipe_card_output', array( 'Tasty_Recipes\Shortcodes', 'inside_ingredients_handler' ) );
+		remove_filter( 'tasty_recipes_recipe_card_output', array( Shortcodes::class, 'inside_ingredients_handler' ) );
 	}
 
 	/**

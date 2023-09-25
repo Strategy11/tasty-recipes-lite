@@ -5,6 +5,7 @@
  * @package Tasty_Recipes
  */
 
+use Tasty\Recipes\Lite\Admin;
 ?>
 
 <style>
@@ -59,7 +60,7 @@
 
 		<p><?php esc_html_e( 'Tasty Recipes is extremely easy to configure. Visit the settings page to select a recipe card theme, add your Instagram information, and set the default Author URL.', 'tasty-recipes' ); ?></p>
 
-		<p><a class="tasty-button" href="<?php menu_page_url( Tasty_Recipes\Admin::PAGE_SLUG, true ); ?>"><?php esc_html_e( 'Visit Settings', 'tasty-recipes' ); ?></a>
+		<p><a class="tasty-button" href="<?php menu_page_url( Admin::PAGE_SLUG, true ); ?>"><?php esc_html_e( 'Visit Settings', 'tasty-recipes' ); ?></a>
 
 		<h2><?php esc_html_e( 'Convert Recipes', 'tasty-recipes' ); ?></h2>
 
