@@ -5,8 +5,8 @@
  * @package Tasty_Recipes
  */
 
-use Tasty_Recipes\Admin;
-use Tasty_Recipes\Utils;
+use Tasty\Recipes\Lite\Admin;
+use Tasty\Recipes\Lite\Utils;
 use Tasty\Framework\Utils\Common;
 
 ?>
@@ -21,29 +21,29 @@ $debug      = Utils::sanitize_get_key( 'debug' );
 	<div class="wp-header-end"></div>
 	<div class="tasty-recipes-nav tasty-tabs nav-tab-wrapper">
 		<p>
-			<a class="nav-tab<?php echo 'design' === $active_tab ? ' nav-tab-active' : ''; ?>" href="<?php menu_page_url( Tasty_Recipes\Admin::PAGE_SLUG ); ?>">
+			<a class="nav-tab<?php echo 'design' === $active_tab ? ' nav-tab-active' : ''; ?>" href="<?php menu_page_url( Admin::PAGE_SLUG ); ?>">
 				<?php esc_html_e( 'Design', 'tasty-recipes' ); ?>
 			</a>
 		</p>
 		<p>
-			<a class="nav-tab<?php echo 'settings' === $active_tab ? ' nav-tab-active' : ''; ?>" href="<?php menu_page_url( Tasty_Recipes\Admin::PAGE_SLUG ); ?>&tab=settings">
+			<a class="nav-tab<?php echo 'settings' === $active_tab ? ' nav-tab-active' : ''; ?>" href="<?php menu_page_url( Admin::PAGE_SLUG ); ?>&tab=settings">
 				<?php esc_html_e( 'Settings', 'tasty-recipes' ); ?>
 			</a>
 		</p>
 		<p>
-			<a class="nav-tab<?php echo 'converters' === $active_tab ? ' nav-tab-active' : ''; ?>" href="<?php menu_page_url( Tasty_Recipes\Admin::PAGE_SLUG ); ?>&tab=converters">
+			<a class="nav-tab<?php echo 'converters' === $active_tab ? ' nav-tab-active' : ''; ?>" href="<?php menu_page_url( Admin::PAGE_SLUG ); ?>&tab=converters">
 				<?php esc_html_e( 'Converters', 'tasty-recipes' ); ?>
 			</a>
 		</p>
 		<?php if ( ! empty( $debug ) || 'debug' === $active_tab ) { ?>
 		<p>
-			<a class="nav-tab<?php echo 'debug' === $active_tab ? ' nav-tab-active' : ''; ?>" href="<?php menu_page_url( Tasty_Recipes\Admin::PAGE_SLUG ); ?>&tab=debug">
+			<a class="nav-tab<?php echo 'debug' === $active_tab ? ' nav-tab-active' : ''; ?>" href="<?php menu_page_url( Admin::PAGE_SLUG ); ?>&tab=debug">
 				<?php esc_html_e( 'Debug', 'tasty-recipes' ); ?>
 			</a>
 		</p>
 		<?php } ?>
 		<p>
-			<a class="nav-tab<?php echo 'about' === $active_tab ? ' nav-tab-active' : ''; ?>" href="<?php menu_page_url( Tasty_Recipes\Admin::PAGE_SLUG ); ?>&tab=about">
+			<a class="nav-tab<?php echo 'about' === $active_tab ? ' nav-tab-active' : ''; ?>" href="<?php menu_page_url( Admin::PAGE_SLUG ); ?>&tab=about">
 				<?php esc_html_e( 'About', 'tasty-recipes' ); ?>
 			</a>
 		</p>
@@ -70,17 +70,17 @@ $debug      = Utils::sanitize_get_key( 'debug' );
 			$recipe_card_preview_url_base = add_query_arg(
 				array(
 					'action' => 'tasty_recipes_preview_recipe_card',
-					'nonce'  => wp_create_nonce( \Tasty_Recipes\Admin::NONCE_KEY ),
+					'nonce'  => wp_create_nonce( Admin::NONCE_KEY ),
 				),
 				admin_url( 'admin-ajax.php' )
 			);
 			?>
 			<form method="POST" action="<?php echo esc_url( admin_url( 'options.php' ) ); ?>" class="tasty-recipes-design-settings-app tasty-tab-content">
 				<?php
-				settings_fields( Tasty_Recipes\Admin::SETTINGS_SECTION_CARD_DESIGN );
+				settings_fields( Admin::SETTINGS_SECTION_CARD_DESIGN );
 				$initial_options = array(
-					'template'      => get_option( Tasty_Recipes::TEMPLATE_OPTION, '' ),
-					'customization' => Tasty_Recipes::get_customization_settings(),
+					'template'      => get_option( TastyRecipesLiteMain::TEMPLATE_OPTION, '' ),
+					'customization' => TastyRecipesLiteMain::get_customization_settings(),
 				);
 				?>
 				<tasty-recipes-design-settings
