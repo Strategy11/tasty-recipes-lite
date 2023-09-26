@@ -9,6 +9,7 @@ namespace Tasty\Recipes\Lite;
 
 use Tasty\Framework\Utils\Url;
 use TastyRecipesLiteMain;
+use Tasty\Recipes\Lite\Admin\Settings;
 
 /**
  * Manages interactions with the admin.
@@ -121,34 +122,7 @@ class Admin {
 	 * Registers used settings.
 	 */
 	public static function action_admin_menu() {
-		register_setting(
-			self::SETTINGS_SECTION_CARD_DESIGN,
-			TastyRecipesLiteMain::CUSTOMIZATION_OPTION,
-			array(
-				'sanitize_callback' => array( __CLASS__, 'sanitize_customization_option' ),
-			)
-		);
-		register_setting(
-			self::SETTINGS_SECTION_CARD_DESIGN,
-			TastyRecipesLiteMain::TEMPLATE_OPTION,
-			array(
-				'sanitize_callback' => 'sanitize_title',
-			)
-		);
-		register_setting(
-			self::SETTINGS_GROUP_CARD,
-			TastyRecipesLiteMain::QUICK_LINKS_OPTION,
-			array(
-				'sanitize_callback' => array( __CLASS__, 'sanitize_quick_links' ),
-			)
-		);
-		register_setting(
-			self::SETTINGS_GROUP_CARD,
-			TastyRecipesLiteMain::CARD_BUTTONS_OPTION,
-			array(
-				'sanitize_callback' => array( __CLASS__, 'sanitize_card_buttons' ),
-			)
-		);
+		Settings::instance()->register();
 
 		register_setting(
 			self::SETTINGS_GROUP_CARD,
@@ -161,14 +135,6 @@ class Admin {
 		register_setting(
 			self::SETTINGS_GROUP_CARD,
 			TastyRecipesLiteMain::AUTOMATIC_UNIT_CONVERSION_OPTION,
-			array(
-				'sanitize_callback' => 'sanitize_title',
-			)
-		);
-
-		register_setting(
-			self::SETTINGS_GROUP_CARD,
-			TastyRecipesLiteMain::INGREDIENT_CHECKBOXES_OPTION,
 			array(
 				'sanitize_callback' => 'sanitize_title',
 			)
@@ -211,29 +177,6 @@ class Admin {
 			TastyRecipesLiteMain::DISABLE_SCALING_OPTION,
 			array(
 				'sanitize_callback' => 'sanitize_title',
-			)
-		);
-
-		register_setting(
-			self::SETTINGS_GROUP_CARD,
-			TastyRecipesLiteMain::COPY_TO_CLIPBOARD_OPTION,
-			array(
-				'sanitize_callback' => 'sanitize_title',
-			)
-		);
-
-		register_setting(
-			self::SETTINGS_GROUP_CARD,
-			TastyRecipesLiteMain::DEFAULT_AUTHOR_LINK_OPTION,
-			array(
-				'sanitize_callback' => 'esc_url_raw',
-			)
-		);
-		register_setting(
-			self::SETTINGS_GROUP_CARD,
-			TastyRecipesLiteMain::SHAREASALE_OPTION,
-			array(
-				'sanitize_callback' => 'sanitize_text_field',
 			)
 		);
 	}
@@ -663,32 +606,8 @@ EOT;
 	 * Renders the Tasty Recipes settings page.
 	 */
 	public static function handle_settings_page() {
-		add_settings_section(
-			self::SETTINGS_SECTION_CARD_DESIGN,
-			false,
-			false,
-			self::PAGE_SLUG
-		);
-		add_settings_field(
-			TastyRecipesLiteMain::QUICK_LINKS_OPTION,
-			__( 'Quick Links', 'tasty-recipes' ),
-			array( __CLASS__, 'render_multiselect_checkboxes_field' ),
-			self::PAGE_SLUG,
-			self::SETTINGS_SECTION_CARD_DESIGN,
-			array(
-				'name'           => TastyRecipesLiteMain::QUICK_LINKS_OPTION,
-				'description'    => __( 'Enable or disable quick links below the post title.', 'tasty-recipes' ),
-				'default_values' => array(
-					'jump',
-					'print',
-				),
-				'options'        => array(
-					'jump'   => __( '\'Jump to Recipe\' link', 'tasty-recipes' ),
-					'print'  => __( '\'Print Recipe\' link', 'tasty-recipes' ),
-					'rating' => __( '\'Leave a review\' link', 'tasty-recipes' ),
-				),
-			)
-		);
+		Settings::instance()->render_group_settings( self::SETTINGS_SECTION_CARD_DESIGN, self::PAGE_SLUG );
+
 		add_settings_field(
 			TastyRecipesLiteMain::CARD_BUTTONS_OPTION,
 			__( 'Recipe Card Buttons', 'tasty-recipes' ),

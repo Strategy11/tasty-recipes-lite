@@ -257,11 +257,8 @@ class TastyRecipesLiteMain {
 		add_action( 'init', array( BlockEditor::class, 'action_init_register' ) );
 		add_action( 'init', array( ContentModel::class, 'action_init_register_cron_events' ) );
 		add_action( 'tasty_recipes_process_thumbnails', array( ContentModel::class, 'action_tasty_recipes_process_thumbnails' ) );
-		//add_action( 'tasty_recipes_enrich_youtube_embeds', array( ContentModel::class, 'action_tasty_recipes_enrich_youtube_embeds' ) );
-		//add_action( 'tasty_recipes_apply_unit_conversion', array( ContentModel::class, 'action_tasty_recipes_apply_unit_conversion' ) );
 		add_action( 'init', array( ContentModel::class, 'action_init_register_post_types' ) );
 		add_action( 'init', array( ContentModel::class, 'action_init_register_rewrite_rules' ) );
-		//add_action( 'init', array( ContentModel::class, 'action_init_register_oembed_providers' ) );
 		add_action( 'init', array( Shortcodes::class, 'action_init_register_shortcode' ) );
 		// Frontend.
 		add_action( 'wp_print_styles', array( Assets::class, 'action_wp_print_styles' ) );
