@@ -20,6 +20,10 @@ abstract class AbstractSetting {
 		return $option_value;
 	}
 
+	public function requires_pro() {
+		return false;
+	}
+
 	public function render_field( $args ) {}
 
 	public function get_render_args(){}

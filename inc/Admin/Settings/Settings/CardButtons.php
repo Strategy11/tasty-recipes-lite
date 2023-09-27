@@ -16,6 +16,11 @@ class CardButtons extends AbstractSetting {
 
 	use Singleton;
 
+	private $positions = array(
+		'first',
+		'second',
+	);
+
 	public function get_id() {
 		return TastyRecipesLiteMain::CARD_BUTTONS_OPTION;
 	}
@@ -30,8 +35,8 @@ class CardButtons extends AbstractSetting {
 
 	public function sanitize( $value ) {
 		$sanitized = array();
-		foreach ( array( 'first', 'second' ) as $position ) {
-			if ( ! in_array( $value[ $position ], array( '', 'print', 'pin', 'mediavine', 'slickstream' ), true ) ) {
+		foreach ( $this->positions as $position ) {
+			if ( ! in_array( $value[ $position ], array( '', 'print', 'mediavine' ), true ) ) {
 				continue;
 			}
 			$sanitized[ $position ] = $value[ $position ];
@@ -50,14 +55,9 @@ class CardButtons extends AbstractSetting {
 			'options' => array(
 				''            => esc_html__( 'Off', 'tasty-recipes' ),
 				'print'       => esc_html__( 'Print', 'tasty-recipes' ),
-				'pin'         => esc_html__( 'Pin this recipe', 'tasty-recipes' ),
-				'slickstream' => esc_html__( 'Slickstream Favorites', 'tasty-recipes' ),
 				'mediavine'   => esc_html__( 'Mediavine Grow.me Save', 'tasty-recipes' ),
 			),
-			'positions' => array(
-				'first',
-				'second',
-			),
+			'positions' => $this->positions,
 			'value' => $this->get_option_value(),
 		);
 	}

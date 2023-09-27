@@ -739,20 +739,9 @@ EOT;
 					'</a>'
 				),
 			)
-		);*/
-
-		add_settings_field(
-			TastyRecipesLiteMain::SHAREASALE_OPTION,
-			__( 'ShareASale Affiliate ID', 'tasty-recipes' ),
-			array( __CLASS__, 'render_input_field' ),
-			self::PAGE_SLUG,
-			self::SETTINGS_SECTION_CARD_DESIGN,
-			array(
-				'name'        => TastyRecipesLiteMain::SHAREASALE_OPTION,
-				// translators: Various links.
-				'description' => sprintf( __( '<a href="%1$s" target="_blank">Apply for the affiliate program</a>, or <a href="%2$s" target="_blank">find your affiliate ID</a>.', 'tasty-recipes' ), 'https://www.wptasty.com/affiliate', 'https://www.wptasty.com/affiliate-id' ),
-			)
 		);
+		*/
+
 		TastyRecipesLiteMain::echo_template_part( 'settings' );
 		if ( ! did_action( 'admin_footer' ) && ! doing_action( 'admin_footer' ) ) {
 			add_action( 'admin_footer', array( __CLASS__, 'action_admin_footer_render_template' ) );
