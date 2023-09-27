@@ -32,7 +32,7 @@ class Template extends AbstractSetting {
 		return sanitize_title( $original );
 	}
 
-	public function render_field() {
+	public function render_field( $args ) {
 
 	}
 

@@ -32,4 +32,12 @@ class CopyToClipboard extends AbstractSetting {
 	public function sanitize( $value ) {
 		return Utils::sanitize_item( $value, 'sanitize_title' );
 	}
+
+	public function render_field( $args ) {
+		// TODO: Implement render_field() method.
+	}
+
+	public function get_render_args() {
+		// TODO: Implement get_render_args() method.
+	}
 }
