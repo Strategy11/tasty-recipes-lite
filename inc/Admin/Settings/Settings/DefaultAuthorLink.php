@@ -26,7 +26,7 @@ class DefaultAuthorLink extends AbstractSetting {
 	}
 
 	public function get_name() {
-		return '';
+		return __( 'Default Author Link', 'tasty-recipes' );
 	}
 
 	public function sanitize( $value ) {
@@ -34,10 +34,13 @@ class DefaultAuthorLink extends AbstractSetting {
 	}
 
 	public function render_field( $args ) {
-		// TODO: Implement render_field() method.
+		$this->render_input_field( $args );
 	}
 
 	public function get_render_args() {
-		// TODO: Implement get_render_args() method.
+		return array(
+			'name' => $this->get_id(),
+			'type' => 'text',
+		);
 	}
 }

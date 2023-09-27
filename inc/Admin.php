@@ -606,16 +606,9 @@ EOT;
 	 * Renders the Tasty Recipes settings page.
 	 */
 	public static function handle_settings_page() {
-		Settings::instance()->render_group_settings( self::SETTINGS_SECTION_CARD_DESIGN, self::PAGE_SLUG );
+		Settings::instance()->render_group_settings( self::SETTINGS_GROUP_CARD, self::PAGE_SLUG );
 
-		add_settings_field(
-			TastyRecipesLiteMain::CARD_BUTTONS_OPTION,
-			__( 'Recipe Card Buttons', 'tasty-recipes' ),
-			array( __CLASS__, 'render_card_buttons_field' ),
-			self::PAGE_SLUG,
-			self::SETTINGS_SECTION_CARD_DESIGN
-		);
-		add_settings_field(
+		/*add_settings_field(
 			TastyRecipesLiteMain::UNIT_CONVERSION_OPTION,
 			__( 'Unit Conversion', 'tasty-recipes' ),
 			array( __CLASS__, 'render_select_field' ),
@@ -658,21 +651,6 @@ EOT;
 </script>
 EOT;
 				},
-			)
-		);
-		add_settings_field(
-			TastyRecipesLiteMain::INGREDIENT_CHECKBOXES_OPTION,
-			__( 'Ingredient Checkboxes', 'tasty-recipes' ),
-			array( __CLASS__, 'render_select_field' ),
-			self::PAGE_SLUG,
-			self::SETTINGS_SECTION_CARD_DESIGN,
-			array(
-				'name'        => TastyRecipesLiteMain::INGREDIENT_CHECKBOXES_OPTION,
-				'description' => __( 'Allow visitors to check off recipe ingredients.', 'tasty-recipes' ),
-				'options'     => array(
-					false => __( 'Off', 'tasty-recipes' ),
-					true  => __( 'On', 'tasty-recipes' ),
-				),
 			)
 		);
 
@@ -723,31 +701,6 @@ EOT;
 				),
 			)
 		);
-		add_settings_field(
-			TastyRecipesLiteMain::COPY_TO_CLIPBOARD_OPTION,
-			__( 'Copy to Clipboard', 'tasty-recipes' ),
-			array( __CLASS__, 'render_select_field' ),
-			self::PAGE_SLUG,
-			self::SETTINGS_SECTION_CARD_DESIGN,
-			array(
-				'name'        => TastyRecipesLiteMain::COPY_TO_CLIPBOARD_OPTION,
-				'description' => __( 'Allow visitors to copy ingredients to clipboard.', 'tasty-recipes' ),
-				'options'     => array(
-					false => __( 'Off', 'tasty-recipes' ),
-					true  => __( 'On', 'tasty-recipes' ),
-				),
-			)
-		);
-		add_settings_field(
-			TastyRecipesLiteMain::DEFAULT_AUTHOR_LINK_OPTION,
-			__( 'Default Author Link', 'tasty-recipes' ),
-			array( __CLASS__, 'render_input_field' ),
-			self::PAGE_SLUG,
-			self::SETTINGS_SECTION_CARD_DESIGN,
-			array(
-				'name' => TastyRecipesLiteMain::DEFAULT_AUTHOR_LINK_OPTION,
-			)
-		);
 
 		add_settings_field(
 			TastyRecipesLiteMain::INSTACART_OPTION,
@@ -786,7 +739,7 @@ EOT;
 					'</a>'
 				),
 			)
-		);
+		);*/
 
 		add_settings_field(
 			TastyRecipesLiteMain::SHAREASALE_OPTION,
@@ -1223,6 +1176,13 @@ EOT;
 
 	public static function get_design_templates() {
 		return (array) apply_filters( 'tasty_recipes_design_templates', self::TEMPLATE_OPTIONS );
+	}
+
+	public static function filter_default_card_buttons_setting() {
+		return array(
+			'first'  => 'print',
+			'second' => '',
+		);
 	}
 
 }

@@ -92,12 +92,4 @@ class Customization extends AbstractSetting {
 		}
 		return $sanitized;
 	}
-
-	public function render_field( $args ) {
-
-	}
-
-	public function get_render_args() {
-
-	}
 }

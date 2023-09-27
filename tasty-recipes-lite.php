@@ -362,6 +362,7 @@ class TastyRecipesLiteMain {
 		add_filter( 'preprocess_comment', array( Ratings::class, 'filter_preprocess_comment' ), 0 );
 		add_filter( 'comment_form_field_comment', array( Ratings::class, 'filter_comment_form_field_comment' ) );
 		add_filter( 'comment_text', array( Ratings::class, 'filter_comment_text' ), 10, 2 );
+		add_filter( 'tasty_recipes_setting_default', array( Admin::class, 'filter_default_card_buttons_setting' ) );
 
 		if ( is_admin() ) {
 			add_filter( 'tasty_framework_admin_menu_items', array( Admin::class, 'add_menu_item' ) );

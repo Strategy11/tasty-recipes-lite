@@ -26,7 +26,7 @@ class CopyToClipboard extends AbstractSetting {
 	}
 
 	public function get_name() {
-		return '';
+		return __( 'Copy to Clipboard', 'tasty-recipes' );
 	}
 
 	public function sanitize( $value ) {
@@ -34,10 +34,18 @@ class CopyToClipboard extends AbstractSetting {
 	}
 
 	public function render_field( $args ) {
-		// TODO: Implement render_field() method.
+		$this->render_select_field( $args );
 	}
 
 	public function get_render_args() {
-		// TODO: Implement get_render_args() method.
+		return array(
+			'name'        => $this->get_id(),
+			'description' => __( 'Allow visitors to copy ingredients to clipboard.', 'tasty-recipes' ),
+			'options'     => array(
+				false => __( 'Off', 'tasty-recipes' ),
+				true  => __( 'On', 'tasty-recipes' ),
+			),
+			'value' => $this->get_option_value(),
+		);
 	}
 }

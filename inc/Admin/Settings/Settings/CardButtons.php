@@ -10,7 +10,6 @@ namespace Tasty\Recipes\Lite\Admin\Settings\Settings;
 use Tasty\Framework\Traits\Singleton;
 use Tasty\Recipes\Lite\Admin;
 use Tasty\Recipes\Lite\Admin\Settings\AbstractSetting;
-use Tasty\Recipes\Lite\Utils;
 use TastyRecipesLiteMain;
 
 class CardButtons extends AbstractSetting {
@@ -42,29 +41,26 @@ class CardButtons extends AbstractSetting {
 
 
 	public function render_field( $args ) {
-		$options = array(
-			''            => esc_html__( 'Off', 'tasty-recipes' ),
-			'print'       => esc_html__( 'Print', 'tasty-recipes' ),
-			'pin'         => esc_html__( 'Pin this recipe', 'tasty-recipes' ),
-			'slickstream' => esc_html__( 'Slickstream Favorites', 'tasty-recipes' ),
-			'mediavine'   => esc_html__( 'Mediavine Grow.me Save', 'tasty-recipes' ),
-		);
-
-		$value = TastyRecipesLiteMain::get_card_button_settings();
-		?>
-		<div>
-			<?php foreach ( array( 'first', 'second' ) as $position ) : ?>
-				<select name="<?php echo esc_attr( TastyRecipesLiteMain::CARD_BUTTONS_OPTION . '[' . $position . ']' ); ?>">
-					<?php foreach ( $options as $key => $label ) : ?>
-						<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $key, $value[ $position ] ); ?>><?php echo esc_html( $label ); ?></option>
-					<?php endforeach; ?>
-				</select>
-			<?php endforeach; ?>
-		</div>
-		<?php
+		TastyRecipesLiteMain::echo_template_part( 'admin/settings/multiple-selects', $args );
 	}
 
 	public function get_render_args() {
-
+		return array(
+			'name' => $this->get_id(),
+			'options' => array(
+				''            => esc_html__( 'Off', 'tasty-recipes' ),
+				'print'       => esc_html__( 'Print', 'tasty-recipes' ),
+				'pin'         => esc_html__( 'Pin this recipe', 'tasty-recipes' ),
+				'slickstream' => esc_html__( 'Slickstream Favorites', 'tasty-recipes' ),
+				'mediavine'   => esc_html__( 'Mediavine Grow.me Save', 'tasty-recipes' ),
+			),
+			'positions' => array(
+				'first',
+				'second',
+			),
+			'value' => $this->get_option_value(),
+		);
 	}
+
+
 }

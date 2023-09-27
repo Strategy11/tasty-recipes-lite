@@ -31,12 +31,4 @@ class Template extends AbstractSetting {
 	public function sanitize( $original ) {
 		return sanitize_title( $original );
 	}
-
-	public function render_field( $args ) {
-
-	}
-
-	public function get_render_args() {
-
-	}
 }

@@ -26,7 +26,7 @@ class ShareAsale extends AbstractSetting {
 	}
 
 	public function get_name() {
-		return '';
+		return __( 'ShareASale Affiliate ID', 'tasty-recipes' );
 	}
 
 	public function sanitize( $value ) {
@@ -34,10 +34,20 @@ class ShareAsale extends AbstractSetting {
 	}
 
 	public function render_field( $args ) {
-		// TODO: Implement render_field() method.
+		$this->render_input_field( $args );
 	}
 
 	public function get_render_args() {
-		// TODO: Implement get_render_args() method.
+		return array(
+			'name'        => $this->get_id(),
+			// translators: Various links.
+			'description' => sprintf(
+				__( '%1$sApply for the affiliate program%2$s, or %3$sfind your affiliate ID%4$s.', 'tasty-recipes' ),
+				'<a href="https://www.wptasty.com/affiliate" target="_blank" rel="noopener">',
+				'</a>',
+				'<a href="https://www.wptasty.com/affiliate-id" target="_blank" rel="noopener">',
+				'</a>'
+			),
+		);
 	}
 }
