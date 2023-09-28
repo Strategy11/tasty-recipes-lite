@@ -42,7 +42,7 @@ class AutomaticUnitConversion extends AbstractSetting {
 			'type'        => 'checkbox',
 			'label_after'       => __( 'Automatically apply unit conversion to existing recipes.', 'tasty-recipes' ),
 			'disabled' => true,
-			'class' => 'tasty-show-upgrade-modal',
+			'class' => 'tasty-show-modal-tasty_recipes_upgrade_modal',
 		);
 	}
 }

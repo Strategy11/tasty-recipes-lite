@@ -307,6 +307,7 @@ class TastyRecipesLiteMain {
 
 		add_action( 'wp_insert_post', array( Editor::class, 'handle_add_new_post' ), 10, 3 );
 		add_action( 'post_updated', array( Editor::class, 'handle_edit_post' ), 10, 3 );
+		add_action( 'tasty_framework_admin_footer_after', array( Admin::class, 'add_lite_upgrade_modal' ) );
 
 		if ( is_admin() ) {
 			MetaBox::get_instance();

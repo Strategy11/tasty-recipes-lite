@@ -50,7 +50,7 @@ class Instacart extends AbstractSetting {
 				true  => __( 'On', 'tasty-recipes' ),
 			),
 			'disabled' => true,
-			'class' => 'tasty-show-upgrade-modal',
+			'class' => 'tasty-show-modal-tasty_recipes_upgrade_modal',
 			'default_value' => false,
 		);
 	}

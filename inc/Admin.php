@@ -1032,4 +1032,15 @@ EOT;
 		);
 	}
 
+	public static function add_lite_upgrade_modal() {
+		$tasty_recipes_lite_upgrade_url = Url::add_utm_params(
+			'https://www.wptasty.com/pricing-recipes', // @Todo: replace with lite upgrade url.
+			array(
+				'utm_medium'  => 'lite',
+				'utm_content' => 'modal',
+			)
+		);
+		TastyRecipesLiteMain::echo_template_part( 'admin/upgrade-modal', compact( 'tasty_recipes_lite_upgrade_url' ) );
+	}
+
 }
