@@ -30,7 +30,7 @@ class IngredientsCheckboxes extends AbstractSetting {
 	}
 
 	public function sanitize( $value ) {
-		return Utils::sanitize_item( $value, 'sanitize_title' );
+		return false;
 	}
 
 	public function render_field( $args ) {
@@ -45,6 +45,9 @@ class IngredientsCheckboxes extends AbstractSetting {
 				false => __( 'Off', 'tasty-recipes' ),
 				true  => __( 'On', 'tasty-recipes' ),
 			),
+			'forced_value' => false,
+			'disabled' => true,
+			'class' => 'tasty-show-modal-tasty_recipes_upgrade_modal',
 		);
 	}
 }
