@@ -10,7 +10,6 @@ namespace Tasty\Recipes\Lite\Admin\Settings\Settings;
 use Tasty\Framework\Traits\Singleton;
 use Tasty\Recipes\Lite\Admin;
 use Tasty\Recipes\Lite\Admin\Settings\AbstractSetting;
-use Tasty\Recipes\Lite\Utils;
 use TastyRecipesLiteMain;
 
 class UnitConversion extends AbstractSetting {
@@ -45,10 +44,8 @@ class UnitConversion extends AbstractSetting {
 				false => __( 'Off', 'tasty-recipes' ),
 				true  => __( 'On', 'tasty-recipes' ),
 			),
+			'disabled' => true,
+			'class' => 'tasty-show-upgrade-modal',
 		);
-	}
-
-	public function requires_pro() {
-		return true;
 	}
 }

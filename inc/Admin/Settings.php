@@ -17,6 +17,11 @@ use Tasty\Recipes\Lite\Admin\Settings\Settings\DefaultAuthorLink;
 use Tasty\Recipes\Lite\Admin\Settings\Settings\IngredientsCheckboxes;
 use Tasty\Recipes\Lite\Admin\Settings\Settings\QuickLinks;
 use Tasty\Recipes\Lite\Admin\Settings\Settings\ShareAsale;
+use Tasty\Recipes\Lite\Admin\Settings\Settings\UnitConversion;
+use Tasty\Recipes\Lite\Admin\Settings\Settings\AutomaticUnitConversion;
+use Tasty\Recipes\Lite\Admin\Settings\Settings\CookMode;
+use Tasty\Recipes\Lite\Admin\Settings\Settings\DisableScaling;
+use Tasty\Recipes\Lite\Admin\Settings\Settings\Instacart;
 
 class Settings {
 
@@ -33,8 +38,13 @@ class Settings {
 			Admin::SETTINGS_GROUP_CARD => array(
 				QuickLinks::instance(),
 				CardButtons::instance(),
+				UnitConversion::instance(),
+				AutomaticUnitConversion::instance(),
 				IngredientsCheckboxes::instance(),
+				CookMode::instance(),
+				DisableScaling::instance(),
 				DefaultAuthorLink::instance(),
+				Instacart::instance(),
 				CopyToClipboard::instance(),
 				ShareAsale::instance(),
 			),

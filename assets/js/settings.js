@@ -129,29 +129,7 @@
 			$('.tasty-recipes-converter-welcome').show();
 		}, this) );
 
-		let cook_mode_select = $('select[name="tasty_recipes_cook_mode"]');
-		if ( cook_mode_select.length > 0 ) {
-			cook_mode_select.change(function(event){
-				let cook_mode           = $(this);
-				let cook_mode_helper_tr = cook_mode.parents('tr').next('tr');
 
-				1 === parseInt( cook_mode.val() ) ? cook_mode_helper_tr.show() : cook_mode_helper_tr.hide();
-			});
-
-			cook_mode_select.change();
-		}
-
-		const instacart_option_select = $('select[name="tasty_recipes_instacart"]');
-		if ( instacart_option_select.length > 0 ) {
-			instacart_option_select.change(function(event){
-				const instacart_option          = $(this);
-				const instacart_affiliate_id_tr = instacart_option.parents('tr').next('tr');
-
-				1 === parseInt( instacart_option.val() ) ? instacart_affiliate_id_tr.show() : instacart_affiliate_id_tr.hide();
-			});
-
-			instacart_option_select.change();
-		}
 
 	});
 

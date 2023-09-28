@@ -12,7 +12,7 @@
 		echo $before_field;
 	}
 	?>
-	<select name="<?php echo esc_attr( $name ); ?>" <?php disabled( ! empty( $disabled ) ); ?>>
+	<select name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( $name ); ?>" <?php disabled( ! empty( $disabled ) ); ?>>
 		<?php
 		foreach ( $options as $option_key => $option_label ){
 			$compare_key = $option_key;
