@@ -123,54 +123,6 @@ class Admin {
 	 */
 	public static function action_admin_menu() {
 		Settings::instance()->register();
-
-		register_setting(
-			self::SETTINGS_GROUP_CARD,
-			TastyRecipesLiteMain::AUTOMATIC_UNIT_CONVERSION_OPTION,
-			array(
-				'sanitize_callback' => 'sanitize_title',
-			)
-		);
-
-		register_setting(
-			self::SETTINGS_GROUP_CARD,
-			TastyRecipesLiteMain::COOK_MODE_OPTION,
-			array(
-				'sanitize_callback' => 'sanitize_title',
-			)
-		);
-
-		register_setting(
-			self::SETTINGS_GROUP_CARD,
-			TastyRecipesLiteMain::COOK_MODE_HELPER_OPTION,
-			array(
-				'sanitize_callback' => 'sanitize_text_field',
-			)
-		);
-
-		register_setting(
-			self::SETTINGS_GROUP_CARD,
-			TastyRecipesLiteMain::INSTACART_OPTION,
-			array(
-				'sanitize_callback' => 'sanitize_title',
-			)
-		);
-
-		register_setting(
-			self::SETTINGS_GROUP_CARD,
-			TastyRecipesLiteMain::INSTACART_AFFILIATE_ID_OPTION,
-			array(
-				'sanitize_callback' => 'sanitize_title',
-			)
-		);
-
-		register_setting(
-			self::SETTINGS_GROUP_CARD,
-			TastyRecipesLiteMain::DISABLE_SCALING_OPTION,
-			array(
-				'sanitize_callback' => 'sanitize_title',
-			)
-		);
 	}
 
 	/**
