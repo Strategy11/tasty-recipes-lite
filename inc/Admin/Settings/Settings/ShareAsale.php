@@ -50,4 +50,8 @@ class ShareAsale extends AbstractSetting {
 			),
 		);
 	}
+
+	public function ordering() {
+		return 110;
+	}
 }

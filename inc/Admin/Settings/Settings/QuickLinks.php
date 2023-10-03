@@ -52,4 +52,8 @@ class QuickLinks extends AbstractSetting {
 			),
 		);
 	}
+
+	public function ordering() {
+		return 10;
+	}
 }

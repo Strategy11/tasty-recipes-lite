@@ -44,4 +44,8 @@ class DefaultAuthorLink extends AbstractSetting {
 			'field_class' => 'regular-text',
 		);
 	}
+
+	public function ordering() {
+		return 80;
+	}
 }

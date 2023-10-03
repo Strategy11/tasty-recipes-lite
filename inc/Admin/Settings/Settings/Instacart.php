@@ -54,4 +54,8 @@ class Instacart extends AbstractSetting {
 			'default_value' => false,
 		);
 	}
+
+	public function ordering() {
+		return 90;
+	}
 }

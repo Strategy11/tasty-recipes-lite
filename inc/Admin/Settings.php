@@ -36,20 +36,23 @@ class Settings {
 				Template::instance(),
 			),
 			Admin::SETTINGS_GROUP_CARD => array(
-				QuickLinks::instance(),
-				CardButtons::instance(),
-				UnitConversion::instance(),
-				AutomaticUnitConversion::instance(),
-				IngredientsCheckboxes::instance(),
-				CookMode::instance(),
-				DisableScaling::instance(),
-				DefaultAuthorLink::instance(),
-				Instacart::instance(),
-				CopyToClipboard::instance(),
-				ShareAsale::instance(),
+				'quick_links'               => QuickLinks::instance(),
+				'card_buttons'              => CardButtons::instance(),
+				'unit_conversion'           => UnitConversion::instance(),
+				'automatic_unit_conversion' => AutomaticUnitConversion::instance(),
+				'ingredients_checkboxes'    => IngredientsCheckboxes::instance(),
+				'cook_mode'                 => CookMode::instance(),
+				'scaling'                   => DisableScaling::instance(),
+				'default_author_link'       => DefaultAuthorLink::instance(),
+				'instacart'                 => Instacart::instance(),
+				'copy_to_clipboard'         => CopyToClipboard::instance(),
+				'shareasale'                => ShareAsale::instance(),
 			),
 		);
-		$this->settings = apply_filters( 'tasty_recipes_settings_objects', $settings );
+		$this->settings = (array) apply_filters( 'tasty_recipes_settings_objects', $settings );
+		if ( empty( $this->settings ) ) {
+			return array();
+		}
 		return $this->settings;
 	}
 
@@ -79,6 +82,8 @@ class Settings {
 			$page_slug
 		);
 
+		usort( $this->settings[ $group ], array( $this, 'sort_settings' ) );
+
 		foreach ( $this->settings[ $group ] as $setting ) {
 			add_settings_field(
 				$setting->get_id(),
@@ -89,6 +94,13 @@ class Settings {
 				$setting->get_render_args()
 			);
 		}
+	}
+
+	public function sort_settings( $first, $second ) {
+		if ( $first->ordering() === $second->ordering() || 0 === $second->ordering() ) {
+			return 0;
+		}
+		return $first->ordering() < $second->ordering() ? -1 : 1;
 	}
 
 }

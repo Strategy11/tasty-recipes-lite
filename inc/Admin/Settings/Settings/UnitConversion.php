@@ -48,4 +48,8 @@ class UnitConversion extends AbstractSetting {
 			'class' => 'tasty-show-modal-tasty_recipes_upgrade_modal',
 		);
 	}
+
+	public function ordering() {
+		return 30;
+	}
 }

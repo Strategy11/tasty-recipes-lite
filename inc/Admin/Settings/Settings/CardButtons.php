@@ -62,5 +62,7 @@ class CardButtons extends AbstractSetting {
 		);
 	}
 
-
+	public function ordering() {
+		return 20;
+	}
 }

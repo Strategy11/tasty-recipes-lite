@@ -48,4 +48,8 @@ class CopyToClipboard extends AbstractSetting {
 			'value' => $this->get_option_value(),
 		);
 	}
+
+	public function ordering() {
+		return 100;
+	}
 }
