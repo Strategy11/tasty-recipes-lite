@@ -38,11 +38,13 @@ class DefaultAuthorLink extends AbstractSetting {
 	}
 
 	public function get_render_args() {
-		return array(
+		$args = array(
 			'name' => $this->get_id(),
 			'type' => 'text',
 			'field_class' => 'regular-text',
 		);
+
+		return $this->prepare_input_field_args( $args );
 	}
 
 	public function ordering() {

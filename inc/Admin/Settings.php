@@ -91,7 +91,7 @@ class Settings {
 				array( $setting, 'render_field' ),
 				$page_slug,
 				$group,
-				$setting->get_render_args()
+				$setting->filter_field_args( $setting->get_render_args() )
 			);
 		}
 	}

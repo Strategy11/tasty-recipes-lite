@@ -34,16 +34,20 @@ class CardButtons extends AbstractSetting {
 	}
 
 	public function sanitize( $value ) {
+		if ( empty( $value ) ) {
+			return $value;
+		}
+
 		$sanitized = array();
+		$args = $this->filter_field_args( $this->get_render_args() );
 		foreach ( $this->positions as $position ) {
-			if ( ! in_array( $value[ $position ], array( '', 'print', 'mediavine' ), true ) ) {
+			if ( empty( $value[ $position ] ) || ! in_array( $value[ $position ], array_keys( $args['options'] ), true ) ) {
 				continue;
 			}
 			$sanitized[ $position ] = $value[ $position ];
 		}
 		return $sanitized;
 	}
-
 
 	public function render_field( $args ) {
 		TastyRecipesLiteMain::echo_template_part( 'admin/settings/multiple-selects', $args );

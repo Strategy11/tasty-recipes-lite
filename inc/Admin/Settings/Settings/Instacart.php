@@ -37,7 +37,7 @@ class Instacart extends AbstractSetting {
 	}
 
 	public function get_render_args() {
-		return array(
+		$args = array(
 			'name'         => $this->get_id(),
 			'description'  => sprintf(
 				// translators: %1$s opening anchor tag, %2$s closing tag.
@@ -53,6 +53,8 @@ class Instacart extends AbstractSetting {
 			'class' => 'tasty-show-modal-tasty_recipes_upgrade_modal',
 			'default_value' => false,
 		);
+
+		return $this->prepare_select_field_args( $args );
 	}
 
 	public function ordering() {

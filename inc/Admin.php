@@ -601,26 +601,7 @@ EOT;
 	 * @param array $args Configuration arguments used by the input field.
 	 */
 	public static function render_input_field( $args ) {
-		$defaults = array(
-			'type'          => 'text',
-			'name'          => '',
-			'default_value' => '',
-		);
-		$args     = array_merge( $defaults, $args );
-		if ( empty( $args['name'] ) ) {
-			return;
-		}
-		$value = get_option( $args['name'], $args['default_value'] );
-		?>
-		<input type="<?php echo esc_attr( $args['type'] ); ?>"
-			name="<?php echo esc_attr( $args['name'] ); ?>"
-			value="<?php echo esc_attr( $value ); ?>"
-			class="regular-text"
-		/>
-		<?php if ( ! empty( $args['description'] ) ) : ?>
-			<p class="description"><?php echo wp_kses_post( $args['description'] ); ?></p>
-			<?php
-		endif;
+		// Todo: Deprecate.
 	}
 
 	/**
@@ -631,7 +612,7 @@ EOT;
 	 * @return array
 	 */
 	public static function sanitize_quick_links( $item ) {
-		return Utils::sanitize_item( $item, 'sanitize_key' );
+		// Todo: Deprecate.
 	}
 
 	/**
@@ -641,13 +622,7 @@ EOT;
 	 * @return array
 	 */
 	public static function sanitize_card_buttons( $original ) {
-		$sanitized = array();
-		foreach ( array( 'first', 'second' ) as $position ) {
-			if ( in_array( $original[ $position ], array( '', 'print', 'pin', 'mediavine', 'slickstream' ), true ) ) {
-				$sanitized[ $position ] = $original[ $position ];
-			}
-		}
-		return $sanitized;
+		// Todo: Deprecate.
 	}
 
 	/**
@@ -747,57 +722,7 @@ EOT;
 	 * @param array $args Configuration arguments used by the select field.
 	 */
 	public static function render_select_field( $args ) {
-		$defaults = array(
-			'name'          => '',
-			'options'       => array(),
-			'default_value' => '',
-			'disabled'      => false,
-			'forced_value'  => null,
-		);
-		$args     = array_merge( $defaults, $args );
-		if ( empty( $args['name'] ) || empty( $args['options'] ) ) {
-			return;
-		}
-		$value = ! is_null( $args['forced_value'] ) ? $args['forced_value'] : get_option( $args['name'], $args['default_value'] );
-
-		// Make sure $value is evaluated as boolean for true/false options.
-		$is_bool = false;
-		if ( count( $args['options'] ) === 2 ) {
-			reset( $args['options'] );
-			$first = key( $args['options'] );
-			end( $args['options'] );
-			$last = key( $args['options'] );
-			reset( $args['options'] );
-			if ( is_numeric( $first ) && is_numeric( $last ) ) {
-				$value   = (bool) $value;
-				$is_bool = true;
-			}
-		}
-		?>
-		<select name="<?php echo esc_attr( $args['name'] ); ?>"
-		<?php
-		if ( ! empty( $args['disabled'] ) ) {
-			echo 'disabled';
-		}
-		?>
-		>
-		<?php
-		foreach ( $args['options'] as $key => $label ) :
-			$compare_key = $key;
-			if ( $is_bool ) {
-				$compare_key = (bool) $key;
-			}
-			?>
-				<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $compare_key, $value ); ?>><?php echo esc_html( $label ); ?></option>
-			<?php endforeach; ?>
-		</select>
-		<?php if ( ! empty( $args['description'] ) ) : ?>
-			<p class="description"><?php echo wp_kses_post( $args['description'] ); ?></p>
-			<?php
-			endif;
-		if ( ! empty( $args['after_description'] ) && is_callable( $args['after_description'] ) ) {
-			$args['after_description']( $args );
-		}
+		// Todo: Deprecate.
 	}
 
 	/**
@@ -808,51 +733,14 @@ EOT;
 	 * @return void
 	 */
 	public static function render_multiselect_checkboxes_field( $args ) {
-		$defaults = array(
-			'name'           => '',
-			'options'        => array(),
-			'default_values' => array(),
-			'description'    => '',
-		);
-		$args     = array_merge( $defaults, $args );
-		if ( empty( $args['name'] ) || empty( $args['options'] ) ) {
-			return;
-		}
-
-		$args['checked'] = get_option( $args['name'], $args['default_values'] );
-
-		TastyRecipesLiteMain::echo_template_part(
-			'admin/settings/multiselect-checkbox',
-			apply_filters( 'tasty_recipes_admin_settings_field_args', $args )
-		);
-
+		// Todo: Deprecate.
 	}
 
 	/**
 	 * Renders the card buttons field.
 	 */
 	public static function render_card_buttons_field() {
-
-		$options = array(
-			''            => esc_html__( 'Off', 'tasty-recipes' ),
-			'print'       => esc_html__( 'Print', 'tasty-recipes' ),
-			'pin'         => esc_html__( 'Pin this recipe', 'tasty-recipes' ),
-			'slickstream' => esc_html__( 'Slickstream Favorites', 'tasty-recipes' ),
-			'mediavine'   => esc_html__( 'Mediavine Grow.me Save', 'tasty-recipes' ),
-		);
-
-		$value = TastyRecipesLiteMain::get_card_button_settings();
-		?>
-		<div>
-			<?php foreach ( array( 'first', 'second' ) as $position ) : ?>
-				<select name="<?php echo esc_attr( TastyRecipesLiteMain::CARD_BUTTONS_OPTION . '[' . $position . ']' ); ?>">
-				<?php foreach ( $options as $key => $label ) : ?>
-					<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $key, $value[ $position ] ); ?>><?php echo esc_html( $label ); ?></option>
-					<?php endforeach; ?>
-				</select>
-			<?php endforeach; ?>
-		</div>
-		<?php
+		// Todo: Deprecate.
 	}
 
 	/**

@@ -34,11 +34,14 @@ class QuickLinks extends AbstractSetting {
 	}
 
 	public function render_field( $args ) {
-		$this->render_multiselect_checkboxes_field( $args );
+		TastyRecipesLiteMain::echo_template_part(
+			'admin/settings/multiselect-checkbox',
+			$args
+		);
 	}
 
 	public function get_render_args() {
-		return array(
+		$args = array(
 			'name'           => $this->get_id(),
 			'description'    => __( 'Enable or disable quick links below the post title.', 'tasty-recipes' ),
 			'default_values' => array(
@@ -51,6 +54,7 @@ class QuickLinks extends AbstractSetting {
 				'rating' => __( '\'Leave a review\' link', 'tasty-recipes' ),
 			),
 		);
+		return $this->prepare_multiselect_checkboxes_field_args( $args );
 	}
 
 	public function ordering() {

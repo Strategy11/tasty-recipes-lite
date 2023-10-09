@@ -38,7 +38,7 @@ class CopyToClipboard extends AbstractSetting {
 	}
 
 	public function get_render_args() {
-		return array(
+		$args = array(
 			'name'        => $this->get_id(),
 			'description' => __( 'Allow visitors to copy ingredients to clipboard.', 'tasty-recipes' ),
 			'options'     => array(
@@ -47,6 +47,8 @@ class CopyToClipboard extends AbstractSetting {
 			),
 			'value' => $this->get_option_value(),
 		);
+
+		return $this->prepare_select_field_args( $args );
 	}
 
 	public function ordering() {

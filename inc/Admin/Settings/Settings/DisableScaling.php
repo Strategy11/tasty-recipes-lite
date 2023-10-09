@@ -37,7 +37,7 @@ class DisableScaling extends AbstractSetting {
 	}
 
 	public function get_render_args() {
-		return array(
+		$args = array(
 			'name'         => $this->get_id(),
 			'description'  => __( 'Allow visitors to scale the recipe 1x, 2x, or 3x.', 'tasty-recipes' ),
 			'options'           => array(
@@ -47,6 +47,8 @@ class DisableScaling extends AbstractSetting {
 			'disabled' => true,
 			'class' => 'tasty-show-modal-tasty_recipes_upgrade_modal',
 		);
+
+		return $this->prepare_select_field_args( $args );
 	}
 
 	public function ordering() {

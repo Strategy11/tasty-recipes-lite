@@ -38,7 +38,7 @@ class IngredientsCheckboxes extends AbstractSetting {
 	}
 
 	public function get_render_args() {
-		return array(
+		$args = array(
 			'name'        => $this->get_id(),
 			'description' => __( 'Allow visitors to check off recipe ingredients.', 'tasty-recipes' ),
 			'options'     => array(
@@ -49,6 +49,8 @@ class IngredientsCheckboxes extends AbstractSetting {
 			'disabled' => true,
 			'class' => 'tasty-show-modal-tasty_recipes_upgrade_modal',
 		);
+
+		return $this->prepare_select_field_args( $args );
 	}
 
 	public function ordering() {

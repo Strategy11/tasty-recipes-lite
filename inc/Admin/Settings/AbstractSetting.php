@@ -48,14 +48,11 @@ abstract class AbstractSetting {
 		return 'rgba(' . $red . ',' . $green . ',' . $blue . ',' . $alpha . ')';
 	}
 
-	/**
-	 * Renders multiselect checkbox field.
-	 *
-	 * @param array $args Field args.
-	 *
-	 * @return void
-	 */
-	public static function render_multiselect_checkboxes_field( $args ) {
+	public function filter_field_args( $args ) {
+		return (array) apply_filters( 'tasty_recipes_admin_settings_field_args', $args );
+	}
+
+	public function prepare_multiselect_checkboxes_field_args( $args ) {
 		$defaults = array(
 			'name'           => '',
 			'options'        => array(),
@@ -64,23 +61,15 @@ abstract class AbstractSetting {
 		);
 		$args     = array_merge( $defaults, $args );
 		if ( empty( $args['name'] ) || empty( $args['options'] ) ) {
-			return;
+			return $defaults;
 		}
 
 		$args['checked'] = get_option( $args['name'], $args['default_values'] );
 
-		TastyRecipesLiteMain::echo_template_part(
-			'admin/settings/multiselect-checkbox',
-			apply_filters( 'tasty_recipes_admin_settings_field_args', $args )
-		);
+		return $args;
 	}
 
-	/**
-	 * Render a select field.
-	 *
-	 * @param array $args Configuration arguments used by the select field.
-	 */
-	public function render_select_field( $args ) {
+	public function prepare_select_field_args( $args ) {
 		$defaults = array(
 			'name'          => '',
 			'options'       => array(),
@@ -91,7 +80,7 @@ abstract class AbstractSetting {
 		$args     = wp_parse_args( $args, $defaults );
 
 		if ( empty( $args['name'] ) || empty( $args['options'] ) ) {
-			return;
+			return $args;
 		}
 
 		$value = ! is_null( $args['forced_value'] ) ? $args['forced_value'] : $this->get_option_value( $args['default_value'] );
@@ -109,8 +98,33 @@ abstract class AbstractSetting {
 				$args['is_bool'] = true;
 			}
 		}
+		return $args;
+	}
 
+	/**
+	 * Render a select field.
+	 *
+	 * @param array $args Configuration arguments used by the select field.
+	 */
+	public function render_select_field( $args ) {
 		TastyRecipesLiteMain::echo_template_part( 'admin/settings/select', $args );
+	}
+
+	public function prepare_input_field_args( $args ) {
+		$defaults = array(
+			'type'          => 'text',
+			'name'          => '',
+			'default_value' => '',
+		);
+		$args     = wp_parse_args( $args, $defaults );
+		if ( empty( $args['name'] ) ) {
+			return $args;
+		}
+		if ( ! isset( $args['value'] ) ) {
+			$args['value'] = $this->get_option_value( $args['default_value'] );
+		}
+
+		return $args;
 	}
 
 	/**
@@ -119,19 +133,6 @@ abstract class AbstractSetting {
 	 * @param array $args Configuration arguments used by the input field.
 	 */
 	public function render_input_field( $args ) {
-		$defaults = array(
-			'type'          => 'text',
-			'name'          => '',
-			'default_value' => '',
-		);
-		$args     = wp_parse_args( $args, $defaults );
-		if ( empty( $args['name'] ) ) {
-			return;
-		}
-		if ( ! isset( $args['value'] ) ) {
-			$args['value'] = $this->get_option_value( $args['default_value'] );
-		}
-
 		TastyRecipesLiteMain::echo_template_part( 'admin/settings/input', $args );
 	}
 

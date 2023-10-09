@@ -38,7 +38,7 @@ class ShareAsale extends AbstractSetting {
 	}
 
 	public function get_render_args() {
-		return array(
+		$args = array(
 			'name'        => $this->get_id(),
 			// translators: Various links.
 			'description' => sprintf(
@@ -49,6 +49,8 @@ class ShareAsale extends AbstractSetting {
 				'</a>'
 			),
 		);
+
+		return $this->prepare_input_field_args( $args );
 	}
 
 	public function ordering() {
