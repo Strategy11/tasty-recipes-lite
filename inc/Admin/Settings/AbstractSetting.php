@@ -128,7 +128,9 @@ abstract class AbstractSetting {
 		if ( empty( $args['name'] ) ) {
 			return;
 		}
-		$args['value'] = $this->get_option_value( $args['default_value'] );
+		if ( ! isset( $args['value'] ) ) {
+			$args['value'] = $this->get_option_value( $args['default_value'] );
+		}
 
 		TastyRecipesLiteMain::echo_template_part( 'admin/settings/input', $args );
 	}
