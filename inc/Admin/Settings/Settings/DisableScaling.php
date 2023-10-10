@@ -25,11 +25,15 @@ class DisableScaling extends AbstractSetting {
 	}
 
 	public function get_name() {
-		return __( 'Scaling', 'tasty-recipes' );
+		return __( 'Scaling', 'tasty-recipes' ) . $this->get_pro_badge();
 	}
 
 	public function sanitize( $value ) {
 		return true;
+	}
+
+	protected function get_pro_feature_link() {
+		return 'https://www.wptasty.com/knowledge-base/how-to-disable-recipe-scaling-on-a-single-recipe';
 	}
 
 	public function render_field( $args ) {
@@ -41,11 +45,11 @@ class DisableScaling extends AbstractSetting {
 			'name'         => $this->get_id(),
 			'description'  => __( 'Allow visitors to scale the recipe 1x, 2x, or 3x.', 'tasty-recipes' ),
 			'options'           => array(
-				false => __( 'Off', 'tasty-recipes' ),
-				true  => __( 'On', 'tasty-recipes' ),
+				true => __( 'Off', 'tasty-recipes' ),
+				false  => __( 'On', 'tasty-recipes' ),
 			),
-			'disabled' => true,
-			'class' => 'tasty-show-modal-tasty_recipes_upgrade_modal',
+			'forced_value' => true,
+			'container_class' => 'tasty-show-modal-tasty_recipes_upgrade_modal tasty-recipes-disabled',
 		);
 
 		return $this->prepare_select_field_args( $args );

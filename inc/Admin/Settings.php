@@ -39,7 +39,6 @@ class Settings {
 				'quick_links'               => QuickLinks::instance(),
 				'card_buttons'              => CardButtons::instance(),
 				'unit_conversion'           => UnitConversion::instance(),
-				'automatic_unit_conversion' => AutomaticUnitConversion::instance(),
 				'ingredients_checkboxes'    => IngredientsCheckboxes::instance(),
 				'cook_mode'                 => CookMode::instance(),
 				'scaling'                   => DisableScaling::instance(),

@@ -26,11 +26,15 @@ class IngredientsCheckboxes extends AbstractSetting {
 	}
 
 	public function get_name() {
-		return __( 'Ingredient Checkboxes', 'tasty-recipes' );
+		return __( 'Ingredient Checkboxes', 'tasty-recipes' ) . $this->get_pro_badge();
 	}
 
 	public function sanitize( $value ) {
 		return false;
+	}
+
+	protected function get_pro_feature_link() {
+		return 'https://www.wptasty.com/knowledge-base/';
 	}
 
 	public function render_field( $args ) {
@@ -46,8 +50,7 @@ class IngredientsCheckboxes extends AbstractSetting {
 				true  => __( 'On', 'tasty-recipes' ),
 			),
 			'forced_value' => false,
-			'disabled' => true,
-			'class' => 'tasty-show-modal-tasty_recipes_upgrade_modal',
+			'container_class' => 'tasty-show-modal-tasty_recipes_upgrade_modal tasty-recipes-disabled',
 		);
 
 		return $this->prepare_select_field_args( $args );

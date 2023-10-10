@@ -25,7 +25,11 @@ class UnitConversion extends AbstractSetting {
 	}
 
 	public function get_name() {
-		return __( 'Unit Conversion', 'tasty-recipes' );
+		return __( 'Unit Conversion', 'tasty-recipes' ) . $this->get_pro_badge();
+	}
+
+	protected function get_pro_feature_link() {
+		return 'https://www.wptasty.com/knowledge-base/how-to-enable-unit-conversions-for-recipe-ingredients';
 	}
 
 	public function sanitize( $value ) {
@@ -44,8 +48,8 @@ class UnitConversion extends AbstractSetting {
 				false => __( 'Off', 'tasty-recipes' ),
 				true  => __( 'On', 'tasty-recipes' ),
 			),
-			'disabled' => true,
-			'class' => 'tasty-show-modal-tasty_recipes_upgrade_modal',
+			'forced_value' => false,
+			'container_class' => 'tasty-show-modal-tasty_recipes_upgrade_modal tasty-recipes-disabled',
 		);
 
 		return $this->prepare_select_field_args( $args );

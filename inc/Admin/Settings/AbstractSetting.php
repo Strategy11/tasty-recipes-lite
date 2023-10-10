@@ -7,6 +7,7 @@
 
 namespace Tasty\Recipes\Lite\Admin\Settings;
 
+use Tasty\Framework\Utils\Url;
 use TastyRecipesLiteMain;
 
 abstract class AbstractSetting {
@@ -139,6 +140,22 @@ abstract class AbstractSetting {
 	public function get_option_value( $default = null ) {
 		$default = apply_filters( 'tasty_recipes_setting_default', $default, $this );
 		return get_option( $this->get_id(), $default );
+	}
+
+	protected function get_pro_feature_link() {
+		return 'https://www.wptasty.com/knowledge-base/getting-started-with-tasty-recipes-settings';
+	}
+
+	protected function get_pro_badge() {
+		$data = array(
+			'tasty_badge_link' => Url::add_utm_params(
+				$this->get_pro_feature_link(), array(
+					'utm_medium'  => 'settings',
+					'utm_content' => 'lite',
+				)
+			),
+		);
+		return TastyRecipesLiteMain::get_template_part( 'admin/settings/pro-badge', $data );
 	}
 
 }

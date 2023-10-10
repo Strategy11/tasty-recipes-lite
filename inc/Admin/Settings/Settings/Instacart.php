@@ -25,11 +25,15 @@ class Instacart extends AbstractSetting {
 	}
 
 	public function get_name() {
-		return __( 'Add an Instacart button', 'tasty-recipes' );
+		return __( 'Add an Instacart button', 'tasty-recipes' ) . $this->get_pro_badge();
 	}
 
 	public function sanitize( $value ) {
 		return true;
+	}
+
+	protected function get_pro_feature_link() {
+		return 'https://www.wptasty.com/knowledge-base/how-to-use-instacart-in-recipes';
 	}
 
 	public function render_field( $args ) {
@@ -49,9 +53,8 @@ class Instacart extends AbstractSetting {
 				false => __( 'Off', 'tasty-recipes' ),
 				true  => __( 'On', 'tasty-recipes' ),
 			),
-			'disabled' => true,
-			'class' => 'tasty-show-modal-tasty_recipes_upgrade_modal',
-			'default_value' => false,
+			'forced_value' => false,
+			'container_class' => 'tasty-show-modal-tasty_recipes_upgrade_modal tasty-recipes-disabled',
 		);
 
 		return $this->prepare_select_field_args( $args );

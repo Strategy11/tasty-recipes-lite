@@ -25,11 +25,15 @@ class CookMode extends AbstractSetting {
 	}
 
 	public function get_name() {
-		return __( 'Enable Cook Mode', 'tasty-recipes' );
+		return __( 'Enable Cook Mode', 'tasty-recipes' ) . $this->get_pro_badge();
 	}
 
 	public function sanitize( $value ) {
 		return false;
+	}
+
+	protected function get_pro_feature_link() {
+		return 'https://www.wptasty.com/knowledge-base/cook-mode';
 	}
 
 	public function render_field( $args ) {
@@ -44,8 +48,8 @@ class CookMode extends AbstractSetting {
 				false => __( 'Off', 'tasty-recipes' ),
 				true  => __( 'On', 'tasty-recipes' ),
 			),
-			'disabled' => true,
-			'class' => 'tasty-show-modal-tasty_recipes_upgrade_modal',
+			'forced_value' => false,
+			'container_class' => 'tasty-show-modal-tasty_recipes_upgrade_modal tasty-recipes-disabled',
 		);
 
 		return $this->prepare_select_field_args( $args );
