@@ -129,7 +129,22 @@
 			$('.tasty-recipes-converter-welcome').show();
 		}, this) );
 
+		$('[class^="tasty-recipes-dependon-"]').each( (index, item) => {
+			let parent_item = $(item).attr('class').split(' ')[0].split('tasty-recipes-dependon-')[1].split('-');
+			if ( parent_item ) {
+				let parent_item_object = $('#' + parent_item[0]);
+				parent_item_object.change( (e) => {
+					e.preventDefault();
 
+					if ( $(e.target).val() === parent_item[1] ) {
+						$(item).show();
+					} else {
+						$(item).hide();
+					}
+				} );
+				parent_item_object.change();
+			}
+		} );
 
 	});
 

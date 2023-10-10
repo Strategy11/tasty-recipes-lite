@@ -137,3 +137,7 @@
 	color: red;
 	margin-top: 5px;
 }
+
+[class^='tasty-recipes-dependon-']{
+	display: none;
+}
