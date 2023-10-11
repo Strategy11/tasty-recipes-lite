@@ -662,13 +662,7 @@ class Shortcodes {
 			$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( dirname( __FILE__ ) ) . '/assets/js/ingredient-checkboxes.js' );
 		}
 
-		if ( Admin::is_cook_mode_enabled() ) {
-			$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( dirname( __FILE__ ) ) . '/assets/js/cook-mode.js' );
-		}
-
 		$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( dirname( __FILE__ ) ) . '/assets/js/ratings.js' );
-
-		self::minify_js( $template_vars['recipe_scripts'] );
 
 		$total_reviews = $recipe->get_total_reviews();
 
@@ -808,6 +802,9 @@ EOT;
 		 * @param object $recipe Recipe object.
 		 */
 		$template_vars = apply_filters( 'tasty_recipes_recipe_template_vars', $template_vars, $recipe );
+
+		self::minify_js( $template_vars['recipe_scripts'] );
+
 		$ret          .= TastyRecipesLiteMain::get_template_part( $template, $template_vars );
 		$ret          .= '</div>';
 

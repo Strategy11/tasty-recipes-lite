@@ -744,33 +744,6 @@ EOT;
 	}
 
 	/**
-	 * Check if Cook Mode can be enabled in this site or not.
-	 *
-	 * @since 3.8
-	 *
-	 * @return bool
-	 */
-	public static function can_enable_cook_mode() {
-		/**
-		 * Filters the capability of enabling cook mode be enabled in this site.
-		 *
-		 * @param bool $can_enable True to enable, false otherwise.
-		 */
-		return (bool) apply_filters( 'tasty_recipes_enable_cook_mode', is_ssl() );
-	}
-
-	/**
-	 * Is Cook Mode enabled or not.
-	 *
-	 * @since 3.8
-	 *
-	 * @return bool
-	 */
-	public static function is_cook_mode_enabled() {
-		return (bool) get_option( TastyRecipesLiteMain::COOK_MODE_OPTION, self::can_enable_cook_mode() );
-	}
-
-	/**
 	 * Show SSL certificate error message.
 	 *
 	 * @since 3.8
@@ -778,22 +751,7 @@ EOT;
 	 * @return void
 	 */
 	public static function show_ssl_error() {
-		if ( self::can_enable_cook_mode() ) {
-			return;
-		}
-		$error_message = __( 'Cook Mode requires SSL (HTTPS)', 'tasty-recipes' );
-		echo "<div class='tasty-recipes-settings-error'>" . esc_html( $error_message ) . '</div>';
-	}
-
-	/**
-	 * Get Cook Mode helper message.
-	 *
-	 * @since 3.8
-	 *
-	 * @return string
-	 */
-	public static function get_cook_mode_helper() {
-		return get_option( TastyRecipesLiteMain::COOK_MODE_HELPER_OPTION, __( 'Prevent your screen from going dark', 'tasty-recipes' ) );
+		// Todo: deprecate.
 	}
 
 	/**
