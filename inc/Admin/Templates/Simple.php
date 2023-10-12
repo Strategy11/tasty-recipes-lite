@@ -20,8 +20,4 @@ class Simple extends AbstractTemplate {
 	public function get_name() {
 		return 'Simple';
 	}
-
-	public function get_path() {
-		// TODO: Implement get_path() method.
-	}
 }

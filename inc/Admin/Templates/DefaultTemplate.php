@@ -20,8 +20,4 @@ class DefaultTemplate extends AbstractTemplate {
 	public function get_name() {
 		return 'Default';
 	}
-
-	public function get_path() {
-		// TODO: Implement get_path() method.
-	}
 }
