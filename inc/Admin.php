@@ -10,6 +10,7 @@ namespace Tasty\Recipes\Lite;
 use Tasty\Framework\Utils\Url;
 use TastyRecipesLiteMain;
 use Tasty\Recipes\Lite\Admin\Settings;
+use Tasty\Recipes\Lite\Admin\Templates;
 
 /**
  * Manages interactions with the admin.
@@ -820,7 +821,7 @@ EOT;
 	}
 
 	public static function get_design_templates() {
-		return (array) apply_filters( 'tasty_recipes_design_templates', self::TEMPLATE_OPTIONS );
+		return Templates::instance()->get_all_templates();
 	}
 
 	public static function filter_default_card_buttons_setting() {
