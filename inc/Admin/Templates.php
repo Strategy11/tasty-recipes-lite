@@ -16,24 +16,44 @@ class Templates {
 
 	use Singleton;
 
-	public function get_all_templates() {
-		$templates = array();
+	private $template_objects = null;
+
+	private function get_template_objects() {
+		if ( ! is_null( $this->template_objects ) ) {
+			return;
+		}
 
 		$template_objects = array(
-			DefaultTemplate::instance(),
-			Simple::instance(),
-			Snap::instance(),
+			'default' => DefaultTemplate::instance(),
+			'simple'  => Simple::instance(),
+			'snap'    => Snap::instance(),
 		);
-		$template_objects = (array) apply_filters( 'tasty_recipes_template_objects', $template_objects );
-		if ( empty( $template_objects ) ) {
+		$this->template_objects = (array) apply_filters( 'tasty_recipes_template_objects', $template_objects );
+	}
+
+	public function get_all_templates() {
+		$templates = array();
+		$this->get_template_objects();
+
+		if ( empty( $this->template_objects ) ) {
 			return $templates;
 		}
 
-		foreach ( $template_objects as $template ) {
+		foreach ( $this->template_objects as $template ) {
 			$templates[ $template->get_id() ] = $template->get_name();
 		}
 
 		return $templates;
+	}
+
+	public function get_object_by_name( $template ) {
+		$this->get_template_objects();
+
+		if ( empty( $this->template_objects ) || ! isset( $this->template_objects[ $template ] ) ) {
+			return DefaultTemplate::instance();
+		}
+
+		return $this->template_objects[ $template ];
 	}
 
 }

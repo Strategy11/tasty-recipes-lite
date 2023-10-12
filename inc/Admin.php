@@ -243,7 +243,8 @@ class Admin {
 		$styles .= Utils::get_contents( dirname( TASTY_RECIPES_LITE_PLUGIN_FILE ) . '/assets/dist/ratings.css' );
 		$styles .= Utils::get_contents( dirname( TASTY_RECIPES_LITE_PLUGIN_FILE ) . '/assets/dist/recipe-card-preview.css' );
 
-		$custom_path = dirname( TASTY_RECIPES_LITE_PLUGIN_FILE ) . '/templates/designs/' . $custom_design . '/tasty-recipes.php';
+		$template_object = Templates::instance()->get_object_by_name( $custom_design );
+		$custom_path = $template_object->get_template_path();
 		if ( $custom_design && file_exists( $custom_path ) ) {
 			$template = $custom_path;
 		} else {
@@ -633,68 +634,7 @@ EOT;
 	 * @return array
 	 */
 	public static function sanitize_customization_option( $original ) {
-		$original  = stripslashes_deep( (array) $original );
-		$sanitized = array();
-		$allowed   = array(
-			'primary_color'            => array( __CLASS__, 'sanitize_color' ),
-			'secondary_color'          => array( __CLASS__, 'sanitize_color' ),
-			'icon_color'               => array( __CLASS__, 'sanitize_color' ),
-			'button_color'             => array( __CLASS__, 'sanitize_color' ),
-			'button_text_color'        => array( __CLASS__, 'sanitize_color' ),
-			'detail_label_color'       => array( __CLASS__, 'sanitize_color' ),
-			'detail_value_color'       => array( __CLASS__, 'sanitize_color' ),
-			'h2_color'                 => array( __CLASS__, 'sanitize_color' ),
-			'h2_transform'             => array(
-				'uppercase',
-				'initial',
-				'lowercase',
-			),
-			'h3_color'                 => array( __CLASS__, 'sanitize_color' ),
-			'h3_transform'             => array(
-				'uppercase',
-				'initial',
-				'lowercase',
-			),
-			'body_color'               => array( __CLASS__, 'sanitize_color' ),
-			'star_ratings_style'       => array(
-				'solid',
-				'outline',
-			),
-			'star_color'               => array( __CLASS__, 'sanitize_color' ),
-			'nutrifox_display_style'   => array(
-				'label',
-				'card',
-			),
-			'footer_social_platform'   => array(
-				'instagram',
-				'pinterest',
-				'facebook',
-			),
-			'footer_icon_color'        => array( __CLASS__, 'sanitize_color' ),
-			'footer_heading'           => 'sanitize_text_field',
-			'footer_heading_color'     => array( __CLASS__, 'sanitize_color' ),
-			'footer_description'       => 'wp_filter_post_kses',
-			'footer_description_color' => array( __CLASS__, 'sanitize_color' ),
-		);
-		foreach ( $original as $key => $value ) {
-			if ( ! isset( $allowed[ $key ] ) ) {
-				continue;
-			}
-
-			if ( is_callable( $allowed[ $key ] ) ) {
-				$sanitized[ $key ] = $allowed[ $key ]( $value );
-			} elseif ( is_array( $allowed[ $key ] ) ) {
-				if ( in_array( $value, $allowed[ $key ], true ) ) {
-					$sanitized[ $key ] = $value;
-				} else {
-					$sanitized[ $key ] = '';
-				}
-			}
-		}
-		if ( ! empty( $sanitized['footer_description'] ) ) {
-			$sanitized['footer_description'] = stripslashes( wpautop( $sanitized['footer_description'] ) );
-		}
-		return $sanitized;
+		// Todo: Deprecate.
 	}
 
 	/**
@@ -704,17 +644,7 @@ EOT;
 	 * @return string
 	 */
 	private static function sanitize_color( $color ) {
-		if ( empty( $color ) || is_array( $color ) ) {
-			return '';
-		}
-
-		if ( false === strpos( $color, 'rgba' ) ) {
-			return sanitize_hex_color( $color );
-		}
-
-		$color = str_replace( ' ', '', $color );
-		sscanf( $color, 'rgba(%d,%d,%d,%f)', $red, $green, $blue, $alpha );
-		return 'rgba(' . $red . ',' . $green . ',' . $blue . ',' . $alpha . ')';
+		// Todo: Deprecate.
 	}
 
 	/**
@@ -771,31 +701,6 @@ EOT;
 				'message' => esc_html__( 'You don\'t have permission to do this.', 'tasty-recipes' ),
 			)
 		);
-	}
-
-	/**
-	 * Check if instacart option is enabled and affiliate ID option is not empty.
-	 *
-	 * @since 3.8
-	 *
-	 * @return bool
-	 */
-	public static function can_show_instacart_button() {
-		return (bool) get_option( TastyRecipesLiteMain::INSTACART_OPTION, false );
-	}
-
-	/**
-	 * Print instacart image in admin instead of real iframe.
-	 *
-	 * @since 3.8
-	 *
-	 * @return void
-	 */
-	public static function print_mock_instacart_html() {
-		if ( ! self::can_show_instacart_button() ) {
-			return;
-		}
-		echo '<p><a href=""><img src="' . esc_attr( plugins_url( 'assets/images/instacart.svg', TASTY_RECIPES_LITE_PLUGIN_FILE ) ) . '"/></a></p>';
 	}
 
 	/**

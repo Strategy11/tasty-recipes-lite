@@ -7,6 +7,9 @@
 
 namespace Tasty\Recipes\Lite;
 
+use Tasty\Recipes\Lite\Admin\Settings\Design\Template;
+use Tasty\Recipes\Lite\Admin\Settings\Settings\ShareAsale;
+use Tasty\Recipes\Lite\Admin\Templates;
 use TastyRecipesLiteMain;
 use Tasty\Recipes\Lite\Objects\Recipe;
 use WP_Post;
@@ -289,8 +292,9 @@ class Shortcodes {
 		if ( file_exists( get_stylesheet_directory() . '/tasty-recipes.php' ) ) {
 			$template = get_stylesheet_directory() . '/tasty-recipes.php';
 		} else {
-			$custom_design = get_option( TastyRecipesLiteMain::TEMPLATE_OPTION, '' );
-			$custom_path   = dirname( TASTY_RECIPES_LITE_PLUGIN_FILE ) . '/templates/designs/' . $custom_design . '/tasty-recipes.php';
+			$custom_design   = Template::instance()->get_option_value( '' );
+			$template_object = Templates::instance()->get_object_by_name( $custom_design );
+			$custom_path     = $template_object->get_template_path();
 			if ( $custom_design && file_exists( $custom_path ) ) {
 				$template = $custom_path;
 			} else {
@@ -302,7 +306,7 @@ class Shortcodes {
 			$wrapper_classes[] = 'easyrecipe';
 		}
 
-		$shareasale = get_option( TastyRecipesLiteMain::SHAREASALE_OPTION );
+		$shareasale = ShareAsale::instance()->get_option_value();
 		if ( $shareasale ) {
 			$wrapper_classes[] = 'tasty-recipes-has-plug';
 		}
@@ -985,7 +989,8 @@ EOT;
 	public static function get_styles_as_string( $custom_design ) {
 		$styles = Utils::get_contents( dirname( dirname( __FILE__ ) ) . '/assets/dist/recipe.css' );
 		if ( $custom_design ) {
-			$custom_path = dirname( TASTY_RECIPES_LITE_PLUGIN_FILE ) . '/templates/designs/' . $custom_design . '/tasty-recipes.css';
+			$template_object = Templates::instance()->get_object_by_name( $custom_design );
+			$custom_path = $template_object->get_style_path();
 			if ( file_exists( $custom_path ) ) {
 				$styles .= PHP_EOL . PHP_EOL . Utils::get_contents( $custom_path );
 			}
