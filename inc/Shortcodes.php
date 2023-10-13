@@ -347,17 +347,12 @@ class Shortcodes {
 
 		$embed_data = $recipe->get_video_url_response();
 
-		$recipe_convertable = false;
-
 		$orig_ingredients = $recipe_json['ingredients'];
 		$ingredients      = $orig_ingredients;
 
 		$ingredients = self::process_ingredients_annotate_with_spans( $ingredients );
 
-		if ( get_option( TastyRecipesLiteMain::INGREDIENT_CHECKBOXES_OPTION )
-			&& ! is_feed() && ! tasty_recipes_is_print() ) {
-			$ingredients = self::process_ingredients_for_checkboxes( $ingredients );
-		}
+
 
 		// Strip out this <span> so Tasty Links can apply to ingredient names.
 		if ( false !== stripos( $ingredients, '<span class="nutrifox-name">' ) ) {
@@ -397,7 +392,7 @@ class Shortcodes {
 			'recipe_description'            => self::do_caption_shortcode( $recipe_json['description_rendered'] ),
 			'recipe_ingredients'            => apply_filters( 'tasty_recipes_the_content', self::do_caption_shortcode( $ingredients ), 'ingredients' ),
 			'recipe_instructions_has_video' => false,
-			'recipe_convertable'            => $recipe_convertable,
+			'recipe_convertable'            => false,
 			'recipe_scalable'               => '',
 			'recipe_instructions'           => DistributionMetadata::apply_instruction_step_numbers( apply_filters( 'tasty_recipes_the_content', self::do_caption_shortcode( $recipe_json['instructions'] ), 'instructions' ) ),
 			'recipe_keywords'               => $recipe_json['keywords'],
