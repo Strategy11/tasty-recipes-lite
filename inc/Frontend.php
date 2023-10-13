@@ -32,11 +32,12 @@ class Frontend {
 	 * @return Frontend
 	 */
 	public static function get_instance() {
-		if ( null !== self::$instance ) {
+		$called_class = get_called_class();
+		if ( null !== self::$instance && $called_class === get_class( self::$instance ) ) {
 			return self::$instance;
 		}
 
-		self::$instance = new self();
+		self::$instance = new static();
 		self::$instance->add_hooks();
 		return self::$instance;
 	}
@@ -48,7 +49,7 @@ class Frontend {
 	 *
 	 * @return void
 	 */
-	protected function add_hooks() {
+	public function add_hooks() {
 		add_filter( 'tasty_recipes_quick_links', array( $this, 'insert_rating_quick_link' ), 10, 4 );
 	}
 
