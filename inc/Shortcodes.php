@@ -351,48 +351,8 @@ class Shortcodes {
 
 		$orig_ingredients = $recipe_json['ingredients'];
 		$ingredients      = $orig_ingredients;
-		$nutrifox_convert = get_post_meta( $recipe->get_id(), 'nutrifox_conversion_response', true );
-		if ( get_option( TastyRecipesLiteMain::UNIT_CONVERSION_OPTION )
-			&& ! empty( $nutrifox_convert['processed'] )
-			&& empty( $atts['disable_unit_conversion'] ) ) {
-			$ingredients = $nutrifox_convert['processed'];
-			if ( false !== stripos( $ingredients, 'data-nf-original' ) ) {
-				$first_type   = 'usc';
-				$first_label  = __( 'US', 'tasty-recipes' );
-				$second_type  = 'metric';
-				$second_label = __( 'M', 'tasty-recipes' );
-				$first_active = '';
-				if ( false !== stripos( $ingredients, 'data-nf-original="usc"' )
-					&& false === stripos( $ingredients, 'data-nf-original="metric"' ) ) {
-					$first_active = ' tasty-recipes-convert-button-active';
-				} elseif ( false !== stripos( $ingredients, 'data-nf-original="metric"' )
-					&& false === stripos( $ingredients, 'data-nf-original="usc"' ) ) {
-					$first_active = ' tasty-recipes-convert-button-active';
-					$first_type   = 'metric';
-					$first_label  = __( 'M', 'tasty-recipes' );
-					$second_type  = 'usc';
-					$second_label = __( 'US', 'tasty-recipes' );
-				}
-				$recipe_convertable  = '<button class="tasty-recipes-convert-button' . $first_active . '" data-unit-type="' . esc_attr( $first_type ) . '" type="button">' . $first_label . '</button>';
-				$recipe_convertable .= '<button class="tasty-recipes-convert-button" data-unit-type="' . esc_attr( $second_type ) . '" type="button">' . $second_label . '</button>';
-			}
-		}
-
-		$error = get_post_meta( $recipe->get_id(), 'nutrifox_conversion_error', true );
-		if ( get_option( TastyRecipesLiteMain::UNIT_CONVERSION_OPTION )
-			&& empty( $atts['disable_unit_conversion'] )
-			&& $error && self::is_error_message_showable() ) {
-			$message_text = sprintf( 'Ingredient units were not converted: %s. Try saving the recipe again, or contact Tasty Recipes support if the error persists.', $error->get_error_message() );
-			if ( false !== stripos( $error->get_error_message(), '(HTTP code 401)' ) ) {
-				$message_text = 'Ingredient unit conversion requires a valid Tasty Recipes license key. Enter a valid license key, or contact Tasty Recipes support if you are seeing this message in error.';
-			}
-			$error_message  = '<div style="border:4px solid #dc3232;padding:5px 12px;margin-top:15px;margin-bottom:15px;">' . esc_html( $message_text ) . '</div>';
-			$error_message .= '</div>' . PHP_EOL;
-			$ingredients    = $error_message . $ingredients;
-		}
 
 		$ingredients = self::process_ingredients_annotate_with_spans( $ingredients );
-
 
 		if ( get_option( TastyRecipesLiteMain::INGREDIENT_CHECKBOXES_OPTION )
 			&& ! is_feed() && ! tasty_recipes_is_print() ) {
@@ -606,11 +566,6 @@ class Shortcodes {
 			$styles .= $responsive_styles;
 		}
 		$template_vars['recipe_styles'] = '<style type="text/css" style="display: none !important;">' . PHP_EOL . Utils::minify_css( $styles ) . PHP_EOL . '</style>' . PHP_EOL;
-
-		if ( $recipe_convertable ) {
-			$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( dirname( __FILE__ ) ) . '/assets/js/frac.js' );
-			$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( dirname( __FILE__ ) ) . '/assets/js/convert-buttons.js' );
-		}
 
 		if ( $copy_ingredients ) {
 			$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( dirname( __FILE__ ) ) . '/assets/js/copy-ingredients.js' );
@@ -1134,7 +1089,7 @@ EOT;
 	 *
 	 * @return boolean
 	 */
-	private static function is_error_message_showable() {
+	public static function is_error_message_showable() {
 		if ( ! current_user_can( 'edit_posts' ) ) {
 			return false;
 		}

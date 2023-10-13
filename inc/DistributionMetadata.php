@@ -710,7 +710,8 @@ class DistributionMetadata {
 				update_post_meta( $post->ID, $ttl_key, time() + ( 1 * DAY_IN_SECONDS ) );
 				return false;
 			}
-			$response_data = ContentModel::apply_youtube_enrichment_to_response_data( $video_url, $response_data );
+
+			$response_data = apply_filters( 'tasty_recipes_oembed_response_data', $response_data, $video_url );
 			update_post_meta( $post->ID, $cache_key, $response_data );
 			$cache = $response_data;
 			update_post_meta( $post->ID, $ttl_key, time() + ( 7 * DAY_IN_SECONDS ) );
