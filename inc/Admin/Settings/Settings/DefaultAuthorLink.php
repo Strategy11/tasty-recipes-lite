@@ -39,8 +39,8 @@ class DefaultAuthorLink extends AbstractSetting {
 
 	public function get_render_args() {
 		$args = array(
-			'name' => $this->get_id(),
-			'type' => 'text',
+			'name'        => $this->get_id(),
+			'type'        => 'text',
 			'field_class' => 'regular-text',
 		);
 

@@ -42,13 +42,13 @@ class UnitConversion extends AbstractSetting {
 
 	public function get_render_args() {
 		$args = array(
-			'name'              => $this->get_id(),
-			'description'       => __( 'Allow visitors to convert between US Customary and Metric.', 'tasty-recipes' ),
-			'options'           => array(
+			'name'            => $this->get_id(),
+			'description'     => __( 'Allow visitors to convert between US Customary and Metric.', 'tasty-recipes' ),
+			'options'         => array(
 				false => __( 'Off', 'tasty-recipes' ),
 				true  => __( 'On', 'tasty-recipes' ),
 			),
-			'forced_value' => false,
+			'forced_value'    => false,
 			'container_class' => 'tasty-show-modal-tasty_recipes_upgrade_modal tasty-recipes-disabled',
 		);
 

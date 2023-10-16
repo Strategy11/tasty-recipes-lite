@@ -30,22 +30,22 @@ class Settings {
 	private $settings = array();
 
 	public function get_all_settings() {
-		$settings = array(
+		$settings       = array(
 			Admin::SETTINGS_SECTION_CARD_DESIGN => array(
 				Customization::instance(),
 				Template::instance(),
 			),
-			Admin::SETTINGS_GROUP_CARD => array(
-				'quick_links'               => QuickLinks::instance(),
-				'card_buttons'              => CardButtons::instance(),
-				'unit_conversion'           => UnitConversion::instance(),
-				'ingredients_checkboxes'    => IngredientsCheckboxes::instance(),
-				'cook_mode'                 => CookMode::instance(),
-				'scaling'                   => DisableScaling::instance(),
-				'default_author_link'       => DefaultAuthorLink::instance(),
-				'instacart'                 => Instacart::instance(),
-				'copy_to_clipboard'         => CopyToClipboard::instance(),
-				'shareasale'                => ShareAsale::instance(),
+			Admin::SETTINGS_GROUP_CARD          => array(
+				'quick_links'            => QuickLinks::instance(),
+				'card_buttons'           => CardButtons::instance(),
+				'unit_conversion'        => UnitConversion::instance(),
+				'ingredients_checkboxes' => IngredientsCheckboxes::instance(),
+				'cook_mode'              => CookMode::instance(),
+				'scaling'                => DisableScaling::instance(),
+				'default_author_link'    => DefaultAuthorLink::instance(),
+				'instacart'              => Instacart::instance(),
+				'copy_to_clipboard'      => CopyToClipboard::instance(),
+				'shareasale'             => ShareAsale::instance(),
 			),
 		);
 		$this->settings = (array) apply_filters( 'tasty_recipes_settings_objects', $settings );

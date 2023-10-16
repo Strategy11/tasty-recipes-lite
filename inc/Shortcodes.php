@@ -123,7 +123,7 @@ class Shortcodes {
 				$quick_links = array();
 				break;
 			default:
-				//$quick_links = Admin::handle_quick_links_backward_compatibility( get_option( Tasty_Recipes::QUICK_LINKS_OPTION, array( 'jump', 'print' ) ) );
+				// $quick_links = Admin::handle_quick_links_backward_compatibility( get_option( Tasty_Recipes::QUICK_LINKS_OPTION, array( 'jump', 'print' ) ) );
 				$quick_links = get_option( TastyRecipesLiteMain::QUICK_LINKS_OPTION, array( 'jump', 'print' ) );
 				break;
 		}
@@ -351,8 +351,6 @@ class Shortcodes {
 		$ingredients      = $orig_ingredients;
 
 		$ingredients = self::process_ingredients_annotate_with_spans( $ingredients );
-
-
 
 		// Strip out this <span> so Tasty Links can apply to ingredient names.
 		if ( false !== stripos( $ingredients, '<span class="nutrifox-name">' ) ) {
@@ -710,8 +708,8 @@ EOT;
 
 		self::minify_js( $template_vars['recipe_scripts'] );
 
-		$ret          .= TastyRecipesLiteMain::get_template_part( $template, $template_vars );
-		$ret          .= '</div>';
+		$ret .= TastyRecipesLiteMain::get_template_part( $template, $template_vars );
+		$ret .= '</div>';
 
 		if ( $shareasale ) {
 			$ret .= '<div class="tasty-recipes-plug">';
@@ -891,7 +889,7 @@ EOT;
 		$styles = Utils::get_contents( dirname( dirname( __FILE__ ) ) . '/assets/dist/recipe.css' );
 		if ( $custom_design ) {
 			$template_object = Templates::instance()->get_object_by_name( $custom_design );
-			$custom_path = $template_object->get_style_path();
+			$custom_path     = $template_object->get_style_path();
 			if ( file_exists( $custom_path ) ) {
 				$styles .= PHP_EOL . PHP_EOL . Utils::get_contents( $custom_path );
 			}
@@ -1120,7 +1118,7 @@ EOT;
 	 * @return void
 	 */
 	public static function run_after_ingredients() {
-		remove_filter( 'tasty_recipes_recipe_card_output', array( Shortcodes::class, 'inside_ingredients_handler' ) );
+		remove_filter( 'tasty_recipes_recipe_card_output', array( self::class, 'inside_ingredients_handler' ) );
 	}
 
 	/**

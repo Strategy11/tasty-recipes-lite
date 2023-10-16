@@ -6,7 +6,7 @@
  */
 
 ?>
-<div class="tasty-recipes-select-container <?php echo esc_attr( isset( $container_class ) ? $container_class : '' ) ?>">
+<div class="tasty-recipes-select-container <?php echo esc_attr( isset( $container_class ) ? $container_class : '' ); ?>">
 	<?php
 	if ( ! empty( $before_field ) ) {
 		echo $before_field;
@@ -14,9 +14,9 @@
 	?>
 	<select name="<?php echo esc_attr( $name ); ?>"
 			id="<?php echo esc_attr( $name ); ?>"
-			class="<?php echo esc_attr( isset( $field_class ) ? $field_class : '' ) ?>" <?php disabled( ! empty( $disabled ) ); ?>>
+			class="<?php echo esc_attr( isset( $field_class ) ? $field_class : '' ); ?>" <?php disabled( ! empty( $disabled ) ); ?>>
 		<?php
-		foreach ( $options as $option_key => $option_label ){
+		foreach ( $options as $option_key => $option_label ) {
 			$compare_key = $option_key;
 			if ( $is_bool ) {
 				$compare_key = (bool) $option_key;

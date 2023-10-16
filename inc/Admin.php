@@ -107,9 +107,9 @@ class Admin {
 	 * @var array
 	 */
 	const TEMPLATE_OPTIONS = array(
-		''               => 'Default',
-		'snap'           => 'Snap',
-		'simple'         => 'Simple',
+		''       => 'Default',
+		'snap'   => 'Snap',
+		'simple' => 'Simple',
 	);
 
 	/**
@@ -244,7 +244,7 @@ class Admin {
 		$styles .= Utils::get_contents( dirname( TASTY_RECIPES_LITE_PLUGIN_FILE ) . '/assets/dist/recipe-card-preview.css' );
 
 		$template_object = Templates::instance()->get_object_by_name( $custom_design );
-		$custom_path = $template_object->get_template_path();
+		$custom_path     = $template_object->get_template_path();
 		if ( $custom_design && file_exists( $custom_path ) ) {
 			$template = $custom_path;
 		} else {

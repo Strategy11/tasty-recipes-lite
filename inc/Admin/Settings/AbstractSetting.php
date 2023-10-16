@@ -149,7 +149,8 @@ abstract class AbstractSetting {
 	protected function get_pro_badge() {
 		$data = array(
 			'tasty_badge_link' => Url::add_utm_params(
-				$this->get_pro_feature_link(), array(
+				$this->get_pro_feature_link(),
+				array(
 					'utm_medium'  => 'settings',
 					'utm_content' => 'lite',
 				)

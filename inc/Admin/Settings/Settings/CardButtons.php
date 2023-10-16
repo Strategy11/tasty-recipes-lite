@@ -39,7 +39,7 @@ class CardButtons extends AbstractSetting {
 		}
 
 		$sanitized = array();
-		$args = $this->filter_field_args( $this->get_render_args() );
+		$args      = $this->filter_field_args( $this->get_render_args() );
 		foreach ( $this->positions as $position ) {
 			if ( empty( $value[ $position ] ) || ! in_array( $value[ $position ], array_keys( $args['options'] ), true ) ) {
 				continue;
@@ -55,14 +55,14 @@ class CardButtons extends AbstractSetting {
 
 	public function get_render_args() {
 		return array(
-			'name' => $this->get_id(),
-			'options' => array(
-				''            => esc_html__( 'Off', 'tasty-recipes' ),
-				'print'       => esc_html__( 'Print', 'tasty-recipes' ),
-				'mediavine'   => esc_html__( 'Mediavine Grow.me Save', 'tasty-recipes' ),
+			'name'      => $this->get_id(),
+			'options'   => array(
+				''          => esc_html__( 'Off', 'tasty-recipes' ),
+				'print'     => esc_html__( 'Print', 'tasty-recipes' ),
+				'mediavine' => esc_html__( 'Mediavine Grow.me Save', 'tasty-recipes' ),
 			),
 			'positions' => $this->positions,
-			'value' => $this->get_option_value(),
+			'value'     => $this->get_option_value(),
 		);
 	}
 

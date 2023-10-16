@@ -45,7 +45,7 @@ class CopyToClipboard extends AbstractSetting {
 				false => __( 'Off', 'tasty-recipes' ),
 				true  => __( 'On', 'tasty-recipes' ),
 			),
-			'value' => $this->get_option_value(),
+			'value'       => $this->get_option_value(),
 		);
 
 		return $this->prepare_select_field_args( $args );

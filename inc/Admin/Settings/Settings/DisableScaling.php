@@ -42,13 +42,13 @@ class DisableScaling extends AbstractSetting {
 
 	public function get_render_args() {
 		$args = array(
-			'name'         => $this->get_id(),
-			'description'  => __( 'Allow visitors to scale the recipe 1x, 2x, or 3x.', 'tasty-recipes' ),
-			'options'           => array(
-				true => __( 'Off', 'tasty-recipes' ),
-				false  => __( 'On', 'tasty-recipes' ),
+			'name'            => $this->get_id(),
+			'description'     => __( 'Allow visitors to scale the recipe 1x, 2x, or 3x.', 'tasty-recipes' ),
+			'options'         => array(
+				true  => __( 'Off', 'tasty-recipes' ),
+				false => __( 'On', 'tasty-recipes' ),
 			),
-			'forced_value' => true,
+			'forced_value'    => true,
 			'container_class' => 'tasty-show-modal-tasty_recipes_upgrade_modal tasty-recipes-disabled',
 		);
 

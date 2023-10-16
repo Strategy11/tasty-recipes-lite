@@ -23,7 +23,7 @@ class Templates {
 			return;
 		}
 
-		$template_objects = array(
+		$template_objects       = array(
 			'default' => DefaultTemplate::instance(),
 			'simple'  => Simple::instance(),
 			'snap'    => Snap::instance(),
