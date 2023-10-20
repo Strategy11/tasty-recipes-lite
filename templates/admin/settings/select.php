@@ -9,6 +9,7 @@
 <div class="tasty-recipes-select-container <?php echo esc_attr( isset( $container_class ) ? $container_class : '' ); ?>">
 	<?php
 	if ( ! empty( $before_field ) ) {
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo $before_field;
 	}
 	?>
@@ -30,6 +31,7 @@
 		<?php
 	}
 	if ( ! empty( $after_field ) ) {
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo $after_field;
 	}
 	?>

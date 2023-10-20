@@ -9,6 +9,7 @@
 <div class="tasty-recipes-input-container">
 	<?php
 	if ( ! empty( $before_field ) ) {
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo $before_field;
 	}
 	?>
@@ -19,7 +20,7 @@
 
 	<input type="<?php echo esc_attr( $type ); ?>" name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( $name ); ?>"
 		   value="<?php echo esc_attr( $value ); ?>"
-		   class="<?php echo esc_attr( isset( $field_class ) ? $field_class : '' ); ?>" 
+		   class="<?php echo esc_attr( isset( $field_class ) ? $field_class : '' ); ?>"
 							 <?php
 								if ( isset( $disabled ) ) {
 									disabled( $disabled ); }
@@ -40,6 +41,7 @@
 	}
 
 	if ( ! empty( $after_field ) ) {
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo $after_field;
 	}
 	?>

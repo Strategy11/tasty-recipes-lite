@@ -42,6 +42,7 @@ class ShareAsale extends AbstractSetting {
 			'name'        => $this->get_id(),
 			// translators: Various links.
 			'description' => sprintf(
+				/* translators: %1$s link to apply for the affiliate program, %2$s end link HTML, %3$s start affilaite link ID HTML, %4$s end link HTML */
 				__( '%1$sApply for the affiliate program%2$s, or %3$sfind your affiliate ID%4$s.', 'tasty-recipes-lite' ),
 				'<a href="https://www.wptasty.com/affiliate" target="_blank" rel="noopener">',
 				'</a>',

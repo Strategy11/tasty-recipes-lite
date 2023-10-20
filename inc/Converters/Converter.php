@@ -355,7 +355,7 @@ abstract class Converter {
 
 		$id = media_handle_sideload( $file_array, 0 );
 		if ( is_wp_error( $id ) ) {
-			unlink( $file_array['tmp_name'] );
+			wp_delete_file( $file_array['tmp_name'] );
 			do_action( 'tasty_recipes_imported_image', 0 );
 			return 0;
 		}
