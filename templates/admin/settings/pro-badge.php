@@ -8,6 +8,6 @@
 ?>
 <div class="tasty-recipes-pro-badge">
 	<a href="<?php echo esc_url( $tasty_badge_link ); ?>" target="_blank" rel="noopener" class="tasty-framework-pro-badge">
-		<?php esc_html_e( 'Premium Feature', 'tasty-recipes' ); ?>
+		<?php esc_html_e( 'Premium Feature', 'tasty-recipes-lite' ); ?>
 	</a>
 </div>

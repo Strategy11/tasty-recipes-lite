@@ -30,7 +30,7 @@ class CardButtons extends AbstractSetting {
 	}
 
 	public function get_name() {
-		return __( 'Recipe Card Buttons', 'tasty-recipes' );
+		return __( 'Recipe Card Buttons', 'tasty-recipes-lite' );
 	}
 
 	public function sanitize( $value ) {
@@ -57,9 +57,9 @@ class CardButtons extends AbstractSetting {
 		return array(
 			'name'      => $this->get_id(),
 			'options'   => array(
-				''          => esc_html__( 'Off', 'tasty-recipes' ),
-				'print'     => esc_html__( 'Print', 'tasty-recipes' ),
-				'mediavine' => esc_html__( 'Mediavine Grow.me Save', 'tasty-recipes' ),
+				''          => esc_html__( 'Off', 'tasty-recipes-lite' ),
+				'print'     => esc_html__( 'Print', 'tasty-recipes-lite' ),
+				'mediavine' => esc_html__( 'Mediavine Grow.me Save', 'tasty-recipes-lite' ),
 			),
 			'positions' => $this->positions,
 			'value'     => $this->get_option_value(),

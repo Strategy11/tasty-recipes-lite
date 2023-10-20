@@ -26,7 +26,7 @@ class QuickLinks extends AbstractSetting {
 	}
 
 	public function get_name() {
-		return __( 'Quick Links', 'tasty-recipes' );
+		return __( 'Quick Links', 'tasty-recipes-lite' );
 	}
 
 	public function sanitize( $value ) {
@@ -43,15 +43,15 @@ class QuickLinks extends AbstractSetting {
 	public function get_render_args() {
 		$args = array(
 			'name'           => $this->get_id(),
-			'description'    => __( 'Enable or disable quick links below the post title.', 'tasty-recipes' ),
+			'description'    => __( 'Enable or disable quick links below the post title.', 'tasty-recipes-lite' ),
 			'default_values' => array(
 				'jump',
 				'print',
 			),
 			'options'        => array(
-				'jump'   => __( '\'Jump to Recipe\' link', 'tasty-recipes' ),
-				'print'  => __( '\'Print Recipe\' link', 'tasty-recipes' ),
-				'rating' => __( '\'Leave a review\' link', 'tasty-recipes' ),
+				'jump'   => __( '\'Jump to Recipe\' link', 'tasty-recipes-lite' ),
+				'print'  => __( '\'Print Recipe\' link', 'tasty-recipes-lite' ),
+				'rating' => __( '\'Leave a review\' link', 'tasty-recipes-lite' ),
 			),
 		);
 		return $this->prepare_multiselect_checkboxes_field_args( $args );

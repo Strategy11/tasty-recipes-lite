@@ -26,7 +26,7 @@ class IngredientsCheckboxes extends AbstractSetting {
 	}
 
 	public function get_name() {
-		return __( 'Ingredient Checkboxes', 'tasty-recipes' ) . $this->get_pro_badge();
+		return __( 'Ingredient Checkboxes', 'tasty-recipes-lite' ) . $this->get_pro_badge();
 	}
 
 	public function sanitize( $value ) {
@@ -44,10 +44,10 @@ class IngredientsCheckboxes extends AbstractSetting {
 	public function get_render_args() {
 		$args = array(
 			'name'            => $this->get_id(),
-			'description'     => __( 'Allow visitors to check off recipe ingredients.', 'tasty-recipes' ),
+			'description'     => __( 'Allow visitors to check off recipe ingredients.', 'tasty-recipes-lite' ),
 			'options'         => array(
-				false => __( 'Off', 'tasty-recipes' ),
-				true  => __( 'On', 'tasty-recipes' ),
+				false => __( 'Off', 'tasty-recipes-lite' ),
+				true  => __( 'On', 'tasty-recipes-lite' ),
 			),
 			'forced_value'    => false,
 			'container_class' => 'tasty-show-modal-tasty_recipes_upgrade_modal tasty-recipes-disabled',

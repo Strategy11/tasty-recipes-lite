@@ -25,7 +25,7 @@ class UnitConversion extends AbstractSetting {
 	}
 
 	public function get_name() {
-		return __( 'Unit Conversion', 'tasty-recipes' ) . $this->get_pro_badge();
+		return __( 'Unit Conversion', 'tasty-recipes-lite' ) . $this->get_pro_badge();
 	}
 
 	protected function get_pro_feature_link() {
@@ -43,10 +43,10 @@ class UnitConversion extends AbstractSetting {
 	public function get_render_args() {
 		$args = array(
 			'name'            => $this->get_id(),
-			'description'     => __( 'Allow visitors to convert between US Customary and Metric.', 'tasty-recipes' ),
+			'description'     => __( 'Allow visitors to convert between US Customary and Metric.', 'tasty-recipes-lite' ),
 			'options'         => array(
-				false => __( 'Off', 'tasty-recipes' ),
-				true  => __( 'On', 'tasty-recipes' ),
+				false => __( 'Off', 'tasty-recipes-lite' ),
+				true  => __( 'On', 'tasty-recipes-lite' ),
 			),
 			'forced_value'    => false,
 			'container_class' => 'tasty-show-modal-tasty_recipes_upgrade_modal tasty-recipes-disabled',

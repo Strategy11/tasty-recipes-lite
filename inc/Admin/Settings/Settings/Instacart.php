@@ -25,7 +25,7 @@ class Instacart extends AbstractSetting {
 	}
 
 	public function get_name() {
-		return __( 'Add an Instacart button', 'tasty-recipes' ) . $this->get_pro_badge();
+		return __( 'Add an Instacart button', 'tasty-recipes-lite' ) . $this->get_pro_badge();
 	}
 
 	public function sanitize( $value ) {
@@ -45,13 +45,13 @@ class Instacart extends AbstractSetting {
 			'name'            => $this->get_id(),
 			'description'     => sprintf(
 				// translators: %1$s opening anchor tag, %2$s closing tag.
-				esc_html__( 'By turning this on, you agree to the %1$sInstacart terms of service%2$s, available in the US only at the moment.', 'tasty-recipes' ),
+				esc_html__( 'By turning this on, you agree to the %1$sInstacart terms of service%2$s, available in the US only at the moment.', 'tasty-recipes-lite' ),
 				'<a target="_blank" rel="noopener" href="https://affiliate.instacart.com/terms">',
 				'</a>'
 			),
 			'options'         => array(
-				false => __( 'Off', 'tasty-recipes' ),
-				true  => __( 'On', 'tasty-recipes' ),
+				false => __( 'Off', 'tasty-recipes-lite' ),
+				true  => __( 'On', 'tasty-recipes-lite' ),
 			),
 			'forced_value'    => false,
 			'container_class' => 'tasty-show-modal-tasty_recipes_upgrade_modal tasty-recipes-disabled',

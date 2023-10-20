@@ -26,7 +26,7 @@ class DefaultAuthorLink extends AbstractSetting {
 	}
 
 	public function get_name() {
-		return __( 'Default Author Link', 'tasty-recipes' );
+		return __( 'Default Author Link', 'tasty-recipes-lite' );
 	}
 
 	public function sanitize( $value ) {

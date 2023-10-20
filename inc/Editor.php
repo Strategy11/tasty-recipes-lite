@@ -218,13 +218,13 @@ class Editor {
 				'type'           => 'info',
 				'content'        => sprintf(
 					// translators: Converter label.
-					esc_html__( '%s recipe detected. Would you like to convert it to Tasty Recipes?', 'tasty-recipes' ),
+					esc_html__( '%s recipe detected. Would you like to convert it to Tasty Recipes?', 'tasty-recipes-lite' ),
 					$config['label']
 				),
 				'actions'        => array(
 					array(
 						'url'   => self::get_convert_url( $post, $key ),
-						'label' => esc_html__( 'Convert', 'tasty-recipes' ),
+						'label' => esc_html__( 'Convert', 'tasty-recipes-lite' ),
 						'class' => 'button-primary',
 						'name'  => 'convert',
 					),
@@ -232,7 +232,7 @@ class Editor {
 						'url'   => self::get_dismiss_convert_url_for_type( $key ),
 						'label' => sprintf(
 							// translators: %s name of a plugin.
-							esc_html__( 'Do not ask again for %s recipes', 'tasty-recipes' ),
+							esc_html__( 'Do not ask again for %s recipes', 'tasty-recipes-lite' ),
 							$config['label']
 						),
 						'name'  => 'dismiss_converter',
@@ -247,11 +247,11 @@ class Editor {
 			$messages[] = array(
 				'id'      => 'tasty_recipes_convert_revisions_warning',
 				'type'    => 'warning',
-				'content' => esc_html__( 'Warning: Post revisions are not enabled, please back up post content before converting to Tasty Recipes.', 'tasty-recipes' ),
+				'content' => esc_html__( 'Warning: Post revisions are not enabled, please back up post content before converting to Tasty Recipes.', 'tasty-recipes-lite' ),
 				'actions' => array(
 					array(
 						'url'   => 'https://www.wptasty.com/convert-single',
-						'label' => __( 'Learn more', 'tasty-recipes' ),
+						'label' => __( 'Learn more', 'tasty-recipes-lite' ),
 						'name'  => 'learn_more',
 					),
 				),
@@ -263,7 +263,7 @@ class Editor {
 		if ( ! empty( $get_tasty_recipes_message ) && 'converted_recipe_success' === $get_tasty_recipes_message ) {
 			$messages[] = array(
 				'type'        => 'success',
-				'content'     => esc_html__( 'Successfully migrated the recipe to Tasty Recipes. Enjoy!', 'tasty-recipes' ),
+				'content'     => esc_html__( 'Successfully migrated the recipe to Tasty Recipes. Enjoy!', 'tasty-recipes-lite' ),
 				'dismissible' => true,
 			);
 		}
@@ -302,7 +302,7 @@ class Editor {
 		?>
 		<button type="button" class="button tasty-recipes-add-recipe" data-editor="<?php echo esc_attr( $editor_id ); ?>">
 			<span class="wp-media-buttons-icon dashicons dashicons-carrot"></span>
-			<?php esc_html_e( 'Add Recipe', 'tasty-recipes' ); ?>
+			<?php esc_html_e( 'Add Recipe', 'tasty-recipes-lite' ); ?>
 		</button>
 		<?php
 	}
@@ -319,7 +319,7 @@ class Editor {
 				// Ensure the #link-options div is present, because it's where we're appending our checkbox.
 				if ( tinymce.$('#link-options').length ) {
 					// Append our checkbox HTML to the #link-options div, which is already present in the DOM.
-					tinymce.$('#link-options').append(<?php echo wp_json_encode( '<div class="link-nofollow"><label><span></span><input type="checkbox" id="wp-link-nofollow" /> ' . esc_html__( 'Add rel="nofollow" to link', 'tasty-recipes' ) . '</label></div>' ); ?>);
+					tinymce.$('#link-options').append(<?php echo wp_json_encode( '<div class="link-nofollow"><label><span></span><input type="checkbox" id="wp-link-nofollow" /> ' . esc_html__( 'Add rel="nofollow" to link', 'tasty-recipes-lite' ) . '</label></div>' ); ?>);
 					// Clone the original wpLink object so we retain access to some functions.
 					originalWpLink = _.clone( wpLink );
 					wpLink.addRelNofollow = tinymce.$('#wp-link-nofollow');
@@ -396,12 +396,12 @@ class Editor {
 		$nonce   = Utils::get_param( 'nonce' );
 		$post_id = Utils::get_param( 'post_id', 'intval', 0 );
 		if ( empty( $post_id ) || empty( $nonce ) ) {
-			wp_die( esc_html__( "You don't have permission to do this.", 'tasty-recipes' ) );
+			wp_die( esc_html__( "You don't have permission to do this.", 'tasty-recipes-lite' ) );
 		}
 
 		$post = get_post( $post_id );
 		if ( empty( $post ) ) {
-			wp_die( esc_html__( "You don't have permission to do this.", 'tasty-recipes' ) );
+			wp_die( esc_html__( "You don't have permission to do this.", 'tasty-recipes-lite' ) );
 		}
 
 		$post_type_object = get_post_type_object( $post->post_type );
@@ -410,7 +410,7 @@ class Editor {
 			||
 			! wp_verify_nonce( $nonce, 'tasty_recipes_convert_recipe' . $post->ID )
 		) {
-			wp_die( esc_html__( "You don't have permission to do this.", 'tasty-recipes' ) );
+			wp_die( esc_html__( "You don't have permission to do this.", 'tasty-recipes-lite' ) );
 		}
 
 		return $post;
@@ -432,7 +432,7 @@ class Editor {
 		}
 
 		if ( ! $recipe ) {
-			wp_die( esc_html__( 'Unknown error converting recipe.', 'tasty-recipes' ) );
+			wp_die( esc_html__( 'Unknown error converting recipe.', 'tasty-recipes-lite' ) );
 		}
 
 		$redirect_url = add_query_arg( 'tasty_recipes_message', 'converted_recipe_success', get_edit_post_link( $post->ID, 'raw' ) );
@@ -468,7 +468,7 @@ class Editor {
 
 		wp_send_json_error(
 			array(
-				'message' => esc_html__( 'Invalid inputs', 'tasty-recipes' ),
+				'message' => esc_html__( 'Invalid inputs', 'tasty-recipes-lite' ),
 			)
 		);
 	}
@@ -589,7 +589,7 @@ class Editor {
 			wp_send_json_error(
 				array(
 					'type'    => 'no-items',
-					'message' => __( 'No recipe found.', 'tasty-recipes' ),
+					'message' => __( 'No recipe found.', 'tasty-recipes-lite' ),
 				)
 			);
 		}
@@ -655,7 +655,7 @@ class Editor {
 			wp_send_json_error(
 				array(
 					'type'    => 'no-items',
-					'message' => __( 'No recipe found.', 'tasty-recipes' ),
+					'message' => __( 'No recipe found.', 'tasty-recipes-lite' ),
 				)
 			);
 		}

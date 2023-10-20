@@ -324,7 +324,7 @@ class Shortcodes {
 			if ( tasty_recipes_is_print() ) {
 				$before_recipe .= ' onclick="window.print();event.preventDefault();"';
 			}
-			$before_recipe .= ' href="' . esc_url( tasty_recipes_get_print_url( $current_post->ID, $recipe->get_id() ) ) . '">' . esc_html__( 'Print', 'tasty-recipes' ) . '</a>';
+			$before_recipe .= ' href="' . esc_url( tasty_recipes_get_print_url( $current_post->ID, $recipe->get_id() ) ) . '">' . esc_html__( 'Print', 'tasty-recipes-lite' ) . '</a>';
 		}
 
 		/**
@@ -359,7 +359,7 @@ class Shortcodes {
 
 		/** Build the button to copy ingredients to clipboard if `copy to clipboard` is turned on. */
 		if ( ! is_feed() && get_option( TastyRecipesLiteMain::COPY_TO_CLIPBOARD_OPTION ) ) {
-			$copy_ingredients = '<button aria-label="' . __( 'Copy ingredients to clipboard', 'tasty-recipes' ) . '" class="tasty-recipes-copy-button" data-text="' . __( 'Copy ingredients', 'tasty-recipes' ) . '" data-success="' . __( 'Copied!', 'tasty-recipes' ) . '">' . Utils::get_contents( dirname( dirname( __FILE__ ) ) . '/assets/images/icons/icon-copy-to-clipboard.svg' ) . '</button>';
+			$copy_ingredients = '<button aria-label="' . __( 'Copy ingredients to clipboard', 'tasty-recipes-lite' ) . '" class="tasty-recipes-copy-button" data-text="' . __( 'Copy ingredients', 'tasty-recipes-lite' ) . '" data-success="' . __( 'Copied!', 'tasty-recipes-lite' ) . '">' . Utils::get_contents( dirname( dirname( __FILE__ ) ) . '/assets/images/icons/icon-copy-to-clipboard.svg' ) . '</button>';
 		} else {
 			$copy_ingredients = false;
 		}
@@ -582,14 +582,14 @@ class Shortcodes {
 			$average_rating                        = round( (float) $recipe->get_average_rating(), 1 );
 			$template_vars['recipe_rating_label'] .= sprintf(
 				// translators: Ratings from number of reviews.
-				_n( '%1$s from %2$s review', '%1$s from %2$s reviews', (int) $total_reviews, 'tasty-recipes' ),
+				_n( '%1$s from %2$s review', '%1$s from %2$s reviews', (int) $total_reviews, 'tasty-recipes-lite' ),
 				'<span class="average">' . $average_rating . '</span>',
 				'<span class="count">' . (int) $total_reviews . '</span>'
 			);
 			$template_vars['recipe_rating_label'] .= '</span>';
 			$template_vars['recipe_rating_icons']  = Ratings::get_rendered_rating( $average_rating );
 		} else {
-			$template_vars['recipe_rating_label'] .= __( 'No reviews', 'tasty-recipes' );
+			$template_vars['recipe_rating_label'] .= __( 'No reviews', 'tasty-recipes-lite' );
 			$template_vars['recipe_rating_icons']  = Ratings::get_rating_stars_html( true );
 		}
 
@@ -597,7 +597,7 @@ class Shortcodes {
 
 		if ( ! empty( $template_vars['recipe_author_name'] ) ) {
 			$template_vars['recipe_details']['author'] = array(
-				'label' => __( 'Author', 'tasty-recipes' ),
+				'label' => __( 'Author', 'tasty-recipes-lite' ),
 				'value' => $template_vars['recipe_author_name'],
 				'class' => 'author',
 			);
@@ -713,7 +713,7 @@ EOT;
 
 		if ( $shareasale ) {
 			$ret .= '<div class="tasty-recipes-plug">';
-			$ret .= esc_html__( 'Recipe Card powered by', 'tasty-recipes' );
+			$ret .= esc_html__( 'Recipe Card powered by', 'tasty-recipes-lite' );
 			$ret .= '<a href="' . esc_url( sprintf( 'https://shareasale.com/r.cfm?b=973044&u=%s&m=69860&urllink=&afftrack=trattr', $shareasale ) ) . '" target="_blank" rel="nofollow"><img data-pin-nopin="true" alt="Tasty Recipes" src="' . esc_url( plugins_url( 'assets/images/tasty-recipes-neutral.svg', dirname( __FILE__ ) ) ) . '" scale="0" height="20px"></a>';
 			$ret .= '</div>';
 		}
@@ -787,10 +787,10 @@ EOT;
 
 		$links = array();
 		if ( in_array( 'jump', $should_prepend_jump_to, true ) ) {
-			$links['jump'] = '<a class="tasty-recipes-jump-link" href="#tasty-recipes-' . $recipe_id . '-jump-target">' . __( 'Jump to Recipe', 'tasty-recipes' ) . '</a>';
+			$links['jump'] = '<a class="tasty-recipes-jump-link" href="#tasty-recipes-' . $recipe_id . '-jump-target">' . __( 'Jump to Recipe', 'tasty-recipes-lite' ) . '</a>';
 		}
 		if ( in_array( 'print', $should_prepend_jump_to, true ) ) {
-			$links['print'] = '<a class="tasty-recipes-print-link" href="' . esc_url( tasty_recipes_get_print_url( $post->ID, $recipe_id ) ) . '"' . $open_new . '>' . __( 'Print Recipe', 'tasty-recipes' ) . '</a>';
+			$links['print'] = '<a class="tasty-recipes-print-link" href="' . esc_url( tasty_recipes_get_print_url( $post->ID, $recipe_id ) ) . '"' . $open_new . '>' . __( 'Print Recipe', 'tasty-recipes-lite' ) . '</a>';
 		}
 		/**
 		 * Filter to modify the links used in Quick Links.

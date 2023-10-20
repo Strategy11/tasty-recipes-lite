@@ -241,7 +241,7 @@ class Ratings {
 		ob_start();
 		?>
 		<fieldset class="tasty-recipes-ratings tasty-recipes-comment-form">
-			<legend><?php esc_html_e( 'Recipe rating', 'tasty-recipes' ); ?></legend>
+			<legend><?php esc_html_e( 'Recipe rating', 'tasty-recipes-lite' ); ?></legend>
 			<?php echo self::get_rating_stars_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 		</fieldset>
 		<?php

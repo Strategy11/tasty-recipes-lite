@@ -26,7 +26,7 @@ class CopyToClipboard extends AbstractSetting {
 	}
 
 	public function get_name() {
-		return __( 'Copy to Clipboard', 'tasty-recipes' );
+		return __( 'Copy to Clipboard', 'tasty-recipes-lite' );
 	}
 
 	public function sanitize( $value ) {
@@ -40,10 +40,10 @@ class CopyToClipboard extends AbstractSetting {
 	public function get_render_args() {
 		$args = array(
 			'name'        => $this->get_id(),
-			'description' => __( 'Allow visitors to copy ingredients to clipboard.', 'tasty-recipes' ),
+			'description' => __( 'Allow visitors to copy ingredients to clipboard.', 'tasty-recipes-lite' ),
 			'options'     => array(
-				false => __( 'Off', 'tasty-recipes' ),
-				true  => __( 'On', 'tasty-recipes' ),
+				false => __( 'Off', 'tasty-recipes-lite' ),
+				true  => __( 'On', 'tasty-recipes-lite' ),
 			),
 			'value'       => $this->get_option_value(),
 		);

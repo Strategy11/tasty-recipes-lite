@@ -149,7 +149,7 @@ class Admin {
 	 * @return array
 	 */
 	public static function action_manage_posts_columns( $columns ) {
-		$columns['tasty_recipe'] = esc_html__( 'Tasty Recipe', 'tasty-recipes' );
+		$columns['tasty_recipe'] = esc_html__( 'Tasty Recipe', 'tasty-recipes-lite' );
 		return $columns;
 	}
 
@@ -165,7 +165,7 @@ class Admin {
 				$recipe_ids = TastyRecipesLiteMain::get_recipe_ids_for_post( $post_id );
 				if ( ! empty( $recipe_ids ) ) {
 					$recipe_id = array_shift( $recipe_ids );
-					echo '<button class="button tasty-recipes-edit-button" data-recipe-id="' . esc_attr( $recipe_id ) . '">' . esc_html__( 'Edit Tasty Recipe', 'tasty-recipes' ) . '</button>';
+					echo '<button class="button tasty-recipes-edit-button" data-recipe-id="' . esc_attr( $recipe_id ) . '">' . esc_html__( 'Edit Tasty Recipe', 'tasty-recipes-lite' ) . '</button>';
 				}
 				break;
 		}
@@ -179,7 +179,7 @@ class Admin {
 	public static function action_quick_edit_custom_box( $column_name ) {
 		switch ( $column_name ) {
 			case 'tasty_recipe':
-				echo '<button class="button tasty-recipes-edit-button" data-recipe-id="">' . esc_html__( 'Edit Tasty Recipe', 'tasty-recipes' ) . '</button>';
+				echo '<button class="button tasty-recipes-edit-button" data-recipe-id="">' . esc_html__( 'Edit Tasty Recipe', 'tasty-recipes-lite' ) . '</button>';
 				break;
 		}
 	}
@@ -202,8 +202,8 @@ class Admin {
 	 * @return array
 	 */
 	public static function filter_plugin_action_links( $links ) {
-		$links['tr_settings']        = '<a href="' . esc_url( add_query_arg( 'tab', 'settings', menu_page_url( self::PAGE_SLUG, false ) ) ) . '">' . esc_html__( 'Settings', 'tasty-recipes' ) . '</a>';
-		$links['tr_license_manager'] = '<a href="' . esc_url( Url::get_main_admin_url() ) . '">' . esc_html__( 'License manager', 'tasty-recipes' ) . '</a>';
+		$links['tr_settings']        = '<a href="' . esc_url( add_query_arg( 'tab', 'settings', menu_page_url( self::PAGE_SLUG, false ) ) ) . '">' . esc_html__( 'Settings', 'tasty-recipes-lite' ) . '</a>';
+		$links['tr_license_manager'] = '<a href="' . esc_url( Url::get_main_admin_url() ) . '">' . esc_html__( 'License manager', 'tasty-recipes-lite' ) . '</a>';
 		return $links;
 	}
 
@@ -214,7 +214,7 @@ class Admin {
 		global $editor_styles;
 		$nonce = Utils::request_param( 'nonce', 'sanitize_key' );
 		if ( empty( $nonce ) || ! current_user_can( self::CAPABILITY ) || ! wp_verify_nonce( $nonce, self::NONCE_KEY ) ) {
-			wp_die( esc_html__( "Sorry, you don't have permission to do this.", 'tasty-recipes' ) );
+			wp_die( esc_html__( "Sorry, you don't have permission to do this.", 'tasty-recipes-lite' ) );
 		}
 		header( 'Content-Type: text/html' );
 		$wrapper_classes = array(
@@ -414,7 +414,7 @@ EOT;
 			'recipe_video_embed'            => '',
 			'recipe_nutrition'              => $recipe_nutrition,
 			'recipe_hidden_nutrition'       => array(),
-			'copy_ingredients'              => get_option( TastyRecipesLiteMain::COPY_TO_CLIPBOARD_OPTION ) ? '<button aria-label="' . __( 'Copy ingredients to clipboard', 'tasty-recipes' ) . '" class="tasty-recipes-copy-button" id="copy-ingredients" data-text="' . __( 'Copy ingredients', 'tasty-recipes' ) . '">' . Utils::get_contents( dirname( dirname( __FILE__ ) ) . '/assets/images/icons/icon-copy-to-clipboard.svg' ) . '</button>' : false,
+			'copy_ingredients'              => get_option( TastyRecipesLiteMain::COPY_TO_CLIPBOARD_OPTION ) ? '<button aria-label="' . __( 'Copy ingredients to clipboard', 'tasty-recipes-lite' ) . '" class="tasty-recipes-copy-button" id="copy-ingredients" data-text="' . __( 'Copy ingredients', 'tasty-recipes-lite' ) . '">' . Utils::get_contents( dirname( dirname( __FILE__ ) ) . '/assets/images/icons/icon-copy-to-clipboard.svg' ) . '</button>' : false,
 			'first_button'                  => Shortcodes::get_card_button( $recipe, 'first', $custom_design ),
 			'second_button'                 => Shortcodes::get_card_button( $recipe, 'second', $custom_design ),
 			'instagram_handle'              => get_option( TastyRecipesLiteMain::INSTAGRAM_HANDLE_OPTION ),
@@ -465,7 +465,7 @@ EOT;
 		if ( empty( $nonce ) || ! current_user_can( self::CAPABILITY ) || ! wp_verify_nonce( $nonce, self::NONCE_KEY ) ) {
 			wp_send_json_error(
 				array(
-					'message' => __( "Sorry, you don't have permission to do this.", 'tasty-recipes' ),
+					'message' => __( "Sorry, you don't have permission to do this.", 'tasty-recipes-lite' ),
 				)
 			);
 		}
@@ -479,7 +479,7 @@ EOT;
 		} else {
 			wp_send_json_error(
 				array(
-					'message' => __( "Couldn't count recipes. Please contact support for assistance.", 'tasty-recipes' ),
+					'message' => __( "Couldn't count recipes. Please contact support for assistance.", 'tasty-recipes-lite' ),
 				)
 			);
 		}
@@ -499,7 +499,7 @@ EOT;
 		if ( empty( $nonce ) || ! current_user_can( self::CAPABILITY ) || ! wp_verify_nonce( $nonce, self::NONCE_KEY ) ) {
 			wp_send_json_error(
 				array(
-					'message' => __( "Sorry, you don't have permission to do this.", 'tasty-recipes' ),
+					'message' => __( "Sorry, you don't have permission to do this.", 'tasty-recipes-lite' ),
 				)
 			);
 		}
@@ -513,7 +513,7 @@ EOT;
 		} else {
 			wp_send_json_error(
 				array(
-					'message' => __( "Couldn't convert recipes. Please contact support for assistance.", 'tasty-recipes' ),
+					'message' => __( "Couldn't convert recipes. Please contact support for assistance.", 'tasty-recipes-lite' ),
 				)
 			);
 		}
@@ -533,7 +533,7 @@ EOT;
 				wp_send_json_error(
 					array(
 						// translators: Post id that couldn't be translated.
-						'message' => sprintf( __( 'Couldn\'t convert recipe in \'%1$s\' (post %2$d). Please contact support for assistance.', 'tasty-recipes' ), get_the_title( $post_id ), $post_id ),
+						'message' => sprintf( __( 'Couldn\'t convert recipe in \'%1$s\' (post %2$d). Please contact support for assistance.', 'tasty-recipes-lite' ), get_the_title( $post_id ), $post_id ),
 					)
 				);
 			}
@@ -698,7 +698,7 @@ EOT;
 		}
 		wp_send_json_error(
 			array(
-				'message' => esc_html__( 'You don\'t have permission to do this.', 'tasty-recipes' ),
+				'message' => esc_html__( 'You don\'t have permission to do this.', 'tasty-recipes-lite' ),
 			)
 		);
 	}

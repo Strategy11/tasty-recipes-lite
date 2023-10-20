@@ -18,7 +18,7 @@ $cook_mode_id = $recipe_unique_id . '_cookmode';
 		<label for="<?php echo esc_attr( $cook_mode_id ); ?>">
 			<span class="tasty-recipes-cook-mode__label"><?php echo esc_html( $recipe_show_cook_mode_label ); ?></span>
 			<span class="tasty-recipes-cook-mode__helper">
-				<?php echo esc_html( isset( $recipe_show_cook_mode_help ) ? $recipe_show_cook_mode_help : __( 'Prevent your screen from going dark', 'tasty-recipes' ) ); ?>
+				<?php echo esc_html( isset( $recipe_show_cook_mode_help ) ? $recipe_show_cook_mode_help : __( 'Prevent your screen from going dark', 'tasty-recipes-lite' ) ); ?>
 			</span>
 		</label>
 	</div>

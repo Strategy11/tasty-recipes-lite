@@ -5,7 +5,7 @@
  * Description:     Tasty Recipes is the easiest way to publish recipes on your WordPress blog.
  * Author:          WP Tasty
  * Author URI:      https://www.wptasty.com
- * Text Domain:     tasty-recipes
+ * Text Domain:     tasty-recipes-lite
  * Domain Path:     /languages
  * Version:         0.0.1
  *
@@ -221,7 +221,7 @@ class TastyRecipesLiteMain {
 
 		require_once dirname( __FILE__ ) . '/functions.php';
 
-		load_plugin_textdomain( 'tasty-recipes', false, basename( dirname( __FILE__ ) ) . '/languages' );
+		load_plugin_textdomain( 'tasty-recipes-lite', false, basename( dirname( __FILE__ ) ) . '/languages' );
 
 		/**
 		 * Register the class autoloader
@@ -650,13 +650,13 @@ class TastyRecipesLiteMain {
 	 * @return array
 	 */
 	public static function get_customization_settings() {
-		$default_description = '<p>' . esc_html__( "Share a photo and tag us — we can't wait to see what you've made!", 'tasty-recipes' ) . '</p>';
+		$default_description = '<p>' . esc_html__( "Share a photo and tag us — we can't wait to see what you've made!", 'tasty-recipes-lite' ) . '</p>';
 		$instagram_handle    = get_option( self::INSTAGRAM_HANDLE_OPTION );
 		if ( $instagram_handle ) {
-			$default_description = '<p>' . esc_html__( 'Tag', 'tasty-recipes' ) . ' <a href="' . esc_url( 'https://www.instagram.com/' . $instagram_handle ) . '" target="_blank" rel="noreferrer noopener">@' . esc_html( $instagram_handle ) . '</a> ' . esc_html__( 'on Instagram', 'tasty-recipes' );
+			$default_description = '<p>' . esc_html__( 'Tag', 'tasty-recipes-lite' ) . ' <a href="' . esc_url( 'https://www.instagram.com/' . $instagram_handle ) . '" target="_blank" rel="noreferrer noopener">@' . esc_html( $instagram_handle ) . '</a> ' . esc_html__( 'on Instagram', 'tasty-recipes-lite' );
 			$instagram_hashtag   = get_option( self::INSTAGRAM_HASHTAG_OPTION );
 			if ( $instagram_hashtag ) {
-				$default_description .= ' ' . esc_html__( 'and hashtag it', 'tasty-recipes' ) . ' <a href="' . esc_url( 'https://www.instagram.com/explore/tags/' . $instagram_hashtag ) . '" target="_blank" rel="noreferrer noopener">#' . esc_html( $instagram_hashtag ) . '</a>';
+				$default_description .= ' ' . esc_html__( 'and hashtag it', 'tasty-recipes-lite' ) . ' <a href="' . esc_url( 'https://www.instagram.com/explore/tags/' . $instagram_hashtag ) . '" target="_blank" rel="noreferrer noopener">#' . esc_html( $instagram_hashtag ) . '</a>';
 			}
 			$default_description .= '</p>';
 		}
@@ -679,7 +679,7 @@ class TastyRecipesLiteMain {
 				'nutrifox_display_style'   => 'label',
 				'footer_social_platform'   => 'instagram',
 				'footer_icon_color'        => '',
-				'footer_heading'           => esc_html__( 'Did you make this recipe?', 'tasty-recipes' ),
+				'footer_heading'           => esc_html__( 'Did you make this recipe?', 'tasty-recipes-lite' ),
 				'footer_heading_color'     => '',
 				'footer_description'       => $default_description,
 				'footer_description_color' => '',

@@ -59,7 +59,7 @@ use Tasty\Recipes\Lite\Utils;
 
 <?php if ( ! empty( $recipe_ingredients ) ) : ?>
 	<div class="ERSIngredients">
-		<div class="ERSIngredientsHeader ERSHeading"><?php esc_html_e( 'Ingredients', 'tasty-recipes' ); ?></div>
+		<div class="ERSIngredientsHeader ERSHeading"><?php esc_html_e( 'Ingredients', 'tasty-recipes-lite' ); ?></div>
 		<?php
 		$recipe_ingredients = str_replace( '<li', '<li class="ingredient"', $recipe_ingredients );
 		Utils::kses( $recipe_ingredients, true );
@@ -70,7 +70,7 @@ use Tasty\Recipes\Lite\Utils;
 
 <?php if ( ! empty( $recipe_instructions ) ) : ?>
 	<div class="ERSInstructions">
-		<div class="ERSInstructionsHeader ERSHeading"><?php esc_html_e( 'Instructions', 'tasty-recipes' ); ?></div>
+		<div class="ERSInstructionsHeader ERSHeading"><?php esc_html_e( 'Instructions', 'tasty-recipes-lite' ); ?></div>
 		<?php
 		$recipe_instructions = str_replace( '<li', '<li class="instruction"', $recipe_instructions );
 		Utils::kses( $recipe_instructions, true );
@@ -81,7 +81,7 @@ use Tasty\Recipes\Lite\Utils;
 
 <?php if ( ! empty( $recipe_notes ) ) : ?>
 	<div class="ERSNotesDiv">
-		<div class="ERSNotesHeader"><?php esc_html_e( 'Notes', 'tasty-recipes' ); ?></div>
+		<div class="ERSNotesHeader"><?php esc_html_e( 'Notes', 'tasty-recipes-lite' ); ?></div>
 		<div class="ERSNotes">
 			<?php Utils::kses( $recipe_notes, true ); ?>
 		</div>
@@ -99,7 +99,7 @@ use Tasty\Recipes\Lite\Utils;
 
 <?php if ( ! empty( $recipe_nutrition ) ) : ?>
 	<div class="nutrition" itemscope itemprop="nutrition" itemtype="https://schema.org/NutritionInformation">
-		<div class="ERSNutritionHeader"><?php esc_html_e( 'Nutrition', 'tasty-recipes' ); ?></div>
+		<div class="ERSNutritionHeader"><?php esc_html_e( 'Nutrition', 'tasty-recipes-lite' ); ?></div>
 		<div class="ERSNutrionDetails">
 			<?php foreach ( $recipe_nutrition as $nutrition ) : ?>
 				<?php echo esc_html( $nutrition['label'] ); ?>:</strong>&nbsp;<?php Utils::kses( $nutrition['value'], true ); ?>&nbsp;

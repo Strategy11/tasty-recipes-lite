@@ -35,7 +35,7 @@ $pin_url = add_query_arg(
 	<?php else : ?>
 		<img class="svg-pinterest" data-pin-nopin="true" src="<?php echo esc_url( plugins_url( 'images/icon-pinterest.png', __FILE__ ) ); ?>">
 	<?php endif; ?>
-	<?php esc_html_e( 'Pin Recipe', 'tasty-recipes' ); ?>
+	<?php esc_html_e( 'Pin Recipe', 'tasty-recipes-lite' ); ?>
 </a>
 <script>
 	const share_pin_buttons = document.getElementsByClassName( 'share-pin button' );

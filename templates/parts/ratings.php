@@ -13,7 +13,7 @@ $no_ratings = isset( $no_ratings ) ? $no_ratings : false;
 for ( $i = 5; $i >= 1; $i-- ) {
 	$aria_label = sprintf(
 		// translators: The aria label for a specific star rating.
-		_n( 'Rate this recipe %d star', 'Rate this recipe %d stars', $i, 'tasty-recipes' ),
+		_n( 'Rate this recipe %d star', 'Rate this recipe %d stars', $i, 'tasty-recipes-lite' ),
 		$i
 	);
 	?>
@@ -32,7 +32,7 @@ for ( $i = 5; $i >= 1; $i-- ) {
 				<?php
 				printf(
 					// translators: The number of stars.
-					esc_html( _n( '%d Star', '%d Stars', $i, 'tasty-recipes' ) ),
+					esc_html( _n( '%d Star', '%d Stars', $i, 'tasty-recipes-lite' ) ),
 					(int) $i
 				);
 				?>

@@ -44,19 +44,19 @@ class ContentModel {
 			'supports'     => array(),
 		);
 		$args['labels'] = array(
-			'name'               => __( 'Recipes', 'tasty-recipes' ),
-			'singular_name'      => __( 'Recipe', 'tasty-recipes' ),
-			'all_items'          => __( 'All Recipes', 'tasty-recipes' ),
-			'new_item'           => __( 'New Recipe', 'tasty-recipes' ),
-			'add_new'            => __( 'Add New', 'tasty-recipes' ),
-			'add_new_item'       => __( 'Add New Recipe', 'tasty-recipes' ),
-			'edit_item'          => __( 'Edit Recipe', 'tasty-recipes' ),
-			'view_item'          => __( 'View Recipes', 'tasty-recipes' ),
-			'search_items'       => __( 'Search Recipes', 'tasty-recipes' ),
-			'not_found'          => __( 'No recipes found', 'tasty-recipes' ),
-			'not_found_in_trash' => __( 'No recipes found in trash', 'tasty-recipes' ),
-			'parent_item_colon'  => __( 'Parent recipe', 'tasty-recipes' ),
-			'menu_name'          => __( 'Recipes', 'tasty-recipes' ),
+			'name'               => __( 'Recipes', 'tasty-recipes-lite' ),
+			'singular_name'      => __( 'Recipe', 'tasty-recipes-lite' ),
+			'all_items'          => __( 'All Recipes', 'tasty-recipes-lite' ),
+			'new_item'           => __( 'New Recipe', 'tasty-recipes-lite' ),
+			'add_new'            => __( 'Add New', 'tasty-recipes-lite' ),
+			'add_new_item'       => __( 'Add New Recipe', 'tasty-recipes-lite' ),
+			'edit_item'          => __( 'Edit Recipe', 'tasty-recipes-lite' ),
+			'view_item'          => __( 'View Recipes', 'tasty-recipes-lite' ),
+			'search_items'       => __( 'Search Recipes', 'tasty-recipes-lite' ),
+			'not_found'          => __( 'No recipes found', 'tasty-recipes-lite' ),
+			'not_found_in_trash' => __( 'No recipes found in trash', 'tasty-recipes-lite' ),
+			'parent_item_colon'  => __( 'Parent recipe', 'tasty-recipes-lite' ),
+			'menu_name'          => __( 'Recipes', 'tasty-recipes-lite' ),
 		);
 		register_post_type( 'tasty_recipe', $args );
 	}

@@ -25,7 +25,7 @@ class DisableScaling extends AbstractSetting {
 	}
 
 	public function get_name() {
-		return __( 'Scaling', 'tasty-recipes' ) . $this->get_pro_badge();
+		return __( 'Scaling', 'tasty-recipes-lite' ) . $this->get_pro_badge();
 	}
 
 	public function sanitize( $value ) {
@@ -43,10 +43,10 @@ class DisableScaling extends AbstractSetting {
 	public function get_render_args() {
 		$args = array(
 			'name'            => $this->get_id(),
-			'description'     => __( 'Allow visitors to scale the recipe 1x, 2x, or 3x.', 'tasty-recipes' ),
+			'description'     => __( 'Allow visitors to scale the recipe 1x, 2x, or 3x.', 'tasty-recipes-lite' ),
 			'options'         => array(
-				true  => __( 'Off', 'tasty-recipes' ),
-				false => __( 'On', 'tasty-recipes' ),
+				true  => __( 'Off', 'tasty-recipes-lite' ),
+				false => __( 'On', 'tasty-recipes-lite' ),
 			),
 			'forced_value'    => true,
 			'container_class' => 'tasty-show-modal-tasty_recipes_upgrade_modal tasty-recipes-disabled',
