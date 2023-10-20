@@ -1,6 +1,6 @@
 {
   "name": "tasty-recipes-lite",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "main": "Gruntfile.js",
   "author": "WP Tasty",
   "devDependencies": {
@@ -49,7 +49,7 @@
     "lint-js": "cross-env eslint --ext js,vue assets/block-editor/* assets/recipe-editor/* assets/settings/*",
     "lint": "npm run lint-svg && npm run lint-js",
     "lint-fix": "npm run lint -- --fix",
-    "makepot": "php -d memory_limit=512M /usr/local/bin/wp i18n make-pot . languages/tasty-recipes.pot --skip-audit",
+    "makepot": "php -d memory_limit=512M /usr/local/bin/wp i18n make-pot . languages/tasty-recipes-lite.pot --skip-audit",
     "test": "jest",
     "tdd": "jest --watch"
   },

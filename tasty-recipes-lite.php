@@ -38,7 +38,7 @@ use Tasty\Recipes\Lite\Converters\Yummly;
 use Tasty\Recipes\Lite\Converters\YumPrint;
 use Tasty\Recipes\Lite\Converters\ZipList;
 
-define( 'TASTY_RECIPES_LITE_PLUGIN_VERSION', '0.0.1' );
+define( 'TASTY_RECIPES_LITE_PLUGIN_VERSION', '1.0.0' );
 define( 'TASTY_RECIPES_LITE_PLUGIN_FILE', __FILE__ );
 
 if ( ! defined( 'TASTY_RECIPES_NUTRIFOX_DOMAIN' ) ) {
