@@ -677,7 +677,7 @@ EOT;
 	/**
 	 * Show SSL certificate error message.
 	 *
-	 * @since 3.8
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
@@ -688,7 +688,7 @@ EOT;
 	/**
 	 * Validate the current user capability and exit with json error in case of permission denied.
 	 *
-	 * @since 3.8
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */

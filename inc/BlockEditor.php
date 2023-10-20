@@ -110,7 +110,7 @@ class BlockEditor {
 	 *
 	 * @param WP_Post $post Post object to check.
 	 *
-	 * @since 3.8
+	 * @since 1.0.0
 	 *
 	 * @return bool
 	 */

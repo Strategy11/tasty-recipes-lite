@@ -16,7 +16,7 @@ class MetaBox {
 	/**
 	 * Singleton instance.
 	 *
-	 * @since 3.8
+	 * @since 1.0.0
 	 *
 	 * @var MetaBox
 	 */
@@ -25,7 +25,7 @@ class MetaBox {
 	/**
 	 * Get singleton instance.
 	 *
-	 * @since 3.8
+	 * @since 1.0.0
 	 *
 	 * @return MetaBox
 	 */
@@ -42,7 +42,7 @@ class MetaBox {
 	/**
 	 * Subscribe hooks.
 	 *
-	 * @since 3.8
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
@@ -53,7 +53,7 @@ class MetaBox {
 	/**
 	 * Gets current post type.
 	 *
-	 * @since 3.8
+	 * @since 1.0.0
 	 *
 	 * @return string
 	 */
@@ -82,7 +82,7 @@ class MetaBox {
 	/**
 	 * Initialize metabox.
 	 *
-	 * @since 3.8
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
@@ -111,7 +111,7 @@ class MetaBox {
 	/**
 	 * Add the metabox.
 	 *
-	 * @since 3.8
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
@@ -129,7 +129,7 @@ class MetaBox {
 	/**
 	 * Print metabox HTML.
 	 *
-	 * @since 3.8
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */

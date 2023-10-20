@@ -263,7 +263,7 @@ class Utils {
 	/**
 	 * Returns true if the request is a REST API request.
 	 *
-	 * @since 3.8
+	 * @since 1.0.0
 	 *
 	 * @todo: replace this function once core WP function is available: https://core.trac.wordpress.org/ticket/42061.
 	 *
@@ -281,8 +281,8 @@ class Utils {
 	/**
 	 * Get any value from the $_SERVER.
 	 *
-	 * @since 3.8
-	 * @deprecated 3.9
+	 * @since 1.0.0
+	 * @deprecated 1.0.0
 	 *
 	 * @param string $key Server key to get its value.
 	 *
@@ -320,7 +320,7 @@ class Utils {
 	/**
 	 * Check if a REQUEST value exists and sanitize it.
 	 *
-	 * @since 3.10
+	 * @since 1.0.0
 	 *
 	 * @param string $key      The REQUEST key to check.
 	 * @param string $sanitize The type of sanitization to apply.
@@ -335,7 +335,7 @@ class Utils {
 	/**
 	 * Check if a GET value exists and sanitize it.
 	 *
-	 * @since 3.10
+	 * @since 1.0.0
 	 *
 	 * @param string $key      The GET key to check.
 	 * @param string $sanitize The type of sanitization to apply.
@@ -350,7 +350,7 @@ class Utils {
 	/**
 	 * Check if a POST value exists and sanitize it.
 	 *
-	 * @since 3.10
+	 * @since 1.0.0
 	 *
 	 * @param string $key      The POST key to check.
 	 * @param string $sanitize The type of sanitization to apply.
@@ -365,7 +365,7 @@ class Utils {
 	/**
 	 * Check if a SERVER value exists and sanitize it.
 	 *
-	 * @since 3.10
+	 * @since 1.0.0
 	 *
 	 * @param string $key      The GET key to check.
 	 * @param string $sanitize The type of sanitization to apply.
@@ -410,7 +410,7 @@ class Utils {
 	/**
 	 * Get any value from the $_POST.
 	 *
-	 * @since 3.9
+	 * @since 1.0.0
 	 *
 	 * @param string $key POST key to get its value.
 	 * @param string $sanitize Sanitize method.

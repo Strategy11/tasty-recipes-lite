@@ -19,7 +19,7 @@ class Frontend {
 	/**
 	 * Singleton instance.
 	 *
-	 * @since 3.8
+	 * @since 1.0.0
 	 *
 	 * @var Frontend
 	 */
@@ -28,7 +28,7 @@ class Frontend {
 	/**
 	 * Get singleton instance.
 	 *
-	 * @since 3.8
+	 * @since 1.0.0
 	 *
 	 * @return Frontend
 	 */
@@ -46,7 +46,7 @@ class Frontend {
 	/**
 	 * Subscribe hooks.
 	 *
-	 * @since 3.8
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
@@ -58,7 +58,7 @@ class Frontend {
 	/**
 	 * Insert rating quick link into quick links array.
 	 *
-	 * @since 3.9
+	 * @since 1.0.0
 	 *
 	 * @param array   $links Current list of available quick links.
 	 * @param WP_Post $post Current post object.

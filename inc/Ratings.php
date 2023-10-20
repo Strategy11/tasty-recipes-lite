@@ -363,7 +363,7 @@ class Ratings {
 	 *
 	 * @param array $settings Array of customization settings.
 	 *
-	 * @since 3.9
+	 * @since 1.0.0
 	 *
 	 * @return array
 	 */

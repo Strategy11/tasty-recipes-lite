@@ -7,7 +7,7 @@
  * Author URI:      https://www.wptasty.com
  * Text Domain:     tasty-recipes-lite
  * Domain Path:     /languages
- * Version:         0.0.1
+ * Version:         1.0.0
  *
  * @package         Tasty_Recipes
  */
@@ -454,7 +454,7 @@ class TastyRecipesLiteMain {
 	/**
 	 * Get the Nutrifox url. If it's missing https, add it.
 	 *
-	 * @since 3.7.4
+	 * @since 1.0.0
 	 *
 	 * @return string
 	 */
@@ -694,7 +694,7 @@ class TastyRecipesLiteMain {
 	/**
 	 * Get filtered customization settings.
 	 *
-	 * @since 3.9
+	 * @since 1.0.0
 	 *
 	 * @return array
 	 */

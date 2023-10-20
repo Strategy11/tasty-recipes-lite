@@ -21,7 +21,7 @@ class Editor {
 	 *
 	 * @param array $message Message array.
 	 *
-	 * @since 3.8
+	 * @since 1.0.0
 	 *
 	 * @return string[]
 	 */
@@ -72,7 +72,7 @@ class Editor {
 	/**
 	 * Get global ignored conversion types.
 	 *
-	 * @since 3.8
+	 * @since 1.0.0
 	 *
 	 * @return array
 	 */
@@ -86,7 +86,7 @@ class Editor {
 	 * @param int    $post_id Current post ID.
 	 * @param string $converter_type Converter key to check.
 	 *
-	 * @since 3.8
+	 * @since 1.0.0
 	 *
 	 * @return bool
 	 */
@@ -107,7 +107,7 @@ class Editor {
 	 * @param WP_Post $post Current post object.
 	 * @param string  $converter_type Converter key.
 	 *
-	 * @since 3.8
+	 * @since 1.0.0
 	 *
 	 * @return string
 	 */
@@ -128,7 +128,7 @@ class Editor {
 	 * @param int    $post_id Current post ID.
 	 * @param string $converter_type Converter key.
 	 *
-	 * @since 3.8
+	 * @since 1.0.0
 	 *
 	 * @return string
 	 */
@@ -149,7 +149,7 @@ class Editor {
 	 *
 	 * @param string $converter_type Converter key.
 	 *
-	 * @since 3.8
+	 * @since 1.0.0
 	 *
 	 * @return string
 	 */
@@ -170,7 +170,7 @@ class Editor {
 	 * @param string $converter_type Converter key.
 	 * @param int    $post_id Current post ID.
 	 *
-	 * @since 3.8
+	 * @since 1.0.0
 	 *
 	 * @return string
 	 */
@@ -457,7 +457,7 @@ class Editor {
 	 *
 	 * @param string $type Variable you need to check.
 	 *
-	 * @since 3.8
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
@@ -476,7 +476,7 @@ class Editor {
 	/**
 	 * Handles the AJAX request to ignore conversion for a converter globally.
 	 *
-	 * @since 3.8
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
@@ -497,7 +497,7 @@ class Editor {
 	/**
 	 * Handles the AJAX request to revert ignoring conversion for a converter globally.
 	 *
-	 * @since 3.8
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
@@ -692,7 +692,7 @@ class Editor {
 	 *
 	 * @param WP_Post $post Post object to extract recipes from.
 	 *
-	 * @since 3.8
+	 * @since 1.0.0
 	 *
 	 * @return array
 	 */
@@ -709,7 +709,7 @@ class Editor {
 	 *
 	 * @param WP_Post $post Post object to check.
 	 *
-	 * @since 3.8
+	 * @since 1.0.0
 	 *
 	 * @return bool
 	 */
@@ -723,7 +723,7 @@ class Editor {
 	 * @param int   $post_ID Parent post ID.
 	 * @param int[] $recipe_ids Array of recipe IDs to be assigned.
 	 *
-	 * @since 3.8
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
@@ -743,7 +743,7 @@ class Editor {
 	 * @param int   $post_ID Parent post ID.
 	 * @param int[] $recipe_ids Array of recipe IDs to be deassigned.
 	 *
-	 * @since 3.8
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
@@ -764,7 +764,7 @@ class Editor {
 	 * @param WP_Post $post Created Post object.
 	 * @param bool    $update True if updated post otherwise false for new posts.
 	 *
-	 * @since 3.8
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
@@ -790,7 +790,7 @@ class Editor {
 	 * @param WP_Post $post_after After update post object.
 	 * @param WP_Post $post_before Before update post object.
 	 *
-	 * @since 3.8
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
@@ -814,7 +814,7 @@ class Editor {
 	/**
 	 * Get array of dismissed converters to be used in post metabox.
 	 *
-	 * @since 3.8
+	 * @since 1.0.0
 	 *
 	 * @return array
 	 */

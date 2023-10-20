@@ -723,7 +723,7 @@ EOT;
 	/**
 	 * Remove tabs and comments before echoing the javascript.
 	 *
-	 * @since 3.9
+	 * @since 1.0.0
 	 * @param string $scripts All the scripts to echo.
 	 * @return void
 	 */
@@ -1095,7 +1095,7 @@ EOT;
 	/**
 	 * Add inside ingredients template markup.
 	 *
-	 * @since 3.8
+	 * @since 1.0.0
 	 *
 	 * @param string $content Ingredients content.
 	 * @param string $type Type returned from the filter.
@@ -1113,7 +1113,7 @@ EOT;
 	/**
 	 * The hook is present, so we don't need the fallback.
 	 *
-	 * @since 3.8
+	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
@@ -1125,7 +1125,7 @@ EOT;
 	 * Force the tasty_recipes_card_after_ingredients hook to run if
 	 * it's missing from the template.
 	 *
-	 * @since 3.8
+	 * @since 1.0.0
 	 *
 	 * @param string $content Filter content.
 	 * @param string $context Where the shortcode is being rendered.
@@ -1149,7 +1149,7 @@ EOT;
 	/**
 	 * Force the hook missing from the template.
 	 *
-	 * @since 3.8
+	 * @since 1.0.0
 	 *
 	 * @param array $atts Includes the recipe object.
 	 *

@@ -853,7 +853,7 @@ class DistributionMetadata {
 		/**
 		 * Filters the arguments used to query comments in comments_template().
 		 *
-		 * @since 4.5.0
+		 * @since 1.0.0
 		 *
 		 * @see WP_Comment_Query::__construct()
 		 *
@@ -901,7 +901,7 @@ class DistributionMetadata {
 		/**
 		 * Filters the comments array.
 		 *
-		 * @since 2.1.0
+		 * @since 1.0.0
 		 *
 		 * @param array $comments Array of comments supplied to the comments template.
 		 * @param int   $post_ID  Post ID.
