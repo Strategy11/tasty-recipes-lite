@@ -29,7 +29,7 @@ class CardButtons extends AbstractSetting {
 		return Admin::SETTINGS_GROUP_CARD;
 	}
 
-	public function get_name() {
+	protected function get_setting_name() {
 		return __( 'Recipe Card Buttons', 'tasty-recipes-lite' );
 	}
 

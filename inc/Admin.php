@@ -740,8 +740,9 @@ EOT;
 		$tasty_recipes_lite_upgrade_url = Url::add_utm_params(
 			'https://www.wptasty.com/pricing-recipes', // @Todo: replace with lite upgrade url.
 			array(
-				'utm_medium'  => 'lite',
-				'utm_content' => 'modal',
+				'utm_medium'  => 'modal',
+				'utm_campaign'  => 'lite-plugin',
+				'utm_content' => '__setting_utm_content__',
 			)
 		);
 		TastyRecipesLiteMain::echo_template_part( 'admin/upgrade-modal', compact( 'tasty_recipes_lite_upgrade_url' ) );

@@ -25,7 +25,7 @@ class QuickLinks extends AbstractSetting {
 		return Admin::SETTINGS_GROUP_CARD;
 	}
 
-	public function get_name() {
+	protected function get_setting_name() {
 		return __( 'Quick Links', 'tasty-recipes-lite' );
 	}
 

@@ -24,8 +24,12 @@ class DisableScaling extends AbstractSetting {
 		return Admin::SETTINGS_GROUP_CARD;
 	}
 
-	public function get_name() {
-		return __( 'Scaling', 'tasty-recipes-lite' ) . $this->get_pro_badge();
+	protected function get_setting_name() {
+		return __( 'Scaling', 'tasty-recipes-lite' );
+	}
+
+	protected function is_pro() {
+		return true;
 	}
 
 	public function sanitize( $value ) {
@@ -49,7 +53,6 @@ class DisableScaling extends AbstractSetting {
 				false => __( 'On', 'tasty-recipes-lite' ),
 			),
 			'forced_value'    => true,
-			'container_class' => 'tasty-show-modal-tasty_recipes_upgrade_modal tasty-recipes-disabled',
 		);
 
 		return $this->prepare_select_field_args( $args );

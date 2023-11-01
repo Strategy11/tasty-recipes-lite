@@ -24,8 +24,12 @@ class UnitConversion extends AbstractSetting {
 		return Admin::SETTINGS_GROUP_CARD;
 	}
 
-	public function get_name() {
-		return __( 'Unit Conversion', 'tasty-recipes-lite' ) . $this->get_pro_badge();
+	protected function get_setting_name() {
+		return __( 'Unit Conversion', 'tasty-recipes-lite' );
+	}
+
+	protected function is_pro() {
+		return true;
 	}
 
 	protected function get_pro_feature_link() {
@@ -49,7 +53,6 @@ class UnitConversion extends AbstractSetting {
 				true  => __( 'On', 'tasty-recipes-lite' ),
 			),
 			'forced_value'    => false,
-			'container_class' => 'tasty-show-modal-tasty_recipes_upgrade_modal tasty-recipes-disabled',
 		);
 
 		return $this->prepare_select_field_args( $args );

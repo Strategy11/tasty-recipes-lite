@@ -24,8 +24,12 @@ class Instacart extends AbstractSetting {
 		return Admin::SETTINGS_GROUP_CARD;
 	}
 
-	public function get_name() {
-		return __( 'Add an Instacart button', 'tasty-recipes-lite' ) . $this->get_pro_badge();
+	protected function get_setting_name() {
+		return __( 'Add an Instacart button', 'tasty-recipes-lite' );
+	}
+
+	protected function is_pro() {
+		return true;
 	}
 
 	public function sanitize( $value ) {
@@ -54,7 +58,6 @@ class Instacart extends AbstractSetting {
 				true  => __( 'On', 'tasty-recipes-lite' ),
 			),
 			'forced_value'    => false,
-			'container_class' => 'tasty-show-modal-tasty_recipes_upgrade_modal tasty-recipes-disabled',
 		);
 
 		return $this->prepare_select_field_args( $args );

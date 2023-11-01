@@ -15,7 +15,19 @@ abstract class AbstractSetting {
 	abstract public function get_id();
 	abstract public function get_group();
 
-	abstract public function get_name();
+	abstract protected function get_setting_name();
+
+	protected function get_utm_content() {
+		return str_replace( 'tasty_recipes_', '', $this->get_id() );
+	}
+
+	public function get_name() {
+		return $this->get_setting_name() . ( $this->is_pro() ? $this->get_pro_badge() : '' );
+	}
+
+	protected function is_pro() {
+		return false;
+	}
 
 	public function sanitize( $option_value ) {
 		return $option_value;
@@ -50,6 +62,16 @@ abstract class AbstractSetting {
 	}
 
 	public function filter_field_args( $args ) {
+		if ( $this->is_pro() ) {
+			$args['container_class'] = 'tasty-show-modal tasty-recipes-disabled';
+			$args['tasty_datasets']  = " data-modal_id='tasty_recipes_upgrade_modal' data-replacements='" . esc_attr(wp_json_encode(
+					array(
+						'modal_title' => $this->get_setting_name(),
+						'setting_utm_content' => sanitize_title( $this->get_utm_content() ),
+					)
+				) ) . "' ";
+		}
+
 		return (array) apply_filters( 'tasty_recipes_admin_settings_field_args', $args );
 	}
 
@@ -148,13 +170,7 @@ abstract class AbstractSetting {
 
 	protected function get_pro_badge() {
 		$data = array(
-			'tasty_badge_link' => Url::add_utm_params(
-				$this->get_pro_feature_link(),
-				array(
-					'utm_medium'  => 'settings',
-					'utm_content' => 'lite',
-				)
-			),
+			'tasty_badge_link' => $this->get_pro_feature_link(),
 		);
 		return TastyRecipesLiteMain::get_template_part( 'admin/settings/pro-badge', $data );
 	}

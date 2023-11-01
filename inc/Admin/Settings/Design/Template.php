@@ -24,7 +24,7 @@ class Template extends AbstractSetting {
 		return Admin::SETTINGS_SECTION_CARD_DESIGN;
 	}
 
-	public function get_name() {
+	protected function get_setting_name() {
 		return '';
 	}
 

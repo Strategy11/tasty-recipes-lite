@@ -9,12 +9,10 @@
 
 <section class="tasty-framework-modal" id="tasty_recipes_upgrade_modal">
 	<div class="tasty-framework-modal-container">
-		<a href="#" class="tasty-hide-modal-tasty_recipes_upgrade_modal tasty-framework-close-modal tasty-framework-modal-x"></a>
+		<a href="#" class="tasty-hide-modal tasty-framework-close-modal tasty-framework-modal-x" data-modal_id="tasty_recipes_upgrade_modal"></a>
 		<div class="tasty-framework-modal-header">
 			<div class="tasty-recipes-lock"></div>
-			<h2>
-				<?php esc_html_e( 'Premium feature', 'tasty-recipes-lite' ); ?>
-			</h2>
+			<h2>__modal_title__</h2>
 		</div>
 
 		<div class="tasty-framework-spacer"></div>
