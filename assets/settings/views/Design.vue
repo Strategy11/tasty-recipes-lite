@@ -247,107 +247,7 @@
 						</select>
 					</fieldset>
 				</div>
-				<div class="tasty-recipes-nutrifox-field-container">
-					<div>
-						<h3>Nutrifox Display</h3>
-						<fieldset>
-							<label
-								><input
-									type="radio"
-									v-model="
-										customization.nutrifox_display_style
-									"
-									name="tasty_recipes_customization[nutrifox_display_style]"
-									value="label"
-								/>
-								Insert Nutrifox label (iframe)</label
-							>
-							<label
-								><input
-									type="radio"
-									v-model="
-										customization.nutrifox_display_style
-									"
-									name="tasty_recipes_customization[nutrifox_display_style]"
-									value="card"
-								/>
-								Insert as plain text</label
-							>
-						</fieldset>
-					</div>
-					<div class="nutrifox-cta">
-						<a
-							class="nutrifox-logo"
-							href="https://nutrifox.com/?utm_source=tasty-recipes&utm_medium=dashboard&utm_campaign=design-tab"
-							target="_blank"
-							rel="noopener"
-							><img
-								alt="Nutrifox logo"
-								:src="nutrifoxLogoUrl"
-								width="96"
-								height="22"
-						/></a>
-						<a
-							class="nutrifox-try"
-							v-show="!isNutrifoxUser"
-							:href="'https://nutrifox.com/try?utm_source=tasty-recipes&utm_medium=dashboard&utm_campaign=design-tab&utm_content=try-cta'"
-							target="_blank"
-							>Try Nutrifox free for 14 days<svg
-								aria-hidden="true"
-								focusable="false"
-								data-prefix="fas"
-								data-icon="external-link-alt"
-								class="svg-inline--fa fa-external-link-alt fa-w-16"
-								role="img"
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 512 512"
-							>
-								<path
-									fill="currentColor"
-									d="M432,320H400a16,16,0,0,0-16,16V448H64V128H208a16,16,0,0,0,16-16V80a16,16,0,0,0-16-16H48A48,48,0,0,0,0,112V464a48,48,0,0,0,48,48H400a48,48,0,0,0,48-48V336A16,16,0,0,0,432,320ZM488,0h-128c-21.37,0-32.05,25.91-17,41l35.73,35.73L135,320.37a24,24,0,0,0,0,34L157.67,377a24,24,0,0,0,34,0L435.28,133.32,471,169c15,15,41,4.5,41-17V24A24,24,0,0,0,488,0Z"
-								></path></svg
-						></a>
-					</div>
-				</div>
 				<hr />
-				<h3>Social Footer</h3>
-				<div
-					v-show="canCustomizeSocialIcon"
-					class="tasty-recipes-card-field-container tasty-flex"
-				>
-					<fieldset>
-						<label>Social Platform</label>
-						<select
-							class="w-full"
-							v-model="customization.footer_social_platform"
-							name="tasty_recipes_customization[footer_social_platform]"
-							:disabled="!canCustomizeSocialIcon"
-						>
-							<option value="">None</option>
-							<option value="instagram">Instagram</option>
-							<option value="pinterest">Pinterest</option>
-							<option value="facebook">Facebook</option>
-						</select>
-						<input
-							v-if="!canCustomizeSocialIcon"
-							type="hidden"
-							v-model="customization.footer_social_platform"
-							:name="
-								!canCustomizeSocialIcon
-									? 'tasty_recipes_customization[footer_social_platform]'
-									: ''
-							"
-						/>
-					</fieldset>
-					<fieldset>
-						<label>Icon Color</label>
-						<color-picker
-							v-model="customization.footer_icon_color"
-							name="tasty_recipes_customization[footer_icon_color]"
-							:disabled="!canCustomizeSocialIcon"
-						></color-picker>
-					</fieldset>
-				</div>
 				<div class="tasty-recipes-card-field-container tasty-flex">
 					<fieldset>
 						<label>Heading</label>
@@ -425,9 +325,7 @@ export default {
 			iframeHeight: 0,
 			recipeCardPreviewUrl: this.getRecipeCardPreviewUrl(
 				this.initialOptions.template,
-				this.initialOptions.customization.star_ratings_style,
-				this.initialOptions.customization.footer_social_platform,
-				this.initialOptions.customization.nutrifox_display_style
+				this.initialOptions.customization.star_ratings_style
 			),
 			prevScrollY: 0,
 		};
@@ -445,12 +343,6 @@ export default {
 			return (
 				-1 !== ["bold", "fresh", "snap"].indexOf(this.currentTemplate)
 			);
-		},
-		currentFooterSocialPlatform() {
-			return this.customization.footer_social_platform;
-		},
-		currentNutrifoxDisplayStyle() {
-			return this.customization.nutrifox_display_style;
 		},
 		currentStarRatingsStyle() {
 			return this.customization.star_ratings_style;
@@ -547,17 +439,13 @@ export default {
 				this.currentTemplate = keys[index + 1];
 			}
 		},
-		getRecipeCardPreviewUrl(template, style, platform, nutrifox) {
+		getRecipeCardPreviewUrl(template, style) {
 			return (
 				this.recipeCardPreviewUrlBase +
 				"&template=" +
 				template +
-				"&nutrifox_display_style=" +
-				nutrifox +
 				"&star_ratings_style=" +
-				style +
-				"&footer_social_platform=" +
-				platform
+				style
 			);
 		},
 		handleScroll() {
@@ -599,36 +487,16 @@ export default {
 		},
 	},
 	watch: {
-		currentFooterSocialPlatform(val) {
-			this.recipeCardPreviewUrl = this.getRecipeCardPreviewUrl(
-				this.currentTemplate,
-				this.customization.star_ratings_style,
-				val,
-				this.customization.nutrifox_display_style
-			);
-		},
-		currentNutrifoxDisplayStyle(val) {
-			this.recipeCardPreviewUrl = this.getRecipeCardPreviewUrl(
-				this.currentTemplate,
-				this.customization.star_ratings_style,
-				this.customization.footer_social_platform,
-				val
-			);
-		},
 		currentStarRatingsStyle(val) {
 			this.recipeCardPreviewUrl = this.getRecipeCardPreviewUrl(
 				this.currentTemplate,
-				val,
-				this.customization.footer_social_platform,
-				this.customization.nutrifox_display_style
+				val
 			);
 		},
 		currentTemplate(val) {
 			this.recipeCardPreviewUrl = this.getRecipeCardPreviewUrl(
 				val,
-				this.customization.star_ratings_style,
-				this.customization.footer_social_platform,
-				this.customization.nutrifox_display_style
+				this.customization.star_ratings_style
 			);
 		},
 		customization: {

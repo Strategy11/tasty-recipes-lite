@@ -373,36 +373,6 @@ class DistributionMetadata {
 			);
 		}
 
-		$nutrition = array();
-		if ( $recipe->get_nutrifox_response() ) {
-			foreach ( Recipe::get_nutrition_attributes() as $name => $meta ) {
-				$value = $recipe->get_formatted_nutrifox_value( $name );
-				if ( false === $value ) {
-					continue;
-				}
-				$nutrition[ $meta['property'] ] = $value;
-			}
-		} else {
-			foreach ( Recipe::get_nutrition_attributes() as $name => $meta ) {
-				// '0' is a valid value.
-				if ( '' === $recipe_json[ $name ] ) {
-					continue;
-				}
-				$nutrition[ $meta['property'] ] = $recipe_json[ $name ];
-			}
-		}
-
-		if ( ! empty( $nutrition ) ) {
-
-			if ( isset( $nutrition['calories'] )
-				&& is_numeric( $nutrition['calories'] ) ) {
-				$nutrition['calories'] .= ' calories';
-			}
-
-			$nutrition['@type']  = 'nutritionInformation';
-			$schema['nutrition'] = $nutrition;
-		}
-
 		$video_url   = $recipe->get_video_url();
 		$oembed_data = $recipe->get_video_url_response();
 		if ( $video_url && $oembed_data ) {

@@ -642,63 +642,6 @@ class Shortcodes {
 		}
 
 		/**
-		 * Filters the Nutrifox display style: 'card' or 'label'.
-		 *
-		 * @var string $display_style Existing display style.
-		 */
-		$nutrifox_display_style = apply_filters(
-			'tasty_recipes_nutrifox_display_style',
-			$settings['nutrifox_display_style']
-		);
-
-		$nutrifox = $recipe->get_nutrifox_response();
-		foreach ( Recipe::get_nutrition_attributes() as $attribute => $meta ) {
-			// '0' is a valid value.
-			if ( '' === $recipe_json[ $attribute ] ) {
-				// See if the data exists in Nutrifox now.
-				if ( $nutrifox
-					&& isset( $meta['nutrifox_key'] )
-					&& ( ! isset( $nutrifox['nutrients'][ $meta['nutrifox_key'] ]['visible'] )
-						|| true === $nutrifox['nutrients'][ $meta['nutrifox_key'] ]['visible'] ) ) {
-					$nutrifox_value = $recipe->get_formatted_nutrifox_value( $attribute );
-					$template_vars['recipe_hidden_nutrition'][ $attribute ] = array(
-						'value' => '<span data-tasty-recipes-customization="detail-value-color.color" class="' . esc_attr( 'tasty-recipes-' . str_replace( '_', '-', $attribute ) ) . '">' . esc_html( $nutrifox_value ) . '</span>',
-					);
-					if ( 'card' === $nutrifox_display_style ) {
-						$template_vars['recipe_nutrition'][ $attribute ] = array(
-							'label' => $meta['label'],
-							'value' => '<span data-tasty-recipes-customization="body-color.color" class="' . esc_attr( 'tasty-recipes-' . str_replace( '_', '-', $attribute ) ) . '">' . esc_html( $nutrifox_value ) . '</span>',
-						);
-					}
-				}
-				continue;
-			}
-			$template_vars['recipe_nutrition'][ $attribute ] = array(
-				'label' => $meta['label'],
-				'value' => '<span data-tasty-recipes-customization="body-color.color" class="' . esc_attr( 'tasty-recipes-' . str_replace( '_', '-', $attribute ) ) . '">' . $recipe_json[ $attribute ] . '</span>',
-			);
-		}
-
-		if ( ! empty( $recipe_json['nutrifox_id'] )
-			&& 'label' === $nutrifox_display_style ) {
-			$nutrifox_id            = (int) $recipe_json['nutrifox_id'];
-			$nutrifox_iframe_url    = sprintf(
-				'%s/embed/label/%d',
-				TastyRecipesLiteMain::nutrifox_url(),
-				$nutrifox_id
-			);
-			$nutrifox_resize_script = Utils::get_contents( dirname( dirname( __FILE__ ) ) . '/assets/js/nutrifox-resize.js' );
-
-			$template_vars['recipe_nutrifox_embed'] = <<<EOT
-<script type="text/javascript" data-cfasync="false">
-{$nutrifox_resize_script}
-</script>
-<iframe title="nutritional information" id="nutrifox-label-{$nutrifox_id}" src="{$nutrifox_iframe_url}" style="width:100%;border-width:0;"></iframe>
-EOT;
-
-		}
-
-		/**
 		 * Allow third-parties to modify the template variables prior to rendering.
 		 *
 		 * @param array $template_vars Template variables to be used.

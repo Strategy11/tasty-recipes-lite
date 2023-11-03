@@ -7,8 +7,6 @@
 
 namespace Tasty\Recipes\Lite;
 
-use Tasty\Recipes\Lite\Admin\Settings\Settings\IngredientsCheckboxes;
-use TastyRecipesLiteMain;
 use Tasty\Recipes\Lite\Objects\Recipe;
 use WP_Post;
 
@@ -52,7 +50,7 @@ class Frontend {
 	 */
 	public function add_hooks() {
 		add_filter( 'tasty_recipes_quick_links', array( $this, 'insert_rating_quick_link' ), 10, 4 );
-		add_filter( 'tasty_recipes_recipe_template_vars', array( $this, 'add_ingredients_checkboxes' ), 20 );
+
 	}
 
 	/**
@@ -97,16 +95,5 @@ class Frontend {
 		$links['rating'] = '<a class="tasty-recipes-rating-link ' . $rating_link_class . '" href="#respond">' . $recipe_rating_icons . $recipe_rating_label . '</a>';
 
 		return $links;
-	}
-
-	public function add_ingredients_checkboxes( $template_vars ) {
-		if (
-			IngredientsCheckboxes::instance()->get_option_value() &&
-			! is_feed() &&
-			! tasty_recipes_is_print()
-		) {
-			$template_vars['recipe_ingredients'] = Shortcodes::process_ingredients_for_checkboxes( $template_vars['recipe_ingredients'] );
-		}
-		return $template_vars;
 	}
 }
