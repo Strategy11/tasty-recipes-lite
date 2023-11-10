@@ -19,7 +19,7 @@
 	<?php } ?>
 
 	<input type="<?php echo esc_attr( $type ); ?>" name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( $name ); ?>"
-		   value="<?php echo esc_attr( $value ); ?>"
+		   value="<?php echo isset( $value ) ? esc_attr( $value ) : ''; ?>"
 		   class="<?php echo esc_attr( isset( $field_class ) ? $field_class : '' ); ?>"
 							 <?php
 								if ( isset( $disabled ) ) {

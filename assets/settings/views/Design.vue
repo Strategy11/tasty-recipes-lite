@@ -247,6 +247,7 @@
 						</select>
 					</fieldset>
 				</div>
+				<slot name="after-star-ratings"></slot>
 				<hr />
 				<div class="tasty-recipes-card-field-container tasty-flex">
 					<fieldset>
@@ -318,9 +319,7 @@ export default {
 		return {
 			currentStickyTop: 0,
 			currentTemplate: this.initialOptions.template,
-			customization: {
-				...this.initialOptions.customization,
-			},
+			customization: this.initialOptions.customization,
 			originalStickyTop: -300,
 			iframeHeight: 0,
 			recipeCardPreviewUrl: this.getRecipeCardPreviewUrl(
@@ -339,25 +338,11 @@ export default {
 		window.removeEventListener("scroll", this.handleScroll);
 	},
 	computed: {
-		canCustomizeSocialIcon() {
-			return (
-				-1 !== ["bold", "fresh", "snap"].indexOf(this.currentTemplate)
-			);
-		},
 		currentStarRatingsStyle() {
 			return this.customization.star_ratings_style;
 		},
 		currentTemplateLabel() {
 			return this.templateOptions[this.currentTemplate] + " Template";
-		},
-		nutrifoxLogoUrl() {
-			return (
-				window.tastyRecipesSettings.pluginUrl +
-				"/assets/images/nutrifox-logo.png"
-			);
-		},
-		isNutrifoxUser() {
-			return window.tastyRecipesSettings.isNutrifoxUser;
 		},
 	},
 	methods: {
@@ -475,6 +460,7 @@ export default {
 			}
 		},
 		sendCustomizationToIframe() {
+			console.log( this.customization );
 			const data = {
 				event: "updateCustomization",
 				data: {

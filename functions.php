@@ -41,7 +41,7 @@ function tasty_recipes_get_print_url( $post_id, $recipe_id ) {
 			$permalink .= '/';
 		}
 	} else {
-		$permalink = add_query_arg( Content_Model::get_print_query_var(), $recipe_id, $permalink );
+		$permalink = add_query_arg( ContentModel::get_print_query_var(), $recipe_id, $permalink );
 	}
 	/**
 	 * Allows modification of the print URL.
@@ -77,4 +77,12 @@ function tasty_recipes_get_print_view_options() {
 	}
 
 	return $options;
+}
+
+function tasty_recipes_is_pro_active() {
+	return defined( 'TASTY_RECIPES_PLUGIN_VERSION' );
+}
+
+function tasty_recipes_base_file() {
+	return tasty_recipes_is_pro_active() ? TASTY_RECIPES_PLUGIN_FILE : TASTY_RECIPES_LITE_PLUGIN_FILE;
 }

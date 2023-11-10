@@ -58,10 +58,10 @@ class Assets {
 				array( 'editor-buttons' ),
 				$time
 			);
-			$time = filemtime( dirname( TASTY_RECIPES_LITE_PLUGIN_FILE ) . '/assets/dist/settings.build.js' );
+			$time = filemtime( dirname( tasty_recipes_base_file() ) . '/assets/dist/settings.build.js' );
 			wp_enqueue_script(
 				'tasty-recipes-settings-v2',
-				plugins_url( 'assets/dist/settings.build.js', TASTY_RECIPES_LITE_PLUGIN_FILE ),
+				plugins_url( 'assets/dist/settings.build.js', tasty_recipes_base_file() ),
 				array( 'wp-i18n', 'wp-util', 'wplink' ),
 				$time,
 				true
