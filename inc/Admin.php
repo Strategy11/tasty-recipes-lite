@@ -235,7 +235,6 @@ class Admin {
 		$custom_design          = ! empty( $get_template ) && array_key_exists( $get_template, self::get_design_templates() ) ? $get_template : '';
 		$star_ratings_style     = ! empty( $get_star_ratings_style ) && in_array( $get_star_ratings_style, array( 'solid', 'outline' ), true ) ? $get_star_ratings_style : null;
 		$nutrifox_display_style = ! empty( $get_nutrifox_display_style ) && in_array( $get_nutrifox_display_style, array( 'label', 'card' ), true ) ? $get_nutrifox_display_style : null;
-		error_log( var_export( $nutrifox_display_style, true ) );
 		$footer_social_platform = ! empty( $get_footer_social_platform ) && in_array( $get_footer_social_platform, array( 'instagram', 'pinterest', 'facebook' ), true ) ? $get_footer_social_platform : '';
 
 		$settings = TastyRecipesLiteMain::get_filtered_customization_settings();

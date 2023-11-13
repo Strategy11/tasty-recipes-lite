@@ -7,39 +7,14 @@
 
 namespace Tasty\Recipes\Lite;
 
+use Tasty\Framework\Abstracts\Subscriber;
 use Tasty\Recipes\Lite\Objects\Recipe;
 use WP_Post;
 
 /**
  * Frontend class.
  */
-class Frontend {
-	/**
-	 * Singleton instance.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var Frontend
-	 */
-	private static $instance = null;
-
-	/**
-	 * Get singleton instance.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return Frontend
-	 */
-	public static function get_instance() {
-		$called_class = get_called_class();
-		if ( null !== self::$instance && $called_class === get_class( self::$instance ) ) {
-			return self::$instance;
-		}
-
-		self::$instance = new static();
-		self::$instance->add_hooks();
-		return self::$instance;
-	}
+class Frontend extends Subscriber {
 
 	/**
 	 * Subscribe hooks.
