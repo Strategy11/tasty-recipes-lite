@@ -227,14 +227,12 @@ class Admin {
 			$wrapper_classes[] = 'tasty-recipes-has-plug';
 		}
 
-		$get_template               = Utils::get_param( 'template', 'sanitize_key' );
+		$get_template               = Utils::get_param( 'template', 'sanitize_key', 'boldaaa' );
 		$get_star_ratings_style     = Utils::get_param( 'star_ratings_style', 'sanitize_key' );
-		$get_nutrifox_display_style = Utils::get_param( 'nutrifox_display_style', 'sanitize_key' );
 		$get_footer_social_platform = Utils::get_param( 'footer_social_platform', 'sanitize_key' );
 
 		$custom_design          = ! empty( $get_template ) && array_key_exists( $get_template, self::get_design_templates() ) ? $get_template : '';
 		$star_ratings_style     = ! empty( $get_star_ratings_style ) && in_array( $get_star_ratings_style, array( 'solid', 'outline' ), true ) ? $get_star_ratings_style : null;
-		$nutrifox_display_style = ! empty( $get_nutrifox_display_style ) && in_array( $get_nutrifox_display_style, array( 'label', 'card' ), true ) ? $get_nutrifox_display_style : null;
 		$footer_social_platform = ! empty( $get_footer_social_platform ) && in_array( $get_footer_social_platform, array( 'instagram', 'pinterest', 'facebook' ), true ) ? $get_footer_social_platform : '';
 
 		$settings = TastyRecipesLiteMain::get_filtered_customization_settings();
@@ -281,63 +279,6 @@ EOT;
 		$notes        = <<<EOT
 <p>These are very adaptable – I’ve used as much as 3/4 cup cocoa, and as little as 2 tablespoons agave. It just depends on how sweet / dark you want them to be. I’ve also used peanut butter which is (obviously) delicious!</p>
 EOT;
-		if ( 'card' === $nutrifox_display_style ) {
-			$nutrifox_id           = '';
-			$recipe_nutrition      = array(
-				'serving_size' =>
-				array(
-					'label' => 'Serving Size',
-					'value' => '<span data-tasty-recipes-customization="body-color.color" class="tasty-recipes-serving-size">12</span>',
-				),
-				'calories'     =>
-				array(
-					'label' => 'Calories',
-					'value' => '<span data-tasty-recipes-customization="body-color.color" class="tasty-recipes-calories">238</span>',
-				),
-				'sugar'        =>
-				array(
-					'label' => 'Sugar',
-					'value' => '<span data-tasty-recipes-customization="body-color.color" class="tasty-recipes-sugar">3.8g</span>',
-				),
-				'sodium'       =>
-				array(
-					'label' => 'Sodium',
-					'value' => '<span data-tasty-recipes-customization="body-color.color" class="tasty-recipes-sodium">99.3mg</span>',
-				),
-				'fat'          =>
-				array(
-					'label' => 'Fat',
-					'value' => '<span data-tasty-recipes-customization="body-color.color" class="tasty-recipes-fat">22.6g</span>',
-				),
-				'fiber'        =>
-				array(
-					'label' => 'Fiber',
-					'value' => '<span data-tasty-recipes-customization="body-color.color" class="tasty-recipes-fiber">2.7g</span>',
-				),
-				'protein'      =>
-				array(
-					'label' => 'Protein',
-					'value' => '<span data-tasty-recipes-customization="body-color.color" class="tasty-recipes-protein">3.9g</span>',
-				),
-			);
-			$recipe_nutrifox_embed = '';
-		} else {
-			$recipe_nutrition       = array();
-			$nutrifox_id            = 26460;
-			$nutrifox_iframe_url    = sprintf(
-				'%s/embed/label/%d',
-				TastyRecipesLiteMain::nutrifox_url(),
-				$nutrifox_id
-			);
-			$nutrifox_resize_script = Utils::get_contents( dirname( dirname( __FILE__ ) ) . '/assets/js/nutrifox-resize.js' );
-
-			$recipe_nutrifox_embed = <<<EOT
-<script type="text/javascript" data-cfasync="false">
-{$nutrifox_resize_script}
-</script>
-<iframe title="nutritional information" id="nutrifox-label-{$nutrifox_id}" src="{$nutrifox_iframe_url}" style="width:100%;border-width:0;"></iframe>
-EOT;
-		}
 
 		$template_vars = array(
 			'recipe'                        => $recipe,
@@ -409,10 +350,7 @@ EOT;
 			'recipe_instructions'           => $instructions,
 			'recipe_keywords'               => 'almond butter cups, peanut butter cups, healthy almond butter cups',
 			'recipe_notes'                  => $notes,
-			'recipe_nutrifox_id'            => $nutrifox_id,
-			'recipe_nutrifox_embed'         => $recipe_nutrifox_embed,
 			'recipe_video_embed'            => '',
-			'recipe_nutrition'              => $recipe_nutrition,
 			'recipe_hidden_nutrition'       => array(),
 			'copy_ingredients'              => get_option( TastyRecipesLiteMain::COPY_TO_CLIPBOARD_OPTION ) ? '<button aria-label="' . __( 'Copy ingredients to clipboard', 'tasty-recipes-lite' ) . '" class="tasty-recipes-copy-button" id="copy-ingredients" data-text="' . __( 'Copy ingredients', 'tasty-recipes-lite' ) . '">' . Utils::get_contents( dirname( dirname( __FILE__ ) ) . '/assets/images/icons/icon-copy-to-clipboard.svg' ) . '</button>' : false,
 			'first_button'                  => Shortcodes::get_card_button( $recipe, 'first', $custom_design ),
@@ -441,6 +379,8 @@ EOT;
 		}
 
 		$template_vars['recipe_styles'] = '<style type="text/css">' . PHP_EOL . $styles . PHP_EOL . '</style>' . PHP_EOL;
+
+		$template_vars = apply_filters( 'tasty_recipes_admin_preview_template_vars', $template_vars, $settings );
 
 		$ret            = '<!DOCTYPE html><html><head>' . $stylesheets . '</head><body>';
 		$ret           .= '<div class="' . esc_attr( implode( ' ', $wrapper_classes ) ) . '"';

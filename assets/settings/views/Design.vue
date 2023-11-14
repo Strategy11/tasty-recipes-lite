@@ -322,10 +322,6 @@ export default {
 			customization: this.initialOptions.customization,
 			originalStickyTop: -300,
 			iframeHeight: 0,
-			recipeCardPreviewUrl: this.getRecipeCardPreviewUrl(
-				this.initialOptions.template,
-				this.initialOptions.customization.star_ratings_style
-			),
 			prevScrollY: 0,
 		};
 	},
@@ -338,11 +334,13 @@ export default {
 		window.removeEventListener("scroll", this.handleScroll);
 	},
 	computed: {
-		currentStarRatingsStyle() {
-			return this.customization.star_ratings_style;
-		},
 		currentTemplateLabel() {
 			return this.templateOptions[this.currentTemplate] + " Template";
+		},
+		recipeCardPreviewUrl() {
+			return this.recipeCardPreviewUrlBase +
+				'&' + new URLSearchParams(this.customization).toString() +
+				'&template=' + this.currentTemplate;
 		},
 	},
 	methods: {
@@ -424,15 +422,6 @@ export default {
 				this.currentTemplate = keys[index + 1];
 			}
 		},
-		getRecipeCardPreviewUrl(template, style) {
-			return (
-				this.recipeCardPreviewUrlBase +
-				"&template=" +
-				template +
-				"&star_ratings_style=" +
-				style
-			);
-		},
 		handleScroll() {
 			const currentScrollY = window.scrollY;
 			if (this.prevScrollY < currentScrollY) {
@@ -460,12 +449,9 @@ export default {
 			}
 		},
 		sendCustomizationToIframe() {
-			console.log( this.customization );
 			const data = {
 				event: "updateCustomization",
-				data: {
-					...this.customization,
-				},
+				data: this.customization,
 			};
 			this.$refs.previewIframe.contentWindow.postMessage(
 				JSON.stringify(data)
@@ -473,18 +459,6 @@ export default {
 		},
 	},
 	watch: {
-		currentStarRatingsStyle(val) {
-			this.recipeCardPreviewUrl = this.getRecipeCardPreviewUrl(
-				this.currentTemplate,
-				val
-			);
-		},
-		currentTemplate(val) {
-			this.recipeCardPreviewUrl = this.getRecipeCardPreviewUrl(
-				val,
-				this.customization.star_ratings_style
-			);
-		},
 		customization: {
 			deep: true,
 			handler() {

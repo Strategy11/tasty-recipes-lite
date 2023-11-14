@@ -41,10 +41,6 @@ use Tasty\Recipes\Lite\Converters\ZipList;
 define( 'TASTY_RECIPES_LITE_PLUGIN_VERSION', '1.0.0' );
 define( 'TASTY_RECIPES_LITE_PLUGIN_FILE', __FILE__ );
 
-if ( ! defined( 'TASTY_RECIPES_NUTRIFOX_DOMAIN' ) ) {
-	define( 'TASTY_RECIPES_NUTRIFOX_DOMAIN', 'nutrifox.com' );
-}
-
 /**
  * Base controller class for the plugin.
  */
@@ -449,21 +445,6 @@ class TastyRecipesLiteMain {
 			return true;
 		}
 		return false;
-	}
-
-	/**
-	 * Get the Nutrifox url. If it's missing https, add it.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return string
-	 */
-	public static function nutrifox_url() {
-		$url = TASTY_RECIPES_NUTRIFOX_DOMAIN;
-		if ( stripos( $url, 'http' ) !== 0 ) {
-			$url = 'https://' . $url;
-		}
-		return $url;
 	}
 
 	/**
