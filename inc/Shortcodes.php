@@ -395,7 +395,7 @@ class Shortcodes {
 			'recipe_instructions'           => DistributionMetadata::apply_instruction_step_numbers( apply_filters( 'tasty_recipes_the_content', self::do_caption_shortcode( $recipe_json['instructions'] ), 'instructions' ) ),
 			'recipe_keywords'               => $recipe_json['keywords'],
 			'recipe_notes'                  => $recipe_json['notes_rendered'],
-			'recipe_nutrifox_id'            => $recipe_json['nutrifox_id'],
+			'recipe_nutrifox_id'            => ! empty( $recipe_json['nutrifox_id'] ) ? $recipe_json['nutrifox_id'] : '',
 			'recipe_nutrifox_embed'         => '',
 			'recipe_video_embed'            => '',
 			'recipe_nutrition'              => array(),

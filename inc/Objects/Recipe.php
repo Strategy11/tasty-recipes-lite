@@ -58,7 +58,7 @@ class Recipe {
 	 * @return array
 	 */
 	public static function get_general_attributes() {
-		return array(
+		$general_attributes = array(
 			'id'                          => array(
 				'label' => __( 'ID', 'tasty-recipes-lite' ),
 			),
@@ -109,10 +109,6 @@ class Recipe {
 				'label'             => __( 'Keywords', 'tasty-recipes-lite' ),
 				'sanitize_callback' => 'sanitize_text_field',
 			),
-			'nutrifox_id'                 => array(
-				'label'             => __( 'Nutrifox ID', 'tasty-recipes-lite' ),
-				'sanitize_callback' => 'intval',
-			),
 			'video_url'                   => array(
 				'label'             => __( 'Video URL or Shortcode', 'tasty-recipes-lite' ),
 				'sanitize_callback' => 'sanitize_text_field',
@@ -124,6 +120,8 @@ class Recipe {
 				'label' => __( 'Total Reviews', 'tasty-recipes-lite' ),
 			),
 		);
+
+		return apply_filters( 'tasty_recipes_general_attributes', $general_attributes );
 	}
 
 	/**

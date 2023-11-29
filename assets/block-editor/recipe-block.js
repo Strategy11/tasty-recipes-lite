@@ -187,6 +187,7 @@ const edit = props => {
 								disable_unit_conversion: !props.attributes.disable_unit_conversion
 							});
 						}}
+						indeterminate={!window.tastyRecipesBlockEditor.isPro}
 					/>
 					<CheckboxControl
 						label={__(
@@ -199,6 +200,7 @@ const edit = props => {
 								disable_scaling: !props.attributes.disable_scaling
 							});
 						}}
+						indeterminate={!window.tastyRecipesBlockEditor.isPro}
 					/>
 				</PanelBody>
 			</InspectorAdvancedControls>

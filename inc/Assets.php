@@ -210,6 +210,7 @@ class Assets {
 			'recipeBlockTitle' => 'Tasty Recipe',
 			'recipeDataStore'  => array(),
 			'editorNotices'    => array(),
+			'isPro'            => tasty_recipes_is_pro_active(),
 		);
 		$post_id     = self::get_current_post_id();
 		if ( $post_id ) {
@@ -263,9 +264,13 @@ class Assets {
 
 		$nutrition_attributes = Recipe::get_nutrition_attributes();
 		$nutrition_attributes = array_reverse( $nutrition_attributes, true );
-		// Add Nutrifox ID to the beginning of this set of attributes.
-		$nutrition_attributes['nutrifox_id'] = $general_attributes['nutrifox_id'];
-		$nutrition_attributes                = array_reverse( $nutrition_attributes, true );
+
+		$attributes = array(
+			'general'   => $general_attributes,
+			'cooking'   => $cooking_attributes,
+			'nutrition' => $nutrition_attributes,
+		);
+		$attributes = apply_filters( 'tasty_recipes_edit_modal_attributes', $attributes );
 
 		ob_start();
 		do_action( 'tasty_recipes_editor_after_video_url' );
@@ -291,11 +296,7 @@ class Assets {
 						'value_placeholder'   => esc_html__( 'Additional Time Value', 'tasty-recipes-lite' ),
 					),
 				),
-				'attributes'             => array(
-					'general'   => $general_attributes,
-					'cooking'   => $cooking_attributes,
-					'nutrition' => $nutrition_attributes,
-				),
+				'attributes'             => $attributes,
 				'video_settings'         => array(
 					'label'    => esc_html__( 'Video Settings: ', 'tasty-recipes-lite' ),
 					'settings' => array(

@@ -420,8 +420,8 @@ class TastyRecipesLiteMain {
 	/**
 	 * Actions to perform when activating the plugin.
 	 */
-	public function plugin_activation() {
-		$this->require_files();
+	public static function plugin_activation() {
+		self::get_instance()->require_files();
 		ContentModel::action_init_register_rewrite_rules();
 		flush_rewrite_rules();
 		update_option( self::PLUGIN_ACTIVATION_OPTION, true );
@@ -807,4 +807,4 @@ add_action( 'plugins_loaded', 'Tasty_Recipes_Lite' );
 /**
  * Register the plugin activation hook
  */
-register_activation_hook( __FILE__, array( Tasty_Recipes_Lite(), 'plugin_activation' ) );
+register_activation_hook( __FILE__, array( TastyRecipesLiteMain::class, 'plugin_activation' ) );
