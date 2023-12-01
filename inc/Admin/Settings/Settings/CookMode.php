@@ -46,13 +46,13 @@ class CookMode extends AbstractSetting {
 
 	public function get_render_args() {
 		$args = array(
-			'name'            => $this->get_id(),
-			'description'     => __( 'Show Cook Mode toggle to let visitors prevent sleep mode for supported devices.', 'tasty-recipes-lite' ),
-			'options'         => array(
+			'name'         => $this->get_id(),
+			'description'  => __( 'Show Cook Mode toggle to let visitors prevent sleep mode for supported devices.', 'tasty-recipes-lite' ),
+			'options'      => array(
 				false => __( 'Off', 'tasty-recipes-lite' ),
 				true  => __( 'On', 'tasty-recipes-lite' ),
 			),
-			'forced_value'    => false,
+			'forced_value' => false,
 		);
 
 		return $this->prepare_select_field_args( $args );

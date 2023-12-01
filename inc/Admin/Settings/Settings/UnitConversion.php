@@ -46,13 +46,13 @@ class UnitConversion extends AbstractSetting {
 
 	public function get_render_args() {
 		$args = array(
-			'name'            => $this->get_id(),
-			'description'     => __( 'Allow visitors to convert between US Customary and Metric.', 'tasty-recipes-lite' ),
-			'options'         => array(
+			'name'         => $this->get_id(),
+			'description'  => __( 'Allow visitors to convert between US Customary and Metric.', 'tasty-recipes-lite' ),
+			'options'      => array(
 				false => __( 'Off', 'tasty-recipes-lite' ),
 				true  => __( 'On', 'tasty-recipes-lite' ),
 			),
-			'forced_value'    => false,
+			'forced_value' => false,
 		);
 
 		return $this->prepare_select_field_args( $args );

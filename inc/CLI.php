@@ -8,7 +8,6 @@
 namespace Tasty\Recipes\Lite;
 
 use TastyRecipesLiteMain;
-use Tasty\Recipes\Lite\Utils;
 use WP_CLI;
 use WP_Comment_Query;
 
@@ -24,6 +23,8 @@ class CLI {
 	 *
 	 * [<id>...]
 	 * : Run against specific post ids.
+	 *
+	 * @param
 	 *
 	 * @subcommand recalculate-recipe-ratings
 	 */

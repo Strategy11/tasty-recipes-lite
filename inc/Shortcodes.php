@@ -123,7 +123,6 @@ class Shortcodes {
 				$quick_links = array();
 				break;
 			default:
-				// $quick_links = Admin::handle_quick_links_backward_compatibility( get_option( Tasty_Recipes::QUICK_LINKS_OPTION, array( 'jump', 'print' ) ) );
 				$quick_links = get_option( TastyRecipesLiteMain::QUICK_LINKS_OPTION, array( 'jump', 'print' ) );
 				break;
 		}

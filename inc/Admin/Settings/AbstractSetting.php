@@ -64,12 +64,14 @@ abstract class AbstractSetting {
 	public function filter_field_args( $args ) {
 		if ( $this->is_pro() ) {
 			$args['container_class'] = 'tasty-show-modal tasty-recipes-disabled';
-			$args['tasty_datasets']  = " data-modal_id='tasty_recipes_upgrade_modal' data-replacements='" . esc_attr(wp_json_encode(
+			$args['tasty_datasets']  = " data-modal_id='tasty_recipes_upgrade_modal' data-replacements='" . esc_attr(
+				wp_json_encode(
 					array(
-						'modal_title' => $this->get_setting_name(),
+						'modal_title'         => $this->get_setting_name(),
 						'setting_utm_content' => sanitize_title( $this->get_utm_content() ),
 					)
-				) ) . "' ";
+				)
+			) . "' ";
 		}
 
 		return (array) apply_filters( 'tasty_recipes_admin_settings_field_args', $args );

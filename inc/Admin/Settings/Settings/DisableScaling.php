@@ -46,13 +46,13 @@ class DisableScaling extends AbstractSetting {
 
 	public function get_render_args() {
 		$args = array(
-			'name'            => $this->get_id(),
-			'description'     => __( 'Allow visitors to scale the recipe 1x, 2x, or 3x.', 'tasty-recipes-lite' ),
-			'options'         => array(
+			'name'         => $this->get_id(),
+			'description'  => __( 'Allow visitors to scale the recipe 1x, 2x, or 3x.', 'tasty-recipes-lite' ),
+			'options'      => array(
 				true  => __( 'Off', 'tasty-recipes-lite' ),
 				false => __( 'On', 'tasty-recipes-lite' ),
 			),
-			'forced_value'    => true,
+			'forced_value' => true,
 		);
 
 		return $this->prepare_select_field_args( $args );

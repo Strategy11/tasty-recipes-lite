@@ -46,18 +46,18 @@ class Instacart extends AbstractSetting {
 
 	public function get_render_args() {
 		$args = array(
-			'name'            => $this->get_id(),
-			'description'     => sprintf(
+			'name'         => $this->get_id(),
+			'description'  => sprintf(
 				// translators: %1$s opening anchor tag, %2$s closing tag.
 				esc_html__( 'By turning this on, you agree to the %1$sInstacart terms of service%2$s, available in the US only at the moment.', 'tasty-recipes-lite' ),
 				'<a target="_blank" rel="noopener" href="https://affiliate.instacart.com/terms">',
 				'</a>'
 			),
-			'options'         => array(
+			'options'      => array(
 				false => __( 'Off', 'tasty-recipes-lite' ),
 				true  => __( 'On', 'tasty-recipes-lite' ),
 			),
-			'forced_value'    => false,
+			'forced_value' => false,
 		);
 
 		return $this->prepare_select_field_args( $args );
