@@ -23,12 +23,25 @@ use Tasty\Recipes\Lite\Admin\Settings\Settings\CookMode;
 use Tasty\Recipes\Lite\Admin\Settings\Settings\DisableScaling;
 use Tasty\Recipes\Lite\Admin\Settings\Settings\Instacart;
 
+/**
+ * Manages Settings fields.
+ */
 class Settings {
 
 	use Singleton;
 
+	/**
+	 * Settings objects array.
+	 *
+	 * @var array
+	 */
 	private $settings = array();
 
+	/**
+	 * Get all settings.
+	 *
+	 * @return array
+	 */
 	public function get_all_settings() {
 		$settings       = array(
 			Admin::SETTINGS_SECTION_CARD_DESIGN => array(
@@ -55,6 +68,11 @@ class Settings {
 		return $this->settings;
 	}
 
+	/**
+	 * Register all settings.
+	 *
+	 * @return void
+	 */
 	public function register() {
 		foreach ( $this->get_all_settings() as $group_settings ) {
 			foreach ( $group_settings as $setting ) {
@@ -69,6 +87,14 @@ class Settings {
 		}
 	}
 
+	/**
+	 * Render specific group setting fields.
+	 *
+	 * @param string $group Group to render.
+	 * @param string $page_slug Page slug to render settings inside.
+	 *
+	 * @return void
+	 */
 	public function render_group_settings( $group, $page_slug ) {
 		if ( ! isset( $this->settings[ $group ] ) ) {
 			return;
@@ -95,6 +121,14 @@ class Settings {
 		}
 	}
 
+	/**
+	 * Sort settings with ordering method return.
+	 *
+	 * @param object $first First setting object.
+	 * @param object $second Second setitng object.
+	 *
+	 * @return int
+	 */
 	public function sort_settings( $first, $second ) {
 		if ( $first->ordering() === $second->ordering() || 0 === $second->ordering() ) {
 			return 0;

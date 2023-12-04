@@ -538,94 +538,6 @@ EOT;
 	}
 
 	/**
-	 * Render an input field.
-	 *
-	 * @param array $args Configuration arguments used by the input field.
-	 */
-	public static function render_input_field( $args ) {
-		// Todo: Deprecate.
-	}
-
-	/**
-	 * Sanitize quick links option field.
-	 *
-	 * @param array $item Array of items being selected.
-	 *
-	 * @return array
-	 */
-	public static function sanitize_quick_links( $item ) {
-		// Todo: Deprecate.
-	}
-
-	/**
-	 * Sanitizes the card buttons option.
-	 *
-	 * @param array $original Original card button option value.
-	 * @return array
-	 */
-	public static function sanitize_card_buttons( $original ) {
-		// Todo: Deprecate.
-	}
-
-	/**
-	 * Sanitizes the customization option to make sure there are only expected values.
-	 *
-	 * @param array $original Original customization option value.
-	 * @return array
-	 */
-	public static function sanitize_customization_option( $original ) {
-		// Todo: Deprecate.
-	}
-
-	/**
-	 * Sanitizes a color field.
-	 *
-	 * @param string $color Existing color value.
-	 * @return string
-	 */
-	private static function sanitize_color( $color ) {
-		// Todo: Deprecate.
-	}
-
-	/**
-	 * Render a select field.
-	 *
-	 * @param array $args Configuration arguments used by the select field.
-	 */
-	public static function render_select_field( $args ) {
-		// Todo: Deprecate.
-	}
-
-	/**
-	 * Renders multiselect checkbox field.
-	 *
-	 * @param array $args Field args.
-	 *
-	 * @return void
-	 */
-	public static function render_multiselect_checkboxes_field( $args ) {
-		// Todo: Deprecate.
-	}
-
-	/**
-	 * Renders the card buttons field.
-	 */
-	public static function render_card_buttons_field() {
-		// Todo: Deprecate.
-	}
-
-	/**
-	 * Show SSL certificate error message.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return void
-	 */
-	public static function show_ssl_error() {
-		// Todo: deprecate.
-	}
-
-	/**
 	 * Validate the current user capability and exit with json error in case of permission denied.
 	 *
 	 * @since 1.0.0
@@ -665,10 +577,20 @@ EOT;
 		return (array) $option_value;
 	}
 
+	/**
+	 * Get array of available design templates.
+	 *
+	 * @return array
+	 */
 	public static function get_design_templates() {
 		return Templates::instance()->get_all_templates();
 	}
 
+	/**
+	 * Filter the default setting for card buttons.
+	 *
+	 * @return string[]
+	 */
 	public static function filter_default_card_buttons_setting() {
 		return array(
 			'first'  => 'print',
@@ -676,6 +598,11 @@ EOT;
 		);
 	}
 
+	/**
+	 * Add lite update modal html.
+	 *
+	 * @return void
+	 */
 	public static function add_lite_upgrade_modal() {
 		$tasty_recipes_lite_upgrade_url = Url::add_utm_params(
 			'https://www.wptasty.com/pricing-recipes', // @Todo: replace with lite upgrade url.
