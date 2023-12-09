@@ -37,6 +37,7 @@ use Tasty\Recipes\Lite\Converters\WPUltimateRecipe;
 use Tasty\Recipes\Lite\Converters\Yummly;
 use Tasty\Recipes\Lite\Converters\YumPrint;
 use Tasty\Recipes\Lite\Converters\ZipList;
+use Tasty\Recipes\Lite\CLI;
 
 define( 'TASTY_RECIPES_LITE_PLUGIN_VERSION', '1.0.0' );
 define( 'TASTY_RECIPES_LITE_PLUGIN_FILE', __FILE__ );
@@ -44,7 +45,7 @@ define( 'TASTY_RECIPES_LITE_PLUGIN_FILE', __FILE__ );
 /**
  * Base controller class for the plugin.
  */
-class TastyRecipesLiteMain {
+class TastyRecipesLiteMain /* phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedClassFound */ {
 
 	/**
 	 * Store of recipe JSON data for current view.
@@ -225,6 +226,13 @@ class TastyRecipesLiteMain {
 		spl_autoload_register( array( __CLASS__, 'autoloader' ) );
 	}
 
+	/**
+	 * Lite Autoloader.
+	 *
+	 * @param string $current_class current class to be loaded.
+	 *
+	 * @return void
+	 */
 	public function autoloader( $current_class ) {
 		$prefix   = 'Tasty\\Recipes\\Lite\\';
 		$base_dir = dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR;
@@ -367,7 +375,7 @@ class TastyRecipesLiteMain {
 
 		// Integrations.
 		if ( defined( 'WP_CLI' ) && WP_CLI ) {
-			WP_CLI::add_command( 'tasty-recipes', 'Tasty_Recipes\CLI' );
+			WP_CLI::add_command( 'tasty-recipes', CLI::class );
 		}
 
 		add_action( 'elementor/init', array( Elementor::class, 'register_hooks' ) );

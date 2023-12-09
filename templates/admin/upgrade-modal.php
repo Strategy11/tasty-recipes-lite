@@ -23,7 +23,7 @@
 			<div class="tasty-framework-spacer"></div>
 
 			<a href="<?php echo esc_url( $tasty_recipes_lite_upgrade_url ); ?>" target="_blank" rel="noopener" class="tasty-button tasty-button-pink tasty-button-large tasty-button-full">
-				<?php esc_html_e( 'View prices >', 'tasty' ); ?>
+				<?php esc_html_e( 'View prices >', 'tasty-recipes-lite' ); ?>
 			</a>
 		</div>
 	</div>

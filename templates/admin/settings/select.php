@@ -6,7 +6,7 @@
  */
 
 ?>
-<div class="tasty-recipes-select-container <?php echo esc_attr( isset( $container_class ) ? $container_class : '' ); ?>" <?php echo isset( $tasty_datasets ) ? $tasty_datasets : ''; ?>>
+<div class="tasty-recipes-select-container <?php echo isset( $container_class ) ? esc_attr( $container_class ) : ''; ?>" <?php echo isset( $tasty_datasets ) ? esc_html( $tasty_datasets ) : ''; ?>>
 	<?php
 	if ( ! empty( $before_field ) ) {
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped

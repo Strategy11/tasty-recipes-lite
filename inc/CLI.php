@@ -24,7 +24,7 @@ class CLI {
 	 * [<id>...]
 	 * : Run against specific post ids.
 	 *
-	 * @param
+	 * @param array $args Command arguments.
 	 *
 	 * @subcommand recalculate-recipe-ratings
 	 */
@@ -81,8 +81,11 @@ class CLI {
 	 * : Whether the recipe ratings should be archived or deleted. Default is archive.
 	 *
 	 * @subcommand remove-recipe-ratings
+	 *
+	 * @param array $args Command args.
+	 * @param array $assoc_args Associated args.
 	 */
-	public function remove_recipe_ratings( $_, $assoc_args ) {
+	public function remove_recipe_ratings( $args, $assoc_args ) {
 		if ( ! empty( $assoc_args['post_id'] ) ) {
 			$post_id = (int) $assoc_args['post_id'];
 		} else {
@@ -129,8 +132,11 @@ class CLI {
 	 * : Whether the recipe ratings should be archived or deleted. Default is archive.
 	 *
 	 * @subcommand remove-post-ratings
+	 *
+	 * @param array $args Command args.
+	 * @param array $assoc_args Associated args.
 	 */
-	public function remove_post_ratings( $_, $assoc_args ) {
+	public function remove_post_ratings( $args, $assoc_args ) {
 		global $wpdb;
 
 		if ( ! empty( $assoc_args['post_id'] ) ) {
@@ -217,6 +223,9 @@ class CLI {
 	 * ---
 	 *
 	 * @subcommand get-post-recipes
+	 *
+	 * @param array $args Command args.
+	 * @param array $assoc_args Associated args.
 	 */
 	public function get_post_recipes( $args, $assoc_args ) {
 
@@ -269,8 +278,11 @@ class CLI {
 	 * ---
 	 *
 	 * @subcommand find-legacy-wprm-video-urls
+	 *
+	 * @param array $args Command args.
+	 * @param array $assoc_args Associated args.
 	 */
-	public function find_legacy_wprm_video_urls( $_, $assoc_args ) {
+	public function find_legacy_wprm_video_urls( $args, $assoc_args ) {
 
 		if ( ! empty( $assoc_args['database'] ) ) {
 			$db = new \wpdb( DB_USER, DB_PASSWORD, $assoc_args['database'], DB_HOST );

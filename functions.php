@@ -79,10 +79,20 @@ function tasty_recipes_get_print_view_options() {
 	return $options;
 }
 
+/**
+ * Check if pro version is active or not.
+ *
+ * @return bool
+ */
 function tasty_recipes_is_pro_active() {
 	return defined( 'TASTY_RECIPES_PLUGIN_VERSION' );
 }
 
+/**
+ * Get plugin base file based on the pro version is active or not.
+ *
+ * @return string
+ */
 function tasty_recipes_base_file() {
 	return tasty_recipes_is_pro_active() ? TASTY_RECIPES_PLUGIN_FILE : TASTY_RECIPES_LITE_PLUGIN_FILE;
 }

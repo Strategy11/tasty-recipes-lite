@@ -96,7 +96,7 @@ abstract class AbstractSetting {
 	 *
 	 * @return array
 	 */
-	public function get_render_args(){
+	public function get_render_args() {
 		return array();
 	}
 
@@ -251,7 +251,7 @@ abstract class AbstractSetting {
 	/**
 	 * Get setting option value.
 	 *
-	 * @param mixed $default Default value
+	 * @param mixed $default Default value.
 	 *
 	 * @return mixed
 	 */

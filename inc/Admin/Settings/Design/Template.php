@@ -12,6 +12,9 @@ use Tasty\Recipes\Lite\Admin;
 use Tasty\Recipes\Lite\Admin\Settings\AbstractSetting;
 use TastyRecipesLiteMain;
 
+/**
+ * Template setting class.
+ */
 class Template extends AbstractSetting {
 
 	use Singleton;

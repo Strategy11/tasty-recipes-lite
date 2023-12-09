@@ -30,70 +30,54 @@ class CardButtons extends AbstractSetting {
 	);
 
 	/**
-	 * Setting unique ID.
-	 *
-	 * @return string
+	 * {@inheritdoc}
 	 */
 	public function get_id() {
 		return TastyRecipesLiteMain::CARD_BUTTONS_OPTION;
 	}
 
 	/**
-	 * Setting group ID.
-	 *
-	 * @return string
+	 * {@inheritdoc}
 	 */
 	public function get_group() {
 		return Admin::SETTINGS_GROUP_CARD;
 	}
 
 	/**
-	 * Setting name.
-	 *
-	 * @return string
+	 * {@inheritdoc}
 	 */
 	protected function get_setting_name() {
 		return __( 'Recipe Card Buttons', 'tasty-recipes-lite' );
 	}
 
 	/**
-	 * Sanitize the option value.
-	 *
-	 * @param mixed $original Option value to be sanitized.
-	 *
-	 * @return mixed
+	 * {@inheritdoc}
 	 */
-	public function sanitize( $value ) {
-		if ( empty( $value ) ) {
-			return $value;
+	public function sanitize( $option_value ) {
+		if ( empty( $option_value ) ) {
+			return $option_value;
 		}
 
 		$sanitized = array();
 		$args      = $this->filter_field_args( $this->get_render_args() );
 		foreach ( $this->positions as $position ) {
-			if ( empty( $value[ $position ] ) || ! in_array( $value[ $position ], array_keys( $args['options'] ), true ) ) {
+			if ( empty( $option_value[ $position ] ) || ! in_array( $option_value[ $position ], array_keys( $args['options'] ), true ) ) {
 				continue;
 			}
-			$sanitized[ $position ] = $value[ $position ];
+			$sanitized[ $position ] = $option_value[ $position ];
 		}
 		return $sanitized;
 	}
 
 	/**
-	 * Render setting field based on args.
-	 *
-	 * @param array $args List of setting arguments.
-	 *
-	 * @return void
+	 * {@inheritdoc}
 	 */
 	public function render_field( $args ) {
 		TastyRecipesLiteMain::echo_template_part( 'admin/settings/multiple-selects', $args );
 	}
 
 	/**
-	 * Get args that is passed to render_field.
-	 *
-	 * @return array
+	 * {@inheritdoc}
 	 */
 	public function get_render_args() {
 		return array(
@@ -109,9 +93,7 @@ class CardButtons extends AbstractSetting {
 	}
 
 	/**
-	 * Setting ordering in settings page.
-	 *
-	 * @return int
+	 * {@inheritdoc}
 	 */
 	public function ordering() {
 		return 20;

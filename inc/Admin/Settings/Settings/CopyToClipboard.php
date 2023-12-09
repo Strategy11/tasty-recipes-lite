@@ -13,30 +13,51 @@ use Tasty\Recipes\Lite\Admin\Settings\AbstractSetting;
 use Tasty\Recipes\Lite\Utils;
 use TastyRecipesLiteMain;
 
+/**
+ * Copy to clipboard setting class.
+ */
 class CopyToClipboard extends AbstractSetting {
 
 	use Singleton;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public function get_id() {
 		return TastyRecipesLiteMain::COPY_TO_CLIPBOARD_OPTION;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public function get_group() {
 		return Admin::SETTINGS_GROUP_CARD;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	protected function get_setting_name() {
 		return __( 'Copy to Clipboard', 'tasty-recipes-lite' );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public function sanitize( $value ) {
 		return Utils::sanitize_item( $value, 'sanitize_title' );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public function render_field( $args ) {
 		$this->render_select_field( $args );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public function get_render_args() {
 		$args = array(
 			'name'        => $this->get_id(),
@@ -51,6 +72,9 @@ class CopyToClipboard extends AbstractSetting {
 		return $this->prepare_select_field_args( $args );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public function ordering() {
 		return 100;
 	}

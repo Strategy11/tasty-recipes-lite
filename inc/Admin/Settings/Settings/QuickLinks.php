@@ -13,26 +13,44 @@ use Tasty\Recipes\Lite\Admin\Settings\AbstractSetting;
 use Tasty\Recipes\Lite\Utils;
 use TastyRecipesLiteMain;
 
+/**
+ * Quick Links setting class.
+ */
 class QuickLinks extends AbstractSetting {
 
 	use Singleton;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public function get_id() {
 		return TastyRecipesLiteMain::QUICK_LINKS_OPTION;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public function get_group() {
 		return Admin::SETTINGS_GROUP_CARD;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	protected function get_setting_name() {
 		return __( 'Quick Links', 'tasty-recipes-lite' );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public function sanitize( $value ) {
 		return Utils::sanitize_item( $value, 'sanitize_key' );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public function render_field( $args ) {
 		TastyRecipesLiteMain::echo_template_part(
 			'admin/settings/multiselect-checkbox',
@@ -40,6 +58,9 @@ class QuickLinks extends AbstractSetting {
 		);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public function get_render_args() {
 		$args = array(
 			'name'           => $this->get_id(),
@@ -57,6 +78,9 @@ class QuickLinks extends AbstractSetting {
 		return $this->prepare_multiselect_checkboxes_field_args( $args );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public function ordering() {
 		return 10;
 	}

@@ -1,6 +1,6 @@
 <?php
 /**
- * Automatic Unit Conversion option.
+ * Instacart option.
  *
  * @package Tasty_Recipes
  */
@@ -12,38 +12,65 @@ use Tasty\Recipes\Lite\Admin;
 use Tasty\Recipes\Lite\Admin\Settings\AbstractSetting;
 use TastyRecipesLiteMain;
 
+/**
+ * Instacart setting class.
+ */
 class Instacart extends AbstractSetting {
 
 	use Singleton;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public function get_id() {
 		return TastyRecipesLiteMain::INSTACART_OPTION;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public function get_group() {
 		return Admin::SETTINGS_GROUP_CARD;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	protected function get_setting_name() {
 		return __( 'Add an Instacart button', 'tasty-recipes-lite' );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	protected function is_pro() {
 		return true;
 	}
 
-	public function sanitize( $value ) {
+	/**
+	 * {@inheritDoc}
+	 */
+	public function sanitize( $value ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		return true;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	protected function get_pro_feature_link() {
 		return 'https://www.wptasty.com/knowledge-base/how-to-use-instacart-in-recipes';
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public function render_field( $args ) {
 		$this->render_select_field( $args );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public function get_render_args() {
 		$args = array(
 			'name'         => $this->get_id(),
@@ -63,6 +90,9 @@ class Instacart extends AbstractSetting {
 		return $this->prepare_select_field_args( $args );
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public function ordering() {
 		return 90;
 	}

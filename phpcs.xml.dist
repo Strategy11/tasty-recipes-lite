@@ -41,6 +41,12 @@
 		<exclude-pattern>*/inc/class-cli.php</exclude-pattern>
 	</rule>
 
+	<rule ref="Squiz.Commenting.FunctionComment">
+        <properties>
+            <property name="skipIfInheritdoc" value="true" />
+        </properties>
+    </rule>
+
 	<rule ref="WordPress-Docs" />
 
 	<!-- Rules: Check for unused variables -->
