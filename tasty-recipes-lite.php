@@ -162,13 +162,6 @@ class TastyRecipesLiteMain /* phpcs:ignore WordPress.NamingConventions.PrefixAll
 	const AUTOMATIC_UNIT_CONVERSION_OPTION = 'tasty_recipes_automatic_unit_conversion';
 
 	/**
-	 * Option name for the ingredient checkboxes option.
-	 *
-	 * @var string
-	 */
-	const INGREDIENT_CHECKBOXES_OPTION = 'tasty_recipes_ingredient_checkboxes';
-
-	/**
 	 * Option name for the cook mode.
 	 *
 	 * @var string

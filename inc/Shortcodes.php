@@ -567,12 +567,6 @@ class Shortcodes {
 			$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( dirname( __FILE__ ) ) . '/assets/js/video-toggle.js' );
 		}
 
-		if ( get_option( TastyRecipesLiteMain::INGREDIENT_CHECKBOXES_OPTION ) ) {
-			$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( dirname( __FILE__ ) ) . '/assets/js/ingredient-checkboxes.js' );
-		}
-
-		$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( dirname( __FILE__ ) ) . '/assets/js/ratings.js' );
-
 		$total_reviews = $recipe->get_total_reviews();
 
 		$template_vars['recipe_rating_label'] = '<span data-tasty-recipes-customization="detail-label-color.color" class="rating-label">';
@@ -888,65 +882,6 @@ EOT;
 				continue;
 			}
 			$bits[ $i ] = $start . UnitAmountParser::annotate_string_with_spans( $bit ) . $end;
-		}
-		return implode( PHP_EOL, $bits );
-	}
-
-	/**
-	 * Process ingredients to annotate <li> with checkboxes.
-	 *
-	 * @param string $ingredients Existing ingredients string.
-	 * @return string
-	 */
-	public static function process_ingredients_for_checkboxes( $ingredients ) {
-		// Prioritize list items.
-		$ingredients = preg_replace_callback(
-			'#(<li[^\>]*>)(.*)(<\/li>)#U',
-			function( $m ) {
-				$start = $m[1];
-				$end   = $m[3];
-				$bit   = $m[2];
-				if ( DistributionMetadata::is_empty( $bit ) ) {
-					return '';
-				}
-
-				$label = sanitize_text_field( $bit );
-				$id    = uniqid( 'ingredient_checkbox_' );
-				$input = '<span class="tr-ingredient-checkbox-container"><input type="checkbox" name="' . esc_attr( $id ) . '" id="' . esc_attr( $id ) . '" aria-label="' . esc_attr( $label ) . '"><label for="' . esc_attr( $id ) . '"></label></span>';
-				$start = str_replace( '<li', '<li data-tr-ingredient-checkbox=""', $start );
-				return $start . $input . $bit . $end;
-			},
-			$ingredients,
-			-1,
-			$count
-		);
-		if ( $count ) {
-			return $ingredients;
-		}
-		// Fall back when there weren't list items.
-		$bits = explode( PHP_EOL, $ingredients );
-		foreach ( $bits as $i => $bit ) {
-			if ( DistributionMetadata::get_heading( $bit ) ) {
-				continue;
-			}
-			$start = '';
-			$end   = '';
-			// String starts with some HTML element.
-			if ( preg_match( '#^(<p[^>]*>)(.+)(</p>)#', $bit, $matches ) ) {
-				$start = $matches[1];
-				$end   = $matches[3];
-				$bit   = $matches[2];
-				$start = str_replace( '<p', '<p data-tr-ingredient-checkbox=""', $start );
-			} elseif ( ! empty( trim( $bit ) ) ) {
-				$start = '<span data-tr-ingredient-checkbox="">' . $start;
-				$end   = $end . '</span>';
-			}
-			if ( ! empty( trim( $bit ) ) ) {
-				$label      = sanitize_text_field( $bit );
-				$id         = uniqid( 'ingredient_checkbox_' );
-				$input      = '<span class="tr-ingredient-checkbox-container"><input type="checkbox" name="' . esc_attr( $id ) . '" id="' . esc_attr( $id ) . '" aria-label="' . esc_attr( $label ) . '"><label for="' . esc_attr( $id ) . '"></label></span>';
-				$bits[ $i ] = $start . $input . $bit . $end;
-			}
 		}
 		return implode( PHP_EOL, $bits );
 	}

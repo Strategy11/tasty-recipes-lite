@@ -10,8 +10,7 @@ namespace Tasty\Recipes\Lite\Admin\Settings\Settings;
 use Tasty\Framework\Traits\Singleton;
 use Tasty\Recipes\Lite\Admin;
 use Tasty\Recipes\Lite\Admin\Settings\AbstractSetting;
-use Tasty\Recipes\Lite\Utils;
-use TastyRecipesLiteMain;
+use Tasty_Recipes;
 
 /**
  * Ingredients checkboxes setting class.
@@ -24,7 +23,7 @@ class IngredientsCheckboxes extends AbstractSetting {
 	 * {@inheritDoc}
 	 */
 	public function get_id() {
-		return TastyRecipesLiteMain::INGREDIENT_CHECKBOXES_OPTION;
+		return Tasty_Recipes::INGREDIENT_CHECKBOXES_OPTION;
 	}
 
 	/**
