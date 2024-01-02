@@ -79,20 +79,6 @@ $print_view_options = tasty_recipes_get_print_view_options();
 					<?php echo $copy_ingredients; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				<?php endif; ?>
 			</div>
-			<div class="tasty-recipes-units-scale-container">
-				<?php if ( ! empty( $recipe_convertable ) ) : ?>
-					<span class="tasty-recipes-convert-container">
-						<span class="tasty-recipes-convert-label"><?php esc_html_e( 'Units', 'tasty-recipes-lite' ); ?></span>
-						<?php Utils::kses( $recipe_convertable, true ); ?>
-					</span>
-				<?php endif; ?>
-				<?php if ( ! empty( $recipe_scalable ) ) : ?>
-					<span class="tasty-recipes-scale-container">
-						<span class="tasty-recipes-scale-label"><?php esc_html_e( 'Scale', 'tasty-recipes-lite' ); ?></span>
-						<?php Utils::kses( $recipe_scalable, true ); ?>
-					</span>
-				<?php endif; ?>
-			</div>
 		</div>
 		<div class="tasty-recipes-ingredients-body" data-tasty-recipes-customization="body-color.color">
 			<?php echo $recipe_ingredients; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
@@ -149,14 +135,6 @@ if ( ! empty( $recipe_equipment ) ) :
 		<div class="tasty-recipes-notes-body" data-tasty-recipes-customization="body-color.color">
 			<?php Utils::kses( $recipe_notes, true ); ?>
 		</div>
-	</div>
-<?php endif; ?>
-
-<?php do_action( 'tasty_recipes_card_before_nutrition' ); ?>
-
-<?php if ( ! empty( $recipe_nutrifox_embed ) && isset( $print_view_options['nutrition'] ) ) : ?>
-	<div class="tasty-recipes-nutrifox">
-		<?php echo $recipe_nutrifox_embed; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 	</div>
 <?php endif; ?>
 

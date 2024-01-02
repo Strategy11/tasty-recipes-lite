@@ -89,14 +89,6 @@ use Tasty\Recipes\Lite\Utils;
 	</div>
 <?php endif; ?>
 
-<?php if ( ! empty( $recipe_nutrifox_id ) ) : ?>
-	<div class="ERSNutrifox">
-		<div class="nutrifox-label" data-recipe-id="<?php echo (int) $recipe_nutrifox_id; ?>"></div>
-		<?php // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript ?>
-		<script async src="https://nutrifox.com/embed.js" charset="utf-8"></script>
-	</div>
-<?php endif; ?>
-
 <?php if ( ! empty( $recipe_nutrition ) ) : ?>
 	<div class="nutrition" itemscope itemprop="nutrition" itemtype="https://schema.org/NutritionInformation">
 		<div class="ERSNutritionHeader"><?php esc_html_e( 'Nutrition', 'tasty-recipes-lite' ); ?></div>
