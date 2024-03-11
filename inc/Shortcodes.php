@@ -173,7 +173,7 @@ class Shortcodes {
 				$styles  = '';
 
 				$important = tasty_recipes_is_print() ? '' : ' !important';
-				
+
 				foreach ( explode( ' ', $matches['options'] ) as $option ) {
 					if ( false !== stripos( $option, '.' ) ) {
 						list( $key, $css_property ) = explode( '.', $option );

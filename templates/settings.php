@@ -78,10 +78,10 @@ $debug      = Utils::sanitize_get_key( 'debug' );
 			<form method="POST" action="<?php echo esc_url( admin_url( 'options.php' ) ); ?>" class="tasty-recipes-design-settings-app tasty-tab-content">
 				<?php
 				settings_fields( Admin::SETTINGS_SECTION_CARD_DESIGN );
-				$template_options = Admin::get_design_templates();
+				$template_options    = Admin::get_design_templates();
 				$current_db_template = get_option( TastyRecipesLiteMain::TEMPLATE_OPTION, '' );
-				$initial_options = array(
-					'template'      => isset( $template_options[$current_db_template] ) ? $current_db_template : '',
+				$initial_options     = array(
+					'template'      => isset( $template_options[ $current_db_template ] ) ? $current_db_template : '',
 					'customization' => TastyRecipesLiteMain::get_customization_settings(),
 				);
 				?>

@@ -188,7 +188,8 @@ abstract class AbstractSetting {
 			return $args;
 		}
 
-		$value = ! is_null( $args['forced_value'] ) ? $args['forced_value'] : $this->get_option_value( $args['default_value'] );
+		$value         = ! is_null( $args['forced_value'] ) ? $args['forced_value'] : $this->get_option_value( $args['default_value'] );
+		$args['value'] = $value;
 
 		// Make sure $value is evaluated as boolean for true/false options.
 		$args['is_bool'] = false;
@@ -233,7 +234,7 @@ abstract class AbstractSetting {
 			return $args;
 		}
 		if ( ! isset( $args['value'] ) ) {
-			$args['value'] = $this->get_option_value( $args['default_value'] );
+			$args['value'] = (string) $this->get_option_value( $args['default_value'] );
 		}
 
 		return $args;

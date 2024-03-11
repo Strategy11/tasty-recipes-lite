@@ -11,6 +11,7 @@ use Tasty\Framework\Utils\Url;
 use TastyRecipesLiteMain;
 use Tasty\Recipes\Lite\Admin\Settings;
 use Tasty\Recipes\Lite\Admin\Templates;
+use Tasty\Recipes\Lite\Admin\Settings\Settings\CardButtons;
 
 /**
  * Manages interactions with the admin.
@@ -611,7 +612,10 @@ EOT;
 	 *
 	 * @return string[]
 	 */
-	public static function filter_default_card_buttons_setting() {
+	public static function filter_default_card_buttons_setting( $default, $setting ) {
+		if ( $setting->get_id() !== CardButtons::instance()->get_id() ) {
+			return $default;
+		}
 		return array(
 			'first'  => 'print',
 			'second' => '',

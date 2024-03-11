@@ -60,9 +60,9 @@ class QuickLinksStyle extends AbstractSetting {
 	 */
 	public function get_render_args() {
 		$args = array(
-			'name'           => $this->get_id(),
+			'name'          => $this->get_id(),
 			'default_value' => 'links',
-			'options'        => array(
+			'options'       => array(
 				'links'   => __( 'Links', 'tasty-recipes-lite' ),
 				'buttons' => __( 'Buttons', 'tasty-recipes-lite' ),
 			),

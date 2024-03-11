@@ -452,7 +452,6 @@ class Ratings {
 			return '';
 		}
 
-
 		$ret = '';
 		for ( $i = 1; $i <= 5; $i++ ) {
 			if ( ceil( $rating ) >= $i || in_array( $style, array( 'outline', 'solid' ), true ) ) {
