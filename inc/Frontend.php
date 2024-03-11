@@ -54,20 +54,18 @@ class Frontend extends Subscriber {
 		if ( $total_reviews ) {
 			$average_rating       = round( (float) $recipe->get_average_rating(), 1 );
 			$recipe_rating_label  = '<span data-tasty-recipes-customization="detail-label-color.color" class="rating-label">';
-			$recipe_rating_label .= sprintf(
-			// translators: Ratings from number of reviews.
-				_n( '%1$s from %2$s review', '%1$s from %2$s reviews', (int) $total_reviews, 'tasty-recipes-lite' ),
-				'<span class="average">' . $average_rating . '</span>',
-				'<span class="count">' . (int) $total_reviews . '</span>'
-			);
+			$recipe_rating_label .= Ratings::get_rating_label( $total_reviews, $average_rating );
 			$recipe_rating_label .= '</span>';
 			$recipe_rating_icons  = Ratings::get_rendered_rating( $average_rating );
 			$rating_link_class    = 'tasty-recipes-has-ratings';
 		} else {
-			$recipe_rating_label = esc_html__( 'Leave a review', 'tasty-recipes-lite' );
+			$recipe_rating_label = esc_html__( 'Leave a Review', 'tasty-recipes' );
 			$recipe_rating_icons = '';
+			if ( 'buttons' === get_option( Tasty_Recipes::QUICK_LINKS_STYLE ) ) {
+				$rating_link_class = 'button';
+			}
 		}
-		$links['rating'] = '<a class="tasty-recipes-rating-link ' . $rating_link_class . '" href="#respond">' . $recipe_rating_icons . $recipe_rating_label . '</a>';
+		$links['rating'] = '<a class="tasty-recipes-rating-link tasty-recipes-scrollto ' . $rating_link_class . '" href="#respond">' . $recipe_rating_icons . $recipe_rating_label . '</a>';
 
 		return $links;
 	}

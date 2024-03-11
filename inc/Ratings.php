@@ -53,17 +53,34 @@ class Ratings {
 	const ZRP_COMMENT_META_KEY = 'zrdn_post_recipe_rating';
 
 	/**
-	 * Whether or not ratings are enabled.
+	 * Card rating hash meta key.
+	 *
+	 * @var string
+	 */
+	const RATING_COMMENT_HASH_META_KEY = 'tasty-recipes-comment-hash';
+
+	/**
+	 * Whether or not ratings are enabled. Optionally pass a comment status to
+	 * check if comments are open for the current post.
+	 *
+	 * @param string $comment_status Comment status to check. 'open' or 'any'.
 	 *
 	 * @return boolean
 	 */
-	public static function is_enabled() {
+	public static function is_enabled( $comment_status = 'open' ) {
+		global $post;
+
+		$enabled = true;
+		if ( 'open' === $comment_status && $post && ! comments_open( $post ) ) {
+			$enabled = false;
+		}
+
 		/**
 		 * Permit ratings to be disabled by the end user.
 		 *
 		 * @param boolean
 		 */
-		return apply_filters( 'tasty_recipes_enable_ratings', true );
+		return apply_filters( 'tasty_recipes_enable_ratings', $enabled );
 	}
 
 	/**
@@ -90,24 +107,108 @@ class Ratings {
 
 	/**
 	 * Renders ratings CSS in <head> when enabled.
+	 *
+	 * @deprecated 3.11.1
 	 */
 	public static function action_wp_head() {
-		if ( ! self::is_enabled() ) {
-			return;
+		_deprecated_function( __METHOD__, '3.11.1' );
+	}
+
+	/**
+	 * Get rating needed styles.
+	 *
+	 * @since 3.11.1
+	 *
+	 * @return string
+	 */
+	public static function get_styles() {
+		if ( ! self::is_enabled( 'any' ) ) {
+			return '';
 		}
-		$styles = Utils::get_contents( dirname( TASTY_RECIPES_LITE_PLUGIN_FILE ) . '/assets/dist/ratings.css' );
-		echo '<style type="text/css">' . PHP_EOL . self::get_css_vars() . $styles . PHP_EOL . '</style>' . PHP_EOL; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		$styles = Utils::get_contents( dirname( dirname( __FILE__ ) ) . '/assets/dist/ratings.css' );
+		return '<style type="text/css">' . $styles . '</style>' . PHP_EOL;
 	}
 
 	/**
 	 * Renders ratings CSS in <head> when enabled.
 	 */
 	public static function action_admin_head() {
-		if ( ! self::is_enabled() ) {
+		add_action( 'add_meta_boxes', array( __CLASS__, 'add_rating_in_admin' ) );
+
+		$current_screen = get_current_screen()->id;
+		if ( ! in_array( $current_screen, array( 'edit-comments', 'comment' ), true ) ) {
 			return;
 		}
-		$styles = Utils::get_contents( dirname( TASTY_RECIPES_LITE_PLUGIN_FILE ) . '/assets/dist/ratings.css' );
-		echo '<style type="text/css">' . PHP_EOL . $styles . PHP_EOL . '</style>' . PHP_EOL; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+
+		$styles = self::get_styles();
+		if ( empty( $styles ) ) {
+			return;
+		}
+
+		echo $styles; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
+
+	/**
+	 * Add rating meta box in admin comment form.
+	 *
+	 * @since 3.12
+	 *
+	 * @return void
+	 */
+	public static function add_rating_in_admin() {
+		add_meta_box(
+			'tasty-recipes-comment-rating',
+			__( 'Tasty Recipes', 'tasty-recipes' ),
+			array( __CLASS__, 'render_rating_meta_box' ),
+			'comment',
+			'normal'
+		);
+	}
+
+	/**
+	 * Show star rating options in admin comment form.
+	 *
+	 * @since 3.12
+	 *
+	 * @param object $comment Comment object.
+	 *
+	 * @return void
+	 */
+	public static function render_rating_meta_box( $comment ) {
+		$rating = get_comment_meta( $comment->comment_ID, self::COMMENT_META_KEY, true );
+
+		echo '<script>' .
+			'const tastyRecipesRating = ' . (int) $rating . ';' .
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			Utils::get_contents( dirname( dirname( __FILE__ ) ) . '/assets/js/ratings.js' ) .
+			'</script>';
+		echo '<style>.tasty-recipes-ratings-buttons{--tr-star-size:18px;}</style>'
+		?>
+		<p class="tasty-recipes-comment-form">
+			<label for="tasty-recipes-rating">
+				<?php esc_html_e( 'Recipe rating', 'tasty-recipes' ); ?>
+			</label>
+			<br/>
+			<?php echo self::get_rating_stars_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		</p>
+		<?php
+	}
+
+	/**
+	 * Update rating in admin comment.
+	 *
+	 * @since 3.12
+	 *
+	 * @param integer $comment_id Comment ID.
+	 *
+	 * @return void
+	 */
+	public static function update_rating_in_admin( $comment_id ) {
+		$rating = Utils::post_param( 'tasty-recipes-rating', 'absint' );
+		if ( $rating ) {
+			update_comment_meta( $comment_id, self::COMMENT_META_KEY, $rating );
+			self::action_modify_comment_update_recipe_ratings( $comment_id );
+		}
 	}
 
 	/**
@@ -118,7 +219,7 @@ class Ratings {
 	 */
 	public static function action_modify_comment_update_recipe_ratings( $comment_id ) {
 		$comment = get_comment( $comment_id );
-		if ( ! self::is_enabled() || ! $comment || ! $comment->comment_post_ID ) {
+		if ( ! self::is_enabled( 'any' ) || ! $comment || ! $comment->comment_post_ID ) {
 			return;
 		}
 
@@ -196,14 +297,23 @@ class Ratings {
 	 * @return array
 	 */
 	public static function filter_preprocess_comment( $commentdata ) {
+		// We need to remove the old quick rating that was added before from this user if found.
+		list( $comment_hash, $comment_id ) = self::get_previous_comment( $commentdata['comment_post_ID'] );
+		if ( $comment_id ) {
+			wp_delete_comment( $comment_id );
+		}
+
 		$rating = Utils::post_param( 'tasty-recipes-rating' );
 		if ( empty( $rating ) ) {
 			return $commentdata;
 		}
+
 		if ( ! isset( $commentdata['comment_meta'] ) ) {
 			$commentdata['comment_meta'] = array();
 		}
-		$commentdata['comment_meta'][ self::COMMENT_META_KEY ] = (int) $rating;
+		$commentdata['comment_meta'][ self::COMMENT_META_KEY ]             = (int) $rating;
+		$commentdata['comment_meta'][ self::RATING_COMMENT_HASH_META_KEY ] = $comment_hash;
+
 		return $commentdata;
 	}
 
@@ -231,7 +341,7 @@ class Ratings {
 	 */
 	public static function filter_comment_form_field_comment( $comment_form ) {
 		$post_id = get_queried_object_id();
-		if ( ! self::is_enabled() || ! $post_id ) {
+		if ( ! self::is_enabled( 'any' ) || ! $post_id ) {
 			return $comment_form;
 		}
 		$recipes = TastyRecipesLiteMain::get_recipes_for_post( $post_id );
@@ -270,7 +380,7 @@ class Ratings {
 	 */
 	public static function filter_comment_text( $comment_text, $comment = null ) {
 
-		if ( ! self::is_enabled()
+		if ( ! self::is_enabled( 'any' )
 			|| ! $comment
 			|| ! TastyRecipesLiteMain::has_recipe( $comment->comment_post_ID ) ) {
 			return $comment_text;
@@ -300,6 +410,27 @@ class Ratings {
 	}
 
 	/**
+	 * Filters the comment query to exclude empty comments.
+	 * Triggered from the recipe card, so we already know there is
+	 * a recipe on the page.
+	 *
+	 * @since 3.12
+	 *
+	 * @param array  $clauses The current comment query clauses.
+	 * @param object $query   Comment query object.
+	 *
+	 * @return array
+	 */
+	public static function exclude_empty_comments( $clauses, $query ) {
+		if ( empty( $query->query_vars['post_id'] ) ) {
+			return $clauses;
+		}
+
+		$clauses['where'] .= ' AND comment_content != ""';
+		return $clauses;
+	}
+
+	/**
 	 * Get the HTML for a rendered rating.
 	 *
 	 * @param integer $rating        Rating value.
@@ -316,45 +447,60 @@ class Ratings {
 			$settings = TastyRecipesLiteMain::get_customization_settings();
 			$style    = $settings['star_ratings_style'];
 		}
-		if ( 'solid' === $style ) {
-			$icons = self::get_rating_icon_html();
-			$icon  = $icons['checked'];
-		} elseif ( 'outline' === $style ) {
-			$icon = Utils::get_contents( dirname( __DIR__ ) . '/assets/images/star-rating-clip.svg' );
-		} else {
+		$icons = self::get_icons_by_type( $style );
+		if ( empty( $icons ) ) {
 			return '';
 		}
+		
 
 		$ret = '';
 		for ( $i = 1; $i <= 5; $i++ ) {
-			if ( ceil( $rating ) >= $i || 'outline' === $style ) {
-				$diff = round( $rating, 1 ) - $i + 1;
-				if ( $diff < 1 && $diff > 0 ) {
-					$clip = 'tasty-recipes-clip-' . ( $diff * 100 );
-				} elseif ( $diff >= 1 ) {
-					$clip = 'tasty-recipes-clip-100';
-				} else {
-					$clip = 'tasty-recipes-clip-0';
-				}
+			if ( ceil( $rating ) >= $i || in_array( $style, array( 'outline', 'solid' ), true ) ) {
+				$percentage = self::get_fill_percent(
+					array(
+						'i'       => $i,
+						'average' => $rating,
+					)
+				);
+
 				$ret .= '<span';
 				if ( ! empty( $customization ) ) {
 					$ret .= ' data-tasty-recipes-customization="' . esc_attr( $customization ) . '"';
 				}
-				$ret .= ' class="' . esc_attr( 'tasty-recipes-rating ' . $clip . ' tasty-recipes-rating-' . $style ) . '">' . $icon . '</span>';
+				$ret .= ' class="' . esc_attr( 'tasty-recipes-rating tasty-recipes-rating-' . $style ) . '"';
+				$ret .= ' data-tr-clip="' . esc_attr( $percentage ) . '"';
+				$ret .= ' data-rating="' . esc_attr( $i ) . '"';
+				$ret .= '>';
+				$ret .= $icons['checked'];
+				$ret .= '</span>';
 			}
 		}
 		return $ret;
 	}
 
 	/**
-	 * Returns the rating icon HTML.
+	 * Get the rating icon HTML.
 	 *
+	 * @since 3.12
+	 *
+	 * @param string $style Type of the icon. ie. solid or outline.
 	 * @return array
 	 */
-	private static function get_rating_icon_html() {
+	private static function get_icons_by_type( $style ) {
+		if ( 'solid' === $style ) {
+			$svg_name = 'star-rating-solid.svg';
+		} elseif ( 'outline' === $style ) {
+			$svg_name = 'star-rating-clip.svg';
+		}
+
+		if ( empty( $svg_name ) ) {
+			return array();
+		}
+
+		$star_svg = Utils::get_contents( dirname( __DIR__ ) . '/assets/images/' . $svg_name );
 		return array(
-			'unchecked' => '&#9734;',
-			'checked'   => '&#9733;',
+			'checked'   => $star_svg,
+			'unchecked' => $star_svg,
 		);
 	}
 
@@ -380,20 +526,406 @@ class Ratings {
 	 * Get rating stars HTML.
 	 *
 	 * @param bool $no_ratings Show no rating template without review yet.
+	 * @param int  $average    The rating valie to show.
 	 *
 	 * @return string
 	 */
-	public static function get_rating_stars_html( $no_ratings = false ) {
-		if ( ! comments_open() ) {
+	public static function get_rating_stars_html( $no_ratings = false, $average = 0 ) {
+		if ( ! comments_open() && ! is_admin() ) {
 			return '';
 		}
-		return TastyRecipesLiteMain::get_template_part(
+
+		$settings     = Tasty_Recipes::get_customization_settings();
+		$rating_style = $settings['star_ratings_style'];
+
+		return Tasty_Recipes::get_template_part(
 			'parts/ratings',
 			array(
 				'no_ratings'       => $no_ratings,
-				'icons'            => self::get_rating_icon_html(),
+				'icons'            => self::get_icons_by_type( $rating_style ),
 				'remove_new_lines' => true,
+				'average'          => $average,
+				'rating_style'     => $rating_style,
 			)
+		);
+	}
+
+	/**
+	 * Get the filled percentage for the stars.
+	 *
+	 * @since 3.12
+	 *
+	 * @param array $atts {
+	 *   Attributes to be used.
+	 *   @type int  $i                  Rating value.
+	 *   @type int  $average            Default rating value.
+	 * }
+	 * @return int
+	 */
+	public static function get_fill_percent( $atts ) {
+		$diff = round( $atts['average'], 1 ) - $atts['i'] + 1;
+		if ( $diff < 1 && $diff > 0 ) {
+			$percentage = $diff * 100;
+		} elseif ( $diff >= 1 ) {
+			$percentage = 100;
+		} else {
+			$percentage = 0;
+		}
+
+		return $percentage;
+	}
+
+	/**
+	 * Save the quick rating.
+	 *
+	 * @since 3.12
+	 *
+	 * @return void
+	 */
+	public static function save_rating() {
+		check_ajax_referer( 'tasty-recipes-save-rating', 'nonce' );
+
+		$rating    = Vars::post_param( 'rating', 'intval' );
+		$post_id   = Vars::post_param( 'post_id', 'intval' );
+		$recipe_id = Vars::post_param( 'recipe_id', 'intval' );
+		$recipe    = ! empty( $recipe_id ) ? Recipe::get_by_id( $recipe_id ) : null;
+
+		if ( ! $rating || ! $post_id || ! $recipe ) {
+			Utils::send_json_error( __( 'Invalid request', 'tasty-recipes' ) );
+		}
+
+		list( $comment_hash, $comment_id ) = self::get_previous_comment( $post_id );
+
+		$has_comment = self::has_comment( $comment_id );
+		$creating    = empty( $comment_id ); // No previous rating found.
+		$low_rating  = $rating < self::get_minimum_rating_without_comment();
+		$message_id  = self::generate_message_id( $creating, $low_rating, $has_comment );
+
+		if ( $low_rating ) {
+			wp_send_json_success(
+				array(
+					'message' => self::rating_message( $message_id, $rating ),
+					'average' => $recipe->get_average_rating(),
+					'comment' => self::prepare_comment_response( $has_comment ),
+				)
+			);
+		}
+
+		if ( $creating ) {
+			self::create_rating( $comment_hash );
+		} else {
+			// Update the rating on existing comment.
+			update_comment_meta( $comment_id, self::COMMENT_META_KEY, $rating );
+		}
+
+		self::update_recipe_rating( $recipe, $post_id );
+
+		$response = array(
+			'hash'    => $comment_hash,
+			'message' => self::rating_message( $message_id, $rating ),
+			'count'   => (int) $recipe->get_total_reviews(),
+			'average' => $recipe->get_average_rating(),
+		);
+
+		if ( 2 >= $response['count'] ) {
+			$response['label'] = self::get_rating_label( $response['count'], $response['average'] );
+		}
+
+		wp_send_json_success( $response );
+	}
+
+	/**
+	 * Check if the rating has a comment or not.
+	 *
+	 * @since 3.12
+	 *
+	 * @param int $comment_id Comment ID.
+	 * @return bool|object
+	 */
+	private static function has_comment( $comment_id ) {
+		$has_comment = false;
+		if ( $comment_id ) {
+			$comment     = get_comment( $comment_id );
+			$has_comment = $comment && ! empty( $comment->comment_content );
+		}
+		return $has_comment ? $comment : false;
+	}
+
+	/**
+	 * Save new rating.
+	 *
+	 * @since 3.12
+	 *
+	 * @param string $comment_hash Comment hash.
+	 * @return void
+	 */
+	private static function create_rating( $comment_hash ) {
+		$rating  = Vars::post_param( 'rating', 'intval' );
+		$post_id = Vars::post_param( 'post_id', 'intval' );
+
+		$comment_args = array(
+			'comment_post_ID'   => $post_id,
+			'comment_author_IP' => Vars::server_param( 'REMOTE_ADDR' ),
+			'comment_meta'      => array(
+				self::RATING_COMMENT_HASH_META_KEY => $comment_hash,
+				self::COMMENT_META_KEY             => $rating,
+			),
+		);
+		if ( is_user_logged_in() ) {
+			$comment_args['user_id'] = get_current_user_id();
+		}
+		$created = wp_insert_comment( $comment_args );
+
+		if ( ! $created ) {
+			Utils::send_json_error( __( 'Something went wrong. Your rating was not saved.', 'tasty-recipes' ) );
+		}
+	}
+
+	/**
+	 * Check if comment is already added and get its hash and ID.
+	 *
+	 * @since 3.12
+	 *
+	 * @param int $post_id Post ID.
+	 *
+	 * @return array Comment hash and comment ID
+	 */
+	private static function get_previous_comment( $post_id ) {
+		$comment_hash = self::generate_comment_hash( $post_id );
+		return array(
+			$comment_hash,
+			self::get_comment_id_by_hash( $comment_hash, $post_id ),
+		);
+	}
+
+	/**
+	 * Generate comment hash for specific post and the current user.
+	 *
+	 * @since 3.12
+	 *
+	 * @param int $post_id Post ID.
+	 *
+	 * @return string
+	 */
+	private static function generate_comment_hash( $post_id ) {
+		$params = array(
+			$post_id,
+			Vars::server_param( 'REMOTE_ADDR' ),
+			Vars::server_param( 'HTTP_USER_AGENT' ),
+			wp_nonce_tick( 'tasty-recipes-rating-hash-tick' ),
+		);
+
+		if ( is_user_logged_in() ) {
+			$params[] = get_current_user_id();
+		}
+
+		if ( defined( 'AUTH_SALT' ) && ! empty( AUTH_SALT ) ) {
+			$params[] = AUTH_SALT;
+		}
+
+		return md5( implode( '::', $params ) );
+	}
+
+	/**
+	 * Get comment ID by hash and possibly post ID.
+	 *
+	 * @since 3.12
+	 *
+	 * @param string $hash    Comment hash.
+	 * @param int    $post_id Post ID.
+	 *
+	 * @return int
+	 */
+	private static function get_comment_id_by_hash( $hash, $post_id = 0 ) {
+		$args = array(
+			'fields'     => 'ids',
+			'meta_key'   => self::RATING_COMMENT_HASH_META_KEY, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+			'meta_value' => $hash, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+			'number'     => 1,
+		);
+		if ( $post_id ) {
+			$args['post_id'] = $post_id;
+		}
+
+		$comments_query = new WP_Comment_Query( $args );
+		$comments       = $comments_query->get_comments();
+
+		// Return the first comment ID.
+		return $comments ? $comments[0] : 0;
+	}
+
+	/**
+	 * Get rating message with the message ID.
+	 *
+	 * @since 3.12
+	 *
+	 * @param string $message_id Message ID to get its message.
+	 * @param int    $rating     Rating value.
+	 *
+	 * @return string
+	 */
+	private static function rating_message( $message_id, $rating ) {
+		$messages = array(
+			'create-low-rating'          => array(
+				'message' => self::comment_required_message( $rating ),
+				'button'  => self::leave_comment_message(),
+			),
+			'create-high-rating'         => array(
+				'message' => __( 'Thank you for rating!', 'tasty-recipes' ),
+				'button'  => self::leave_comment_message(),
+			),
+			'update-low-rating-comment'  => array(
+				'message' => self::comment_required_to_update_message( $rating ),
+				'button'  => __( 'Update comment', 'tasty-recipes' ),
+			),
+			'update-high-rating-comment' => array(
+				'message' => self::rating_updated_message( $rating ),
+				'button'  => __( 'Update comment', 'tasty-recipes' ),
+			),
+			'update-low-rating'          => array(
+				'message' => self::comment_required_to_update_message( $rating ),
+				'button'  => self::leave_comment_message(),
+			),
+			'update-high-rating'         => array(
+				'message' => self::rating_updated_message( $rating ),
+				'button'  => self::leave_comment_message(),
+			),
+		);
+
+		if ( ! isset( $messages[ $message_id ] ) ) {
+			return '';
+		}
+
+		return sprintf(
+			'%1$s<a href="#respond" class="tasty-recipes-scrollto">%2$s</a>',
+			esc_html( $messages[ $message_id ]['message'] ),
+			esc_html( $messages[ $message_id ]['button'] )
+		);
+	}
+
+	/**
+	 * Get message when comment is required to create new rating.
+	 *
+	 * @since 3.12
+	 *
+	 * @param int $rating The selected rating.
+	 *
+	 * @return string
+	 */
+	private static function comment_required_message( $rating ) {
+		return sprintf(
+			// translators: %1$d star rating.
+			__( 'To leave a %1$d-star rating, please share your feedback.', 'tasty-recipes' ),
+			$rating
+		);
+	}
+
+	/**
+	 * Get message when comment is required to edit.
+	 *
+	 * @since 3.12
+	 *
+	 * @param int $rating The selected rating.
+	 *
+	 * @return string
+	 */
+	private static function comment_required_to_update_message( $rating ) {
+		return sprintf(
+			// translators: %1$d star rating.
+			_n(
+				'To change your rating to %1$d star, please share your feedback.',
+				'To change your rating to %1$d stars, please share your feedback.',
+				$rating,
+				'tasty-recipes'
+			),
+			$rating
+		);
+	}
+
+	/**
+	 * Get success message when rating is updated.
+	 *
+	 * @since 3.12
+	 *
+	 * @param int $rating The selected rating.
+	 *
+	 * @return string
+	 */
+	private static function rating_updated_message( $rating ) {
+		return sprintf(
+			// translators: %1$d star rating.
+			__( 'Rating updated to %1$d stars!', 'tasty-recipes' ),
+			$rating
+		);
+	}
+
+	/**
+	 * Get the message for leaving a comment.
+	 *
+	 * @since 3.12
+	 *
+	 * @return string
+	 */
+	private static function leave_comment_message() {
+		return __( 'Leave a comment', 'tasty-recipes' );
+	}
+
+	/**
+	 * Return comment details in ajax response to prefill for editing.
+	 *
+	 * @since 3.12.2
+	 *
+	 * @param bool|object $has_comment The comment if it exists.
+	 *
+	 * @return bool|array
+	 */
+	private static function prepare_comment_response( $has_comment ) {
+		$comment = array();
+		if ( ! $has_comment ) {
+			return $comment;
+		}
+
+		$comment['content'] = $has_comment->comment_content;
+		if ( ! is_user_logged_in() ) {
+			$comment['email'] = $has_comment->comment_author_email;
+			$comment['name']  = $has_comment->comment_author;
+		}
+		return $comment;
+	}
+
+	/**
+	 * Generate rating message ID based on some criteria.
+	 *
+	 * @param boolean $create Create new rating or update current one.
+	 * @param boolean $low_rating This rating is less than the minimum rating.
+	 * @param boolean $with_comment This rating has a comment message.
+	 *
+	 * @return string
+	 */
+	private static function generate_message_id( $create, $low_rating, $with_comment = false ) {
+		$message_id_components   = array();
+		$message_id_components[] = $create ? 'create' : 'update';
+		$message_id_components[] = $low_rating ? 'low-rating' : 'high-rating';
+		if ( ! $create && $with_comment ) {
+			$message_id_components[] = 'comment';
+		}
+		return implode( '-', $message_id_components );
+	}
+
+	/**
+	 * Get rating label HTML.
+	 *
+	 * @param int   $total_reviews Reviews count.
+	 * @param float $average_rating Average rating.
+	 *
+	 * @return string
+	 */
+	public static function get_rating_label( $total_reviews, $average_rating ) {
+		return sprintf(
+			// translators: Ratings from number of reviews.
+			_n( '%1$s from %2$s review', '%1$s from %2$s reviews', (int) $total_reviews, 'tasty-recipes' ),
+			'<span class="average">' . $average_rating . '</span>',
+			'<span class="count">' . (int) $total_reviews . '</span>'
 		);
 	}
 
