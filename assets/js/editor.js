@@ -1,13 +1,14 @@
+/*global tastyRecipesEditor:true, _:true */
 (function( window, views, media, $, wp ){
 	var recipe;
 
-	recipeEditor = window.tastyRecipesEditorModal;
+	var recipeEditor = window.tastyRecipesEditorModal;
 
 	recipe = {
 		action: 'tasty_recipes_parse_shortcode',
 		recipe: {},
 
-		initialize: function() {
+		initialize() {
 			var self = this;
 
 			wp.ajax.post( this.action, {
@@ -25,7 +26,7 @@
 			} );
 		},
 
-		edit: function( text, update ) {
+		edit() {
 			var self = this;
 			recipeEditor.open( self.recipe, function( response ){
 				self.render( response, true );
@@ -45,9 +46,11 @@
 
 			event.preventDefault();
 
-			// Prevents Opera from showing the outline of the button above the modal.
-			//
-			// See: https://core.trac.wordpress.org/ticket/22445
+			/**
+			 * Prevents Opera from showing the outline of the button above the modal.
+			 *
+			 * See: https://core.trac.wordpress.org/ticket/22445
+			 */
 			elem.blur();
 
 			var defaults = {
@@ -71,24 +74,24 @@
 			});
 		} );
 
-		let convert_notice = $('.tasty_recipes_convert_notice');
+		const convertNotice = $('.tasty_recipes_convert_notice');
 
-		convert_notice.on( 'click', '.notice-dismiss', async function () {
-			let notice = $(this).closest('.notice');
+		convertNotice.on( 'click', '.notice-dismiss', async function () {
+			const notice = $(this).closest('.notice');
 			await window.fetch( notice.data('dismiss_action') );
 		} );
 
-		convert_notice.on( 'click', 'a.button', async function (event) {
-			let this_button = $(this);
-			let action_url = this_button.attr( 'href' );
-			if ( 'convert' === this_button.data('name') || 'dismiss_converter' === this_button.data('name') ) {
+		convertNotice.on( 'click', 'a.button', async function (event) {
+			const thisButton = $(this);
+			const actionUrl = thisButton.attr( 'href' );
+			if ( 'convert' === thisButton.data('name') || 'dismiss_converter' === thisButton.data('name') ) {
 				event.preventDefault();
-				this_button.append('...');
-				await window.fetch( action_url );
-				this_button.closest('.notice').remove();
+				thisButton.append('...');
+				await window.fetch( actionUrl );
+				thisButton.closest('.notice').remove();
 			}
 
-			if ( 'convert' === this_button.data('name') ) {
+			if ( 'convert' === thisButton.data('name') ) {
 				location.reload();
 			}
 		} );

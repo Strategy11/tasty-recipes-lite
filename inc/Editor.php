@@ -466,11 +466,7 @@ class Editor {
 			return;
 		}
 
-		wp_send_json_error(
-			array(
-				'message' => esc_html__( 'Invalid inputs', 'tasty-recipes-lite' ),
-			)
-		);
+		Utils::send_json_error( __( 'Invalid request', 'tasty-recipes' ) );
 	}
 
 	/**

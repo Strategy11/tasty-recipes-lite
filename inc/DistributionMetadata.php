@@ -90,7 +90,7 @@ class DistributionMetadata {
 	}
 
 	/**
-	 * Adds noindex and rel=canonical to print template rendering.
+	 * Adds noindex to print template rendering.
 	 */
 	public static function action_wp_head_noindex() {
 		if ( ! tasty_recipes_is_print() ) {
@@ -98,11 +98,6 @@ class DistributionMetadata {
 		}
 		if ( ! did_action( 'wpseo_head' ) ) {
 			echo '<meta name="robots" content="noindex,follow">' . PHP_EOL;
-		}
-		// WordPress will add rel=canonical by default
-		// but Yoast SEO might remove it.
-		if ( ! has_action( 'wp_head', 'rel_canonical' ) ) {
-			echo '<link rel="canonical" href="' . esc_url( get_permalink( get_queried_object_id() ) ) . '" />' . PHP_EOL;
 		}
 	}
 
@@ -193,13 +188,14 @@ class DistributionMetadata {
 
 	/**
 	 * Check if a string is empty using regex.
+	 * \xc2\xa0 is the encoded version of \u00a0 and &nbsp;.
 	 *
 	 * @param string $content Content to test.
 	 *
 	 * @return bool
 	 */
 	public static function is_empty( $content ) {
-		return 1 === preg_match( '#^\s*[&nbsp;]*$#i', $content );
+		return 1 === preg_match( '#^\s*(?:&nbsp;|\xc2\xa0)*\s*$#i', $content );
 	}
 
 	/**
@@ -369,8 +365,38 @@ class DistributionMetadata {
 			$schema['aggregateRating'] = array(
 				'@type'       => 'AggregateRating',
 				'reviewCount' => (string) $total_reviews,
-				'ratingValue' => (string) round( (float) $recipe->get_average_rating(), 1 ),
+				'ratingValue' => (string) $recipe->get_average_rating(),
 			);
+		}
+
+		$nutrition = array();
+		if ( $recipe->get_nutrifox_response() ) {
+			foreach ( Recipe::get_nutrition_attributes() as $name => $meta ) {
+				$value = $recipe->get_formatted_nutrifox_value( $name );
+				if ( false === $value ) {
+					continue;
+				}
+				$nutrition[ $meta['property'] ] = $value;
+			}
+		} else {
+			foreach ( Recipe::get_nutrition_attributes() as $name => $meta ) {
+				// '0' is a valid value.
+				if ( '' === $recipe_json[ $name ] ) {
+					continue;
+				}
+				$nutrition[ $meta['property'] ] = $recipe_json[ $name ];
+			}
+		}
+
+		if ( ! empty( $nutrition ) ) {
+
+			if ( isset( $nutrition['calories'] )
+				&& is_numeric( $nutrition['calories'] ) ) {
+				$nutrition['calories'] .= ' calories';
+			}
+
+			$nutrition['@type']  = 'nutritionInformation';
+			$schema['nutrition'] = $nutrition;
 		}
 
 		$video_url   = $recipe->get_video_url();
@@ -444,9 +470,9 @@ class DistributionMetadata {
 			$video_schema['thumbnailUrl'] = array( $oembed_data->thumbnail_url );
 		}
 		if ( isset( $oembed_data->upload_date ) ) {
-			$video_schema['uploadDate'] = gmdate( 'Y-m-d', strtotime( $oembed_data->upload_date ) );
+			$video_schema['uploadDate'] = gmdate( 'c', strtotime( $oembed_data->upload_date ) );
 		} elseif ( isset( $oembed_data->uploadDate ) ) {
-			$video_schema['uploadDate'] = gmdate( 'Y-m-d', strtotime( $oembed_data->uploadDate ) );
+			$video_schema['uploadDate'] = gmdate( 'c', strtotime( $oembed_data->uploadDate ) );
 		}
 		return $video_schema;
 	}
@@ -680,8 +706,7 @@ class DistributionMetadata {
 				update_post_meta( $post->ID, $ttl_key, time() + ( 1 * DAY_IN_SECONDS ) );
 				return false;
 			}
-
-			$response_data = apply_filters( 'tasty_recipes_oembed_response_data', $response_data, $video_url );
+			$response_data = ContentModel::apply_youtube_enrichment_to_response_data( $video_url, $response_data );
 			update_post_meta( $post->ID, $cache_key, $response_data );
 			$cache = $response_data;
 			update_post_meta( $post->ID, $ttl_key, time() + ( 7 * DAY_IN_SECONDS ) );
@@ -711,6 +736,10 @@ class DistributionMetadata {
 
 		$reviews = array();
 		foreach ( $comments as $comment ) {
+			if ( empty( $comment->comment_content ) ) {
+				continue;
+			}
+
 			$rating = get_comment_meta( $comment->comment_ID, Ratings::COMMENT_META_KEY, true );
 			if ( ! $rating || (int) $rating < 1 ) {
 				continue;
@@ -823,7 +852,7 @@ class DistributionMetadata {
 		/**
 		 * Filters the arguments used to query comments in comments_template().
 		 *
-		 * @since 1.0.0
+		 * @since 4.5.0
 		 *
 		 * @see WP_Comment_Query::__construct()
 		 *
@@ -871,7 +900,7 @@ class DistributionMetadata {
 		/**
 		 * Filters the comments array.
 		 *
-		 * @since 1.0.0
+		 * @since 2.1.0
 		 *
 		 * @param array $comments Array of comments supplied to the comments template.
 		 * @param int   $post_ID  Post ID.
@@ -1179,7 +1208,38 @@ class DistributionMetadata {
 		// Parse string to handle 00:10 time format.
 		$time = preg_replace( '/(\d+):(\d+)/', '$1 hours $2 minutes', $time );
 
+		// Convert words in a time to string to English.
+		$time = self::convert_time_to_english( $time );
+
 		return strtotime( $time, $now );
+	}
+
+	/**
+	 * Get a list of translated time pieces, and replace them with English.
+	 *
+	 * @since 3.11
+	 *
+	 * @param string $time Time to convert.
+	 *
+	 * @return string
+	 */
+	private static function convert_time_to_english( $time ) {
+		$strings = self::empty_time_strings();
+
+		foreach ( $strings as $string => $translation ) {
+			if ( $string === $translation || strpos( $time, $translation ) === false ) {
+				continue;
+			}
+
+			// Replace the word if it's at the beginning or end of the string.
+			$time = preg_replace( '/^' . $translation . ' /', $string . ' ', $time );
+			$time = preg_replace( '/ ' . $translation . '$/', ' ' . $string, $time );
+
+			// Middle of the string.
+			$time = preg_replace( '/ ' . $translation . ' /', ' ' . $string . ' ', $time );
+		}
+
+		return $time;
 	}
 
 	/**
@@ -1252,23 +1312,8 @@ class DistributionMetadata {
 	 */
 	public static function format_time_for_human( $timestamp ) {
 		$bits    = self::convert_seconds_to_minutes_hours( $timestamp );
-		$strings = apply_filters(
-			'tasty_recipes_human_time_formats',
-			array(
-				// translators: Individual hour.
-				'individual_hour'              => __( '%s hour', 'tasty-recipes-lite' ),
-				// translators: Multiple hours.
-				'multiple_hours'               => __( '%s hours', 'tasty-recipes-lite' ),
-				// translators: Multiple hours and minutes.
-				'multiple_hours_with_minutes'  => __( '%1$s hours %2$s minutes', 'tasty-recipes-lite' ),
-				// translators: Individual hour but multiple minutes.
-				'individual_hour_with_minutes' => __( '%1$s hour %2$s minutes', 'tasty-recipes-lite' ),
-				// translators: Individual minute.
-				'individual_minute'            => __( '%s minute', 'tasty-recipes-lite' ),
-				// translators: Multiple minutes.
-				'multiple_minutes'             => __( '%s minutes', 'tasty-recipes-lite' ),
-			)
-		);
+		$strings = self::time_strings();
+
 		if ( 0 === $timestamp % HOUR_IN_SECONDS ) {
 			if ( HOUR_IN_SECONDS === $timestamp ) {
 				$formatted = sprintf( $strings['individual_hour'], $bits['hours'] );
@@ -1285,6 +1330,54 @@ class DistributionMetadata {
 			$formatted = sprintf( $strings['multiple_minutes'], $bits['minutes'] );
 		}
 		return $formatted;
+	}
+
+	/**
+	 * Get the possible translated time strings.
+	 *
+	 * @since 3.11
+	 *
+	 * @return array
+	 */
+	public static function time_strings() {
+		return apply_filters(
+			'tasty_recipes_human_time_formats',
+			array(
+				// translators: Individual hour.
+				'individual_hour'              => __( '%s hour', 'tasty-recipes' ),
+				// translators: Multiple hours.
+				'multiple_hours'               => __( '%s hours', 'tasty-recipes' ),
+				// translators: Multiple hours and minutes.
+				'multiple_hours_with_minutes'  => __( '%1$s hours %2$s minutes', 'tasty-recipes' ),
+				// translators: Individual hour but multiple minutes.
+				'individual_hour_with_minutes' => __( '%1$s hour %2$s minutes', 'tasty-recipes' ),
+				// translators: Individual minute.
+				'individual_minute'            => __( '%s minute', 'tasty-recipes' ),
+				// translators: Multiple minutes.
+				'multiple_minutes'             => __( '%s minutes', 'tasty-recipes' ),
+			)
+		);
+	}
+
+	/**
+	 * Strip %s from each time string for a direct list of time string replacements.
+	 * ie: 'minute' => 'minuto'.
+	 *
+	 * @since 3.11
+	 *
+	 * @return array
+	 */
+	public static function empty_time_strings() {
+		$strings       = self::time_strings();
+		$empty_strings = array();
+		foreach ( $strings as $key => $string ) {
+			// Use the direct English equivalent.
+			$basic_key = str_replace( array( 'individual_', 'multiple_' ), '', $key );
+
+			$empty_strings[ $basic_key ] = trim( str_replace( '%s', '', $string ) );
+		}
+
+		return $empty_strings;
 	}
 
 	/**

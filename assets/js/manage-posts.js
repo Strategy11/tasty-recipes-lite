@@ -1,3 +1,4 @@
+/*global jQuery:true, inlineEditPost:true */
 (function($) {
 	$(document).ready(function(){
 		$('table.wp-list-table').on('click', '.editinline', function() {
@@ -14,12 +15,13 @@
 			e.preventDefault();
 			var postId = $(this).data('recipe-id');
 			if (typeof window.tastyRecipesManagePosts.recipeDataStore[postId] === 'undefined') {
+				/* eslint-disable-next-line no-alert */
 				window.alert('Unable to find the initial recipe data.');
 			}
 			window.tastyRecipesEditorModal.open(
 				window.tastyRecipesManagePosts.recipeDataStore[postId],
 				function( response ) {
-					window.tastyRecipesManagePosts.recipeDataStore[postId] = response.recipe
+					window.tastyRecipesManagePosts.recipeDataStore[postId] = response.recipe;
 				}
 			);
 		});

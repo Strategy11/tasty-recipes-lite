@@ -74,6 +74,7 @@
 
 			if (navigator.userAgent.match(/ipad|iphone/i)) {
 				var range = document.createRange();
+				/* eslint-disable-next-line @wordpress/no-global-get-selection */
 				var selection = window.getSelection();
 				range.selectNodeContents(fakeElem);
 				selection.removeAllRanges();

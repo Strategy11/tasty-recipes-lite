@@ -16,9 +16,9 @@ use Tasty\Recipes\Lite\Admin\Settings\Settings\CopyToClipboard;
 use Tasty\Recipes\Lite\Admin\Settings\Settings\DefaultAuthorLink;
 use Tasty\Recipes\Lite\Admin\Settings\Settings\IngredientsCheckboxes;
 use Tasty\Recipes\Lite\Admin\Settings\Settings\QuickLinks;
+use Tasty\Recipes\Lite\Admin\Settings\Settings\QuickLinksStyle;
 use Tasty\Recipes\Lite\Admin\Settings\Settings\ShareAsale;
 use Tasty\Recipes\Lite\Admin\Settings\Settings\UnitConversion;
-use Tasty\Recipes\Lite\Admin\Settings\Settings\AutomaticUnitConversion;
 use Tasty\Recipes\Lite\Admin\Settings\Settings\CookMode;
 use Tasty\Recipes\Lite\Admin\Settings\Settings\DisableScaling;
 use Tasty\Recipes\Lite\Admin\Settings\Settings\Instacart;
@@ -50,6 +50,7 @@ class Settings {
 			),
 			Admin::SETTINGS_GROUP_CARD          => array(
 				'quick_links'            => QuickLinks::instance(),
+				'quick_links_style'      => QuickLinksStyle::instance(),
 				'card_buttons'           => CardButtons::instance(),
 				'unit_conversion'        => UnitConversion::instance(),
 				'ingredients_checkboxes' => IngredientsCheckboxes::instance(),

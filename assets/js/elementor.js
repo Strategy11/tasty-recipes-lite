@@ -1,7 +1,8 @@
+/*global elementor:true */
 (function(){
 
 	var tastyRecipeControl = elementor.modules.controls.BaseData.extend({
-		onReady: function () {
+		onReady() {
 			var self = this;
 
 			this.$el.find('button[data-event="tasty-recipes:edit-recipe"]').on('click', function() {

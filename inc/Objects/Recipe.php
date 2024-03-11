@@ -108,6 +108,7 @@ class Recipe {
 			'keywords'                    => array(
 				'label'             => __( 'Keywords', 'tasty-recipes-lite' ),
 				'sanitize_callback' => 'sanitize_text_field',
+				'tooltip'           => __( 'Keywords help Google find your recipes. Include keywords that are not also a category or cuisine ie summer, Halloween, quick, nutmeg crust.', 'tasty-recipes-lite' ),
 			),
 			'video_url'                   => array(
 				'label'             => __( 'Video URL or Shortcode', 'tasty-recipes-lite' ),
@@ -579,7 +580,11 @@ class Recipe {
 	 * @return string
 	 */
 	public function get_average_rating() {
-		return $this->get_meta( 'average_rating' );
+		$rating = $this->get_meta( 'average_rating' );
+		if ( $rating ) {
+			$rating = round( (float) $rating, 1 );
+		}
+		return $rating;
 	}
 
 	/**
@@ -722,6 +727,8 @@ class Recipe {
 		if ( '' !== $cook ) {
 			$total += DistributionMetadata::strtotime( $cook, $time ) - $time;
 		}
+		// If strtotime failed, return 0.
+		$total = max( 0, $total );
 		return DistributionMetadata::format_time_for_human( $total );
 	}
 

@@ -81,6 +81,7 @@ class BlockEditor {
 					),
 				),
 				'editor_script'   => 'tasty-recipes-block-editor',
+				'editor_style'    => array( 'tasty-framework-global-css' ),
 				'render_callback' => array( Shortcodes::class, 'render_tasty_recipe_shortcode' ),
 			)
 		);

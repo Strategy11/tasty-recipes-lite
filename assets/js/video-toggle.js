@@ -22,11 +22,11 @@
 					iframe.style.display = 'none';
 				}
 			});
-			container.querySelectorAll('.tasty-recipe-responsive-iframe-container').forEach(function(container) {
+			container.querySelectorAll('.tasty-recipe-responsive-iframe-container').forEach(function(innerContainer) {
 				if ( ! wasChecked ) {
-					container.style.removeProperty('display');
+					innerContainer.style.removeProperty('display');
 				} else {
-					container.style.display = 'none';
+					innerContainer.style.display = 'none';
 				}
 			});
 		});

@@ -1,3 +1,4 @@
+/*global tastyRecipesEditor:true */
 (function(wp, $, editorModalData){
 	var updateCallback = null,
 		isOpen = false,
@@ -13,23 +14,26 @@
 		/**
 		 * Initializes events within the editor modal.
 		 */
-		initEvents: function() {
+		initEvents() {
 			container = $('.tasty-recipes-modal-container');
-			$('.tasty-recipes-button-insert', container).on('click', $.proxy( function( event ){
+			$('.tasty-recipes-button-insert', container).on('click', $.proxy( function(){
 				this.close( true );
 			}, this ));
-			$('.tasty-recipes-button-update', container).on('click', $.proxy( function( event ){
+			$('.tasty-recipes-button-update', container).on('click', $.proxy( function(){
 				this.close( true );
 			}, this ));
-			$('.tasty-recipes-modal-close', container).on('click', $.proxy( function( event ){
+			$('.tasty-recipes-modal-close', container).on('click', $.proxy( function(){
 				this.close( false );
 			}, this ));
 		},
 
 		/**
 		 * Opens the editor modal.
+		 *
+		 * @param {Object}   data     The recipe data to open the modal with.
+		 * @param {Function} callback The callback to run when the modal is closed.
 		 */
-		open: function( data = null, callback = null ) {
+		open( data = null, callback = null ) {
 			if (isOpen) {
 				return;
 			}
@@ -57,7 +61,7 @@
 				event.preventDefault();
 				this.close( true );
 			}, this ));
-			// Allows Tasty Links to set up its data.
+			/* Allows Tasty Links to set up its data. */
 			$(document).trigger('tasty-recipes-pre-modal-show', data );
 			container.show();
 			$('.tasty-recipes-frame-content', container ).focus();
@@ -71,8 +75,10 @@
 
 		/**
 		 * Closes the editor modal.
+		 *
+		 * @param {boolean} save Whether or not to save the recipe.
 		 */
-		close: function( save ) {
+		close( save ) {
 			isOpen = false;
 			$('body').removeClass('tasty-recipes-modal-open');
 			$(document).unbind('keydown.tasty-recipes-escape');

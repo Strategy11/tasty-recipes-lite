@@ -31,14 +31,14 @@
 			controlForm.classList.add('tasty-recipes-show-controls');
 		}
 		resizeIframe();
-		// Prevent Safari from printing the iframe.
+		/* Prevent Safari from printing the iframe. */
 		window.focus();
 	});
 
 	controlForm.querySelectorAll('input').forEach((input) => {
 		input.addEventListener('change', () => {
 			applyPrintBodyClasses();
-			// Prevent Safari from printing the iframe.
+			/* Prevent Safari from printing the iframe. */
 			window.focus();
 		});
 	});

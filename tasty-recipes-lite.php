@@ -277,6 +277,8 @@ class TastyRecipesLiteMain /* phpcs:ignore WordPress.NamingConventions.PrefixAll
 			add_action( $hook, array( Ratings::class, 'action_modify_comment_update_recipe_ratings' ) );
 		}
 		add_action( 'rest_insert_comment', array( Ratings::class, 'action_rest_insert_comment' ), 10, 2 );
+		add_action( 'admin_head', array( 'Tasty_Recipes\Ratings', 'action_admin_head' ) );
+		add_action( 'edit_comment', array( 'Tasty_Recipes\Ratings', 'update_rating_in_admin' ) );
 
 		add_filter( 'tasty_recipes_customization_settings', array( Ratings::class, 'apply_default_rating_stars_color' ) );
 
@@ -299,6 +301,9 @@ class TastyRecipesLiteMain /* phpcs:ignore WordPress.NamingConventions.PrefixAll
 		add_action( 'after_wp_tiny_mce', array( Editor::class, 'action_after_wp_tiny_mce' ) );
 		add_action( 'update_option_' . self::LICENSE_KEY_OPTION, array( Admin::class, 'action_update_option_clear_transient' ) );
 		add_action( 'media_buttons', array( Editor::class, 'action_media_buttons' ) );
+
+		add_action( 'wp_ajax_tasty_recipes_save_rating', array( 'Tasty_Recipes\Ratings', 'save_rating' ) );
+		add_action( 'wp_ajax_nopriv_tasty_recipes_save_rating', array( 'Tasty_Recipes\Ratings', 'save_rating' ) );
 		add_action( 'wp_ajax_tasty_recipes_preview_recipe_card', array( Admin::class, 'handle_wp_ajax_preview_recipe_card' ) );
 		add_action( 'wp_ajax_tasty_recipes_get_count', array( Admin::class, 'handle_wp_ajax_get_count' ) );
 		add_action( 'wp_ajax_tasty_recipes_convert', array( Admin::class, 'handle_wp_ajax_convert' ) );

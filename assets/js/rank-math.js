@@ -13,7 +13,7 @@
 			additionalContent += store[key].notes;
 		});
 		return additionalContent;
-	}
+	};
 
 	wp.hooks.addFilter(
 		'rank_math_content',

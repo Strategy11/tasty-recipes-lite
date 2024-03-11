@@ -208,7 +208,9 @@ const edit = props => {
 	);
 };
 
-// Renders dynamically on the frontend.
+/**
+ * Renders dynamically on the frontend.
+ */
 const save = () => {
 	return null;
 };

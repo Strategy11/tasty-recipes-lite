@@ -117,9 +117,12 @@ class Shortcodes {
 	private static function prepended_quick_links( $post, $content ) {
 		$recipe_ids = TastyRecipesLiteMain::get_recipe_ids_for_post( $post->ID );
 
+		// Check if the content includes a single or double quote.
+		$shown_quick_links = preg_match( '/["\']' . self::QUICK_LINKS_SHORTCODE . '/', $content ) !== 0;
+
 		switch ( true ) {
 			case empty( $recipe_ids ):
-			case false !== stripos( $content, self::QUICK_LINKS_SHORTCODE ):
+			case $shown_quick_links:
 				$quick_links = array();
 				break;
 			default:
@@ -137,11 +140,18 @@ class Shortcodes {
 		 */
 		$quick_links = apply_filters( 'tasty_recipes_should_prepend_jump_to', $quick_links, $post->ID, $recipe_ids );
 
-		if ( ! empty( $quick_links ) ) {
-			return implode( ',', (array) $quick_links );
+		if ( empty( $quick_links ) ) {
+			return '';
 		}
 
-		return '';
+		if ( ! Ratings::is_enabled() ) {
+			$jump_key = array_search( 'rating', $quick_links, true );
+			if ( false !== $jump_key ) {
+				unset( $quick_links[ $jump_key ] );
+			}
+		}
+
+		return implode( ',', (array) $quick_links );
 	}
 
 	/**
@@ -161,6 +171,9 @@ class Shortcodes {
 			function( $matches ) use ( $settings ) {
 				$element = $matches[0];
 				$styles  = '';
+
+				$important = tasty_recipes_is_print() ? '' : ' !important';
+				
 				foreach ( explode( ' ', $matches['options'] ) as $option ) {
 					if ( false !== stripos( $option, '.' ) ) {
 						list( $key, $css_property ) = explode( '.', $option );
@@ -169,7 +182,7 @@ class Shortcodes {
 						}
 						$key = str_replace( '-', '_', $key );
 						if ( ! empty( $settings[ $key ] ) ) {
-							$styles .= $css_property . ': ' . $settings[ $key ] . ' !important; ';
+							$styles .= $css_property . ': ' . $settings[ $key ] . $important . '; ';
 						}
 					}
 				}
@@ -337,7 +350,7 @@ class Shortcodes {
 		// Begin the recipe output.
 		$ret            = $before_recipe;
 		$ret           .= '<span class="tasty-recipes-jump-target" id="tasty-recipes-' . $recipe->get_id() . '-jump-target" style="display:block;padding-top:2px;margin-top:-2px;"></span>';
-		$ret           .= '<div id="tasty-recipes-' . $recipe->get_id() . '" class="' . esc_attr( implode( ' ', $wrapper_classes ) ) . '"';
+		$ret           .= '<div data-tr-id="' . $recipe->get_id() . '" id="tasty-recipes-' . $recipe->get_id() . '" class="' . esc_attr( implode( ' ', $wrapper_classes ) ) . '"';
 		$customizations = self::get_card_container_customizations( $custom_design );
 		if ( $customizations ) {
 			$ret .= ' data-tasty-recipes-customization="' . esc_attr( $customizations ) . '"';

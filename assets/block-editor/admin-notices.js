@@ -18,7 +18,7 @@ export default function generateNotices() {
 						case 'dismiss_converter':
 							action.onClick = (e) => {
 								e.preventDefault();
-								// Send the request to action_url
+								/* Send the request to action_url */
 								window.fetch(actionUrl);
 								removeNotice(notice.id);
 							};

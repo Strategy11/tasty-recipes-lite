@@ -348,7 +348,7 @@ EOT;
 			'recipe_instructions_has_video' => false,
 			'recipe_scalable'               => '<button class="tasty-recipes-scale-button tasty-recipes-scale-button-active" data-amount="1">1x</button><button class="tasty-recipes-scale-button" data-amount="2">2x</button><button class="tasty-recipes-scale-button" data-amount="3">3x</button>',
 			'recipe_instructions'           => $instructions,
-			'recipe_keywords'               => 'almond butter cups, peanut butter cups, healthy almond butter cups',
+			'recipe_keywords'               => '',
 			'recipe_notes'                  => $notes,
 			'recipe_video_embed'            => '',
 			'recipe_hidden_nutrition'       => array(),
@@ -403,11 +403,7 @@ EOT;
 	public static function handle_wp_ajax_get_count() {
 		$nonce = Utils::get_param( 'nonce', 'sanitize_key' );
 		if ( empty( $nonce ) || ! current_user_can( self::CAPABILITY ) || ! wp_verify_nonce( $nonce, self::NONCE_KEY ) ) {
-			wp_send_json_error(
-				array(
-					'message' => __( "Sorry, you don't have permission to do this.", 'tasty-recipes-lite' ),
-				)
-			);
+			Utils::send_json_error( __( 'Sorry, you don\'t have permission to do this.', 'tasty-recipes' ) );
 		}
 
 		$class      = false;
@@ -417,11 +413,7 @@ EOT;
 		if ( ! empty( $get_type ) && isset( $converters[ $get_type ] ) ) {
 			$class = $converters[ $get_type ]['class'];
 		} else {
-			wp_send_json_error(
-				array(
-					'message' => __( "Couldn't count recipes. Please contact support for assistance.", 'tasty-recipes-lite' ),
-				)
-			);
+			Utils::send_json_error( __( 'Couldn\'t count recipes. Please contact support for assistance.', 'tasty-recipes' ) );
 		}
 
 		wp_send_json_success(
@@ -437,11 +429,7 @@ EOT;
 	public static function handle_wp_ajax_convert() {
 		$nonce = Utils::get_param( 'nonce', 'sanitize_key' );
 		if ( empty( $nonce ) || ! current_user_can( self::CAPABILITY ) || ! wp_verify_nonce( $nonce, self::NONCE_KEY ) ) {
-			wp_send_json_error(
-				array(
-					'message' => __( "Sorry, you don't have permission to do this.", 'tasty-recipes-lite' ),
-				)
-			);
+			Utils::send_json_error( __( 'Sorry, you don\'t have permission to do this.', 'tasty-recipes' ) );
 		}
 
 		$class      = false;
@@ -451,10 +439,8 @@ EOT;
 		if ( ! empty( $get_type ) && isset( $converters[ $get_type ] ) ) {
 			$class = $converters[ $get_type ]['class'];
 		} else {
-			wp_send_json_error(
-				array(
-					'message' => __( "Couldn't convert recipes. Please contact support for assistance.", 'tasty-recipes-lite' ),
-				)
+			Utils::send_json_error(
+				__( 'Couldn\'t convert recipes. Please contact support for assistance.', 'tasty-recipes' )
 			);
 		}
 
@@ -470,10 +456,12 @@ EOT;
 			if ( $recipe ) {
 				$converted++;
 			} else {
-				wp_send_json_error(
-					array(
-						// translators: Post id that couldn't be translated.
-						'message' => sprintf( __( 'Couldn\'t convert recipe in \'%1$s\' (post %2$d). Please contact support for assistance.', 'tasty-recipes-lite' ), get_the_title( $post_id ), $post_id ),
+				Utils::send_json_error(
+					sprintf(
+						/* translators: %1$s: post title, %2$d: post ID */
+						__( 'Couldn\'t convert recipe in \'%1$s\' (post %2$d). Please contact support for assistance.', 'tasty-recipes' ),
+						get_the_title( $post_id ),
+						$post_id
 					)
 				);
 			}
@@ -494,10 +482,46 @@ EOT;
 	public static function handle_settings_page() {
 		Settings::instance()->render_group_settings( self::SETTINGS_GROUP_CARD, self::PAGE_SLUG );
 
-		TastyRecipesLiteMain::echo_template_part( 'settings' );
+		self::show_settings();
 		if ( ! did_action( 'admin_footer' ) && ! doing_action( 'admin_footer' ) ) {
 			add_action( 'admin_footer', array( __CLASS__, 'action_admin_footer_render_template' ) );
 		}
+	}
+
+	/**
+	 * Set the tab links and include the settings template.
+	 *
+	 * @since 3.11.1
+	 *
+	 * @return void
+	 */
+	private static function show_settings() {
+		$active_tab = Utils::sanitize_get_key( 'tab', 'design' );
+		$base_url   = menu_page_url( self::PAGE_SLUG, false );
+		$debug      = Utils::sanitize_get_key( 'debug' );
+		$tabs       = array();
+
+		$add_link = array(
+			'design'     => __( 'Design', 'tasty-recipes' ),
+			'settings'   => __( 'Settings', 'tasty-recipes' ),
+			'converters' => __( 'Converters', 'tasty-recipes' ),
+		);
+
+		if ( ! empty( $debug ) || 'debug' === $active_tab ) {
+			$add_link['debug'] = __( 'Debug', 'tasty-recipes' );
+		}
+
+		$add_link['about'] = __( 'About', 'tasty-recipes' );
+
+		foreach ( $add_link as $key => $title ) {
+			$tabs[] = array(
+				'title'  => $title,
+				'url'    => add_query_arg( array( 'tab' => $key ), $base_url ),
+				'active' => $key === $active_tab,
+			);
+		}
+
+		TastyRecipesLiteMain::echo_template_part( 'settings', compact( 'tabs', 'active_tab' ) );
 	}
 
 	/**
@@ -548,11 +572,7 @@ EOT;
 		if ( current_user_can( self::CAPABILITY ) ) {
 			return;
 		}
-		wp_send_json_error(
-			array(
-				'message' => esc_html__( 'You don\'t have permission to do this.', 'tasty-recipes-lite' ),
-			)
-		);
+		Utils::send_json_error( __( 'You don\'t have permission to do this.', 'tasty-recipes' ) );
 	}
 
 	/**

@@ -1,10 +1,10 @@
-/*global tinymce:true */
+/*global tinymce:true, tastyRecipesEditor:true */
 
 tinymce.PluginManager.add('tr_video', function(editor) {
 	editor.addButton('tr_video', {
 		image: tastyRecipesEditor.pluginURL + '/assets/images/video-icon.svg',
 		tooltip: 'Video',
-		onClick: function() {
+		onClick() {
 			var frame = wp.media.embed.edit( '', true );
 
 			frame.state( 'embed' ).props.on( 'change:url', function( model, url ) {

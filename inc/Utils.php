@@ -400,11 +400,32 @@ class Utils {
 		if ( empty( $content ) ) {
 			return '';
 		}
-		$allowed_html = apply_filters( 'tasty_recipes_allowed_html', wp_kses_allowed_html( 'post' ) );
+		$allowed_html = self::get_allowed_html();
 		if ( ! $echo ) {
 			return wp_kses( $content, $allowed_html );
 		}
 		echo wp_kses( $content, $allowed_html );
+	}
+
+	/**
+	 * Get allowed HTML to be used in kses.
+	 *
+	 * @return array
+	 */
+	private static function get_allowed_html() {
+		$allowed_html        = wp_kses_allowed_html( 'post' );
+		$allowed_html['svg'] = array(
+			'viewbox'     => true,
+			'class'       => true,
+			'aria-hidden' => true,
+		);
+		$allowed_html['use'] = array(
+			'xlink:href'  => true,
+			'class'       => true,
+			'aria-hidden' => true,
+		);
+
+		return (array) apply_filters( 'tasty_recipes_allowed_html', $allowed_html );
 	}
 
 	/**
@@ -421,6 +442,22 @@ class Utils {
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		$value = isset( $_POST[ $key ] ) ? wp_unslash( $_POST[ $key ] ) : '';
 		return ! empty( $sanitize ) && function_exists( $sanitize ) ? call_user_func( $sanitize, $value ) : $value;
+	}
+
+	/**
+	 * Send a JSON response with a success message.
+	 *
+	 * @since 3.12
+	 *
+	 * @param string $message The message to send.
+	 * @return void
+	 */
+	public static function send_json_error( $message ) {
+		wp_send_json_error(
+			array(
+				'message' => esc_html( $message ),
+			)
+		);
 	}
 
 }
