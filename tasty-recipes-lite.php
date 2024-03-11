@@ -141,6 +141,13 @@ class TastyRecipesLiteMain /* phpcs:ignore WordPress.NamingConventions.PrefixAll
 	const QUICK_LINKS_OPTION = 'tasty_recipes_quick_links';
 
 	/**
+	 * Option name for the quick links.
+	 *
+	 * @var string
+	 */
+	const QUICK_LINKS_STYLE = 'tasty_recipes_quick_links_style';
+
+	/**
 	 * Option name for the card buttons.
 	 *
 	 * @var string

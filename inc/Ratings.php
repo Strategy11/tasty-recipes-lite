@@ -451,7 +451,7 @@ class Ratings {
 		if ( empty( $icons ) ) {
 			return '';
 		}
-		
+
 
 		$ret = '';
 		for ( $i = 1; $i <= 5; $i++ ) {
@@ -535,10 +535,10 @@ class Ratings {
 			return '';
 		}
 
-		$settings     = Tasty_Recipes::get_customization_settings();
+		$settings     = TastyRecipesLiteMain::get_customization_settings();
 		$rating_style = $settings['star_ratings_style'];
 
-		return Tasty_Recipes::get_template_part(
+		return TastyRecipesLiteMain::get_template_part(
 			'parts/ratings',
 			array(
 				'no_ratings'       => $no_ratings,

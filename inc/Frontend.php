@@ -10,6 +10,7 @@ namespace Tasty\Recipes\Lite;
 use Tasty\Framework\Abstracts\Subscriber;
 use Tasty\Recipes\Lite\Objects\Recipe;
 use WP_Post;
+use TastyRecipesLiteMain;
 
 /**
  * Frontend class.
@@ -61,7 +62,7 @@ class Frontend extends Subscriber {
 		} else {
 			$recipe_rating_label = esc_html__( 'Leave a Review', 'tasty-recipes' );
 			$recipe_rating_icons = '';
-			if ( 'buttons' === get_option( Tasty_Recipes::QUICK_LINKS_STYLE ) ) {
+			if ( 'buttons' === get_option( TastyRecipesLiteMain::QUICK_LINKS_STYLE ) ) {
 				$rating_link_class = 'button';
 			}
 		}

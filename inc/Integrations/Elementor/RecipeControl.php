@@ -43,7 +43,7 @@ class RecipeControl extends Base_Data_Control {
 			'recipeDataStore' => array(),
 		);
 		if ( $post ) {
-			foreach ( \Tasty_Recipes::get_recipes_for_post( $post->ID ) as $recipe ) {
+			foreach ( \TastyRecipesLiteMain::get_recipes_for_post( $post->ID ) as $recipe ) {
 				/**
 				 * Permit modification of the recipe JSON before it's returned.
 				 *
