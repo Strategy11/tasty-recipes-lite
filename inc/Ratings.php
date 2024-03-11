@@ -892,4 +892,21 @@ class Ratings {
 		);
 	}
 
+	/**
+	 * Renders ratings CSS in <head> when enabled.
+	 */
+	public static function action_admin_head() {
+		$current_screen = get_current_screen()->id;
+		if ( ! in_array( $current_screen, array( 'edit-comments', 'comment' ), true ) ) {
+			return;
+		}
+
+		$styles = self::get_styles();
+		if ( empty( $styles ) ) {
+			return;
+		}
+
+		echo $styles; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
+
 }
