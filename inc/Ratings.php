@@ -130,25 +130,6 @@ class Ratings {
 	}
 
 	/**
-	 * Renders ratings CSS in <head> when enabled.
-	 */
-	public static function action_admin_head() {
-		add_action( 'add_meta_boxes', array( __CLASS__, 'add_rating_in_admin' ) );
-
-		$current_screen = get_current_screen()->id;
-		if ( ! in_array( $current_screen, array( 'edit-comments', 'comment' ), true ) ) {
-			return;
-		}
-
-		$styles = self::get_styles();
-		if ( empty( $styles ) ) {
-			return;
-		}
-
-		echo $styles; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	}
-
-	/**
 	 * Add rating meta box in admin comment form.
 	 *
 	 * @since 3.12
@@ -192,23 +173,6 @@ class Ratings {
 			<?php echo self::get_rating_stars_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 		</p>
 		<?php
-	}
-
-	/**
-	 * Update rating in admin comment.
-	 *
-	 * @since 3.12
-	 *
-	 * @param integer $comment_id Comment ID.
-	 *
-	 * @return void
-	 */
-	public static function update_rating_in_admin( $comment_id ) {
-		$rating = Utils::post_param( 'tasty-recipes-rating', 'absint' );
-		if ( $rating ) {
-			update_comment_meta( $comment_id, self::COMMENT_META_KEY, $rating );
-			self::action_modify_comment_update_recipe_ratings( $comment_id );
-		}
 	}
 
 	/**
