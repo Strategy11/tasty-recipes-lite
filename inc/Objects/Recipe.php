@@ -9,6 +9,7 @@ namespace Tasty\Recipes\Lite\Objects;
 
 use Tasty\Recipes\Lite\DistributionMetadata;
 use Tasty\Recipes\Lite\Utils;
+use Tasty_Recipes\Objects\Recipe as ProRecipe;
 
 /**
  * Model for the Recipe object.
@@ -291,7 +292,7 @@ class Recipe {
 		}
 		$post = get_post( $id );
 		if ( $post && self::$post_type === $post->post_type ) {
-			return new Recipe( $post );
+			return tasty_recipes_is_pro_active() ? new ProRecipe( $post ) : new self( $post );
 		}
 		return false;
 	}
