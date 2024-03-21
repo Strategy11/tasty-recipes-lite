@@ -61,4 +61,8 @@ abstract class AbstractTemplate {
 		return $this->get_base_templates_path() . 'designs/' . $this->get_id() . '/tasty-recipes.css';
 	}
 
+	protected function is_pro() {
+		return false;
+	}
+
 }

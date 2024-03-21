@@ -9,7 +9,11 @@ namespace Tasty\Recipes\Lite\Admin;
 
 use Tasty\Framework\Traits\Singleton;
 use Tasty\Recipes\Lite\Admin\Templates\AbstractTemplate;
+use Tasty\Recipes\Lite\Admin\Templates\Bold;
 use Tasty\Recipes\Lite\Admin\Templates\DefaultTemplate;
+use Tasty\Recipes\Lite\Admin\Templates\Elegant;
+use Tasty\Recipes\Lite\Admin\Templates\Fresh;
+use Tasty\Recipes\Lite\Admin\Templates\ModernCompact;
 use Tasty\Recipes\Lite\Admin\Templates\Simple;
 use Tasty\Recipes\Lite\Admin\Templates\Snap;
 
@@ -38,9 +42,13 @@ class Templates {
 		}
 
 		$template_objects       = array(
-			'default' => DefaultTemplate::instance(),
-			'simple'  => Simple::instance(),
-			'snap'    => Snap::instance(),
+			'default'        => DefaultTemplate::instance(),
+			'simple'         => Simple::instance(),
+			'snap'           => Snap::instance(),
+			'bold'           => Bold::instance(),
+			'fresh'          => Fresh::instance(),
+			'elegant'        => Elegant::instance(),
+			'modern-compact' => ModernCompact::instance(),
 		);
 		$this->template_objects = (array) apply_filters( 'tasty_recipes_template_objects', $template_objects );
 	}
