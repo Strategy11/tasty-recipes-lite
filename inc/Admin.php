@@ -7,6 +7,7 @@
 
 namespace Tasty\Recipes\Lite;
 
+use Tasty\Framework\Admin\Plugins\Factory;
 use Tasty\Framework\Utils\Url;
 use TastyRecipesLiteMain;
 use Tasty\Recipes\Lite\Admin\Settings;
@@ -204,7 +205,20 @@ class Admin {
 	 */
 	public static function filter_plugin_action_links( $links ) {
 		$links['tr_settings']        = '<a href="' . esc_url( add_query_arg( 'tab', 'settings', menu_page_url( self::PAGE_SLUG, false ) ) ) . '">' . esc_html__( 'Settings', 'tasty-recipes-lite' ) . '</a>';
-		$links['tr_license_manager'] = '<a href="' . esc_url( Url::get_main_admin_url() ) . '">' . esc_html__( 'License manager', 'tasty-recipes-lite' ) . '</a>';
+
+		if ( ! tasty_recipes_is_pro_active() ) {
+			$lite_plugin = Factory::create( 'Tasty Recipes Lite' );
+			if ( ! is_null( $lite_plugin ) ) {
+				$upgrade_url = Url::add_utm_params(
+					$lite_plugin->get_product_pricing_page_url(),
+					array(
+						'utm_medium'  => 'upgrade',
+						'utm_content' => $lite_plugin->get_plugin_slug(),
+					)
+				);
+				$links['tr_lite_upgrade'] = '<a class="" href="' . esc_url( $upgrade_url ) . '" target="_blank" rel="noopener"><strong>' . esc_html__( 'Upgrade to Pro', 'tasty-recipes-lite' ) . '</strong></a>';
+			}
+		}
 		return $links;
 	}
 
