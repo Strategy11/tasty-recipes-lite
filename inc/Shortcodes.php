@@ -45,7 +45,7 @@ class Shortcodes {
 	 *
 	 * @var string[]
 	 */
-	private static $template_markups = array(
+	protected static $template_markups = array(
 		'inside_ingredients' => '<!--INSIDE_INGREDIENTS-->',
 	);
 
@@ -965,21 +965,6 @@ EOT;
 			}
 		};
 		return $content;
-	}
-
-	/**
-	 * Whether or not an error message should be shown.
-	 *
-	 * @return boolean
-	 */
-	public static function is_error_message_showable() {
-		if ( ! current_user_can( 'edit_posts' ) ) {
-			return false;
-		}
-		if ( is_admin() || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) ) {
-			return true;
-		}
-		return false;
 	}
 
 	/**
