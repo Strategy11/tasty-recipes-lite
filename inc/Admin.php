@@ -216,7 +216,7 @@ class Admin {
 						'utm_content' => $lite_plugin->get_plugin_slug(),
 					)
 				);
-				$links['tr_lite_upgrade'] = '<a class="" href="' . esc_url( $upgrade_url ) . '" target="_blank" rel="noopener"><strong>' . esc_html__( 'Upgrade to Pro', 'tasty-recipes-lite' ) . '</strong></a>';
+				$links['tr_lite_upgrade'] = '<a class="" href="' . esc_url( $upgrade_url ) . '" target="_blank" rel="noopener"><strong style="display: inline-block;">' . esc_html__( 'Upgrade to Pro', 'tasty-recipes-lite' ) . '</strong></a>';
 			}
 		}
 		return $links;
