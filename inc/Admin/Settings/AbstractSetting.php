@@ -279,7 +279,7 @@ abstract class AbstractSetting {
 		$data = array(
 			'tasty_badge_link' => $this->get_pro_feature_link(),
 		);
-		return TastyRecipesLiteMain::get_template_part( 'admin/settings/pro-badge', $data );
+		return TastyRecipesLiteMain::get_template_part( 'admin/pro-badge', $data );
 	}
 
 }

@@ -422,6 +422,9 @@ class Shortcodes {
 			'footer_description'            => $settings['footer_description'],
 			'atts'                          => $atts,
 		);
+		if ( isset( $template_object ) ) {
+			$template_vars['template_url'] = $template_object->get_template_url();
+		}
 
 		/**
 		 * Enable responsive iframes by default, but permit disabling on a site.
@@ -1038,6 +1041,21 @@ EOT;
 		ob_start();
 		do_action( 'tasty_recipes_card_after_ingredients', $recipe );
 		return ob_get_clean();
+	}
+
+	/**
+	 * Whether or not an error message should be shown.
+	 *
+	 * @return boolean
+	 */
+	public static function is_error_message_showable() {
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			return false;
+		}
+		if ( is_admin() || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) ) {
+			return true;
+		}
+		return false;
 	}
 
 }

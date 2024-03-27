@@ -7,6 +7,8 @@
 
 namespace Tasty\Recipes\Lite\Admin\Templates;
 
+use TastyRecipesLiteMain;
+
 /**
  * Design template abstract class.
  */
@@ -24,15 +26,28 @@ abstract class AbstractTemplate {
 	 *
 	 * @return string
 	 */
-	abstract public function get_name();
+	abstract public function get_template_name();
+
+	/**
+	 * Get full template name with the pro badge when available.
+	 *
+	 * @return string
+	 */
+	public function get_name() {
+		return $this->get_template_name() . __( ' Template', 'tasty-recipes-lite' ) . ( $this->is_pro() ? $this->get_pro_badge() : '' );
+	}
+
+	protected function get_template_plugin() {
+		return TASTY_RECIPES_LITE_PLUGIN_FILE;
+	}
 
 	/**
 	 * Get templates base path.
 	 *
 	 * @return string
 	 */
-	protected function get_base_templates_path() {
-		return dirname( TASTY_RECIPES_LITE_PLUGIN_FILE ) . '/templates/';
+	private function get_base_templates_path() {
+		return dirname( $this->get_template_plugin() ) . '/templates/';
 	}
 
 	/**
@@ -61,8 +76,36 @@ abstract class AbstractTemplate {
 		return $this->get_base_templates_path() . 'designs/' . $this->get_id() . '/tasty-recipes.css';
 	}
 
+	public function get_template_url() {
+		if ( empty( $this->get_id() ) ) {
+			return '';
+		}
+		return plugins_url( 'templates/designs/' . $this->get_id() . '/', $this->get_template_plugin() );
+	}
+
 	protected function is_pro() {
 		return false;
+	}
+
+	/**
+	 * Get pro featured link if this is pro setting.
+	 *
+	 * @return string
+	 */
+	protected function get_pro_feature_link() {
+		return 'https://www.wptasty.com/knowledge-base/what-do-the-recipe-card-templates-look-like';
+	}
+
+	/**
+	 * Get pro badge to be added below setting name if this is a pro setting.
+	 *
+	 * @return string
+	 */
+	protected function get_pro_badge() {
+		$data = array(
+			'tasty_badge_link' => $this->get_pro_feature_link(),
+		);
+		return TastyRecipesLiteMain::get_template_part( 'admin/pro-badge', $data );
 	}
 
 }

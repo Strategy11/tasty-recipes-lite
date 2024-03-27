@@ -377,6 +377,10 @@ EOT;
 			'footer_description'            => $settings['footer_description'],
 		);
 
+		if ( isset( $template_object ) ) {
+			$template_vars['template_url'] = $template_object->get_template_url();
+		}
+
 		if ( ! empty( $template_vars['recipe_image'] ) ) {
 			$wrapper_classes[] = 'tasty-recipes-has-image';
 		} else {

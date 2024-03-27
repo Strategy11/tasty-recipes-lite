@@ -19,7 +19,7 @@
 						></path>
 					</svg>
 				</button>
-				<h3>{{ currentTemplateLabel }}</h3>
+				<h3 v-html="currentTemplateLabel"></h3>
 				<button type="button" @click.prevent="goToNextTemplate">
 					<svg
 						aria-hidden="true"
@@ -69,7 +69,7 @@
 						></path>
 					</svg>
 				</button>
-				<h3>{{ currentTemplateLabel }}</h3>
+				<h3 v-html="currentTemplateLabel"></h3>
 				<button type="button" @click.prevent="goToNextTemplate">
 					<svg
 						aria-hidden="true"
@@ -335,7 +335,7 @@ export default {
 	},
 	computed: {
 		currentTemplateLabel() {
-			return this.templateOptions[this.currentTemplate] + " Template";
+			return this.templateOptions[this.currentTemplate];
 		},
 		recipeCardPreviewUrl() {
 			return this.recipeCardPreviewUrlBase +

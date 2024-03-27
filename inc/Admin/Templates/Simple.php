@@ -26,7 +26,7 @@ class Simple extends AbstractTemplate {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function get_name() {
+	public function get_template_name() {
 		return 'Simple';
 	}
 }

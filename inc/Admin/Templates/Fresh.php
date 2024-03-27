@@ -17,7 +17,7 @@ class Fresh extends AbstractTemplate {
 		return 'fresh';
 	}
 
-	public function get_name() {
+	public function get_template_name() {
 		return 'Fresh';
 	}
 

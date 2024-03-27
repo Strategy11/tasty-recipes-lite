@@ -17,7 +17,7 @@ class Bold extends AbstractTemplate {
 		return 'bold';
 	}
 
-	public function get_name() {
+	public function get_template_name() {
 		return 'Bold';
 	}
 
