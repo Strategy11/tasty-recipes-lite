@@ -324,13 +324,6 @@ class Shortcodes {
 		}
 
 		$before_recipe = '';
-		$error         = get_post_meta( $recipe->get_id(), 'nutrifox_error', true );
-		if ( $error && self::is_error_message_showable() ) {
-			$before_recipe .= '<div style="border:4px solid #dc3232;padding:10px 12px;margin-top:10px;margin-bottom:10px;"><p>Nutrifox API integration failed.</p>';
-			$before_recipe .= '<pre>' . wp_kses_post( $error->get_error_message() ) . '</pre>';
-			$before_recipe .= '<p>Try saving the recipe again. Contact Tasty Recipes support if the error persists.</p>';
-			$before_recipe .= '</div>' . PHP_EOL;
-		}
 		if ( $current_post ) {
 			$before_recipe .= '<a class="button tasty-recipes-print-button tasty-recipes-no-print tasty-recipes-print-above-card"';
 			if ( tasty_recipes_is_print() ) {
@@ -407,7 +400,7 @@ class Shortcodes {
 			'recipe_instructions'           => DistributionMetadata::apply_instruction_step_numbers( apply_filters( 'tasty_recipes_the_content', self::do_caption_shortcode( $recipe_json['instructions'] ), 'instructions' ) ),
 			'recipe_keywords'               => $recipe_json['keywords'],
 			'recipe_notes'                  => $recipe_json['notes_rendered'],
-			'recipe_nutrifox_id'            => ! empty( $recipe_json['nutrifox_id'] ) ? $recipe_json['nutrifox_id'] : '',
+			'recipe_nutrifox_id'            => '',
 			'recipe_nutrifox_embed'         => '',
 			'recipe_video_embed'            => '',
 			'recipe_nutrition'              => array(),
@@ -1041,21 +1034,6 @@ EOT;
 		ob_start();
 		do_action( 'tasty_recipes_card_after_ingredients', $recipe );
 		return ob_get_clean();
-	}
-
-	/**
-	 * Whether or not an error message should be shown.
-	 *
-	 * @return boolean
-	 */
-	public static function is_error_message_showable() {
-		if ( ! current_user_can( 'edit_posts' ) ) {
-			return false;
-		}
-		if ( is_admin() || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) ) {
-			return true;
-		}
-		return false;
 	}
 
 }
