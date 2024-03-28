@@ -7,6 +7,7 @@
 
 namespace Tasty\Recipes\Lite;
 
+use Tasty\Framework\Abstracts\Updater;
 use Tasty\Framework\Admin\Plugins\Factory;
 use Tasty\Framework\Utils\Url;
 use TastyRecipesLiteMain;
@@ -18,6 +19,12 @@ use Tasty\Recipes\Lite\Admin\Settings\Settings\CardButtons;
  * Manages interactions with the admin.
  */
 class Admin {
+	/**
+	 * URL to the plugin store.
+	 *
+	 * @var string
+	 */
+	const STORE_URL = 'https://www.wptasty.com';
 
 	/**
 	 * Capability required to manage settings.
@@ -27,27 +34,6 @@ class Admin {
 	const CAPABILITY = 'manage_options';
 
 	/**
-	 * Plugin name for EDD registration.
-	 *
-	 * @var string
-	 */
-	const ITEM_AUTHOR = 'Tasty Recipes';
-
-	/**
-	 * Plugin author for EDD registration.
-	 *
-	 * @var string
-	 */
-	const ITEM_NAME = 'Tasty Recipes';
-
-	/**
-	 * Cache key used to store license check data.
-	 *
-	 * @var string
-	 */
-	const LICENSE_CHECK_CACHE_KEY = 'tasty-recipes-license-check';
-
-	/**
 	 * Key used for nonce authentication.
 	 *
 	 * @var string
@@ -55,39 +41,11 @@ class Admin {
 	const NONCE_KEY = 'tasty-recipes-settings';
 
 	/**
-	 * URL to the plugin store.
-	 *
-	 * @var string
-	 */
-	const STORE_URL = 'https://www.wptasty.com';
-
-	/**
-	 * Parent page for the settings page.
-	 *
-	 * @var string
-	 */
-	const PAGE_BASE = 'options-general.php';
-
-	/**
 	 * Slug for the settings page.
 	 *
 	 * @var string
 	 */
 	const PAGE_SLUG = 'tasty-recipes';
-
-	/**
-	 * Group used for authentication settings.
-	 *
-	 * @var string
-	 */
-	const SETTINGS_GROUP_LICENSE = 'tasty-recipes-settings-license';
-
-	/**
-	 * Section used for authentication settings.
-	 *
-	 * @var string
-	 */
-	const SETTINGS_SECTION_LICENSE = 'tasty-recipes-license';
 
 	/**
 	 * Group used for card settings.
@@ -104,22 +62,23 @@ class Admin {
 	const SETTINGS_SECTION_CARD_DESIGN = 'tasty-recipes';
 
 	/**
-	 * Available template options.
-	 *
-	 * @var array
-	 */
-	const TEMPLATE_OPTIONS = array(
-		''       => 'Default',
-		'snap'   => 'Snap',
-		'simple' => 'Simple',
-	);
-
-	/**
 	 * ID used for TinyMCE instance in settings.
 	 *
 	 * @var string
 	 */
 	private static $editor_id = 'tasty-recipes-settings';
+
+	public function register_edd_updater() {
+		new Updater(
+			self::STORE_URL,
+			TASTY_RECIPES_LITE_PLUGIN_FILE,
+			array(
+				'version'   => TASTY_RECIPES_PLUGIN_VERSION,
+				'item_name' => 'Tasty Recipe Lite',
+				'author'    => 'Tasty Recipe Lite',
+			)
+		);
+	}
 
 	/**
 	 * Registers used settings.

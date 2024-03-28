@@ -323,6 +323,8 @@ class TastyRecipesLiteMain /* phpcs:ignore WordPress.NamingConventions.PrefixAll
 		add_action( 'post_updated', array( Editor::class, 'handle_edit_post' ), 10, 3 );
 		add_action( 'tasty_framework_admin_footer_after', array( Admin::class, 'add_lite_upgrade_modal' ) );
 
+		add_action( 'admin_init', array( Admin::class, 'register_edd_updater' ) );
+
 		if ( is_admin() ) {
 			MetaBox::get_instance();
 		}
