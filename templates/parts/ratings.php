@@ -15,7 +15,7 @@ $rating_style = isset( $rating_style ) ? $rating_style : 'outline';
 <?php
 for ( $i = 5; $i >= 1; $i-- ) {
 	$is_selected = $average ? (int) ceil( $average ) === $i : false;
-	$percentage  = \Tasty_Recipes\Ratings::get_fill_percent( compact( 'i', 'average' ) );
+	$percentage  = Tasty\Recipes\Lite\Ratings::get_fill_percent( compact( 'i', 'average' ) );
 
 	$aria_label = sprintf(
 		// translators: The aria label for a specific star rating.
