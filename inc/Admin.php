@@ -69,8 +69,7 @@ class Admin {
 	private static $editor_id = 'tasty-recipes-settings';
 
 	public static function register_edd_updater() {
-		new Updater(
-			self::STORE_URL,
+		Updater::run(
 			TASTY_RECIPES_LITE_PLUGIN_FILE,
 			array(
 				'version'   => TASTY_RECIPES_LITE_PLUGIN_VERSION,
