@@ -276,7 +276,6 @@ class TastyRecipesLiteMain /* phpcs:ignore WordPress.NamingConventions.PrefixAll
 		add_action( 'body_class', array( ContentModel::class, 'filter_body_class' ) );
 		add_action( 'wp_head', array( DistributionMetadata::class, 'action_wp_head_google_schema' ) );
 		add_action( 'wp_head', array( DistributionMetadata::class, 'action_wp_head_noindex' ) );
-		add_action( 'wp_head', array( Ratings::class, 'action_wp_head' ) );
 		add_action( 'admin_head', array( Ratings::class, 'action_admin_head' ) );
 		add_action( 'wpseo_robots', array( DistributionMetadata::class, 'action_wpseo_robots' ) );
 		add_filter( 'wpseo_schema_graph_pieces', array( DistributionMetadata::class, 'filter_wpseo_schema_graph_pieces' ), 10, 2 );

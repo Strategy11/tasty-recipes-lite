@@ -1091,5 +1091,14 @@ class Recipe {
 		return (array) $this->get_meta( '_tasty_recipe_parents', false );
 	}
 
+	/**
+	 * Get the Nutrifox response for the recipe.
+	 *
+	 * @return array
+	 */
+	public function get_nutrifox_response() {
+		return [];
+	}
+
 }
 
