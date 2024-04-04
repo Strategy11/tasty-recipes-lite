@@ -371,6 +371,7 @@ class TastyRecipesLiteMain /* phpcs:ignore WordPress.NamingConventions.PrefixAll
 		add_filter( 'teeny_mce_buttons', array( Admin::class, 'filter_teeny_mce_buttons' ), 10, 2 );
 		add_filter( 'teeny_mce_buttons', array( Assets::class, 'filter_teeny_mce_buttons' ), 10, 2 );
 		add_filter( 'teeny_mce_before_init', array( Assets::class, 'filter_teeny_mce_before_init' ), 10, 2 );
+		add_filter( 'tasty_recipes_recipe_template_vars', array( Assets::class, 'add_recipe_styles' ), 20 );
 
 		add_filter( 'update_post_metadata', array( ContentModel::class, 'filter_update_post_metadata_thumbnail_id' ), 10, 4 );
 		add_filter( 'template_include', array( ContentModel::class, 'filter_template_include' ), 1000 );

@@ -450,4 +450,47 @@ class Assets {
 		return Utils::get_param( 'post', 'intval', 0 );
 	}
 
+	/**
+	 * Get CSS vars.
+	 *
+	 * @return string
+	 */
+	private static function get_css_vars() {
+		$settings = TastyRecipesLiteMain::get_filtered_customization_settings();
+		$css_vars = array();
+
+		$maybe_add_vars = array( 'star_color', 'button_color', 'button_text_color' );
+		foreach ( $maybe_add_vars as $var ) {
+			if ( ! empty( $settings[ $var ] ) ) {
+				$key              = '--tr-' . str_replace( '_', '-', $var );
+				$css_vars[ $key ] = $settings[ $var ];
+				unset( $key );
+			}
+		}
+
+		$css_vars = (array) apply_filters( 'tasty_recipes_css_vars', $css_vars, $settings );
+		$css_vars = array_filter( $css_vars );
+		if ( empty( $css_vars ) ) {
+			return '';
+		}
+
+		$css = '';
+		foreach ( $css_vars as $css_attribute => $css_value ) {
+			$css .= $css_attribute . ':' . $css_value . ';';
+		}
+		return 'body{ ' . $css . ' }' . PHP_EOL;
+	}
+
+	/**
+	 * Add some styles to the recipe.
+	 *
+	 * @param array $template_vars Recipe template vars.
+	 */
+	public static function add_recipe_styles( $template_vars = array() ) {
+		$template_vars['recipe_styles'] .= '<style type="text/css">' . self::get_css_vars() . '</style>' . PHP_EOL;
+		$template_vars['recipe_styles'] .= Ratings::get_styles();
+
+		return $template_vars;
+	}
+
 }

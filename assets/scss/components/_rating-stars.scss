@@ -1,74 +1,84 @@
+.tasty-recipes-rating-solid,
+.tasty-recipes-rating-outline {
+	display: inline-block;
+	line-height: 1;
 
-.tasty-recipes-rating-solid {
-	&.tasty-recipes-clip-10 {
-		clip-path: polygon(0 0, 10% 0%, 10% 100%, 0% 100%);
+	svg {
+		width: var(--tr-star-size, 18px);
+		height: var(--tr-star-size, 18px);
+		fill: currentColor;
 	}
-	&.tasty-recipes-clip-20 {
-		clip-path: polygon(0 0, 20% 0%, 20% 100%, 0% 100%);
-	}
-	&.tasty-recipes-clip-30 {
-		clip-path: polygon(0 0, 30% 0%, 30% 100%, 0% 100%);
-	}
-	&.tasty-recipes-clip-40 {
-		clip-path: polygon(0 0, 40% 0%, 40% 100%, 0% 100%);
-	}
-	&.tasty-recipes-clip-50 {
-		clip-path: polygon(0 0, 50% 0%, 50% 100%, 0% 100%);
-	}
-	&.tasty-recipes-clip-60 {
-		clip-path: polygon(0 0, 60% 0%, 60% 100%, 0% 100%);
-	}
-	&.tasty-recipes-clip-70 {
-		clip-path: polygon(0 0, 70% 0%, 70% 100%, 0% 100%);
-	}
-	&.tasty-recipes-clip-80 {
-		clip-path: polygon(0 0, 80% 0%, 80% 100%, 0% 100%);
-	}
-	&.tasty-recipes-clip-90 {
-		clip-path: polygon(0 0, 90% 0%, 90% 100%, 0% 100%);
-	}
+
+	@for $i from 1 through 9 {
+        &[data-tr-clip="#{$i}0"] svg {
+            fill:url(#tasty-recipes-clip-#{$i}0);
+        }
+    }
 }
 
 .tasty-recipes-rating-outline {
-	width: 1em;
-	height: 1em;
-	display: inline-block;
-	line-height: 1;
-	&.tasty-recipes-clip-0 svg {
+	&[data-tr-clip="0"] svg {
 		fill:url(#tasty-recipes-clip-0);
-	}
-	&.tasty-recipes-clip-10 svg {
-		fill:url(#tasty-recipes-clip-10);
-	}
-	&.tasty-recipes-clip-20 svg {
-		fill:url(#tasty-recipes-clip-20);
-	}
-	&.tasty-recipes-clip-30 svg {
-		fill:url(#tasty-recipes-clip-30);
-	}
-	&.tasty-recipes-clip-40 svg {
-		fill:url(#tasty-recipes-clip-40);
-	}
-	&.tasty-recipes-clip-50 svg {
-		fill:url(#tasty-recipes-clip-50);
-	}
-	&.tasty-recipes-clip-60 svg {
-		fill:url(#tasty-recipes-clip-60);
-	}
-	&.tasty-recipes-clip-70 svg {
-		fill:url(#tasty-recipes-clip-70);
-	}
-	&.tasty-recipes-clip-80 svg {
-		fill:url(#tasty-recipes-clip-80);
-	}
-	&.tasty-recipes-clip-90 svg {
-		fill:url(#tasty-recipes-clip-90);
-	}
-	&.tasty-recipes-clip-100 svg {
-		fill:url(#tasty-recipes-clip-100);
 	}
 }
 
-.comment-content .tasty-recipes-rating-outline.tasty-recipes-clip-100 svg {
-	fill: currentColor;
+.tasty-recipes-rating-solid {
+	--tr-star-opacity: .4;
+
+	&[data-tr-clip="0"] svg {
+		opacity: var(--tr-star-opacity);
+	}
+}
+
+@mixin unselected-star( $important: '' ) {
+	.tasty-recipes-rating-solid svg {
+		--tr-star-opacity: .4 #{$important};
+		opacity: var(--tr-star-opacity);
+	}
+
+	.tasty-recipes-rating-outline svg {
+		fill: url(#tasty-recipes-clip-0) #{$important};
+	}
+
+
+}
+
+@mixin selected-star( $important: '' ) {
+	.tasty-recipes-rating-solid svg {
+		fill: currentColor #{$important};
+		--tr-star-opacity: 1 #{$important};
+	}
+
+	.tasty-recipes-rating-outline svg {
+		fill: currentColor #{$important};
+	}
+}
+
+[data-tr-default-rating] {
+	> span:not([data-tr-checked]) {
+		@include unselected-star();
+	}
+
+	span[data-tr-checked] ~ span {
+		@include selected-star();
+	}
+}
+
+input.tasty-recipes-rating:checked ~ span {
+	@include selected-star();
+}
+
+.tasty-recipes-ratings-buttons {
+	@media only screen and (min-width : 1024px) {
+		&:hover span {
+			@include unselected-star( '!important' );
+		}
+
+		&:not(:hover) > input:checked ~ span,
+		&:hover > *:hover,
+		& > *:hover,
+		& > *:hover ~ span {
+			@include selected-star( '!important' );
+		}
+	}
 }
