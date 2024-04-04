@@ -1097,7 +1097,7 @@ class Recipe {
 	 * @return array
 	 */
 	public function get_nutrifox_response() {
-		return [];
+		return array();
 	}
 
 }

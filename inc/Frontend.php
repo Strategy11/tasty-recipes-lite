@@ -60,7 +60,7 @@ class Frontend extends Subscriber {
 			$recipe_rating_icons  = Ratings::get_rendered_rating( $average_rating );
 			$rating_link_class    = 'tasty-recipes-has-ratings';
 		} else {
-			$recipe_rating_label = esc_html__( 'Leave a Review', 'tasty-recipes' );
+			$recipe_rating_label = esc_html__( 'Leave a Review', 'tasty-recipes-lite' );
 			$recipe_rating_icons = '';
 			if ( 'buttons' === get_option( TastyRecipesLiteMain::QUICK_LINKS_STYLE ) ) {
 				$rating_link_class = 'button';

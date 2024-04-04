@@ -7,6 +7,7 @@
 
 namespace Tasty\Recipes\Lite;
 
+use Tasty\Framework\Utils\Vars;
 use Tasty\Recipes\Lite\Objects\Recipe;
 use TastyRecipesLiteMain;
 
@@ -139,7 +140,7 @@ class Ratings {
 	public static function add_rating_in_admin() {
 		add_meta_box(
 			'tasty-recipes-comment-rating',
-			__( 'Tasty Recipes', 'tasty-recipes' ),
+			__( 'Tasty Recipes', 'tasty-recipes-lite' ),
 			array( __CLASS__, 'render_rating_meta_box' ),
 			'comment',
 			'normal'
@@ -167,7 +168,7 @@ class Ratings {
 		?>
 		<p class="tasty-recipes-comment-form">
 			<label for="tasty-recipes-rating">
-				<?php esc_html_e( 'Recipe rating', 'tasty-recipes' ); ?>
+				<?php esc_html_e( 'Recipe rating', 'tasty-recipes-lite' ); ?>
 			</label>
 			<br/>
 			<?php echo self::get_rating_stars_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
@@ -554,7 +555,7 @@ class Ratings {
 		$recipe    = ! empty( $recipe_id ) ? Recipe::get_by_id( $recipe_id ) : null;
 
 		if ( ! $rating || ! $post_id || ! $recipe ) {
-			Utils::send_json_error( __( 'Invalid request', 'tasty-recipes' ) );
+			Utils::send_json_error( __( 'Invalid request', 'tasty-recipes-lite' ) );
 		}
 
 		list( $comment_hash, $comment_id ) = self::get_previous_comment( $post_id );
@@ -640,7 +641,7 @@ class Ratings {
 		$created = wp_insert_comment( $comment_args );
 
 		if ( ! $created ) {
-			Utils::send_json_error( __( 'Something went wrong. Your rating was not saved.', 'tasty-recipes' ) );
+			Utils::send_json_error( __( 'Something went wrong. Your rating was not saved.', 'tasty-recipes-lite' ) );
 		}
 	}
 
@@ -734,16 +735,16 @@ class Ratings {
 				'button'  => self::leave_comment_message(),
 			),
 			'create-high-rating'         => array(
-				'message' => __( 'Thank you for rating!', 'tasty-recipes' ),
+				'message' => __( 'Thank you for rating!', 'tasty-recipes-lite' ),
 				'button'  => self::leave_comment_message(),
 			),
 			'update-low-rating-comment'  => array(
 				'message' => self::comment_required_to_update_message( $rating ),
-				'button'  => __( 'Update comment', 'tasty-recipes' ),
+				'button'  => __( 'Update comment', 'tasty-recipes-lite' ),
 			),
 			'update-high-rating-comment' => array(
 				'message' => self::rating_updated_message( $rating ),
-				'button'  => __( 'Update comment', 'tasty-recipes' ),
+				'button'  => __( 'Update comment', 'tasty-recipes-lite' ),
 			),
 			'update-low-rating'          => array(
 				'message' => self::comment_required_to_update_message( $rating ),
@@ -778,7 +779,7 @@ class Ratings {
 	private static function comment_required_message( $rating ) {
 		return sprintf(
 			// translators: %1$d star rating.
-			__( 'To leave a %1$d-star rating, please share your feedback.', 'tasty-recipes' ),
+			__( 'To leave a %1$d-star rating, please share your feedback.', 'tasty-recipes-lite' ),
 			$rating
 		);
 	}
@@ -799,7 +800,7 @@ class Ratings {
 				'To change your rating to %1$d star, please share your feedback.',
 				'To change your rating to %1$d stars, please share your feedback.',
 				$rating,
-				'tasty-recipes'
+				'tasty-recipes-lite'
 			),
 			$rating
 		);
@@ -817,7 +818,7 @@ class Ratings {
 	private static function rating_updated_message( $rating ) {
 		return sprintf(
 			// translators: %1$d star rating.
-			__( 'Rating updated to %1$d stars!', 'tasty-recipes' ),
+			__( 'Rating updated to %1$d stars!', 'tasty-recipes-lite' ),
 			$rating
 		);
 	}
@@ -830,7 +831,7 @@ class Ratings {
 	 * @return string
 	 */
 	private static function leave_comment_message() {
-		return __( 'Leave a comment', 'tasty-recipes' );
+		return __( 'Leave a comment', 'tasty-recipes-lite' );
 	}
 
 	/**
@@ -886,7 +887,7 @@ class Ratings {
 	public static function get_rating_label( $total_reviews, $average_rating ) {
 		return sprintf(
 			// translators: Ratings from number of reviews.
-			_n( '%1$s from %2$s review', '%1$s from %2$s reviews', (int) $total_reviews, 'tasty-recipes' ),
+			_n( '%1$s from %2$s review', '%1$s from %2$s reviews', (int) $total_reviews, 'tasty-recipes-lite' ),
 			'<span class="average">' . $average_rating . '</span>',
 			'<span class="count">' . (int) $total_reviews . '</span>'
 		);
@@ -907,6 +908,23 @@ class Ratings {
 		}
 
 		echo $styles; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
+
+	/**
+	 * Get minimum rating value without requiring comment (filtered).
+	 *
+	 * @param array $comment_data Comment data if found.
+	 *
+	 * @return int
+	 */
+	public static function get_minimum_rating_without_comment( $comment_data = array() ) {
+		/**
+		 * Control minimum rating number where comment is not mandatory.
+		 *
+		 * @param int $min_rating Rating minimum integer value, default is 4.
+		 * @param array $comment_data Array of comment data.
+		 */
+		return (int) apply_filters( 'tasty_recipes_min_rating_without_comment', 6, $comment_data );
 	}
 
 }

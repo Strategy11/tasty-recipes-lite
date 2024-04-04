@@ -466,7 +466,7 @@ class Editor {
 			return;
 		}
 
-		Utils::send_json_error( __( 'Invalid request', 'tasty-recipes' ) );
+		Utils::send_json_error( __( 'Invalid request', 'tasty-recipes-lite' ) );
 	}
 
 	/**

@@ -37,6 +37,11 @@ abstract class AbstractTemplate {
 		return $this->get_template_name() . __( ' Template', 'tasty-recipes-lite' ) . ( $this->is_pro() ? $this->get_pro_badge() : '' );
 	}
 
+	/**
+	 * Get current template plugin file.
+	 *
+	 * @return string
+	 */
 	protected function get_template_plugin() {
 		return TASTY_RECIPES_LITE_PLUGIN_FILE;
 	}
@@ -76,6 +81,11 @@ abstract class AbstractTemplate {
 		return $this->get_base_templates_path() . 'designs/' . $this->get_id() . '/tasty-recipes.css';
 	}
 
+	/**
+	 * Get current template design url.
+	 *
+	 * @return string
+	 */
 	public function get_template_url() {
 		if ( empty( $this->get_id() ) ) {
 			return '';
@@ -83,6 +93,11 @@ abstract class AbstractTemplate {
 		return plugins_url( 'templates/designs/' . $this->get_id() . '/', $this->get_template_plugin() );
 	}
 
+	/**
+	 * If current template is pro or lite.
+	 *
+	 * @return false
+	 */
 	protected function is_pro() {
 		return false;
 	}

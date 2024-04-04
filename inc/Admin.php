@@ -68,6 +68,11 @@ class Admin {
 	 */
 	private static $editor_id = 'tasty-recipes-settings';
 
+	/**
+	 * Register EDD updater.
+	 *
+	 * @return void
+	 */
 	public static function register_edd_updater() {
 		Updater::run(
 			TASTY_RECIPES_LITE_PLUGIN_FILE,
@@ -163,12 +168,12 @@ class Admin {
 	 * @return array
 	 */
 	public static function filter_plugin_action_links( $links ) {
-		$links['tr_settings']        = '<a href="' . esc_url( add_query_arg( 'tab', 'settings', menu_page_url( self::PAGE_SLUG, false ) ) ) . '">' . esc_html__( 'Settings', 'tasty-recipes-lite' ) . '</a>';
+		$links['tr_settings'] = '<a href="' . esc_url( add_query_arg( 'tab', 'settings', menu_page_url( self::PAGE_SLUG, false ) ) ) . '">' . esc_html__( 'Settings', 'tasty-recipes-lite' ) . '</a>';
 
 		if ( ! tasty_recipes_is_pro_active() ) {
 			$lite_plugin = Factory::create( 'Tasty Recipes Lite' );
 			if ( ! is_null( $lite_plugin ) ) {
-				$upgrade_url = Url::add_utm_params(
+				$upgrade_url              = Url::add_utm_params(
 					$lite_plugin->get_product_pricing_page_url(),
 					array(
 						'utm_medium'  => 'upgrade',
@@ -381,7 +386,7 @@ EOT;
 	public static function handle_wp_ajax_get_count() {
 		$nonce = Utils::get_param( 'nonce', 'sanitize_key' );
 		if ( empty( $nonce ) || ! current_user_can( self::CAPABILITY ) || ! wp_verify_nonce( $nonce, self::NONCE_KEY ) ) {
-			Utils::send_json_error( __( 'Sorry, you don\'t have permission to do this.', 'tasty-recipes' ) );
+			Utils::send_json_error( __( 'Sorry, you don\'t have permission to do this.', 'tasty-recipes-lite' ) );
 		}
 
 		$class      = false;
@@ -391,7 +396,7 @@ EOT;
 		if ( ! empty( $get_type ) && isset( $converters[ $get_type ] ) ) {
 			$class = $converters[ $get_type ]['class'];
 		} else {
-			Utils::send_json_error( __( 'Couldn\'t count recipes. Please contact support for assistance.', 'tasty-recipes' ) );
+			Utils::send_json_error( __( 'Couldn\'t count recipes. Please contact support for assistance.', 'tasty-recipes-lite' ) );
 		}
 
 		wp_send_json_success(
@@ -407,7 +412,7 @@ EOT;
 	public static function handle_wp_ajax_convert() {
 		$nonce = Utils::get_param( 'nonce', 'sanitize_key' );
 		if ( empty( $nonce ) || ! current_user_can( self::CAPABILITY ) || ! wp_verify_nonce( $nonce, self::NONCE_KEY ) ) {
-			Utils::send_json_error( __( 'Sorry, you don\'t have permission to do this.', 'tasty-recipes' ) );
+			Utils::send_json_error( __( 'Sorry, you don\'t have permission to do this.', 'tasty-recipes-lite' ) );
 		}
 
 		$class      = false;
@@ -418,7 +423,7 @@ EOT;
 			$class = $converters[ $get_type ]['class'];
 		} else {
 			Utils::send_json_error(
-				__( 'Couldn\'t convert recipes. Please contact support for assistance.', 'tasty-recipes' )
+				__( 'Couldn\'t convert recipes. Please contact support for assistance.', 'tasty-recipes-lite' )
 			);
 		}
 
@@ -437,7 +442,7 @@ EOT;
 				Utils::send_json_error(
 					sprintf(
 						/* translators: %1$s: post title, %2$d: post ID */
-						__( 'Couldn\'t convert recipe in \'%1$s\' (post %2$d). Please contact support for assistance.', 'tasty-recipes' ),
+						__( 'Couldn\'t convert recipe in \'%1$s\' (post %2$d). Please contact support for assistance.', 'tasty-recipes-lite' ),
 						get_the_title( $post_id ),
 						$post_id
 					)
@@ -480,16 +485,16 @@ EOT;
 		$tabs       = array();
 
 		$add_link = array(
-			'design'     => __( 'Design', 'tasty-recipes' ),
-			'settings'   => __( 'Settings', 'tasty-recipes' ),
-			'converters' => __( 'Converters', 'tasty-recipes' ),
+			'design'     => __( 'Design', 'tasty-recipes-lite' ),
+			'settings'   => __( 'Settings', 'tasty-recipes-lite' ),
+			'converters' => __( 'Converters', 'tasty-recipes-lite' ),
 		);
 
 		if ( ! empty( $debug ) || 'debug' === $active_tab ) {
-			$add_link['debug'] = __( 'Debug', 'tasty-recipes' );
+			$add_link['debug'] = __( 'Debug', 'tasty-recipes-lite' );
 		}
 
-		$add_link['about'] = __( 'About', 'tasty-recipes' );
+		$add_link['about'] = __( 'About', 'tasty-recipes-lite' );
 
 		foreach ( $add_link as $key => $title ) {
 			$tabs[] = array(
@@ -550,7 +555,7 @@ EOT;
 		if ( current_user_can( self::CAPABILITY ) ) {
 			return;
 		}
-		Utils::send_json_error( __( 'You don\'t have permission to do this.', 'tasty-recipes' ) );
+		Utils::send_json_error( __( 'You don\'t have permission to do this.', 'tasty-recipes-lite' ) );
 	}
 
 	/**
@@ -586,6 +591,9 @@ EOT;
 
 	/**
 	 * Filter the default setting for card buttons.
+	 *
+	 * @param string[] $default Setting default value.
+	 * @param object   $setting Current setting object.
 	 *
 	 * @return string[]
 	 */
