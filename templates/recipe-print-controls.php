@@ -8,7 +8,7 @@
 ?>
 
 <script type="text/html" id="tmpl-tasty-recipes-print-controls">
-	<style><?php echo \Tasty_Recipes\Utils::get_contents( dirname( __DIR__ ) . '/assets/dist/recipe-print-controls.css' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></style>
+	<style><?php echo \Tasty\Recipes\Lite\Utils::get_contents( dirname( __DIR__ ) . '/assets/dist/recipe-print-controls.css' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></style>
 	<form id="tr-control-form" method="POST">
 		<fieldset class="tasty-recipes-print-buttons">
 			<button id="tasty-recipes-print" type="button"><svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
