@@ -20,7 +20,7 @@
         "@wordpress/i18n-text-domain": [
             "error",
             {
-                "allowedTextDomain": [ "tasty-recipes" ],
+                "allowedTextDomain": [ "tasty-recipes-lite" ]
             }
         ],
         "@wordpress/no-global-event-listener": 0,

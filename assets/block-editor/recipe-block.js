@@ -98,7 +98,7 @@ const edit = props => {
 					<p>
 						{__(
 							"No Tasty Recipe created yet. Click here to start one.",
-							"tasty-recipes"
+							"tasty-recipes-lite"
 						)}
 					</p>
 				</div>
@@ -152,13 +152,13 @@ const edit = props => {
 			</div>
 			<InspectorAdvancedControls>
 				<PanelBody
-					title={__("Recipe options", "tasty-recipes")}
+					title={__("Recipe options", "tasty-recipes-lite")}
 					initialOpen={true}
 				>
 					<CheckboxControl
 						label={__(
 							"This is a non-food recipe (craft, cleaning product, etc)",
-							"tasty-recipes"
+							"tasty-recipes-lite"
 						)}
 						checked={props.attributes.disableJSON}
 						onChange={() => {
@@ -168,7 +168,7 @@ const edit = props => {
 						}}
 					/>
 					<TextControl
-						label={__("Override Author Link", "tasty-recipes")}
+						label={__("Override Author Link", "tasty-recipes-lite")}
 						value={props.attributes.author_link}
 						onChange={value => {
 							props.setAttributes({
@@ -179,7 +179,7 @@ const edit = props => {
 					<CheckboxControl
 						label={__(
 							"Disable unit conversion for this recipe",
-							"tasty-recipes"
+							"tasty-recipes-lite"
 						)}
 						checked={props.attributes.disable_unit_conversion}
 						onChange={() => {
@@ -192,7 +192,7 @@ const edit = props => {
 					<CheckboxControl
 						label={__(
 							"Disable scaling for this recipe",
-							"tasty-recipes"
+							"tasty-recipes-lite"
 						)}
 						checked={props.attributes.disable_scaling}
 						onChange={() => {
