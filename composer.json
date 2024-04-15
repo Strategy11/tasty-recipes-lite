@@ -1,0 +1,50 @@
+{
+    "name": "wp-tasty/tasty-recipes",
+    "type": "wordpress-plugin",
+    "repositories":[
+        {
+            "type":"composer",
+            "url":"https://wpackagist.org"
+        },
+        {
+          "type":"vcs",
+          "url":"git@github.com:Strategy11/tasty-framework.git"
+        }
+    ],
+    "require-dev": {
+        "wp-cli/dist-archive-command": "^2.0",
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
+        "wp-coding-standards/wpcs": "^2.0",
+        "sirbrillig/phpcs-variable-analysis": "^2.5",
+        "phpcompatibility/phpcompatibility-wp": "^2.0",
+        "phpunit/phpunit": "^7.5.15 || ^8.5 || ^9.0",
+        "wpackagist-plugin/wordpress-seo": "^19.0",
+        "querypath/querypath": "^3.0",
+        "masterminds/html5": "^2.7",
+        "yoast/phpunit-polyfills": "^1.1",
+        "strategy11/tasty-framework": "1.0.2"
+    },
+    "extra": {
+        "installer-paths": {
+            "./inc/libs/tasty-framework/": ["strategy11/tasty-framework"],
+            "vendor/{$name}/": ["type:wordpress-plugin"]
+        }
+    },
+    "scripts": {
+        "phpcs": "vendor/bin/phpcs",
+        "phpcbf": "vendor/bin/phpcbf",
+        "phpunit": "vendor/bin/phpunit"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "composer/installers": true
+        },
+        "platform": {
+            "php": "7.4"
+        }
+    },
+    "require": {
+        "composer/installers": "^2.2"
+    }
+}

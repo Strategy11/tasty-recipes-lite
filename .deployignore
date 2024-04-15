@@ -1,0 +1,6 @@
+.circleci/**
+.github/**
+bin/**
+vendor/**
+node_modules/**
+php-tests/**
