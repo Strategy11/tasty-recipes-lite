@@ -11,60 +11,16 @@ use Tasty\Framework\Utils\Common;
 
 ?>
 
-<?php
-
-$active_tab = Utils::sanitize_get_key( 'tab', 'design' );
-$debug      = Utils::sanitize_get_key( 'debug' );
-?>
-
 <div class="wrap">
 	<div class="wp-header-end"></div>
-	<div class="tasty-recipes-nav tasty-tabs nav-tab-wrapper">
-		<p>
-			<a class="nav-tab<?php echo 'design' === $active_tab ? ' nav-tab-active' : ''; ?>" href="<?php menu_page_url( Admin::PAGE_SLUG ); ?>">
-				<?php esc_html_e( 'Design', 'tasty-recipes-lite' ); ?>
-			</a>
-		</p>
-		<p>
-			<a class="nav-tab<?php echo 'settings' === $active_tab ? ' nav-tab-active' : ''; ?>" href="<?php menu_page_url( Admin::PAGE_SLUG ); ?>&tab=settings">
-				<?php esc_html_e( 'Settings', 'tasty-recipes-lite' ); ?>
-			</a>
-		</p>
-		<p>
-			<a class="nav-tab<?php echo 'converters' === $active_tab ? ' nav-tab-active' : ''; ?>" href="<?php menu_page_url( Admin::PAGE_SLUG ); ?>&tab=converters">
-				<?php esc_html_e( 'Converters', 'tasty-recipes-lite' ); ?>
-			</a>
-		</p>
-		<?php if ( ! empty( $debug ) || 'debug' === $active_tab ) { ?>
-		<p>
-			<a class="nav-tab<?php echo 'debug' === $active_tab ? ' nav-tab-active' : ''; ?>" href="<?php menu_page_url( Admin::PAGE_SLUG ); ?>&tab=debug">
-				<?php esc_html_e( 'Debug', 'tasty-recipes-lite' ); ?>
-			</a>
-		</p>
-		<?php } ?>
-		<p>
-			<a class="nav-tab<?php echo 'about' === $active_tab ? ' nav-tab-active' : ''; ?>" href="<?php menu_page_url( Admin::PAGE_SLUG ); ?>&tab=about">
-				<?php esc_html_e( 'About', 'tasty-recipes-lite' ); ?>
-			</a>
-		</p>
-		<p><a class="nav-support" target="_blank" href="http://support.wptasty.com"><?php esc_html_e( 'Support and documentation', 'tasty-recipes-lite' ); ?>
-			<svg width="15px" height="15px" viewBox="0 0 15 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-				<g id="Tasty-Recipes" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-					<g id="tasty-recipes-external-link" transform="translate(-985.000000, -102.000000)" fill="#353547" fill-rule="nonzero">
-						<g id="external-link-alt-solid-copy" transform="translate(985.000000, 102.000000)">
-							<path d="M12.65625,9.375 L11.71875,9.375 C11.4598665,9.375 11.25,9.58486652 11.25,9.84375 L11.25,13.125 L1.875,13.125 L1.875,3.75 L6.09375,3.75 C6.35263348,3.75 6.5625,3.54013348 6.5625,3.28125 L6.5625,2.34375 C6.5625,2.08486652 6.35263348,1.875 6.09375,1.875 L1.40625,1.875 C0.629599571,1.875 0,2.50459957 0,3.28125 L0,13.59375 C0,14.3704004 0.629599571,15 1.40625,15 L11.71875,15 C12.4954004,15 13.125,14.3704004 13.125,13.59375 L13.125,9.84375 C13.125,9.58486652 12.9151335,9.375 12.65625,9.375 Z M14.296875,0 L10.546875,0 C9.92080078,0 9.60791016,0.759082031 10.0488281,1.20117187 L11.0956055,2.24794922 L3.95507812,9.38583984 C3.82268823,9.51777085 3.74827366,9.69698334 3.74827366,9.88388672 C3.74827366,10.0707901 3.82268823,10.2500026 3.95507812,10.3819336 L4.61923828,11.0449219 C4.75116929,11.1773118 4.93038177,11.2517263 5.11728516,11.2517263 C5.30418854,11.2517263 5.48340103,11.1773118 5.61533203,11.0449219 L12.7523437,3.90585937 L13.7988281,4.95117187 C14.2382812,5.390625 15,5.08300781 15,4.453125 L15,0.703125 C15,0.314799785 14.6852002,0 14.296875,0 Z" id="Shape"></path>
-						</g>
-					</g>
-				</g>
-			</svg>
-		</a></p>
-	</div>
+	<?php Common::show_tabs( $tabs ); ?>
+
 
 	<?php if ( 'design' === $active_tab ) : ?>
 		<?php
 		if ( file_exists( get_stylesheet_directory() . '/tasty-recipes.php' ) ) {
 			?>
-			<div class="tasty-recipes-custom-template-notice"><p><?php esc_html_e( 'Looks like you\'re using a custom recipe card template. To enable design customization options, you\'ll need to remove the custom tasty-recipes.php file from your theme folder.', 'tasty-recipes-lite' ); ?></p></div>
+			<div class="tasty-recipes-custom-template-notice tasty-tab-content"><p><?php esc_html_e( 'Looks like you\'re using a custom recipe card template. To enable design customization options, you\'ll need to remove the custom tasty-recipes.php file from your theme folder.', 'tasty-recipes-lite' ); ?></p></div>
 			<?php
 		} else {
 			$recipe_card_preview_url_base = add_query_arg(
@@ -94,7 +50,7 @@ $debug      = Utils::sanitize_get_key( 'debug' );
 		}
 	elseif ( 'about' === $active_tab ) :
 		?>
-		<?php include dirname( __FILE__ ) . '/about.php'; ?>
+		<?php include __DIR__ . '/about.php'; ?>
 		<?php
 	elseif ( 'converters' === $active_tab ) :
 		?>
@@ -112,7 +68,7 @@ $debug      = Utils::sanitize_get_key( 'debug' );
 					<h3><?php esc_html_e( 'Convert Existing Recipes', 'tasty-recipes-lite' ); ?></h3>
 					<p>
 					<?php
-					echo sprintf(
+					printf(
 						// translators: %1$s opening anchor tag to the conversion page, %2$s closing tag.
 						esc_html__( 'Just in case, we recommend backing up your database before converting your recipes in bulk to Tasty Recipes. %1$sLearn more about backing up your database%2$s.', 'tasty-recipes-lite' ),
 						'<a href="https://www.wptasty.com/convert-all" target="_blank" rel="noopener">',
@@ -167,23 +123,23 @@ $debug      = Utils::sanitize_get_key( 'debug' );
 					<p>
 					<?php
 					// translators: Singular number of recipes, source.
-					echo sprintf( esc_html__( '%1$s recipe was found to convert from %2$s.', 'tasty-recipes-lite' ), '{{ data.count }}', '{{ data.label }}' );
+					printf( esc_html__( '%1$s recipe was found to convert from %2$s.', 'tasty-recipes-lite' ), '{{ data.count }}', '{{ data.label }}' );
 					?>
 					</p>
 					<# } else { #>
 					<p>
 					<?php
 					// translators: Plural number of recipes, source.
-					echo sprintf( esc_html__( '%1$s recipes were found to convert from %2$s.', 'tasty-recipes-lite' ), '{{ data.count }}', '{{ data.label }}' );
+					printf( esc_html__( '%1$s recipes were found to convert from %2$s.', 'tasty-recipes-lite' ), '{{ data.count }}', '{{ data.label }}' );
 					?>
 					</p>
 					<# } #>
-					<button class="button start-conversion"><?php esc_html_e( 'Start Conversion', 'tasty-recipes-lite' ); ?></button>
+					<button class="tasty-button start-conversion"><?php esc_html_e( 'Start Conversion', 'tasty-recipes-lite' ); ?></button>
 				<# } else { #>
 					<p>
 					<?php
 					// translators: Source of the conversion.
-					echo sprintf( esc_html__( 'No %s recipes were found to convert.', 'tasty-recipes-lite' ), '{{ data.label }}' );
+					printf( esc_html__( 'No %s recipes were found to convert.', 'tasty-recipes-lite' ), '{{ data.label }}' );
 					?>
 					</p>
 				<# } #>

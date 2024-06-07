@@ -68,82 +68,97 @@ class Assets {
 			);
 		}
 
-		if ( 'edit' === $screen->base ) {
-			self::register_modal_editor_script();
-			wp_enqueue_media();
-			$time = filemtime( dirname( TASTY_RECIPES_LITE_PLUGIN_FILE ) . '/assets/js/manage-posts.js' );
-			wp_enqueue_script(
-				'tasty-recipes-manage-posts',
-				plugins_url( 'assets/js/manage-posts.js', TASTY_RECIPES_LITE_PLUGIN_FILE ),
-				array(
-					'jquery',
-					'tasty-recipes-editor-modal',
-				),
-				$time,
-				true
-			);
-			$script_data = array(
-				'recipeDataStore' => array(),
-			);
-			foreach ( $GLOBALS['wp_query']->posts as $post ) {
-				foreach ( TastyRecipesLiteMain::get_recipes_for_post( $post->ID ) as $recipe ) {
-					/**
-					 * Permit modification of the recipe JSON before it's returned.
-					 *
-					 * @param array $recipe_json Existing recipe JSON blob.
-					 */
-					$recipe_json = apply_filters( 'tasty_recipes_shortcode_response_recipe_json', $recipe->to_json() );
-					// These fields are stored without paragraph tags,
-					// so they need to be added for TinyMCE compat.
-					foreach ( array(
-						'description',
-						'ingredients',
-						'instructions',
-						'notes',
-					) as $field ) {
-						$recipe_json[ $field ] = wpautop( $recipe_json[ $field ] );
-					}
-					$script_data['recipeDataStore'][ $recipe->get_id() ] = $recipe_json;
+		self::setup_editor_screen( $screen );
+	}
+
+	/**
+	 * Enqueues relevant scripts in the editor.
+	 *
+	 * @since 3.12.3
+	 *
+	 * @param \WP_Screen $screen The current screen object.
+	 *
+	 * @return void
+	 */
+	private static function setup_editor_screen( $screen ) {
+		if ( 'edit' !== $screen->base ) {
+			return;
+		}
+
+		self::register_modal_editor_script();
+		wp_enqueue_media();
+		$time = filemtime( dirname( TASTY_RECIPES_LITE_PLUGIN_FILE ) . '/assets/js/manage-posts.js' );
+		wp_enqueue_script(
+			'tasty-recipes-manage-posts',
+			plugins_url( 'assets/js/manage-posts.js', TASTY_RECIPES_LITE_PLUGIN_FILE ),
+			array(
+				'jquery',
+				'tasty-recipes-editor-modal',
+			),
+			$time,
+			true
+		);
+		$script_data = array(
+			'recipeDataStore' => array(),
+		);
+		foreach ( $GLOBALS['wp_query']->posts as $post ) {
+			foreach ( TastyRecipesLiteMain::get_recipes_for_post( $post->ID ) as $recipe ) {
+				/**
+				 * Permit modification of the recipe JSON before it's returned.
+				 *
+				 * @param array $recipe_json Existing recipe JSON blob.
+				 */
+				$recipe_json = apply_filters( 'tasty_recipes_shortcode_response_recipe_json', $recipe->to_json() );
+				// These fields are stored without paragraph tags,
+				// so they need to be added for TinyMCE compat.
+				foreach ( array(
+					'description',
+					'ingredients',
+					'instructions',
+					'notes',
+				) as $field ) {
+					$recipe_json[ $field ] = wpautop( $recipe_json[ $field ] );
 				}
+				$script_data['recipeDataStore'][ $recipe->get_id() ] = $recipe_json;
 			}
-			wp_localize_script( 'tasty-recipes-manage-posts', 'tastyRecipesManagePosts', $script_data );
-			$time = filemtime( dirname( TASTY_RECIPES_LITE_PLUGIN_FILE ) . '/assets/dist/editor.css' );
-			wp_enqueue_style(
-				'tasty-recipes-editor',
-				plugins_url( 'assets/dist/editor.css', TASTY_RECIPES_LITE_PLUGIN_FILE ),
-				array( 'editor-buttons' ),
-				$time
-			);
-			/**
-			 * Allows the default author name to be modified.
-			 *
-			 * @param string $default_author_name
-			 */
-			$default_author_name = apply_filters( 'tasty_recipes_default_author_name', wp_get_current_user() ? wp_get_current_user()->display_name : '' );
-			wp_localize_script(
-				'tasty-recipes-editor',
-				'tastyRecipesEditor',
-				array(
-					'i18n'              => array(
-						'frameTitle'  => esc_html__( 'Media Library', 'tasty-recipes-lite' ),
-						'frameButton' => esc_html__( 'Select Image', 'tasty-recipes-lite' ),
-					),
-					'currentPostId'     => 0,
-					'defaultAuthorName' => $default_author_name,
-					'parseNonce'        => wp_create_nonce( 'tasty_recipes_parse_shortcode' ),
-					'modifyNonce'       => wp_create_nonce( 'tasty_recipes_modify_recipe' ),
-					'pluginURL'         => plugins_url( '', TASTY_RECIPES_LITE_PLUGIN_FILE ),
-				)
-			);
-			/**
-			 * Allow Tasty Links to enqueue its scripts.
-			 */
-			do_action( 'tasty_recipes_enqueue_editor_scripts' );
-			if ( ! did_action( 'admin_footer' ) && ! doing_action( 'admin_footer' ) ) {
-				add_action( 'admin_footer', array( __CLASS__, 'action_admin_footer_render_template' ) );
-			} else {
-				self::action_admin_footer_render_template();
-			}
+		}
+		wp_localize_script( 'tasty-recipes-manage-posts', 'tastyRecipesManagePosts', $script_data );
+		$time = filemtime( dirname( TASTY_RECIPES_LITE_PLUGIN_FILE ) . '/assets/dist/editor.css' );
+		wp_enqueue_style(
+			'tasty-recipes-editor',
+			plugins_url( 'assets/dist/editor.css', TASTY_RECIPES_LITE_PLUGIN_FILE ),
+			array( 'editor-buttons' ),
+			$time
+		);
+		/**
+		 * Allows the default author name to be modified.
+		 *
+		 * @param string $default_author_name
+		 */
+		$default_author_name = apply_filters( 'tasty_recipes_default_author_name', wp_get_current_user() ? wp_get_current_user()->display_name : '' );
+		wp_localize_script(
+			'tasty-recipes-editor',
+			'tastyRecipesEditor',
+			array(
+				'i18n'              => array(
+					'frameTitle'  => esc_html__( 'Media Library', 'tasty-recipes-lite' ),
+					'frameButton' => esc_html__( 'Select Image', 'tasty-recipes-lite' ),
+				),
+				'currentPostId'     => 0,
+				'defaultAuthorName' => $default_author_name,
+				'parseNonce'        => wp_create_nonce( 'tasty_recipes_parse_shortcode' ),
+				'modifyNonce'       => wp_create_nonce( 'tasty_recipes_modify_recipe' ),
+				'pluginURL'         => plugins_url( '', TASTY_RECIPES_LITE_PLUGIN_FILE ),
+			)
+		);
+		/**
+		 * Allow Tasty Links to enqueue its scripts.
+		 */
+		do_action( 'tasty_recipes_enqueue_editor_scripts' );
+		if ( ! did_action( 'admin_footer' ) && ! doing_action( 'admin_footer' ) ) {
+			add_action( 'admin_footer', array( __CLASS__, 'action_admin_footer_render_template' ) );
+		} else {
+			self::action_admin_footer_render_template();
 		}
 	}
 
@@ -347,6 +362,7 @@ class Assets {
 		if ( is_singular() && $recipe_id ) {
 			$recipe_ids = TastyRecipesLiteMain::get_recipe_ids_for_post( get_queried_object_id() );
 			if ( in_array( $recipe_id, $recipe_ids, true ) ) {
+				// phpcs:ignore WordPressVIPMinimum.UserExperience.AdminBarRemoval.RemovalDetected
 				show_admin_bar( false );
 				remove_action( 'wp_head', '_admin_bar_bump_cb' );
 				$time = filemtime( dirname( TASTY_RECIPES_LITE_PLUGIN_FILE ) . '/assets/dist/print.css' );
@@ -358,7 +374,6 @@ class Assets {
 				);
 			}
 		}
-
 	}
 
 	/**
@@ -389,6 +404,7 @@ class Assets {
 	 *
 	 * @param array  $buttons   Existing TinyMCE buttons.
 	 * @param string $editor_id ID for the editor instance.
+	 *
 	 * @return array
 	 */
 	public static function filter_teeny_mce_buttons( $buttons, $editor_id ) {
@@ -403,6 +419,7 @@ class Assets {
 	 *
 	 * @param array  $mce_init  Existing registration details.
 	 * @param string $editor_id ID for the editor instance.
+	 *
 	 * @return array
 	 */
 	public static function filter_teeny_mce_before_init( $mce_init, $editor_id ) {
@@ -420,15 +437,15 @@ class Assets {
 			}
 		}
 		$external_plugins['tr_heading'] = plugins_url(
-			'assets/js/tinymce-tr-heading.js',
+			'assets/js/tinymce-tr-heading.js?v=' . TASTY_RECIPES_PLUGIN_VERSION,
 			TASTY_RECIPES_LITE_PLUGIN_FILE
 		);
 		$external_plugins['tr_image']   = plugins_url(
-			'assets/js/tinymce-tr-image.js',
+			'assets/js/tinymce-tr-image.js?v=' . TASTY_RECIPES_PLUGIN_VERSION,
 			TASTY_RECIPES_LITE_PLUGIN_FILE
 		);
 		$external_plugins['tr_video']   = plugins_url(
-			'assets/js/tinymce-tr-video.js',
+			'assets/js/tinymce-tr-video.js?v=' . TASTY_RECIPES_PLUGIN_VERSION,
 			TASTY_RECIPES_LITE_PLUGIN_FILE
 		);
 		$mce_init['external_plugins']   = wp_json_encode( $external_plugins );
@@ -438,7 +455,7 @@ class Assets {
 	/**
 	 * Gets the current post ID from query args when global $post isn't set.
 	 *
-	 * @return integer
+	 * @return int
 	 */
 	private static function get_current_post_id() {
 		global $post;
@@ -484,13 +501,31 @@ class Assets {
 	/**
 	 * Add some styles to the recipe.
 	 *
+	 * @deprecated 3.12.3
+	 *
 	 * @param array $template_vars Recipe template vars.
+	 *
+	 * @return array
 	 */
 	public static function add_recipe_styles( $template_vars = array() ) {
-		$template_vars['recipe_styles'] .= '<style type="text/css">' . self::get_css_vars() . '</style>' . PHP_EOL;
+		_deprecated_function( __METHOD__, '3.12.3', 'Assets::add_inline_style' );
+		$template_vars['recipe_styles'] .= '<style>' . self::get_css_vars() . '</style>' . PHP_EOL;
 		$template_vars['recipe_styles'] .= Ratings::get_styles();
 
 		return $template_vars;
 	}
 
+	/**
+	 * Add styles to the recipe.
+	 *
+	 * @since 3.12.3
+	 *
+	 * @param string $styles Recipe main styles.
+	 *
+	 * @return void
+	 */
+	public static function add_inline_style( $styles ) {
+		wp_add_inline_style( 'tasty-recipes-main', Utils::minify_css( self::get_css_vars() . $styles ) );
+		Tasty_Recipes\Ratings::add_inline_style();
+	}
 }

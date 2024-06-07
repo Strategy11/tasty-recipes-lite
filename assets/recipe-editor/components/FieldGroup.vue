@@ -8,7 +8,7 @@
 			:key="name"
 			v-show="showField(name)">
 			<span>
-				<label :for="'tasty-recipes-recipe-' + name" v-if="showLabels">{{ field.label }}<a v-if="'prep_time' === name" class="tasty-recipes-add-additional-time button secondary-button" type="button" @click.prevent="isAdditionalTimeOpen = !isAdditionalTimeOpen" :title="!isAdditionalTimeOpen ? extraLabels.add_button_title : extraLabels.remove_button_title ">{{ ! isAdditionalTimeOpen ? extraLabels.add_button_text : extraLabels.remove_button_text }}</a></label>
+				<label :for="'tasty-recipes-recipe-' + name" v-if="showLabels">{{ field.label }} <span v-if="field.tooltip" class="tasty-tooltip-icon" :data-tasty-tooltip=field.tooltip></span><a v-if="'prep_time' === name" class="tasty-recipes-add-additional-time button secondary-button" type="button" @click.prevent="isAdditionalTimeOpen = !isAdditionalTimeOpen" :title="!isAdditionalTimeOpen ? extraLabels.add_button_title : extraLabels.remove_button_title ">{{ ! isAdditionalTimeOpen ? extraLabels.add_button_text : extraLabels.remove_button_text }}</a></label>
 				<select v-if="field.options" :id="'tasty-recipes-recipe-' + name" :name="name" v-model="fieldValues[field.object_key || name]" class="inline-field">
 					<option v-for="(label, value) in field.options" :value="value" :key="value">{{ label }}</option>
 				</select>

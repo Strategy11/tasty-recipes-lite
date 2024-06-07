@@ -81,7 +81,7 @@ class Block_Editor {
 					),
 				),
 				'editor_script'   => 'tasty-recipes-block-editor',
-				'editor_style'    => array( 'tasty-framework-global-css' ),
+				'editor_style'    => array( 'tasty-framework-global-css', 'tasty-recipes-main' ),
 				'render_callback' => array( Shortcodes::class, 'render_tasty_recipe_shortcode' ),
 			)
 		);
@@ -91,6 +91,7 @@ class Block_Editor {
 	 * Get the block for a given recipe.
 	 *
 	 * @param Recipe $recipe Recipe instance.
+	 *
 	 * @return string
 	 */
 	public static function get_block_for_recipe( Recipe $recipe ) {
@@ -100,14 +101,13 @@ class Block_Editor {
 	/**
 	 * Check if post has recipes.
 	 *
-	 * @param WP_Post $post Post object to check.
+	 * @since 1.0
 	 *
-	 * @since 1.0.0
+	 * @param WP_Post $post Post object to check.
 	 *
 	 * @return bool
 	 */
 	public static function post_has_recipes( $post ) {
 		return function_exists( 'has_block' ) && has_block( self::RECIPE_BLOCK_TYPE, $post );
 	}
-
 }

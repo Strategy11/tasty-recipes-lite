@@ -1,6 +1,6 @@
 <?php
 /**
- * Functions you can use in your theme
+ * Functions you can use in your theme.
  *
  * @package Tasty_Recipes
  */
@@ -10,7 +10,7 @@ use Tasty_Recipes_Lite\Content_Model;
 /**
  * Whether or not the recipe is being displayed for print.
  *
- * @return boolean
+ * @return bool
  */
 function tasty_recipes_is_print() {
 	return (bool) get_query_var( Content_Model::get_print_query_var() );
@@ -19,8 +19,9 @@ function tasty_recipes_is_print() {
 /**
  * Get the print link for a recipe embedded within a given post.
  *
- * @param integer $post_id   ID for the post with the recipe.
- * @param integer $recipe_id ID for the recipe to display.
+ * @param int $post_id   ID for the post with the recipe.
+ * @param int $recipe_id ID for the recipe to display.
+ *
  * @return string
  */
 function tasty_recipes_get_print_url( $post_id, $recipe_id ) {
@@ -46,9 +47,9 @@ function tasty_recipes_get_print_url( $post_id, $recipe_id ) {
 	/**
 	 * Allows modification of the print URL.
 	 *
-	 * @param string  $permalink Current print URL.
-	 * @param integer $post_id   ID for the displayed post.
-	 * @param integer $recipe_id ID for the displayed recipe.
+	 * @param string $permalink Current print URL.
+	 * @param int    $post_id   ID for the displayed post.
+	 * @param int    $recipe_id ID for the displayed recipe.
 	 */
 	return apply_filters( 'tasty_recipes_print_url', $permalink, $post_id, $recipe_id );
 }

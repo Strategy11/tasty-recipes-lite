@@ -96,6 +96,9 @@ class Distribution_Metadata {
 		if ( ! tasty_recipes_is_print() ) {
 			return;
 		}
+
+		Hubbub::init(); // Only load this integration inside print page.
+
 		if ( ! did_action( 'wpseo_head' ) ) {
 			echo '<meta name="robots" content="noindex,follow">' . PHP_EOL;
 		}
@@ -105,6 +108,7 @@ class Distribution_Metadata {
 	 * Filter Yoast <meta name="robots"> output on the print template to noindex.
 	 *
 	 * @param string $robots Existing robots value.
+	 *
 	 * @return string
 	 */
 	public static function action_wpseo_robots( $robots ) {
@@ -146,6 +150,7 @@ class Distribution_Metadata {
 	 *
 	 * @param array  $pieces  Existing Yoast SEO graph pieces.
 	 * @param object $context Yoast SEO context instance.
+	 *
 	 * @return array
 	 */
 	public static function filter_wpseo_schema_graph_pieces( $pieces, $context ) {
@@ -159,6 +164,7 @@ class Distribution_Metadata {
 		}
 
 		if ( self::is_old_yoast() ) {
+			// @phpstan-ignore-next-line
 			$pieces[] = new Recipe_Graph_Piece( $context );
 			return $pieces;
 		}
@@ -171,6 +177,7 @@ class Distribution_Metadata {
 	 *
 	 * @param Recipe $recipe Recipe object.
 	 * @param object $post   Post object.
+	 *
 	 * @return array
 	 */
 	public static function get_enriched_google_schema_for_recipe( Recipe $recipe, $post ) {
@@ -202,6 +209,7 @@ class Distribution_Metadata {
 	 * Generates the Google Schema for a recipe object.
 	 *
 	 * @param Recipe $recipe Recipe object.
+	 *
 	 * @return array
 	 */
 	public static function get_google_schema_for_recipe( Recipe $recipe ) {
@@ -245,15 +253,13 @@ class Distribution_Metadata {
 				$image_urls[] = $full_size['url'];
 			}
 			$schema['image'] = array_values( array_unique( $image_urls ) );
-		} else {
-			if ( ! empty( $full_size ) ) {
-				$schema['image'] = array(
-					'@type'  => 'ImageObject',
-					'url'    => $full_size['url'],
-					'height' => $full_size['height'],
-					'width'  => $full_size['width'],
-				);
-			}
+		} elseif ( ! empty( $full_size ) ) {
+			$schema['image'] = array(
+				'@type'  => 'ImageObject',
+				'url'    => $full_size['url'],
+				'height' => $full_size['height'],
+				'width'  => $full_size['width'],
+			);
 		}
 
 		$object = get_queried_object();
@@ -268,6 +274,33 @@ class Distribution_Metadata {
 			}
 			$schema['recipeIngredient'][] = $ingredient['value'];
 		}
+
+		self::add_instruction_schema( $recipe_json, $schema );
+		self::add_cooking_schema( $recipe_json, $schema );
+		self::add_rating_schema( $recipe, $schema );
+		self::add_nutrition_schema( $recipe, $recipe_json, $schema );
+		self::add_video_schema( $recipe, $schema );
+
+		/**
+		 * Permit modification of the Google Schema data generated for a recipe.
+		 *
+		 * @param array  $schema Existing Google Schema data.
+		 * @param object $recipe Tasty Recipes recipe object.
+		 */
+		return apply_filters( 'tasty_recipes_google_schema', $schema, $recipe );
+	}
+
+	/**
+	 * Add recipe instructions to a Google Schema.
+	 *
+	 * @since 3.12.3
+	 *
+	 * @param array $recipe_json Recipe JSON data.
+	 * @param array $schema      Existing Google Schema data.
+	 *
+	 * @return void
+	 */
+	private static function add_instruction_schema( $recipe_json, &$schema ) {
 		$schema['recipeInstructions'] = array();
 		$heading_position             = null;
 		foreach ( self::parse_recipe_instruction_list( $recipe_json['instructions'] ) as $instruction ) {
@@ -320,46 +353,69 @@ class Distribution_Metadata {
 				$schema['recipeInstructions'][] = $item;
 			}
 		}
+	}
 
+	/**
+	 * Add cooking attributes to a Google Schema.
+	 *
+	 * @since 3.12.3
+	 *
+	 * @param array $recipe_json Recipe JSON data.
+	 * @param array $schema      Existing Google Schema data.
+	 *
+	 * @return void
+	 */
+	private static function add_cooking_schema( $recipe_json, &$schema ) {
 		foreach ( Recipe::get_cooking_attributes() as $name => $meta ) {
-			if ( empty( $meta['property'] ) ) {
+			if ( empty( $meta['property'] ) || empty( $recipe_json[ $name ] ) ) {
 				continue;
 			}
-			if ( ! empty( $recipe_json[ $name ] ) ) {
-				$value = $recipe_json[ $name ];
-				if ( false !== stripos( $name, '_time' ) ) {
-					if ( 'prep_time' === $name
-						&& ! empty( $recipe_json['additional_time_value'] ) ) {
-						$time  = time();
-						$value = ( self::strtotime( $value, $time ) - $time )
-								+ ( self::strtotime( $recipe_json['additional_time_value'], $time ) - $time );
-						$value = "{$value} seconds";
-					}
-					$value = self::get_duration_for_time( $value );
-				}
-				if ( $value && in_array( $name, array( 'cuisine', 'category', 'method' ), true ) ) {
-					$bits  = explode( ',', $value );
-					$value = trim( $bits[0] );
-				}
-				if ( $value && 'diet' === $name ) {
-					// Turns 'Low Fat' into 'LowFatDiet'.
-					$value = str_replace( ' ', '', $value ) . 'Diet';
-				}
 
-				// If '2 cups' or similar, needs to be broken into an array
-				// where the number is the first entry.
-				if ( 'yield' === $name && ! is_numeric( $value ) ) {
-					if ( preg_match( '#[\d]+#', $value, $matches ) ) {
-						$value = array(
-							$matches[0],
-							$value,
-						);
-					}
+			$value = $recipe_json[ $name ];
+			if ( false !== stripos( $name, '_time' ) ) {
+				if ( 'prep_time' === $name
+					&& ! empty( $recipe_json['additional_time_value'] ) ) {
+					$time  = time();
+					$value = self::strtotime( $value, $time ) - $time
+							+ self::strtotime( $recipe_json['additional_time_value'], $time ) - $time;
+					$value = "{$value} seconds";
 				}
-				$schema[ $meta['property'] ] = $value;
+				$value = self::get_duration_for_time( $value );
 			}
-		}
+			if ( $value && in_array( $name, array( 'cuisine', 'category', 'method' ), true ) ) {
+				$bits  = explode( ',', $value );
+				$value = trim( $bits[0] );
+			}
+			if ( $value && 'diet' === $name ) {
+				// Turns 'Low Fat' into 'LowFatDiet'.
+				$value = str_replace( ' ', '', $value ) . 'Diet';
+			}
 
+			// If '2 cups' or similar, needs to be broken into an array
+			// where the number is the first entry.
+			if ( 'yield' === $name && ! is_numeric( $value ) ) {
+				if ( preg_match( '#[\d]+#', $value, $matches ) ) {
+					$value = array(
+						$matches[0],
+						$value,
+					);
+				}
+			}
+			$schema[ $meta['property'] ] = $value;
+		}
+	}
+
+	/**
+	 * Add aggregate rating to a Google Schema.
+	 *
+	 * @since 3.12.3
+	 *
+	 * @param object $recipe Recipe object.
+	 * @param array  $schema Existing Google Schema data.
+	 *
+	 * @return void
+	 */
+	private static function add_rating_schema( $recipe, &$schema ) {
 		$total_reviews = $recipe->get_total_reviews();
 		if ( $total_reviews ) {
 			$schema['aggregateRating'] = array(
@@ -368,7 +424,20 @@ class Distribution_Metadata {
 				'ratingValue' => (string) $recipe->get_average_rating(),
 			);
 		}
+	}
 
+	/**
+	 * Add nutrition information to a Google Schema.
+	 *
+	 * @since 3.12.3
+	 *
+	 * @param object $recipe      Recipe object.
+	 * @param array  $recipe_json Recipe JSON data.
+	 * @param array  $schema      Existing Google Schema data.
+	 *
+	 * @return void
+	 */
+	private static function add_nutrition_schema( $recipe, $recipe_json, &$schema ) {
 		$nutrition = array();
 		if ( $recipe->get_nutrifox_response() ) {
 			foreach ( Recipe::get_nutrition_attributes() as $name => $meta ) {
@@ -388,17 +457,30 @@ class Distribution_Metadata {
 			}
 		}
 
-		if ( ! empty( $nutrition ) ) {
-
-			if ( isset( $nutrition['calories'] )
-				&& is_numeric( $nutrition['calories'] ) ) {
-				$nutrition['calories'] .= ' calories';
-			}
-
-			$nutrition['@type']  = 'nutritionInformation';
-			$schema['nutrition'] = $nutrition;
+		if ( empty( $nutrition ) ) {
+			return;
 		}
 
+		if ( isset( $nutrition['calories'] )
+			&& is_numeric( $nutrition['calories'] ) ) {
+			$nutrition['calories'] .= ' calories';
+		}
+
+		$nutrition['@type']  = 'nutritionInformation';
+		$schema['nutrition'] = $nutrition;
+	}
+
+	/**
+	 * Add video info to the Google Schema.
+	 *
+	 * @since 3.12.3
+	 *
+	 * @param object $recipe Recipe object.
+	 * @param array  $schema Existing Google Schema data.
+	 *
+	 * @return void
+	 */
+	private static function add_video_schema( $recipe, &$schema ) {
 		$video_url   = $recipe->get_video_url();
 		$oembed_data = $recipe->get_video_url_response();
 		if ( $video_url && $oembed_data ) {
@@ -417,7 +499,8 @@ class Distribution_Metadata {
 	/**
 	 * Gets Google Schema video format from oEmbed structured data.
 	 *
-	 * @param array $oembed_data oEmbed structured data.
+	 * @param object $oembed_data oEmbed structured data.
+	 *
 	 * @return array
 	 */
 	public static function get_google_schema_video_from_oembed_data( $oembed_data ) {
@@ -482,6 +565,7 @@ class Distribution_Metadata {
 	 *
 	 * @param array  $schema Existing Google Schema data.
 	 * @param object $post   Post object.
+	 *
 	 * @return array
 	 */
 	public static function enrich_google_schema_with_post_permalink( $schema, $post ) {
@@ -510,6 +594,7 @@ class Distribution_Metadata {
 	 * @param array  $schema Existing Google Schema data.
 	 * @param object $recipe Recipe object.
 	 * @param object $post   Post object.
+	 *
 	 * @return array
 	 */
 	public static function enrich_google_schema_with_post_author( $schema, $recipe, $post ) {
@@ -541,6 +626,7 @@ class Distribution_Metadata {
 	 * @param array  $schema Existing Google Schema data.
 	 * @param object $recipe Recipe object.
 	 * @param object $post   Post object.
+	 *
 	 * @return array
 	 */
 	public static function enrich_google_schema_with_post_video( $schema, $recipe, $post ) {
@@ -571,8 +657,9 @@ class Distribution_Metadata {
 	/**
 	 * Gets the video schema out of a string of content.
 	 *
-	 * @param string $content   Existing content to search.
-	 * @return array|false
+	 * @param string $content Existing content to search.
+	 *
+	 * @return false|string
 	 */
 	public static function get_video_url_from_content( $content ) {
 
@@ -591,8 +678,10 @@ class Distribution_Metadata {
 			return false;
 		}
 
+		$shortcode = 'tr-adthrive-in-post-video-player';
 		if ( preg_match_all(
-			'#(<iframe[^>]*src=["\']([^"\']+)["\'][^>]*>[^<]*</iframe>|<script[^>]*src=["\']([^"\']+)["\'][^>]*>[^<]*</script>|\[tr-adthrive-in-post-video-player\s([^\]]+)\])|<div([^>]+class=["\'][^"\']*mv-video-target[^"\']*["\'][^>]*)>#',
+			'#(<iframe[^>]*src=["\']([^"\']+)["\'][^>]*>[^<]*</iframe>|<script[^>]*src=["\']([^"\']+)["\'][^>]*>[^<]*</script>|\[' . $shortcode .
+			'\s([^\]]+)\])|<div([^>]+class=["\'][^"\']*mv-video-target[^"\']*["\'][^>]*)>#',
 			$content,
 			$matches,
 			PREG_OFFSET_CAPTURE
@@ -628,27 +717,12 @@ class Distribution_Metadata {
 						$shortcode_inner
 					);
 					return '[tr-adthrive-in-post-video-player ' . $shortcode_inner . ']';
-					// Mediavine div.
-				} elseif ( ! empty( $matches[5][ $index ][0] ) ) {
-					$attrs = shortcode_parse_atts( $matches[5][ $index ][0] );
-					if ( ! empty( $attrs['data-video-id'] ) ) {
-						return sprintf( 'https://dashboard.mediavine.com/videos/%s/edit', $attrs['data-video-id'] );
-					}
-				} else {
-					$src       = ! empty( $matches[3][ $index ][0] ) ? $matches[3][ $index ][0] : $matches[2][ $index ][0];
-					$video_url = false;
-					// We can only reverse the 'src' for Mediavine, YouTube and Vimeo.
-					if ( preg_match( '#//video\.mediavine\.com/videos/([^\.]+).js#', $src, $video_matches ) ) {
-						$video_url = 'https://dashboard.mediavine.com/videos/' . $video_matches[1] . '/edit/';
-					} elseif ( preg_match( '#https?://www\.youtube\.com/embed/([^?]+)#', $src, $video_matches ) ) {
-						$video_url = 'https://www.youtube.com/watch?v=' . $video_matches[1];
-					} elseif ( preg_match( '#https?://player\.vimeo\.com/video/([^?]+)#', $src, $video_matches ) ) {
-						$video_url = 'https://vimeo.com/' . $video_matches[1];
-					}
+				}
+
+				$video_url = self::get_mediavine_video_url( $matches, $index );
+				if ( $video_url ) {
 					// Found a URL we can use, so break and fall through.
-					if ( $video_url ) {
-						return $video_url;
-					}
+					return $video_url;
 				}
 			}
 		}
@@ -656,10 +730,40 @@ class Distribution_Metadata {
 	}
 
 	/**
+	 * Gets the video URL from a Mediavine video.
+	 *
+	 * @param array $matches Array of matches from the content.
+	 * @param int   $index   Index of the match to process.
+	 *
+	 * @return false|string
+	 */
+	private static function get_mediavine_video_url( $matches, $index ) {
+		$video_url = false;
+		if ( ! empty( $matches[5][ $index ][0] ) ) {
+			$attrs = shortcode_parse_atts( $matches[5][ $index ][0] );
+			if ( ! empty( $attrs['data-video-id'] ) ) {
+				return sprintf( 'https://dashboard.mediavine.com/videos/%s/edit', $attrs['data-video-id'] );
+			}
+		} else {
+			$src = ! empty( $matches[3][ $index ][0] ) ? $matches[3][ $index ][0] : $matches[2][ $index ][0];
+			// We can only reverse the 'src' for Mediavine, YouTube and Vimeo.
+			if ( preg_match( '#//video\.mediavine\.com/videos/([^\.]+).js#', $src, $video_matches ) ) {
+				$video_url = 'https://dashboard.mediavine.com/videos/' . $video_matches[1] . '/edit/';
+			} elseif ( preg_match( '#https?://www\.youtube\.com/embed/([^?]+)#', $src, $video_matches ) ) {
+				$video_url = 'https://www.youtube.com/watch?v=' . $video_matches[1];
+			} elseif ( preg_match( '#https?://player\.vimeo\.com/video/([^?]+)#', $src, $video_matches ) ) {
+				$video_url = 'https://vimeo.com/' . $video_matches[1];
+			}
+		}
+		return $video_url;
+	}
+
+	/**
 	 * Gets the video schema for a given video URL.
 	 *
 	 * @param string $video_url Video URL to fetch the video schema for.
 	 * @param object $post      Post context this video exists in.
+	 *
 	 * @return array|false
 	 */
 	public static function get_video_schema_from_url( $video_url, $post ) {
@@ -720,6 +824,7 @@ class Distribution_Metadata {
 	 * @param array  $schema   Existing Google Schema data.
 	 * @param object $recipe   Recipe object.
 	 * @param array  $comments Any comments to enrich from.
+	 *
 	 * @return array
 	 */
 	public static function enrich_google_schema_with_comments( $schema, $recipe, $comments ) {
@@ -845,7 +950,7 @@ class Distribution_Metadata {
 
 				$top_level_count = $top_level_query->query( $top_level_args );
 
-				$comment_args['offset'] = ( ceil( $top_level_count / $per_page ) - 1 ) * $per_page;
+				$comment_args['offset'] = ( (int) ceil( $top_level_count / $per_page ) - 1 ) * $per_page;
 			}
 		}
 
@@ -853,13 +958,12 @@ class Distribution_Metadata {
 		 * Filters the arguments used to query comments in comments_template().
 		 *
 		 * @since 4.5.0
-		 *
 		 * @see WP_Comment_Query::__construct()
 		 *
 		 * @param array $comment_args {
 		 *     Array of WP_Comment_Query arguments.
 		 *
-		 *     @type string|array $orderby                   Field(s) to order by.
+		 *     @type array|string $orderby                   Field(s) to order by.
 		 *     @type string       $order                     Order of results. Accepts 'ASC' or 'DESC'.
 		 *     @type string       $status                    Comment status.
 		 *     @type array        $include_unapproved        Array of IDs or email addresses whose unapproved comments
@@ -912,7 +1016,8 @@ class Distribution_Metadata {
 	 * Gets the list of instructions from a string.
 	 *
 	 * @param string $component Existing text to parse.
-	 * @return string
+	 *
+	 * @return array
 	 */
 	public static function parse_recipe_instruction_list( $component ) {
 		return self::parse_recipe_component_list(
@@ -927,6 +1032,7 @@ class Distribution_Metadata {
 	 * Applies #instruction-step-[\d] to each step.
 	 *
 	 * @param string $component Existing instruction content.
+	 *
 	 * @return string
 	 */
 	public static function apply_instruction_step_numbers( $component ) {
@@ -949,7 +1055,7 @@ class Distribution_Metadata {
 		} elseif ( preg_match_all( self::UNSTRUCTURED_LIST_MATCH_REGEX, $component, $matches, PREG_OFFSET_CAPTURE ) > 1 ) {
 			// Intro text before the first number, so set that as the first step.
 			if ( $matches[0][0][1] > 0 ) {
-				$step++;
+				++$step;
 				$component = preg_replace(
 					$step_set_regex,
 					'$1$2 id="instruction-step-' . $step . '"$3',
@@ -979,7 +1085,7 @@ class Distribution_Metadata {
 				if ( $heading ) {
 					continue;
 				}
-				$step++;
+				++$step;
 				$bits[ $i ] = preg_replace(
 					$step_set_regex,
 					'$1$2 id="instruction-step-' . $step . '"$3',
@@ -992,21 +1098,21 @@ class Distribution_Metadata {
 	}
 
 	/**
-	 * Get a list from a string of ingredients or instructions
+	 * Get a list from a string of ingredients or instructions.
 	 *
-	 * @param string  $component   Existing text to parse.
-	 * @param boolean $parse_names Parse the names if they exist.
+	 * @param string $component   Existing text to parse.
+	 * @param bool   $parse_names Parse the names if they exist.
+	 *
 	 * @return array
 	 */
-	public static function parse_recipe_component_list( $component, $parse_names = false ) {
+	public static function parse_recipe_component_list( $component, $parse_names = false ) { // phpcs:ignore SlevomatCodingStandard
 		$component_list = array();
 		if ( preg_match_all( self::LI_MATCH_REGEX, $component, $matches, PREG_OFFSET_CAPTURE ) ) {
 			$prev_offset = 0;
 			foreach ( $matches[1] as $i => $match ) {
-				$maybe_heading = mb_substr( $component, $prev_offset, ( $match[1] - $prev_offset ), 'UTF-8' );
+				$maybe_heading = mb_substr( $component, $prev_offset, $match[1] - $prev_offset, 'UTF-8' );
 				$maybe_heading = str_replace( array( '<ul>', '</ul>', '<ol>', '</ol>', '<li>', '</li>' ), '', $maybe_heading );
 				$heading_bits  = explode( PHP_EOL, $maybe_heading );
-				array_reverse( $heading_bits );
 				foreach ( $heading_bits as $bit ) {
 					$heading = self::get_heading( $bit );
 					if ( $heading ) {
@@ -1077,6 +1183,7 @@ class Distribution_Metadata {
 			$bits = explode( PHP_EOL, $component );
 			foreach ( $bits as $bit ) {
 
+				// phpcs:ignore WordPressVIPMinimum.Functions.StripTags.StripTagsTwoParameters
 				$test_bit = trim( strip_tags( $bit, '<img>' ) );
 				if ( empty( $test_bit ) ) {
 					continue;
@@ -1156,7 +1263,7 @@ class Distribution_Metadata {
 				}
 				$enrich_key = count( $processed_component_list ) - 1;
 				if ( $media_on_top ) {
-					$enrich_key++;
+					++$enrich_key;
 				}
 				continue;
 			}
@@ -1196,7 +1303,8 @@ class Distribution_Metadata {
 	 *
 	 * @param string $time Existing time string.
 	 * @param mixed  $now  What now should be considered as.
-	 * @return string
+	 *
+	 * @return int
 	 */
 	public static function strtotime( $time, $now = null ) {
 		if ( null === $now ) {
@@ -1243,9 +1351,10 @@ class Distribution_Metadata {
 	}
 
 	/**
-	 * Calculate the number of hours and minutes from a unix timestmp
+	 * Calculate the number of hours and minutes from a unix timestmp.
 	 *
-	 * @param integer $time Time to compare.
+	 * @param int $time Time to compare.
+	 *
 	 * @return array
 	 */
 	public static function convert_seconds_to_minutes_hours( $time ) {
@@ -1264,6 +1373,7 @@ class Distribution_Metadata {
 	 * Get an ISO 8601 duration based on a human-readable time.
 	 *
 	 * @param string $time Time to get the duration of.
+	 *
 	 * @return string
 	 */
 	public static function get_duration_for_time( $time ) {
@@ -1292,6 +1402,7 @@ class Distribution_Metadata {
 	 * Get a human-readable time based on an ISO 8601 duration.
 	 *
 	 * @param string $duration Duration to process.
+	 *
 	 * @return string
 	 */
 	public static function get_time_for_duration( $duration ) {
@@ -1307,7 +1418,8 @@ class Distribution_Metadata {
 	/**
 	 * Format a timestamp for a human.
 	 *
-	 * @param integer $timestamp Timestamp to format.
+	 * @param int $timestamp Timestamp to format.
+	 *
 	 * @return string
 	 */
 	public static function format_time_for_human( $timestamp ) {
@@ -1383,21 +1495,22 @@ class Distribution_Metadata {
 	/**
 	 * Check whether a given string could be a heading.
 	 *
-	 * @param string $string String to process.
-	 * @return bool
+	 * @param string $text String to process.
+	 *
+	 * @return bool|string
 	 */
-	public static function get_heading( $string ) {
-		$string = trim( preg_replace( '#<p[^>]*>(.+)</p>#', '$1', trim( $string ) ) );
+	public static function get_heading( $text ) {
+		$text = trim( preg_replace( '#<p[^>]*>(.+)</p>#', '$1', trim( $text ) ) );
 		// For The Red Beans:.
-		if ( ':' === substr( $string, -1, 1 ) ) {
-			return substr( $string, 0, -1 );
+		if ( ':' === substr( $text, -1, 1 ) ) {
+			return substr( $text, 0, -1 );
 		}
 		// <strong>For The Red Beans</strong>
-		if ( '<strong>' === substr( $string, 0, 8 ) && '</strong>' === substr( $string, -9, 9 ) ) {
-			return substr( $string, 8, -9 );
+		if ( '<strong>' === substr( $text, 0, 8 ) && '</strong>' === substr( $text, -9, 9 ) ) {
+			return substr( $text, 8, -9 );
 		}
 		// <h3>For The Red Beans</h3>
-		if ( preg_match( '#^<h[1-6]>(.+)<\/h[1-6]>$#', $string, $matches ) ) {
+		if ( preg_match( '#^<h[1-6]>(.+)<\/h[1-6]>$#', $text, $matches ) ) {
 			return $matches[1];
 		}
 		return false;
@@ -1407,6 +1520,7 @@ class Distribution_Metadata {
 	 * Processes a component for rich media.
 	 *
 	 * @param string $value Existing component value.
+	 *
 	 * @return array
 	 */
 	public static function get_rich_media_for_component( $value ) {
@@ -1433,6 +1547,7 @@ class Distribution_Metadata {
 	 *
 	 * @param Recipe $recipe Recipe object to inspect.
 	 * @param string $size   Specific image size to get.
+	 *
 	 * @return array|false
 	 */
 	public static function get_recipe_image_size_with_fallback( $recipe, $size ) {
@@ -1468,14 +1583,15 @@ class Distribution_Metadata {
 	/**
 	 * Gets the JSON+LD image sizes to use for the recipe image.
 	 *
-	 * @param integer $thumbnail_id Attachment ID.
+	 * @param int $thumbnail_id Attachment ID.
+	 *
 	 * @return array
 	 */
 	public static function get_json_ld_image_sizes( $thumbnail_id ) {
 		/**
 		 * Allow the JSON+LD image sizes to be filtered.
 		 *
-		 * @var array $json_ld_image_sizes Existing image sizes.
+		 * @param array $json_ld_image_sizes Existing image sizes.
 		 */
 		return apply_filters(
 			'tasty_recipes_json_ld_image_sizes',
@@ -1483,5 +1599,4 @@ class Distribution_Metadata {
 			$thumbnail_id
 		);
 	}
-
 }

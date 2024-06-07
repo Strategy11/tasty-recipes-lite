@@ -15,7 +15,7 @@
 	</div>
 </template>
 <script>
-import { Chrome } from 'vue-color'
+import { Chrome } from 'vue-color';
 export default {
 	components: {
 		'chrome-picker': Chrome,
@@ -40,7 +40,7 @@ export default {
 			},
 			colorValue: '',
 			displayPicker: false,
-		}
+		};
 	},
 	mounted() {
 		this.setColor(this.value || '');
@@ -63,7 +63,7 @@ export default {
 				this.colors = {
 					hex,
 					a: rgba[3],
-				}
+				};
 			}
 		},
 		showPicker() {
@@ -76,7 +76,7 @@ export default {
 		},
 		togglePicker() {
 			if ( this.displayPicker ) {
-				this.hidePicker()
+				this.hidePicker();
 			} else {
 				this.showPicker();
 			}
@@ -88,8 +88,7 @@ export default {
 			this.colors = color;
 			if(color.rgba.a === 1) {
 				this.colorValue = color.hex;
-			}
-			else {
+			} else {
 				this.colorValue = 'rgba(' + color.rgba.r + ', ' + color.rgba.g + ', ' + color.rgba.b + ', ' + color.rgba.a + ')';
 			}
 		},
@@ -97,7 +96,7 @@ export default {
 			const el = this.$refs.colorpicker,
 				target = e.target;
 			if(el !== target && !el.contains(target)) {
-				this.hidePicker()
+				this.hidePicker();
 			}
 		}
 	},

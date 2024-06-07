@@ -37,7 +37,7 @@ export default {
 			} else {
 				document.addEventListener("DOMContentLoaded", fn);
 			}
-		}
+		};
 		docReady( () => {
 			if ( typeof window.tinyMCE !== 'undefined' ) {
 				const settings = Object.assign( {}, window.tinyMCEPreInit.mceInit[ 'tasty-recipes-settings' ] );

@@ -35,14 +35,14 @@
 	/**
 	 * Fires before a recipe has been rendered for print.
 	 *
-	 * @param integer $recipe_id ID for the recipe being rendered.
+	 * @param int $recipe_id ID for the recipe being rendered.
 	 */
 	do_action( 'tasty_recipes_before_render_print' );
 	echo \Tasty_Recipes_Lite\Shortcodes::render_tasty_recipe_shortcode( array( 'id' => $recipe_id ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	/**
 	 * Fires after a recipe has been rendered for print.
 	 *
-	 * @param integer $recipe_id ID for the recipe being rendered.
+	 * @param int $recipe_id ID for the recipe being rendered.
 	 */
 	do_action( 'tasty_recipes_after_render_print' );
 	?>

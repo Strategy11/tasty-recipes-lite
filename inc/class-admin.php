@@ -112,6 +112,7 @@ class Admin {
 	 * Registers a new custom column for Tasty Recipes.
 	 *
 	 * @param array $columns Existing column names.
+	 *
 	 * @return array
 	 */
 	public static function action_manage_posts_columns( $columns ) {
@@ -122,16 +123,18 @@ class Admin {
 	/**
 	 * Renders an 'Edit Tasty Recipe' button for the column if the post has a recipe.
 	 *
-	 * @param string  $column_name Name of the column.
-	 * @param integer $post_id     ID of the post being displayed.
+	 * @param string $column_name Name of the column.
+	 * @param int    $post_id     ID of the post being displayed.
 	 */
 	public static function action_manage_posts_custom_column( $column_name, $post_id ) {
 		switch ( $column_name ) {
 			case 'tasty_recipe':
-				$recipe_ids = TastyRecipesLiteMain::get_recipe_ids_for_post( $post_id );
+				$recipe_ids = Tasty_Recipes::get_recipe_ids_for_post( $post_id );
 				if ( ! empty( $recipe_ids ) ) {
 					$recipe_id = array_shift( $recipe_ids );
-					echo '<button class="button tasty-recipes-edit-button" data-recipe-id="' . esc_attr( $recipe_id ) . '">' . esc_html__( 'Edit Tasty Recipe', 'tasty-recipes-lite' ) . '</button>';
+					echo '<button class="button tasty-recipes-edit-button" data-recipe-id="' . esc_attr( $recipe_id ) . '">' .
+						esc_html__( 'Edit Tasty Recipe', 'tasty-recipes-lite' ) .
+						'</button>';
 				}
 				break;
 		}
@@ -154,6 +157,7 @@ class Admin {
 	 * Hides the 'Tasty Recipe' column by default.
 	 *
 	 * @param array $columns Existing default hidden columns.
+	 *
 	 * @return array
 	 */
 	public static function filter_hidden_columns( $columns ) {
@@ -206,13 +210,14 @@ class Admin {
 			$wrapper_classes[] = 'tasty-recipes-has-plug';
 		}
 
-		$get_template               = Utils::get_param( 'template', 'sanitize_key', 'boldaaa' );
+		$get_template               = Utils::get_param( 'template', 'sanitize_key' );
 		$get_star_ratings_style     = Utils::get_param( 'star_ratings_style', 'sanitize_key' );
 		$get_footer_social_platform = Utils::get_param( 'footer_social_platform', 'sanitize_key' );
 
-		$custom_design          = ! empty( $get_template ) && array_key_exists( $get_template, self::get_design_templates() ) ? $get_template : '';
+		$custom_design          = ! empty( $get_template ) && array_key_exists( $get_template, self::TEMPLATE_OPTIONS ) ? $get_template : '';
 		$star_ratings_style     = ! empty( $get_star_ratings_style ) && in_array( $get_star_ratings_style, array( 'solid', 'outline' ), true ) ? $get_star_ratings_style : null;
-		$footer_social_platform = ! empty( $get_footer_social_platform ) && in_array( $get_footer_social_platform, array( 'instagram', 'pinterest', 'facebook' ), true ) ? $get_footer_social_platform : '';
+		$show_socials           = ! empty( $get_footer_social_platform ) && in_array( $get_footer_social_platform, array( 'instagram', 'pinterest', 'facebook' ), true );
+		$footer_social_platform = $show_socials ? $get_footer_social_platform : '';
 
 		$settings = TastyRecipesLiteMain::get_filtered_customization_settings();
 
@@ -231,14 +236,14 @@ class Admin {
 		$stylesheet = get_option( 'stylesheet' );
 		// Clean up Feast directory names.
 		$stylesheet  = preg_replace( '#-v[\d]+$#', '', $stylesheet );
-		$compat_file = dirname( TASTY_RECIPES_LITE_PLUGIN_FILE ) . '/assets/css/theme-compat-card-previews/' . $stylesheet . '.css';
+		$compat_file = dirname( TASTY_RECIPES_PLUGIN_FILE ) . '/assets/css/theme-compat-card-previews/' . $stylesheet . '.css';
 		if ( file_exists( $compat_file ) ) {
 			$styles .= Utils::get_contents( $compat_file );
 		}
 
-		$recipe       = new \stdClass();
-		$recipe_json  = array();
-		$ingredients  = <<<EOT
+		$recipe      = new \stdClass();
+		$recipe_json = array();
+		$ingredients = <<<EOT
 <ul>
 	<li><span data-amount="3/4" data-unit="cup">3/4 cup</span> melted coconut oil</li>
 	<li><span data-amount="1/2" data-unit="cup">1/2 cup</span> cocoa powder</li>
@@ -247,7 +252,9 @@ class Admin {
 	<li><span data-amount="" data-unit=""></span>pinch of sea salt, plus more for topping</li>
 </ul>
 EOT;
-		$ingredients  = apply_filters( 'tasty_recipes_the_content', $ingredients, 'ingredients' );
+		$ingredients = apply_filters( 'tasty_recipes_the_content', $ingredients, 'ingredients' );
+
+		// phpcs:disable SlevomatCodingStandard.Files.LineLength.LineTooLong
 		$instructions = <<<EOT
 <ol>
 <li id="instruction-step-1">Whisk the coconut oil, cocoa powder, sweetener, and a pinch of salt.</li>
@@ -258,25 +265,32 @@ EOT;
 		$notes        = <<<EOT
 <p>These are very adaptable – I’ve used as much as 3/4 cup cocoa, and as little as 2 tablespoons agave. It just depends on how sweet / dark you want them to be. I’ve also used peanut butter which is (obviously) delicious!</p>
 EOT;
+		// phpcs:enable
 
 		$template_vars = array(
 			'recipe'                        => $recipe,
+			'recipe_styles'                 => '',
 			'recipe_scripts'                => '',
 			'recipe_json'                   => $recipe_json,
 			'recipe_title'                  => 'Almond Butter Cups',
-			'recipe_image'                  => '<img width="183" height="183" src="' . esc_url( plugins_url( 'assets/images/Almond-Butter-Cups-Recipe-370x370.jpg', dirname( __FILE__ ) ) ) . '" class="attachment-thumbnail size-thumbnail" alt="Chocolate Chip Cookies on parchment paper." loading="lazy" data-pin-nopin="true" />',
+			'recipe_image'                  => '<img width="183" height="183" ' .
+				'src="' . esc_url( plugins_url( 'assets/images/Almond-Butter-Cups-Recipe-370x370.jpg', __DIR__ ) ) . '" ' .
+				'class="attachment-thumbnail size-thumbnail" alt="Chocolate Chip Cookies on parchment paper." ' .
+				'loading="lazy" data-pin-nopin="true">',
 			'recipe_rating_icons'           => Ratings::get_rendered_rating(
 				4.6,
 				'star-color.color',
 				$star_ratings_style
 			),
-			'recipe_rating_label'           => '<span data-tasty-recipes-customization="detail-label-color.color" class="rating-label"><span class="average">4.6</span> from <span class="count">1376</span> reviews</span>',
+			'recipe_rating_label'           => '<span data-tasty-recipes-customization="detail-label-color.color" class="rating-label">' .
+				'<span class="average">4.6</span> from <span class="count">1376</span> reviews</span>',
 			'recipe_author_name'            => '',
 			'recipe_details'                => array(
 				'author'     =>
 				array(
 					'label' => 'Author',
-					'value' => '<a data-tasty-recipes-customization="detail-value-color.color" class="tasty-recipes-author-name" href="https://pinchofyum.com/about">Pinch of Yum</a>',
+					'value' => '<a data-tasty-recipes-customization="detail-value-color.color" class="tasty-recipes-author-name" ' .
+						'href="https://pinchofyum.com/about">Pinch of Yum</a>',
 					'class' => 'author',
 				),
 				'prep_time'  =>
@@ -300,7 +314,9 @@ EOT;
 				'yield'      =>
 				array(
 					'label' => 'Yield',
-					'value' => '<span data-tasty-recipes-customization="detail-value-color.color" class="tasty-recipes-yield"><span data-amount="12">12</span> almond butter cups<span class="tasty-recipes-yield-scale"><span data-amount="1">1</span>x</span></span>',
+					'value' => '<span data-tasty-recipes-customization="detail-value-color.color" class="tasty-recipes-yield">' .
+						'<span data-amount="12">12</span> almond butter cups' .
+						'<span class="tasty-recipes-yield-scale"><span data-amount="1">1</span>x</span></span>',
 					'class' => 'yield',
 				),
 				'category'   =>
@@ -325,13 +341,20 @@ EOT;
 			'recipe_description'            => '<p>Almond Butter Cups: made with five ingredients and no refined sugar. So creamy, rich, and yummy!</p>',
 			'recipe_ingredients'            => $ingredients,
 			'recipe_instructions_has_video' => false,
-			'recipe_scalable'               => '<button class="tasty-recipes-scale-button tasty-recipes-scale-button-active" data-amount="1">1x</button><button class="tasty-recipes-scale-button" data-amount="2">2x</button><button class="tasty-recipes-scale-button" data-amount="3">3x</button>',
+			'recipe_scalable'               => '<button class="tasty-recipes-scale-button tasty-recipes-scale-button-active" data-amount="1">1x</button>' .
+				'<button class="tasty-recipes-scale-button" data-amount="2">2x</button>' .
+				'<button class="tasty-recipes-scale-button" data-amount="3">3x</button>',
 			'recipe_instructions'           => $instructions,
 			'recipe_keywords'               => '',
 			'recipe_notes'                  => $notes,
 			'recipe_video_embed'            => '',
 			'recipe_hidden_nutrition'       => array(),
-			'copy_ingredients'              => get_option( TastyRecipesLiteMain::COPY_TO_CLIPBOARD_OPTION ) ? '<button aria-label="' . __( 'Copy ingredients to clipboard', 'tasty-recipes-lite' ) . '" class="tasty-recipes-copy-button" id="copy-ingredients" data-text="' . __( 'Copy ingredients', 'tasty-recipes-lite' ) . '">' . Utils::get_contents( dirname( dirname( __FILE__ ) ) . '/assets/images/icons/icon-copy-to-clipboard.svg' ) . '</button>' : false,
+			'copy_ingredients'              => get_option( TastyRecipesLiteMain::COPY_TO_CLIPBOARD_OPTION )
+				? '<button aria-label="' . esc_attr__( 'Copy ingredients to clipboard', 'tasty-recipes-lite' ) . '" ' .
+				'class="tasty-recipes-copy-button" id="copy-ingredients" data-text="' . esc_attr__( 'Copy ingredients', 'tasty-recipes-lite' ) . '">' .
+				Utils::get_contents( dirname( __DIR__ ) . '/assets/images/icons/icon-copy-to-clipboard.svg' ) .
+				'</button>'
+				: false,
 			'first_button'                  => Shortcodes::get_card_button( $recipe, 'first', $custom_design ),
 			'second_button'                 => Shortcodes::get_card_button( $recipe, 'second', $custom_design ),
 			'instagram_handle'              => get_option( TastyRecipesLiteMain::INSTAGRAM_HANDLE_OPTION ),
@@ -341,31 +364,26 @@ EOT;
 			'footer_description'            => $settings['footer_description'],
 		);
 
-		if ( isset( $template_object ) ) {
-			$template_vars['template_url'] = $template_object->get_template_url();
-		}
-
-		if ( ! empty( $template_vars['recipe_image'] ) ) {
-			$wrapper_classes[] = 'tasty-recipes-has-image';
-		} else {
-			$wrapper_classes[] = 'tasty-recipes-no-image';
-		}
 		$stylesheets = '';
 		if ( $editor_styles && current_theme_supports( 'editor-styles' ) ) {
 			foreach ( $editor_styles as $style ) {
 				if ( preg_match( '~^(https?:)?//~', $style ) ) {
-					$stylesheets .= '<link rel="stylesheet" href="' . esc_url( $style ) . '">' . PHP_EOL; // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet
+					// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet
+					$stylesheets .= '<link rel="stylesheet" href="' . esc_url( $style ) . '">' . PHP_EOL;
 				} else {
-					$stylesheets .= '<link rel="stylesheet" href="' . esc_url( get_theme_file_uri( $style ) ) . '">' . PHP_EOL; // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet
+					 // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet
+					$stylesheets .= '<link rel="stylesheet" href="' . esc_url( get_theme_file_uri( $style ) ) . '">' . PHP_EOL;
 				}
 			}
 		}
 
-		$template_vars['recipe_styles'] = '<style type="text/css">' . PHP_EOL . $styles . PHP_EOL . '</style>' . PHP_EOL;
+		$template_vars['recipe_styles'] = '<style>' . $styles . PHP_EOL . '</style>' . PHP_EOL;
 
 		$template_vars = apply_filters( 'tasty_recipes_admin_preview_template_vars', $template_vars, $settings );
 
-		$ret            = '<!DOCTYPE html><html><head>' . $stylesheets . '</head><body>';
+		$ret            = '<!DOCTYPE html><html><head>' .
+			$stylesheets . self::load_enqueued_assets() .
+			'</head><body>';
 		$ret           .= '<div class="' . esc_attr( implode( ' ', $wrapper_classes ) ) . '"';
 		$customizations = Shortcodes::get_card_container_customizations( $custom_design );
 		if ( $customizations ) {
@@ -374,10 +392,26 @@ EOT;
 		$ret .= '>' . PHP_EOL;
 		$ret .= TastyRecipesLiteMain::get_template_part( $template, $template_vars );
 		$ret .= '</div>';
-		$ret .= '<script type="text/javascript">' . PHP_EOL . Utils::get_contents( dirname( dirname( __FILE__ ) ) . '/assets/dist/settings-recipe-card-preview.build.js' ) . PHP_EOL . '</script>';
+		$ret .= '<script>' . PHP_EOL . Utils::get_contents( dirname( __DIR__ ) . '/assets/dist/settings-recipe-card-preview.build.js' ) . PHP_EOL . '</script>';
 		$ret .= '</body></html>';
 		echo apply_filters( 'tasty_recipes_recipe_card_output', $ret, 'admin', compact( 'recipe' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		exit;
+	}
+
+	/**
+	 * Get the html for enqueued assets for the recipe card preview when doing ajax.
+	 *
+	 * @since 3.12.3
+	 *
+	 * @return string
+	 */
+	private static function load_enqueued_assets() {
+		ob_start();
+		wp_print_styles();
+		wp_print_scripts();
+		$assets = ob_get_clean();
+
+		return $assets;
 	}
 
 	/**
@@ -437,7 +471,7 @@ EOT;
 			}
 			$recipe = $class::convert_post( $post_id, $type );
 			if ( $recipe ) {
-				$converted++;
+				++$converted;
 			} else {
 				Utils::send_json_error(
 					sprintf(
@@ -453,7 +487,7 @@ EOT;
 		$after_count = $class::get_count();
 		wp_send_json_success(
 			array(
-				'converted' => (int) $converted,
+				'converted' => $converted,
 				'count'     => (int) $after_count,
 			)
 		);
@@ -512,6 +546,7 @@ EOT;
 	 *
 	 * @param array  $buttons   Existing TinyMCE buttons.
 	 * @param string $editor_id ID for the editor instance.
+	 *
 	 * @return array
 	 */
 	public static function filter_teeny_mce_buttons( $buttons, $editor_id ) {
@@ -555,7 +590,26 @@ EOT;
 		if ( current_user_can( self::CAPABILITY ) ) {
 			return;
 		}
+
 		Utils::send_json_error( __( 'You don\'t have permission to do this.', 'tasty-recipes-lite' ) );
+	}
+
+	/**
+	 * Filter quick links admin field to handle the removed item "both"
+	 * and cast the string option to an array.
+	 *
+	 * @param array $args Admin field args.
+	 *
+	 * @return array
+	 */
+	public static function filter_quick_links_backward_compatibility( $args ) {
+		if ( Tasty_Recipes::QUICK_LINKS_OPTION !== $args['name'] ) {
+			return $args;
+		}
+
+		$args['checked'] = self::handle_quick_links_backward_compatibility( $args['checked'] );
+
+		return $args;
 	}
 
 	/**

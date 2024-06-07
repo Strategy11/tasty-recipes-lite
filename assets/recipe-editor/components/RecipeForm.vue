@@ -1,5 +1,5 @@
 <template>
-	<form>
+	<form class="tasty-framework">
 		<input type="hidden" name="id" :value="recipe.id" />
 
 		<div :class="{ 'tasty-recipes-image': true, 'tasty-recipes-image-with-placeholder': ! recipeThumbnail }">

@@ -30,7 +30,7 @@ for ( $i = 5; $i >= 1; $i-- ) {
 		name="tasty-recipes-rating"
 		class="tasty-recipes-rating"
 		id="<?php echo esc_attr( uniqid( 'tasty_recipes_rating_input_' ) ); ?>"
-		value="<?php echo absint( $i ); ?>" />
+		value="<?php echo absint( $i ); ?>">
 	<?php } ?>
 	<span class="tasty-recipes-rating" <?php echo $is_selected ? 'data-tr-checked="1"' : ''; ?>>
 		<i class="checked" data-rating="<?php echo esc_attr( $i ); ?>">

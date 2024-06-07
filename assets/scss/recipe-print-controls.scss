@@ -41,6 +41,9 @@
 			position: relative;
 			margin-right: 2px;
 		}
+		&.tasty-hidden{
+			display: none;
+		}
 	}
 
 	button:hover,
@@ -108,6 +111,8 @@
 	}
 
 	fieldset.tasty-recipes-print-text-size-controls {
+		max-width: 340px;
+
 		div {
 			width: 100%;
 			display: flex;

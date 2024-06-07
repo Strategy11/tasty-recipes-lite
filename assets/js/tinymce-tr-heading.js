@@ -8,7 +8,7 @@ tinymce.PluginManager.add('tr_heading', function(editor) {
 		onClick() {
 			editor.execCommand( 'mceToggleFormat', false, 'h4' );
 		},
-		onPostRender: function() {
+		onPostRender() {
 			var self = this, setup = function() {
 			editor.formatter.formatChanged(name, function(state) {
 				self.active(state);

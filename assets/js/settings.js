@@ -1,3 +1,4 @@
+/*global tastyRecipesSettings:true, jQuery:true */
 (function( wp, $ ){
 
 	var converter = {
@@ -15,7 +16,7 @@
 			errorMessage: '',
 		},
 
-		initialize: function( wrapper ) {
+		initialize( wrapper ) {
 			wrapper.show();
 			this.wrapper = wrapper;
 			this.type = wrapper.data('type');
@@ -26,7 +27,7 @@
 			this.fetchCount();
 		},
 
-		renderTemplate: function() {
+		renderTemplate() {
 			if ( this.type !== this.wrapper.data('type') ) {
 				return;
 			}
@@ -34,7 +35,7 @@
 			$(this.wrapper).html( template( this.data ) );
 		},
 
-		bindEvents: function() {
+		bindEvents() {
 			$(this.wrapper).on('click', 'button.start-conversion', $.proxy( function(){
 				this.data.converting = true;
 				this.renderTemplate();
@@ -42,7 +43,7 @@
 			}, this ));
 		},
 
-		fetchCount: function() {
+		fetchCount() {
 			wp.ajax.send( this.getAction, {
 				data: {
 					nonce: tastyRecipesSettings.nonce,
@@ -64,7 +65,7 @@
 			}, this) );
 		},
 
-		triggerConvert: function() {
+		triggerConvert() {
 			this.data.converting = true;
 			wp.ajax.send( this.convertAction, {
 				data: {
@@ -87,7 +88,7 @@
 			}, this) );
 		}
 
-	}
+	};
 
 	$(document).ready(function(){
 		var typeConverter = false;
@@ -110,7 +111,6 @@
 		var wrapper = $('.tasty-recipes-converter-control');
 		$('.tasty-recipes-converter-options button').on('click',function(e){
 			e.preventDefault();
-			delete typeConverter;
 			var el = $(this);
 			$('.tasty-recipes-converter-options button').removeClass('active button-primary');
 			$('.tasty-recipes-converter-welcome').hide();
@@ -122,7 +122,7 @@
 		});
 
 		wrapper.on('click', '.tasty-recipes-converter-close', $.proxy( function(){
-			delete typeConverter;
+			typeConverter = false;
 			wrapper.html('');
 			wrapper.data('type','');
 			$('.tasty-recipes-converter-options button').removeClass('active button-primary');

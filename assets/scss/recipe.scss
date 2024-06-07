@@ -52,27 +52,54 @@ body.tasty-recipes-print-view{
 	margin-bottom: 10px;
 }
 
+.tasty-recipes-quick-links a.button,
 .tasty-recipes-image-button-container .tasty-recipes-buttons a {
 	padding: 8px;
 	text-transform: uppercase;
 	text-align: center;
 	display: block;
 	background-color: #f9f9f9;
+	background-color: var(--tr-button-color, #f9f9f9);
 	font-size: 16px;
 	line-height: 16px;
 	font-weight: bold;
 	margin-top: 0;
 	border: 1px solid #aaaaaa;
+	border-color: var(--tr-button-color, #aaaaaa);
 	border-radius: 0;
 	text-decoration: none;
 	color: #aaaaaa;
+	color: var(--tr-button-text-color, #aaaaaa);
 	cursor: pointer;
 }
 
+.tasty-recipes-quick-links {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: .625em;
+	margin-bottom: 1em;
+
+	a.button{
+		display: inline-block;
+		margin: 0;
+	}
+}
+
+/* Hide the dots between buttons */
+.tasty-recipes-quick-links a.button + span {
+	display: none;
+}
+
+.tasty-recipes-quick-links a.button:hover,
+.tasty-recipes-image-button-container .tasty-recipes-buttons .button:hover,
+.tasty-recipes-entry-content .tasty-recipes-buttons a:hover {
+	background-color: var(--tr-button-text-color, #aaaaaa);
+	color: var(--tr-button-color, #f9f9f9);
+	text-decoration: none;
+}
+
 .tasty-recipes-image-button-container .tasty-recipes-buttons .button:hover {
-	background-color: #aaaaaa;
-	border: 1px solid #aaaaaa;
-	color: #fff;
 	opacity: 1;
 }
 

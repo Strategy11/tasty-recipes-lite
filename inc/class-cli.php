@@ -282,7 +282,7 @@ class CLI {
 	 * @param array $args Command args.
 	 * @param array $assoc_args Associated args.
 	 */
-	public function find_legacy_wprm_video_urls( $args, $assoc_args ) {
+	public function find_legacy_wprm_video_urls( $args, $assoc_args ) { // phpcs:ignore SlevomatCodingStandard
 
 		if ( ! empty( $assoc_args['database'] ) ) {
 			$db = new \wpdb( DB_USER, DB_PASSWORD, $assoc_args['database'], DB_HOST );
@@ -357,7 +357,9 @@ class CLI {
 				if ( $thumbnail_id ) {
 					$maybe_wprms = $db->get_results(
 						$db->prepare(
-							"SELECT p.ID, p.post_title FROM {$db->posts} as p LEFT JOIN {$db->postmeta} as pm ON p.ID=pm.post_id WHERE p.post_type='wprm_recipe' AND pm.meta_key='_thumbnail_id' AND pm.meta_value=%s",
+							"SELECT p.ID, p.post_title FROM {$db->posts} as p
+							LEFT JOIN {$db->postmeta} as pm ON p.ID=pm.post_id
+							WHERE p.post_type='wprm_recipe' AND pm.meta_key='_thumbnail_id' AND pm.meta_value=%s",
 							$thumbnail_id
 						)
 					);
@@ -410,5 +412,4 @@ class CLI {
 		}
 		WP_CLI\Utils\format_items( $assoc_args['format'], $results, $headers );
 	}
-
 }

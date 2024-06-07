@@ -12,7 +12,7 @@ use Tasty_Recipes_Lite\Utils;
 <?php if ( ! empty( $recipe_rating_label ) ) : ?>
 <div class="ERSRatings" itemprop="aggregateRating" itemscope="" itemtype="https://schema.org/AggregateRating">
 	<div class="ERSRatingOuter">
-		<?php $average_rating = round( (float) $recipe->get_average_rating(), 1 ); ?>
+		<?php $average_rating = $recipe->get_average_rating(); ?>
 		<div class="ERSRatingInner" style="width: <?php echo esc_attr( round( $average_rating * 2 * 10 ) ); ?>%"></div>
 		<div class="review"><span class="rating"><span class="average" itemprop="ratingValue"><?php echo esc_html( $average_rating ); ?></span> from <span class="count" itemprop="ratingCount"><?php echo esc_html( $recipe->get_total_reviews() ); ?></span> reviews</span></div>
 	</div>

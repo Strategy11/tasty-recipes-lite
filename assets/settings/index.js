@@ -1,6 +1,8 @@
 import Vue from 'vue';
 
-// Entire views
+/**
+ * Entire views
+ */
 Vue.component('tasty-recipes-design-settings', require('./views/Design.vue').default);
 
 if (document.querySelector('.tasty-recipes-design-settings-app')) {

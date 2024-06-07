@@ -109,7 +109,10 @@ class Recipe {
 			'keywords'                    => array(
 				'label'             => __( 'Keywords', 'tasty-recipes-lite' ),
 				'sanitize_callback' => 'sanitize_text_field',
-				'tooltip'           => __( 'Keywords help Google find your recipes. Include keywords that are not also a category or cuisine ie summer, Halloween, quick, nutmeg crust.', 'tasty-recipes-lite' ),
+				'tooltip'           => __(
+					'Keywords help Google find your recipes. Include keywords that are not also a category or cuisine ie summer, Halloween, quick, nutmeg crust.',
+					'tasty-recipes-lite'
+				),
 			),
 			'video_url'                   => array(
 				'label'             => __( 'Video URL or Shortcode', 'tasty-recipes-lite' ),
@@ -283,8 +286,9 @@ class Recipe {
 	/**
 	 * Get a recipe by its id.
 	 *
-	 * @param integer $id Recipe id.
-	 * @return Recipe|false
+	 * @param int $id Recipe id.
+	 *
+	 * @return false|Recipe
 	 */
 	public static function get_by_id( $id ) {
 		if ( empty( $id ) ) {
@@ -298,7 +302,34 @@ class Recipe {
 	}
 
 	/**
-	 * Get the ID for the post
+	 * Remove extra tags from the start and end of a setting.
+	 *
+	 * @since 3.12.3
+	 *
+	 * @param string $name The name of the meta field.
+	 *
+	 * @return string
+	 */
+	protected function get_clean_meta( $name ) {
+		return $this->remove_empty_tags_from_start_end( $this->get_meta( $name ) );
+	}
+
+	/**
+	 * Remove empty tags from the start and end of a string and save.
+	 *
+	 * @since 3.12.3
+	 *
+	 * @param string $name The name of the meta field.
+	 * @param string $value The value to save.
+	 *
+	 * @return void
+	 */
+	protected function set_clean_meta( $name, $value ) {
+		$this->set_meta( $name, $this->remove_empty_tags_from_start_end( $value ) );
+	}
+
+	/**
+	 * Get the ID for the post.
 	 *
 	 * @return int
 	 */
@@ -307,7 +338,7 @@ class Recipe {
 	}
 
 	/**
-	 * Get the title for the recipe
+	 * Get the title for the recipe.
 	 *
 	 * @return string
 	 */
@@ -316,14 +347,14 @@ class Recipe {
 	}
 
 	/**
-	 * Print the name for the recipe
+	 * Print the name for the recipe.
 	 */
 	public function the_title() {
 		Utils::kses( apply_filters( 'tasty_recipes_the_title', $this->get_title() ), true );
 	}
 
 	/**
-	 * Set the title of the recipe
+	 * Set the title of the recipe.
 	 *
 	 * @param string $title Recipe title.
 	 */
@@ -332,7 +363,7 @@ class Recipe {
 	}
 
 	/**
-	 * Get the author name for the recipe
+	 * Get the author name for the recipe.
 	 *
 	 * @return string
 	 */
@@ -341,7 +372,7 @@ class Recipe {
 	}
 
 	/**
-	 * Set the author name for the recipe
+	 * Set the author name for the recipe.
 	 *
 	 * @param string $author_name Recipe author name.
 	 */
@@ -355,7 +386,7 @@ class Recipe {
 	 * @return string
 	 */
 	public function get_description() {
-		return $this->remove_empty_tags_from_start_end( $this->get_meta( 'description' ) );
+		return $this->get_clean_meta( 'description' );
 	}
 
 	/**
@@ -371,7 +402,7 @@ class Recipe {
 	 * @param string $description Description value.
 	 */
 	public function set_description( $description ) {
-		$this->set_meta( 'description', $this->remove_empty_tags_from_start_end( $description ) );
+		$this->set_clean_meta( 'description', $description );
 	}
 
 	/**
@@ -398,7 +429,7 @@ class Recipe {
 	 * @return string
 	 */
 	public function get_ingredients() {
-		return $this->remove_empty_tags_from_start_end( $this->get_meta( 'ingredients' ) );
+		return $this->get_clean_meta( 'ingredients' );
 	}
 
 	/**
@@ -414,7 +445,7 @@ class Recipe {
 	 * @param string $ingredients Ingredients value.
 	 */
 	public function set_ingredients( $ingredients ) {
-		$this->set_meta( 'ingredients', $this->remove_empty_tags_from_start_end( $ingredients ) );
+		$this->set_clean_meta( 'ingredients', $ingredients );
 	}
 
 	/**
@@ -441,11 +472,11 @@ class Recipe {
 	 * @return string
 	 */
 	public function get_instructions() {
-		return $this->remove_empty_tags_from_start_end( $this->get_meta( 'instructions' ) );
+		return $this->get_clean_meta( 'instructions' );
 	}
 
 	/**
-	 * Print the instructions for the recipe
+	 * Print the instructions for the recipe.
 	 */
 	public function the_instructions() {
 		Utils::kses( apply_filters( 'tasty_recipes_the_content', $this->get_instructions(), 'instructions' ), true );
@@ -457,7 +488,7 @@ class Recipe {
 	 * @param string $instructions Instructions value.
 	 */
 	public function set_instructions( $instructions ) {
-		$this->set_meta( 'instructions', $this->remove_empty_tags_from_start_end( $instructions ) );
+		$this->set_clean_meta( 'instructions', $instructions );
 	}
 
 	/**
@@ -484,14 +515,14 @@ class Recipe {
 	 * @return string
 	 */
 	public function get_notes() {
-		return $this->get_meta( 'notes' );
+		return $this->get_clean_meta( 'notes' );
 	}
 
 	/**
 	 * Print the notes for the recipe.
 	 */
 	public function the_notes() {
-		Utils::kses( apply_filters( 'tasty_recipes_the_content', $this->get_meta( 'notes' ), 'notes' ), true );
+		Utils::kses( apply_filters( 'tasty_recipes_the_content', $this->get_notes(), 'notes' ), true );
 	}
 
 	/**
@@ -500,7 +531,7 @@ class Recipe {
 	 * @param string $notes Notes value.
 	 */
 	public function set_notes( $notes ) {
-		$this->set_meta( 'notes', $notes );
+		$this->set_clean_meta( 'notes', $notes );
 	}
 
 	/**
@@ -560,10 +591,11 @@ class Recipe {
 	/**
 	 * Get the video URL response for the recipe.
 	 *
-	 * @return array
+	 * @return false|object
 	 */
 	public function get_video_url_response() {
-		return $this->get_meta( 'video_url_response' );
+		$video = $this->get_meta( 'video_url_response' );
+		return $video ? (object) $video : false;
 	}
 
 	/**
@@ -578,7 +610,7 @@ class Recipe {
 	/**
 	 * Get the average rating for the recipe.
 	 *
-	 * @return string
+	 * @return float|string
 	 */
 	public function get_average_rating() {
 		$rating = $this->get_meta( 'average_rating' );
@@ -600,16 +632,16 @@ class Recipe {
 	/**
 	 * Get the total reviews for the recipe.
 	 *
-	 * @return string
+	 * @return int
 	 */
 	public function get_total_reviews() {
-		return $this->get_meta( 'total_reviews' );
+		return (int) $this->get_meta( 'total_reviews' );
 	}
 
 	/**
 	 * Set the total reviews for the recipe.
 	 *
-	 * @param string $total_reviews Total reviews value.
+	 * @param float|int $total_reviews Total reviews value.
 	 */
 	public function set_total_reviews( $total_reviews ) {
 		$this->set_meta( 'total_reviews', $total_reviews );
@@ -734,7 +766,7 @@ class Recipe {
 	}
 
 	/**
-	 * Set the total time for the recipe
+	 * Set the total time for the recipe.
 	 *
 	 * @param string $total_time Total time value.
 	 */
@@ -754,10 +786,10 @@ class Recipe {
 	/**
 	 * Set the yield for the recipe.
 	 *
-	 * @param string $yield Yield value.
+	 * @param string $value Yield value.
 	 */
-	public function set_yield( $yield ) {
-		$this->set_meta( 'yield', $yield );
+	public function set_yield( $value ) {
+		$this->set_meta( 'yield', $value );
 	}
 
 	/**
@@ -851,29 +883,20 @@ class Recipe {
 	}
 
 	/**
-	 * Get the featured image url for the given featured image id
+	 * Get the featured image url for the given featured image id.
 	 *
-	 * @param string $size Image size.
-	 * @return string|false
+	 * @return false
 	 */
-	public function get_featured_image_url( $size = 'full' ) {
-
-		$attachment_id = $this->get_featured_image_id();
-		if ( ! $attachment_id ) {
-			return false;
-		}
-		$src = wp_get_attachment_image_src( $attachment_id, $size );
-		if ( ! $src ) {
-			return false;
-		}
-
-		return $src[0];
+	public function get_featured_image_url() {
+		_deprecated_function( __METHOD__, 'unknown' );
+		return false;
 	}
 
 	/**
-	 * Get a specified image size
+	 * Get a specified image size.
 	 *
 	 * @param string $size Image size.
+	 *
 	 * @return array|false
 	 */
 	public function get_image_size( $size = 'full' ) {
@@ -894,7 +917,7 @@ class Recipe {
 	}
 
 	/**
-	 * Get the JSON representation of the recipe
+	 * Get the JSON representation of the recipe.
 	 *
 	 * @return array
 	 */
@@ -943,10 +966,11 @@ class Recipe {
 	}
 
 	/**
-	 * Create a new instance
+	 * Create a new instance.
 	 *
 	 * @param array $args Arguments to use when creating post instance.
-	 * @return Post|false
+	 *
+	 * @return false|Recipe
 	 */
 	public static function create( $args = array() ) {
 
@@ -972,6 +996,7 @@ class Recipe {
 	 * Get a field from the post object.
 	 *
 	 * @param string $key Field key.
+	 *
 	 * @return mixed
 	 */
 	protected function get_field( $key ) {
@@ -979,7 +1004,7 @@ class Recipe {
 	}
 
 	/**
-	 * Set a field for the post object
+	 * Set a field for the post object.
 	 *
 	 * @param string $key   Field key.
 	 * @param mixed  $value Value for the field.
@@ -993,10 +1018,11 @@ class Recipe {
 	}
 
 	/**
-	 * Get a meta value for a post
+	 * Get a meta value for a post.
 	 *
-	 * @param string $key Meta key.
+	 * @param string $key    Meta key.
 	 * @param bool   $single Return single value or multiple, default is true.
+	 *
 	 * @return mixed
 	 */
 	protected function get_meta( $key, $single = true ) {
@@ -1026,8 +1052,8 @@ class Recipe {
 	/**
 	 * Delete meta from recipe.
 	 *
-	 * @param string $meta_key Meta Key to be deleted.
-	 * @param string $meta_value Meta value if you want to target with it.
+	 * @param string     $meta_key   Meta Key to be deleted.
+	 * @param int|string $meta_value Meta value if you want to target with it.
 	 *
 	 * @return void
 	 */
@@ -1041,10 +1067,10 @@ class Recipe {
 	 * This regex consists of two parts, one for the start and the other for the end.
 	 * If the provided tag is paragraph, so it can detect the following examples
 	 * from the start and end of the string and keep the in-between as is:
-	 * <p></p> AND <p> </p> AND <p>     </p> AND <p>&nbsp;</p> AND <p> &nbsp; </p>
+	 * <p></p> AND <p> </p> AND <p>     </p> AND <p>&nbsp;</p> AND <p> &nbsp; </p>.
 	 *
 	 * @param string $content The content to search in.
-	 * @param string $tag The tag that has empty content.
+	 * @param string $tag     The tag that has empty content.
 	 *
 	 * @return string
 	 */
@@ -1099,6 +1125,5 @@ class Recipe {
 	public function get_nutrifox_response() {
 		return array();
 	}
-
 }
 

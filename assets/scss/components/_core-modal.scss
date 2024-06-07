@@ -54,13 +54,12 @@
 	outline: none;
 	cursor: pointer;
 	.tasty-recipes-modal-icon:before {
-		content: "\f158";
-		font: 400 20px/1 dashicons;
+		content: "\2715";
+		font-size: 20px;
 		speak: none;
 		vertical-align: middle;
 		-webkit-font-smoothing: antialiased;
 		-moz-osx-font-smoothing: grayscale;
-		color: #666;
 	}
 }
 .tasty-recipes-modal-content {

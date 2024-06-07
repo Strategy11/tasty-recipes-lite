@@ -15,11 +15,12 @@ use WP_Post;
 class Utils {
 
 	/**
-	 * Get existing shortcode to convert
+	 * Get existing shortcode to convert.
 	 *
 	 * @param string $content       Content to parse for a shortcode.
 	 * @param string $shortcode_tag Shortcode tag to look for.
-	 * @return string|false
+	 *
+	 * @return false|string
 	 */
 	public static function get_existing_shortcode( $content, $shortcode_tag ) {
 		if ( false === stripos( $content, $shortcode_tag ) ) {
@@ -49,6 +50,7 @@ class Utils {
 	 * Transforms a fraction amount into a proper number.
 	 *
 	 * @param string $amount Existing amount to process.
+	 *
 	 * @return float
 	 */
 	public static function process_amount_into_float( $amount ) {
@@ -113,7 +115,7 @@ class Utils {
 			}
 			if ( isset( $base ) ) {
 				$frac_bits = explode( '/', array_shift( $bits ) );
-				$amount    = $base + ( $frac_bits[0] / $frac_bits[1] );
+				$amount    = $base + ( intval( $frac_bits[0] ) / intval( $frac_bits[1] ) );
 			}
 		}
 		return $amount;
@@ -123,6 +125,7 @@ class Utils {
 	 * Makes a unit singular.
 	 *
 	 * @param string $unit The unit to make singular.
+	 *
 	 * @return string
 	 */
 	public static function make_singular( $unit ) {
@@ -133,7 +136,8 @@ class Utils {
 	 * Gets the ID from a YouTube URL, if one exists.
 	 *
 	 * @param string $url URL to inspect.
-	 * @return string|false
+	 *
+	 * @return false|string
 	 */
 	public static function get_youtube_id( $url ) {
 		$url = trim( $url );
@@ -145,9 +149,6 @@ class Utils {
 			return false;
 		}
 		$base_host = implode( '.', array_slice( explode( '.', $host ), -2, 2 ) );
-		if ( ! in_array( $base_host, array( 'youtube.com', 'youtu.be' ), true ) ) {
-			return false;
-		}
 		if ( 'youtube.com' === $base_host ) {
 			$path = wp_parse_url( $url, PHP_URL_PATH );
 			// Something like https://www.youtube.com/embed/HZpnBPiCYnA?feature=oembed.
@@ -160,7 +161,8 @@ class Utils {
 			}
 			parse_str( wp_parse_url( $url, PHP_URL_QUERY ), $args );
 			return ! empty( $args['v'] ) ? $args['v'] : false;
-		} elseif ( 'youtu.be' === $base_host ) {
+		}
+		if ( 'youtu.be' === $base_host ) {
 			return trim( wp_parse_url( $url, PHP_URL_PATH ), '/' );
 		}
 		return false;
@@ -172,7 +174,8 @@ class Utils {
 	 * @param string $html Original HTML.
 	 * @param string $el   Base HTML element.
 	 * @param string $attr Attribute name.
-	 * @return string|false
+	 *
+	 * @return false|string
 	 */
 	public static function get_element_attribute( $html, $el, $attr ) {
 		if ( false === stripos( $html, '<' . $el ) ) {
@@ -190,6 +193,7 @@ class Utils {
 	 * @see https://github.com/matthiasmullie/minify/blob/master/src/CSS.php
 	 *
 	 * @param string $content Existing CSS.
+	 *
 	 * @return string
 	 */
 	public static function minify_css( $content ) {
@@ -224,7 +228,7 @@ class Utils {
 	}
 
 	/**
-	 * Check if it's the block or classic editor
+	 * Check if it's the block or classic editor.
 	 *
 	 * @param WP_Post $current_post Current post object.
 	 *
@@ -251,19 +255,19 @@ class Utils {
 	/**
 	 * Sanitize $_GET parameter.
 	 *
-	 * @param string $input_name The GET parameter name.
-	 * @param string $default Default value if this key is not found in GET.
+	 * @param string $input_name    The GET parameter name.
+	 * @param string $default_value Default value if this key is not found in GET.
 	 *
 	 * @return string
 	 */
-	public static function sanitize_get_key( $input_name, $default = '' ) {
-		return self::get_param( $input_name, 'sanitize_key', $default );
+	public static function sanitize_get_key( $input_name, $default_value = '' ) {
+		return self::get_param( $input_name, 'sanitize_key', $default_value );
 	}
 
 	/**
 	 * Returns true if the request is a REST API request.
 	 *
-	 * @since 1.0.0
+	 * @since 1.0
 	 *
 	 * @todo: replace this function once core WP function is available: https://core.trac.wordpress.org/ticket/42061.
 	 *
@@ -296,7 +300,7 @@ class Utils {
 	/**
 	 * Sanitize item value.
 	 *
-	 * @param mixed  $item Item to be sanitized.
+	 * @param mixed  $item              Item to be sanitized.
 	 * @param string $sanitize_callback Sanitize callback function.
 	 *
 	 * @return mixed
@@ -320,61 +324,65 @@ class Utils {
 	/**
 	 * Check if a REQUEST value exists and sanitize it.
 	 *
-	 * @since 1.0.0
+	 * @since 1.0
 	 *
-	 * @param string $key      The REQUEST key to check.
-	 * @param string $sanitize The type of sanitization to apply.
-	 * @param mixed  $default  The default value to return if the key is not set.
+	 * @param string $key           The REQUEST key to check.
+	 * @param string $sanitize      The type of sanitization to apply.
+	 * @param mixed  $default_value The default value to return if the key is not set.
+	 *
 	 * @return mixed
 	 */
-	public static function request_param( $key, $sanitize = 'sanitize_text_field', $default = '' ) {
+	public static function request_param( $key, $sanitize = 'sanitize_text_field', $default_value = '' ) {
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Recommended
-		return isset( $_REQUEST[ $key ] ) ? self::sanitize_item( wp_unslash( $_REQUEST[ $key ] ), $sanitize ) : $default;
+		return isset( $_REQUEST[ $key ] ) ? self::sanitize_item( wp_unslash( $_REQUEST[ $key ] ), $sanitize ) : $default_value;
 	}
 
 	/**
 	 * Check if a GET value exists and sanitize it.
 	 *
-	 * @since 1.0.0
+	 * @since 1.0
 	 *
-	 * @param string $key      The GET key to check.
-	 * @param string $sanitize The type of sanitization to apply.
-	 * @param mixed  $default  The default value to return if the key is not set.
+	 * @param string $key           The GET key to check.
+	 * @param string $sanitize      The type of sanitization to apply.
+	 * @param mixed  $default_value The default value to return if the key is not set.
+	 *
 	 * @return mixed
 	 */
-	public static function get_param( $key, $sanitize = 'sanitize_text_field', $default = '' ) {
+	public static function get_param( $key, $sanitize = 'sanitize_text_field', $default_value = '' ) {
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Recommended
-		return isset( $_GET[ $key ] ) ? self::sanitize_item( wp_unslash( $_GET[ $key ] ), $sanitize ) : $default;
+		return isset( $_GET[ $key ] ) ? self::sanitize_item( wp_unslash( $_GET[ $key ] ), $sanitize ) : $default_value;
 	}
 
 	/**
 	 * Check if a POST value exists and sanitize it.
 	 *
-	 * @since 1.0.0
+	 * @since 1.0
 	 *
-	 * @param string $key      The POST key to check.
-	 * @param string $sanitize The type of sanitization to apply.
-	 * @param mixed  $default  The default value to return if the key is not set.
+	 * @param string $key           The POST key to check.
+	 * @param string $sanitize      The type of sanitization to apply.
+	 * @param mixed  $default_value The default value to return if the key is not set.
+	 *
 	 * @return mixed
 	 */
-	public static function post_param( $key, $sanitize = 'sanitize_text_field', $default = '' ) {
+	public static function post_param( $key, $sanitize = 'sanitize_text_field', $default_value = '' ) {
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification
-		return isset( $_POST[ $key ] ) ? self::sanitize_item( wp_unslash( $_POST[ $key ] ), $sanitize ) : $default;
+		return isset( $_POST[ $key ] ) ? self::sanitize_item( wp_unslash( $_POST[ $key ] ), $sanitize ) : $default_value;
 	}
 
 	/**
 	 * Check if a SERVER value exists and sanitize it.
 	 *
-	 * @since 1.0.0
+	 * @since 1.0
 	 *
-	 * @param string $key      The GET key to check.
-	 * @param string $sanitize The type of sanitization to apply.
-	 * @param mixed  $default  The default value to return if the key is not set.
+	 * @param string $key           The GET key to check.
+	 * @param string $sanitize      The type of sanitization to apply.
+	 * @param mixed  $default_value The default value to return if the key is not set.
+	 *
 	 * @return mixed
 	 */
-	public static function server_param( $key, $sanitize = 'sanitize_text_field', $default = '' ) {
+	public static function server_param( $key, $sanitize = 'sanitize_text_field', $default_value = '' ) {
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-		return isset( $_SERVER[ $key ] ) ? self::sanitize_item( wp_unslash( $_SERVER[ $key ] ), $sanitize ) : $default;
+		return isset( $_SERVER[ $key ] ) ? self::sanitize_item( wp_unslash( $_SERVER[ $key ] ), $sanitize ) : $default_value;
 	}
 
 	/**
@@ -385,23 +393,24 @@ class Utils {
 	 * @return false|string
 	 */
 	public static function get_contents( $path ) {
-		return file_get_contents( $path ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+		// phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown, WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+		return file_get_contents( $path );
 	}
 
 	/**
 	 * Filters text content and strips out disallowed HTML.
 	 *
 	 * @param string $content HTML Content.
-	 * @param bool   $echo Echo sanitized input or not, default to false.
+	 * @param bool   $show    Echo sanitized input or not, default to false.
 	 *
-	 * @return string
+	 * @return string|void
 	 */
-	public static function kses( $content, $echo = false ) {
+	public static function kses( $content, $show = false ) {
 		if ( empty( $content ) ) {
 			return '';
 		}
 		$allowed_html = self::get_allowed_html();
-		if ( ! $echo ) {
+		if ( ! $show ) {
 			return wp_kses( $content, $allowed_html );
 		}
 		echo wp_kses( $content, $allowed_html );
@@ -431,9 +440,9 @@ class Utils {
 	/**
 	 * Get any value from the $_POST.
 	 *
-	 * @since 1.0.0
+	 * @since 1.0
 	 *
-	 * @param string $key POST key to get its value.
+	 * @param string $key      POST key to get its value.
 	 * @param string $sanitize Sanitize method.
 	 *
 	 * @return string
@@ -450,6 +459,7 @@ class Utils {
 	 * @since 3.12
 	 *
 	 * @param string $message The message to send.
+	 *
 	 * @return void
 	 */
 	public static function send_json_error( $message ) {
@@ -459,5 +469,4 @@ class Utils {
 			)
 		);
 	}
-
 }
