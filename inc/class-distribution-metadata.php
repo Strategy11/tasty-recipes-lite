@@ -7,8 +7,7 @@
 
 namespace Tasty_Recipes_Lite;
 
-use Tasty_Recipes_Lite\Integrations\Recipe_Graph_Piece;
-use Tasty_Recipes_Lite\Integrations\Recipe_Graph_Piece_Yoast;
+use Tasty_Recipes_Lite\Integrations;
 use Tasty_Recipes_Lite\Content_Model;
 use Tasty_Recipes_Lite\Objects\Recipe;
 use TastyRecipesLiteMain;
@@ -97,7 +96,7 @@ class Distribution_Metadata {
 			return;
 		}
 
-		Hubbub::init(); // Only load this integration inside print page.
+		Integrations\Hubbub::init(); // Only load this integration inside print page.
 
 		if ( ! did_action( 'wpseo_head' ) ) {
 			echo '<meta name="robots" content="noindex,follow">' . PHP_EOL;
@@ -159,13 +158,13 @@ class Distribution_Metadata {
 		}
 
 		if ( self::is_new_yoast() ) {
-			$pieces[] = new Recipe_Graph_Piece_Yoast( $context );
+			$pieces[] = new Integrations\Recipe_Graph_Piece_Yoast( $context );
 			return $pieces;
 		}
 
 		if ( self::is_old_yoast() ) {
 			// @phpstan-ignore-next-line
-			$pieces[] = new Recipe_Graph_Piece( $context );
+			$pieces[] = new Integrations\Recipe_Graph_Piece( $context );
 			return $pieces;
 		}
 
