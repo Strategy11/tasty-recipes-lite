@@ -10,7 +10,6 @@ namespace Tasty_Recipes_Lite\Integrations;
 use Tasty_Recipes_Lite\Assets;
 use Tasty_Recipes_Lite\Integrations\Elementor\Recipe_Control;
 use Tasty_Recipes_Lite\Integrations\Elementor\Recipe_Widget;
-use Elementor\Plugin;
 
 /**
  * Integrates Tasty Recipes with Elementor.
@@ -67,7 +66,7 @@ class Elementor {
 	 * Registers the controls.
 	 */
 	public static function action_controls_registered() {
-		Plugin::instance()->controls_manager->register(
+		\Elementor\Plugin::instance()->controls_manager->register(
 			new Recipe_Control()
 		);
 	}
@@ -76,7 +75,7 @@ class Elementor {
 	 * Registers the widgets.
 	 */
 	public static function action_widgets_registered() {
-		Plugin::instance()->widgets_manager->register(
+		\Elementor\Plugin::instance()->widgets_manager->register(
 			new Recipe_Widget()
 		);
 	}

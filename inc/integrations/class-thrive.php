@@ -42,7 +42,7 @@ class Thrive {
 		wp_just_in_time_script_localization();
 		add_action(
 			'wp_footer',
-			function() {
+			function () {
 				Assets::action_admin_footer_render_template();
 			}
 		);
