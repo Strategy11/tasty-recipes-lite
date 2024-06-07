@@ -13,7 +13,7 @@ use TastyRecipesLiteMain;
 /**
  * Integrates Tasty Recipes with wpDiscuz.
  */
-class WPDiscuz {
+class WpDiscuz {
 
 	/**
 	 * Recalculates recipe ratings after a new wpDiscuz comment is added.
