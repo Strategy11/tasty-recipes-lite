@@ -1,6 +1,6 @@
 <?php
 /**
- * Integrates Tasty Recipes with Elementor
+ * Integrates Tasty Recipes with Elementor.
  *
  * @package Tasty_Recipes
  */
@@ -88,7 +88,7 @@ class Elementor {
 		// Registers our TinyMCE settings before Elementor noops TinyMCE.
 		add_action(
 			'print_default_editor_scripts',
-			function() {
+			function () {
 				ob_start();
 				wp_editor(
 					'',
@@ -103,7 +103,7 @@ class Elementor {
 	}
 
 	/**
-	 * Renders the editor modal template
+	 * Renders the editor modal template.
 	 */
 	public static function action_editor_footer() {
 		Assets::action_admin_footer_render_template();
@@ -112,9 +112,10 @@ class Elementor {
 	/**
 	 * Disable the 'Add Recipe' button in Elementor's RTE.
 	 *
-	 * @param boolean $retval    Existing return value.
-	 * @param string  $editor_id ID of the editor.
-	 * @return boolean
+	 * @param bool   $retval    Existing return value.
+	 * @param string $editor_id ID of the editor.
+	 *
+	 * @return bool
 	 */
 	public static function filter_tasty_recipes_add_media_button( $retval, $editor_id ) {
 		if ( 'elementorwpeditor' === $editor_id ) {
@@ -122,5 +123,4 @@ class Elementor {
 		}
 		return $retval;
 	}
-
 }

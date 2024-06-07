@@ -76,7 +76,7 @@ class Vars {
 	 *
 	 * @return mixed
 	 */
-	private static function sanitize_item( $item, $sanitize = 'sanitize_text_field' ) {
+	public static function sanitize_item( $item, $sanitize = 'sanitize_text_field' ) {
 		if ( empty( $item ) || empty( $sanitize ) || ! function_exists( $sanitize ) ) {
 			return $item;
 		}

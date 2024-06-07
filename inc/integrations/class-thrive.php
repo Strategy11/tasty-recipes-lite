@@ -1,6 +1,6 @@
 <?php
 /**
- * Integrates Tasty Recipes with Thrive
+ * Integrates Tasty Recipes with Thrive.
  *
  * @package Tasty_Recipes
  */
@@ -20,6 +20,7 @@ class Thrive {
 	 * Adds our shortcode to the Thrive shortcodes.
 	 *
 	 * @param array $prefixes Existing prefixes.
+	 *
 	 * @return array
 	 */
 	public static function filter_thrive_theme_shortcode_prefixes( $prefixes ) {
@@ -46,5 +47,4 @@ class Thrive {
 			}
 		);
 	}
-
 }

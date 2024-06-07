@@ -64,8 +64,10 @@ class Manager {
 		add_action( 'wp_ajax_tasty_framework_activate_plugin', array( $this, 'ajax_activate_plugin' ) );
 		add_action( 'wp_ajax_tasty_framework_deactivate_plugin', array( $this, 'ajax_deactivate_plugin' ) );
 		add_action( 'wp_ajax_tasty_framework_remove_license', array( $this, 'ajax_remove_license' ) );
-		add_action( 'admin_notices', array( $this, 'show_license_notices' ) );
 		add_filter( 'tasty_framework_admin_localize_script_data', array( $this, 'insert_nonces_into_js' ) );
+
+		add_action( 'tasty_admin_notices', array( $this, 'show_license_notices' ) );
+		add_action( 'admin_notices', array( $this, 'show_license_notices' ) );
 		add_action( 'current_screen', array( $this, 'remove_all_admin_notices_from_dashboard_page' ) );
 
 		return $this;
@@ -299,7 +301,9 @@ class Manager {
 				continue;
 			}
 
-			if ( Url::is_wpt_page() && 'wp-tasty_page_' . $active_plugin->get_plugin_slug() !== get_current_screen()->id ) {
+			$show_notice = ! Url::is_wpt_page() || 'wp-tasty_page_' . $active_plugin->get_plugin_slug() === get_current_screen()->id;
+
+			if ( ! apply_filters( 'tasty_framework_show_license_notice', $show_notice, $active_plugin ) ) {
 				continue;
 			}
 
@@ -502,10 +506,25 @@ class Manager {
 	 * @return void
 	 */
 	public function remove_all_admin_notices_from_dashboard_page() {
-		if ( ! Url::is_dashboard_page() ) {
+		if ( ! Url::is_wpt_page() ) {
 			return;
 		}
 
 		remove_all_actions( 'admin_notices' );
+		remove_all_actions( 'network_admin_notices' );
+		remove_all_actions( 'user_admin_notices' );
+		remove_all_actions( 'all_admin_notices' );
+
+		do_action( 'tasty_after_remove_admin_notices' );
+		add_action( 'admin_notices', array( $this, 'register_tasty_admin_notices' ) );
+	}
+
+	/**
+	 * Register tasty admin notices.
+	 *
+	 * @return void
+	 */
+	public function register_tasty_admin_notices() {
+		do_action( 'tasty_admin_notices' );
 	}
 }

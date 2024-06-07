@@ -2,10 +2,15 @@
 <ruleset name="WordPress Coding Standards for Plugins">
 	<description>Generally-applicable sniffs for WordPress plugins</description>
 
+	<exclude-pattern>*/inc/class-updater.php</exclude-pattern>
+	<exclude-pattern>*/stubs.php</exclude-pattern>
 	<exclude-pattern>/tests/*</exclude-pattern>
+	<exclude-pattern>*.min.css</exclude-pattern>
+	<exclude-pattern>*/css/easyrecipe.css</exclude-pattern>
+	<exclude-pattern>*/assets/dist/*</exclude-pattern>
 
 	<!-- Check all PHP files in directory tree by default. -->
-	<arg name="extensions" value="php"/>
+	<arg name="extensions" value="php,css"/>
 	<file>.</file>
 
 	<!-- Show progress and sniff codes in all reports -->
@@ -32,8 +37,8 @@
 		<exclude name="WordPress.Files.FileName.NotHyphenatedLowercase" />
 	</rule>
 
-	<rule ref="PHPCompatibility.FunctionDeclarations.NewReturnTypeDeclarations.voidFound">
-		<exclude-pattern>*/tests/*</exclude-pattern>
+	<rule ref="WordPress.Files.FileName.InvalidClassFileName">
+		<exclude-pattern>*/tasty-recipes.php</exclude-pattern>
 	</rule>
 
 	<!-- WP-CLI commands are excluded from this rule -->
@@ -78,4 +83,53 @@
 
 	<rule ref="WordPress.Security.EscapeOutput.UnsafePrintingFunction"/>
 
+	<rule ref="WordPressVIPMinimum">
+		<exclude name="WordPressVIPMinimum.Performance.RemoteRequestTimeout.timeout_timeout" />
+	</rule>
+
+	<!-- Treat these warnings as errors -->
+	<rule ref="Generic.Formatting.MultipleStatementAlignment.NotSameWarning">
+		<severity>8</severity>
+		<type>error</type>
+	</rule>
+	<rule ref="WordPress.Arrays.MultipleStatementAlignment.DoubleArrowNotAligned">
+		<severity>8</severity>
+		<type>error</type>
+	</rule>
+
+	<!-- Add some rules from the Slevomat Coding Standard -->
+	<rule ref="SlevomatCodingStandard.PHP.UselessParentheses"/>
+
+	<rule ref="SlevomatCodingStandard.Files.LineLength">
+		<properties>
+			<property name="lineLengthLimit" value="180" />
+		</properties>
+		<exclude-pattern>templates/*</exclude-pattern>
+	</rule>
+
+	<rule ref="SlevomatCodingStandard.Functions.FunctionLength">
+		<properties>
+			<property name="maxLinesLength" value="100" />
+		</properties>
+	</rule>
+
+	<rule ref="SlevomatCodingStandard.Files.FileLength">
+		<properties>
+			<property name="includeComments" value="true" />
+			<property name="includeWhitespace" value="true" />
+			<property name="maxLinesLength" value="1500" />
+		</properties>
+		<exclude-pattern>inc/class-distribution-metadata.php</exclude-pattern>
+		<exclude-pattern>inc/class-admin.php</exclude-pattern>
+		<exclude-pattern>inc/class-shortcodes.php</exclude-pattern>
+	</rule>
+
+	<!-- Set rules for Cognitive Complexity -->
+	<rule ref="SlevomatCodingStandard.Complexity.Cognitive">
+		<properties>
+			<property name="warningThreshold" value="35" />
+			<property name="errorThreshold" value="10" />
+		</properties>
+	</rule>
+	<rule ref="SlevomatCodingStandard.Complexity.Cognitive.ComplexityTooHigh"/>
 </ruleset>

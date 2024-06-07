@@ -108,7 +108,7 @@ class Menu {
 				$menu_key = $menu_item['redirect_url'];
 			}
 
-			$subpage_hook = add_submenu_page( $base_slug, $menu_item['page_title'], $menu_item['title'], $cap, $menu_key, $menu_item['callback'] );
+			$subpage_hook = add_submenu_page( $base_slug, $menu_item['page_title'], $menu_item['title'], $menu_item['capability'], $menu_key, $menu_item['callback'] );
 
 			$this->menu_hooks[ $subpage_hook ] = $menu_item['title'];
 		}
@@ -142,6 +142,7 @@ class Menu {
 				'callback'     => '',
 				'active'       => $plugin->is_active(),
 				'redirect_url' => $redirect_url,
+				'capability'   => $plugin->get_required_capability(),
 			);
 		}
 
@@ -242,6 +243,10 @@ class Menu {
 	 * @return string
 	 */
 	public function add_admin_body_classes( $classes ) {
+		if ( apply_filters( 'tasty_framework_notification_icon', false ) ) {
+			$classes .= ' tasty-has-notification ';
+		}
+
 		if ( ! Url::is_wpt_page() ) {
 			return $classes;
 		}
@@ -256,6 +261,9 @@ class Menu {
 	 * @return void
 	 */
 	public function enqueue_admin_assets() {
+		wp_register_style( 'tasty-framework-global-css', TASTY_FRAMEWORK_URL_ASSETS_STYLES . '/global.css', array(), TASTY_FRAMEWORK_VERSION );
+		wp_enqueue_style( 'tasty-framework-admin-menu-css', TASTY_FRAMEWORK_URL_ASSETS_STYLES . '/admin-menu.css', array(), TASTY_FRAMEWORK_VERSION );
+
 		wp_enqueue_script( 'tasty-framework-global', TASTY_FRAMEWORK_URL_ASSETS_SCRIPTS . '/global.js', array(), TASTY_FRAMEWORK_VERSION, true );
 
 		if ( ! Url::is_wpt_page() ) {
@@ -333,7 +341,7 @@ class Menu {
 	 * @return array
 	 */
 	private function get_all_box_messages() {
-		$messages = $this->js_messagebox->get_and_clear();
+		$messages          = $this->js_messagebox->get_and_clear();
 		$settings_messages = get_settings_errors( 'general' );
 		if ( empty( $settings_messages ) ) {
 			return $messages;

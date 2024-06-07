@@ -33,9 +33,9 @@ class Recipe_Control extends Base_Data_Control {
 		$time = filemtime( dirname( TASTY_RECIPES_LITE_PLUGIN_FILE ) . '/assets/js/elementor.js' );
 		wp_enqueue_script(
 			'tasty-recipe-elementor-control',
-			plugins_url( 'assets/js/elementor.js', TASTY_RECIPES_LITE_PLUGIN_FILE ),
+			plugins_url( 'assets/js/elementor.js?r=' . (int) $time, TASTY_RECIPES_LITE_PLUGIN_FILE ),
 			array( 'elementor-editor' ),
-			(int) $time,
+			'1.0.0',
 			true
 		);
 
@@ -78,11 +78,12 @@ class Recipe_Control extends Base_Data_Control {
 		?>
 		<div class="elementor-control-field">
 			<div class="elementor-control-input-wrapper">
-				<button type="button" class="elementor-button elementor-button-default" data-event="tasty-recipes:edit-recipe"><?php esc_html_e( 'Edit Recipe', 'tasty-recipes-lite' ); ?></button>
+				<button type="button" class="elementor-button elementor-button-default" data-event="tasty-recipes:edit-recipe">
+					<?php esc_html_e( 'Edit Recipe', 'tasty-recipes-lite' ); ?>
+				</button>
 				<input id="<?php echo esc_attr( $control_uid ); ?>" data-setting="{{ data.name }}" type="hidden">
 			</div>
 		</div>
 		<?php
 	}
-
 }

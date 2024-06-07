@@ -270,8 +270,19 @@ abstract class PluginInstaller {
 		}
 
 		$check_license = (object) $this->api_client->check_plugin_license_raw( $license_key, $this->get_plugin_name() );
-		set_transient( $this->get_license_check_cache_key(), $check_license, 60 * HOUR_IN_SECONDS );
+		// Save an error for 1 minute to avoid API DDOS.
+		$save_for = is_wp_error( $check_license ) ? MINUTE_IN_SECONDS : 24 * HOUR_IN_SECONDS;
+		set_transient( $this->get_license_check_cache_key(), $check_license, $save_for );
 		return $check_license;
+	}
+
+	/**
+	 * Check if license check request returns an error.
+	 *
+	 * @return bool
+	 */
+	public function is_error() {
+		return $this->is_licensed() && is_wp_error( $this->check_license() );
 	}
 
 	/**
@@ -368,5 +379,14 @@ abstract class PluginInstaller {
 		}
 
 		return '';
+	}
+
+	/**
+	 * Get required capability.
+	 *
+	 * @return string
+	 */
+	public function get_required_capability() {
+		return 'manage_options';
 	}
 }

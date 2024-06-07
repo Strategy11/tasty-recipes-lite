@@ -1,0 +1,38 @@
+parameters:
+	level: 5
+	reportUnmatchedIgnoredErrors: false
+	treatPhpDocTypesAsCertain: false
+	bootstrapFiles:
+		- vendor/php-stubs/wordpress-stubs/wordpress-stubs.php
+		- stubs.php
+		- inc/libs/tasty-framework/inc/Traits/Singleton.php
+		- inc/libs/tasty-framework/inc/Utils/Vars.php
+		- inc/libs/tasty-framework/inc/Utils/Url.php
+		- inc/libs/tasty-framework/inc/Abstracts/PluginInstaller.php
+		- inc/libs/tasty-framework/inc/Admin/Plugins/Factory.php
+	excludePaths:
+		- */assets/*
+		- */bin/*
+		- */class-recipe-graph-piece.php
+		- */languages/*
+		- */node_modules/*
+		- stubs.php
+		- */tasty-framework/*
+		- templates/*
+		- */tests/*
+		- */vendor/*
+	strictRules:
+		disallowedLooseComparison: false
+		booleansInConditions: false
+		uselessCast: false
+		requireParentConstructorCall: false
+		strictCalls: false
+		noVariableVariables: false
+	ignoreErrors:
+		- '#Access to an undefined property#'
+		- '#might not be defined.#'
+		- '#Use more strict comparison#'
+		- '#Only booleans are allowed#'
+		- '#Variable property access#'
+		- '#Variable method call#'
+		- '#esc_attr expects string, float given#'

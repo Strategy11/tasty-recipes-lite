@@ -21,14 +21,14 @@ class Recipe_Graph_Piece_Yoast extends Abstract_Schema_Piece {
 	/**
 	 * Recipe associated with this instance.
 	 *
-	 * @var array
+	 * @var \Tasty_Recipes\Objects\Recipe
 	 */
 	private $recipe;
 
 	/**
-	 * Whether an article is present on this page too.
+	 * Whether or not an article is present on this page too.
 	 *
-	 * @var boolean
+	 * @var bool
 	 */
 	private $using_article;
 
@@ -48,6 +48,7 @@ class Recipe_Graph_Piece_Yoast extends Abstract_Schema_Piece {
 	 * Keeps track of whether the Yoast SEO article schema is used.
 	 *
 	 * @param array $data Existing article schema data.
+	 *
 	 * @return array
 	 */
 	public function filter_wpseo_schema_article( $data ) {
@@ -60,9 +61,9 @@ class Recipe_Graph_Piece_Yoast extends Abstract_Schema_Piece {
 	}
 
 	/**
-	 * Determines whether a piece should be added to the graph.
+	 * Determines whether or not a piece should be added to the graph.
 	 *
-	 * @return boolean
+	 * @return bool
 	 */
 	public function is_needed() {
 		if ( ! is_singular() ) {
@@ -84,7 +85,7 @@ class Recipe_Graph_Piece_Yoast extends Abstract_Schema_Piece {
 	/**
 	 * Returns Recipe Schema data.
 	 *
-	 * @return array|boolean Recipe data on success, false on failure.
+	 * @return array|bool Recipe data on success, false on failure.
 	 */
 	public function generate() {
 		$schema                     = Distribution_Metadata::get_enriched_google_schema_for_recipe( $this->recipe, get_post( $this->context->id ) );
@@ -95,5 +96,4 @@ class Recipe_Graph_Piece_Yoast extends Abstract_Schema_Piece {
 		$schema['mainEntityOfPage'] = $this->context->main_schema_id;
 		return $schema;
 	}
-
 }

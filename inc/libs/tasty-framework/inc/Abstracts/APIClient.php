@@ -16,8 +16,10 @@ abstract class APIClient {
 
 	/**
 	 * API URL.
+	 *
+	 * @var string
 	 */
-	const API_URL = 'https://www.wptasty.com/';
+	protected $base_url = 'https://www.wptasty.com/';
 
 	/**
 	 * Response Code.
@@ -53,7 +55,7 @@ abstract class APIClient {
 		$args['method'] = strtoupper( $type );
 
 		$response = wp_remote_request(
-			self::API_URL . $request_path,
+			$this->base_url . $request_path,
 			$args
 		);
 

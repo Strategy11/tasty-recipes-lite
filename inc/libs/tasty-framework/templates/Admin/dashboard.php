@@ -41,13 +41,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 							</h3>
 							<div class="tasty-framework-licensing-row-status">
 								<div class="tasty-framework-status-container tasty-framework-status-<?php echo esc_attr( $tasty_plugin['status'] ); ?>">
-							<span class="tasty-framework-status-title">
-								<?php echo esc_html( $tasty_plugin['status_text'] ); ?>
-							</span>
+									<span class="tasty-framework-status-title">
+										<?php echo esc_html( $tasty_plugin['status_text'] ); ?>
+									</span>
 								</div>
 							</div>
 						</div>
-						<?php if ( ! empty( $tasty_plugin['buttons'] ) ) { ?>
+						<?php if ( 'error' === $tasty_plugin['status'] ) { ?>
+							<div class="tasty-framework-licensing-row-buttons">
+								<span class="tasty-msg tasty-msg-error" style="opacity:1">
+									<?php esc_html_e( 'Refresh the page in 1 minute. If the problem continues, please reach out to support.', 'tasty' ); ?>
+								</span>
+							</div>
+						<?php } elseif ( ! empty( $tasty_plugin['buttons'] ) ) { ?>
 							<div class="tasty-framework-licensing-row-buttons">
 								<?php foreach ( $tasty_plugin['buttons'] as $tasty_plugin_button ) { ?>
 									<a href="<?php echo esc_url( $tasty_plugin_button['link'] ); ?>" class="tasty-button <?php echo esc_attr( empty( $tasty_plugin_button['class'] ) ? 'tasty-button-secondary' : $tasty_plugin_button['class'] ); ?>"

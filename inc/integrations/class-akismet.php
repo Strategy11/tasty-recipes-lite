@@ -1,6 +1,6 @@
 <?php
 /**
- * Integrates Tasty Recipes with Akismet
+ * Integrates Tasty Recipes with Akismet.
  *
  * @package Tasty_Recipes
  */
@@ -46,7 +46,7 @@ class Akismet {
 	 *
 	 * @return bool
 	 */
-	protected function is_active() {
+	private function is_active() {
 		return defined( 'AKISMET_VERSION' );
 	}
 
@@ -60,6 +60,50 @@ class Akismet {
 			return;
 		}
 
+		add_filter( 'preprocess_comment', array( $this, 'before_akismet_preprocess_comment' ), 0 );
+		add_filter( 'preprocess_comment', array( $this, 'after_akismet_preprocess_comment' ), 2 );
 	}
 
+	/**
+	 * Change the comment content not to be empty before akismet preprocess comment.
+	 *
+	 * @param array $comment_data Comment details.
+	 *
+	 * @return array
+	 */
+	public function before_akismet_preprocess_comment( $comment_data ) {
+		if ( ! isset( $comment_data['comment_meta'] ) || ! isset( $comment_data['comment_meta'][ Ratings::COMMENT_META_KEY ] ) ) {
+			return $comment_data;
+		}
+
+		$min_rating = Ratings::get_minimum_rating_without_comment( $comment_data );
+		$rating     = (int) $comment_data['comment_meta'][ Ratings::COMMENT_META_KEY ];
+
+		if ( $rating >= $min_rating && empty( $comment_data['comment_content'] ) ) {
+			$comment_data['comment_content'] = 'Rating ' . $rating;
+			$this->temp_rating_comment_hash  = md5( $comment_data['comment_content'] );
+		}
+
+		return $comment_data;
+	}
+
+	/**
+	 * Change the comment content to its original value (empty) After akismet preprocess comment.
+	 *
+	 * @param array $comment_data Comment details.
+	 *
+	 * @return array
+	 */
+	public function after_akismet_preprocess_comment( $comment_data ) {
+		if ( empty( $this->temp_rating_comment_hash ) ) {
+			return $comment_data;
+		}
+
+		$comment_hash = md5( $comment_data['comment_content'] );
+		if ( $comment_hash === $this->temp_rating_comment_hash ) {
+			$comment_data['comment_content'] = '';
+		}
+
+		return $comment_data;
+	}
 }

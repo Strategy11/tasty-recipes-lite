@@ -1,6 +1,6 @@
 <?php
 /**
- * Integrates Tasty Recipes with wpDiscuz
+ * Integrates Tasty Recipes with wpDiscuz.
  *
  * @package Tasty_Recipes
  */
@@ -30,5 +30,4 @@ class WpDiscuz {
 		$recipe = reset( $recipes );
 		Ratings::update_recipe_rating( $recipe, $comment->comment_post_ID );
 	}
-
 }

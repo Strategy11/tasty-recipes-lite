@@ -98,5 +98,4 @@ class Recipe_Widget extends Widget_Base {
 	 * Renders the shortcode in the editor.
 	 */
 	protected function _content_template() {} // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
-
 }

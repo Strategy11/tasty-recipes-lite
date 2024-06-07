@@ -85,4 +85,13 @@ class Pins extends PluginInstaller {
 				version_compare( TASTY_PINS_PLUGIN_VERSION, '2.0', '>' )
 			);
 	}
+
+	/**
+	 * Get required capability.
+	 *
+	 * @return string
+	 */
+	public function get_required_capability() {
+		return 'edit_others_posts';
+	}
 }

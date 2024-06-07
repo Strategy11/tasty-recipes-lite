@@ -125,6 +125,10 @@ class Dashboard {
 			return 'no-license';
 		}
 
+		if ( $plugin->is_error() ) {
+			return 'error';
+		}
+
 		$expired = $plugin->is_expired();
 		if ( $active && $licensed && $expired ) {
 			return 'expired';
@@ -151,6 +155,7 @@ class Dashboard {
 			'not-installed' => __( 'Not installed', 'tasty' ),
 			'no-license'    => __( 'No License', 'tasty' ),
 			'expired'       => __( 'Expired', 'tasty' ),
+			'error'         => __( 'Error', 'tasty' ),
 		);
 
 		if ( ! isset( $statuses[ $status ] ) ) {
@@ -312,7 +317,7 @@ class Dashboard {
 		}
 
 		if ( $active ) {
-			if ( $licensed && $plugin->is_expired() ) {
+			if ( $licensed && ! $plugin->is_error() && $plugin->is_expired() ) {
 				$buttons[] = array(
 					'type' => 'external',
 					'name' => __( 'Renew', 'tasty' ),

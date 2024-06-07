@@ -85,4 +85,13 @@ class Links extends PluginInstaller {
 				version_compare( TASTY_LINKS_PLUGIN_VERSION, '1.1.1', '>' )
 			);
 	}
+
+	/**
+	 * Get required capability.
+	 *
+	 * @return string
+	 */
+	public function get_required_capability() {
+		return 'edit_others_posts';
+	}
 }

@@ -39,7 +39,7 @@ abstract class Main {
 	 * @return void
 	 */
 	public static function initialize_framework() {
-		define( 'TASTY_FRAMEWORK_VERSION', '1.0.0' );
+		define( 'TASTY_FRAMEWORK_VERSION', '1.0.5' );
 		define( 'TASTY_FRAMEWORK_PATH', self::plugin_path() );
 		define( 'TASTY_FRAMEWORK_PATH_ASSETS', self::plugin_path( 'assets' ) );
 

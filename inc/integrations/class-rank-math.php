@@ -1,6 +1,6 @@
 <?php
 /**
- * Integrates Tasty Recipes with Rank Math
+ * Integrates Tasty Recipes with Rank Math.
  *
  * @package Tasty_Recipes
  */
