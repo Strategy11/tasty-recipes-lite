@@ -35,17 +35,11 @@ $print_view_options = tasty_recipes_get_print_view_options();
 </div>
 <?php if ( ! empty( $recipe_rating_icons ) || ! empty( $recipe_rating_label ) ) : ?>
 	<div class="tasty-recipes-rating" data-tasty-recipes-customization="body-color.color">
-		<?php if ( Ratings::is_enabled() ) : ?>
-			<a href="#respond">
+		<?php if ( ! empty( $recipe_rating_icons ) ) : ?>
+			<p><?php echo $recipe_rating_icons; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
 		<?php endif; ?>
-			<?php if ( ! empty( $recipe_rating_icons ) ) : ?>
-				<p><?php echo $recipe_rating_icons; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
-			<?php endif; ?>
-			<?php if ( ! empty( $recipe_rating_label ) ) : ?>
-				<p><?php Utils::kses( $recipe_rating_label, true ); ?></p>
-			<?php endif; ?>
-		<?php if ( Ratings::is_enabled() ) : ?>
-			</a>
+		<?php if ( ! empty( $recipe_rating_label ) ) : ?>
+			<p><?php Utils::kses( $recipe_rating_label, true ); ?></p>
 		<?php endif; ?>
 	</div>
 <?php endif; ?>

@@ -867,7 +867,7 @@ class Recipe {
 	/**
 	 * Get the image ID for the post.
 	 *
-	 * @return int|false
+	 * @return false|int
 	 */
 	public function get_image_id() {
 		return (int) $this->get_meta( '_thumbnail_id' );
@@ -1126,4 +1126,3 @@ class Recipe {
 		return array();
 	}
 }
-

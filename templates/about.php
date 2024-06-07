@@ -52,7 +52,7 @@ use Tasty_Recipes_Lite\Admin;
 	<section>
 		<h2><?php esc_html_e( 'Welcome to Tasty Recipes! 🎉', 'tasty-recipes-lite' ); ?></h2>
 
-		<img src="<?php echo esc_url( plugins_url( 'assets/images/theme-bold.png', __DIR__ ) ); ?>" class="first" style="max-width:300px" data-pin-nopin="true" alt="Screenshot of the Bold recipe template" />
+		<img src="<?php echo esc_url( plugins_url( 'assets/images/theme-bold.png', __DIR__ ) ); ?>" class="first" style="max-width:300px" data-pin-nopin="true" alt="Screenshot of the Bold recipe template">
 
 		<p><?php esc_html_e( 'Tasty Recipes is a fast, simple, and SEO-optimized recipe plugin for food bloggers. By purchasing Tasty Recipes, you\'re getting access to an impecable recipe creation experience, superior code quality, and a helpful support team ready to answer all your questions.', 'tasty-recipes-lite' ); ?></p>
 
@@ -86,7 +86,7 @@ use Tasty_Recipes_Lite\Admin;
 
 	<section>
 
-		<img src="<?php echo esc_url( plugins_url( 'assets/images/tasty-recipes-block.png', __DIR__ ) ); ?>" class="" style="max-width:300px" data-pin-nopin="true" alt="Screenshot of adding a Tasty Recipes block to a post" />
+		<img src="<?php echo esc_url( plugins_url( 'assets/images/tasty-recipes-block.png', __DIR__ ) ); ?>" class="" style="max-width:300px" data-pin-nopin="true" alt="Screenshot of adding a Tasty Recipes block to a post">
 
 		<h2><?php esc_html_e( 'Create New Recipes', 'tasty-recipes-lite' ); ?></h2>
 

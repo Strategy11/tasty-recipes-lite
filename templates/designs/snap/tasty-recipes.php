@@ -29,17 +29,11 @@ if ( '.svg' === $ext ) {
 	<h2 class="tasty-recipes-title" data-tasty-recipes-customization="h2-color.color h2-transform.text-transform"><?php Utils::kses( $recipe_title, true ); ?></h2>
 	<?php if ( ! empty( $recipe_rating_icons ) || ! empty( $recipe_rating_label ) ) { ?>
 		<div class="tasty-recipes-rating">
-			<?php if ( Ratings::is_enabled() ) { ?>
-				<a href="#respond">
-			<?php } ?>
 			<?php if ( ! empty( $recipe_rating_icons ) ) { ?>
 				<p><?php echo $recipe_rating_icons; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
 			<?php } ?>
 			<?php if ( ! empty( $recipe_rating_label ) ) { ?>
 				<p><?php Utils::kses( $recipe_rating_label, true ); ?></p>
-			<?php } ?>
-			<?php if ( Ratings::is_enabled() ) { ?>
-				</a>
 			<?php } ?>
 		</div>
 	<?php } ?>
