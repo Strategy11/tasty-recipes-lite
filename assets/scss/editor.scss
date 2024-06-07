@@ -1,0 +1,51 @@
+@import "components/core-modal";
+@import "components/recipe-form";
+
+.tasty-recipes-modal-container {
+
+	.tasty-recipes-frame-title,
+	.tasty-recipes-frame-content,
+	.tasty-recipes-frame-toolbar {
+		left: 0;
+	}
+
+	.tasty-recipes-state-creating,
+	.tasty-recipes-state-editing {
+		display: none;
+	}
+
+	&.tasty-recipes-state-creating .tasty-recipes-state-creating {
+		display: inherit;
+	}
+
+	&.tasty-recipes-state-editing .tasty-recipes-state-editing {
+		display: inherit;
+	}
+}
+
+.tr-temp-hide {
+	display: none !important;
+}
+
+#wp-link {
+	#link-options {
+		.link-nofollow {
+			padding: 3px 0 0;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			label span {
+				width: 84px;
+			}
+		}
+	}
+}
+
+.has-text-field #wp-link .query-results {
+	top: 223px;
+}
+
+/*Hides print button in WP editor*/
+.wp-core-ui  a.tasty-recipes-print-button {
+	display: none;
+}

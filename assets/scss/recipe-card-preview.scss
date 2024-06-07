@@ -1,0 +1,36 @@
+@import 'components/rating-stars';
+
+body {
+	margin: 0;
+	padding: 0;
+	overflow-y:hidden;
+}
+
+.tasty-recipes {
+	margin-bottom: 0;
+}
+
+.tasty-recipes-modern-compact-content .tasty-recipe-instructions {
+	width: 59.8%;
+}
+
+.tasty-recipes-instructions-header {
+	margin: 0;
+	display: block;
+}
+
+.tasty-recipes-instructions-body ul {
+	margin-bottom: 0;
+}
+
+.tasty-recipes-rating p {
+	margin: 4px 0;
+}
+
+.tasty-recipes-entry-content .tasty-recipes-notes {
+	margin-bottom: -14px;
+}
+
+.tasty-recipes-details ul {
+	padding-left: 0;
+}
