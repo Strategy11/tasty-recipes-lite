@@ -5,8 +5,8 @@
  * @package Tasty_Recipes
  */
 
-use Tasty\Recipes\Lite\Admin;
-use Tasty\Recipes\Lite\Utils;
+use Tasty_Recipes_Lite\Admin;
+use Tasty_Recipes_Lite\Utils;
 use Tasty\Framework\Utils\Common;
 
 ?>

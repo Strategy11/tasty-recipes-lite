@@ -5,7 +5,7 @@
  * @package Tasty_Recipes
  */
 
-use Tasty\Recipes\Lite\Utils;
+use Tasty_Recipes_Lite\Utils;
 ?>
 <?php echo $recipe_styles; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 

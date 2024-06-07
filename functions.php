@@ -5,7 +5,7 @@
  * @package Tasty_Recipes
  */
 
-use Tasty\Recipes\Lite\ContentModel;
+use Tasty_Recipes_Lite\Content_Model;
 
 /**
  * Whether or not the recipe is being displayed for print.
@@ -13,7 +13,7 @@ use Tasty\Recipes\Lite\ContentModel;
  * @return boolean
  */
 function tasty_recipes_is_print() {
-	return (bool) get_query_var( ContentModel::get_print_query_var() );
+	return (bool) get_query_var( Content_Model::get_print_query_var() );
 }
 
 /**
@@ -33,7 +33,7 @@ function tasty_recipes_get_print_url( $post_id, $recipe_id ) {
 			$permalink = $bits[0];
 			$args      = $bits[1];
 		}
-		$permalink = trailingslashit( $permalink ) . ContentModel::get_print_query_var() . '/' . $recipe_id;
+		$permalink = trailingslashit( $permalink ) . Content_Model::get_print_query_var() . '/' . $recipe_id;
 		if ( $args ) {
 			$permalink .= '?' . $args;
 		}
@@ -41,7 +41,7 @@ function tasty_recipes_get_print_url( $post_id, $recipe_id ) {
 			$permalink .= '/';
 		}
 	} else {
-		$permalink = add_query_arg( ContentModel::get_print_query_var(), $recipe_id, $permalink );
+		$permalink = add_query_arg( Content_Model::get_print_query_var(), $recipe_id, $permalink );
 	}
 	/**
 	 * Allows modification of the print URL.

@@ -12,32 +12,32 @@
  * @package         Tasty_Recipes
  */
 
-use Tasty\Recipes\Lite\MetaBox;
-use Tasty\Recipes\Lite\Frontend;
-use Tasty\Recipes\Lite\Utils;
-use Tasty\Recipes\Lite\Integrations\Akismet;
-use Tasty\Recipes\Lite\ContentModel;
-use Tasty\Recipes\Lite\BlockEditor;
-use Tasty\Recipes\Lite\Shortcodes;
-use Tasty\Recipes\Lite\Assets;
-use Tasty\Recipes\Lite\DistributionMetadata;
-use Tasty\Recipes\Lite\Ratings;
-use Tasty\Recipes\Lite\Admin;
-use Tasty\Recipes\Lite\Editor;
-use Tasty\Recipes\Lite\Integrations\Elementor;
-use Tasty\Recipes\Lite\Objects\Recipe;
-use Tasty\Recipes\Lite\Converters\Cookbook;
-use Tasty\Recipes\Lite\Converters\MediavineCreate;
-use Tasty\Recipes\Lite\Converters\EasyRecipe;
-use Tasty\Recipes\Lite\Converters\MealPlannerPro;
-use Tasty\Recipes\Lite\Converters\SimpleRecipePro;
-use Tasty\Recipes\Lite\Converters\WPCom;
-use Tasty\Recipes\Lite\Converters\WPRecipeMaker;
-use Tasty\Recipes\Lite\Converters\WPUltimateRecipe;
-use Tasty\Recipes\Lite\Converters\Yummly;
-use Tasty\Recipes\Lite\Converters\YumPrint;
-use Tasty\Recipes\Lite\Converters\ZipList;
-use Tasty\Recipes\Lite\CLI;
+use Tasty_Recipes_Lite\MetaBox;
+use Tasty_Recipes_Lite\Frontend;
+use Tasty_Recipes_Lite\Utils;
+use Tasty_Recipes_Lite\Integrations\Akismet;
+use Tasty_Recipes_Lite\Content_Model;
+use Tasty_Recipes_Lite\Block_Editor;
+use Tasty_Recipes_Lite\Shortcodes;
+use Tasty_Recipes_Lite\Assets;
+use Tasty_Recipes_Lite\Distribution_Metadata;
+use Tasty_Recipes_Lite\Ratings;
+use Tasty_Recipes_Lite\Admin;
+use Tasty_Recipes_Lite\Editor;
+use Tasty_Recipes_Lite\Integrations\Elementor;
+use Tasty_Recipes_Lite\Objects\Recipe;
+use Tasty_Recipes_Lite\Converters\Cookbook;
+use Tasty_Recipes_Lite\Converters\MediavineCreate;
+use Tasty_Recipes_Lite\Converters\EasyRecipe;
+use Tasty_Recipes_Lite\Converters\MealPlannerPro;
+use Tasty_Recipes_Lite\Converters\SimpleRecipePro;
+use Tasty_Recipes_Lite\Converters\WPCom;
+use Tasty_Recipes_Lite\Converters\WPRecipeMaker;
+use Tasty_Recipes_Lite\Converters\WPUltimateRecipe;
+use Tasty_Recipes_Lite\Converters\Yummly;
+use Tasty_Recipes_Lite\Converters\YumPrint;
+use Tasty_Recipes_Lite\Converters\ZipList;
+use Tasty_Recipes_Lite\CLI;
 
 define( 'TASTY_RECIPES_LITE_PLUGIN_VERSION', '1.0.0' );
 define( 'TASTY_RECIPES_LITE_PLUGIN_FILE', __FILE__ );
@@ -241,22 +241,26 @@ class TastyRecipesLiteMain /* phpcs:ignore WordPress.NamingConventions.PrefixAll
 	 * @return void
 	 */
 	public function autoloader( $current_class ) {
-		$prefix   = 'Tasty\\Recipes\\Lite\\';
-		$base_dir = dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR;
-
-		// does the class use the namespace prefix?
-		$len = strlen( $prefix );
-		if ( 0 !== strncmp( $prefix, $current_class, $len ) ) {
-			// no, move to the next registered autoloader.
+		$prefix        = 'Tasty_Recipes_Lite\\';
+		$current_class = ltrim( $current_class, '\\' );
+		if ( 0 !== stripos( $current_class, $prefix ) ) {
 			return;
 		}
 
-		$relative_class = substr( $current_class, $len );
-		$file           = $base_dir . str_replace( '\\', '/', $relative_class ) . '.php';
-
-		// if the file exists, require it.
+		$parts = explode( '\\', $current_class );
+		array_shift( $parts ); // Don't need "Tasty_Recipes".
+		$last    = array_pop( $parts ); // File should be 'class-[...].php'.
+		$last    = 'class-' . $last . '.php';
+		$parts[] = $last;
+		$file    = dirname( __FILE__ ) . '/inc/' . str_replace( '_', '-', strtolower( implode( '/', $parts ) ) );
 		if ( file_exists( $file ) ) {
-			require_once $file;
+			require $file;
+		}
+
+		// Might be a trait.
+		$file = str_replace( '/class-', '/trait-', $file );
+		if ( file_exists( $file ) ) {
+			require $file;
 		}
 	}
 
@@ -265,20 +269,20 @@ class TastyRecipesLiteMain /* phpcs:ignore WordPress.NamingConventions.PrefixAll
 	 */
 	private function setup_actions() {
 		// Bootstrap.
-		add_action( 'init', array( BlockEditor::class, 'action_init_register' ) );
-		add_action( 'init', array( ContentModel::class, 'action_init_register_cron_events' ) );
-		add_action( 'tasty_recipes_process_thumbnails', array( ContentModel::class, 'action_tasty_recipes_process_thumbnails' ) );
-		add_action( 'init', array( ContentModel::class, 'action_init_register_post_types' ) );
-		add_action( 'init', array( ContentModel::class, 'action_init_register_rewrite_rules' ) );
+		add_action( 'init', array( Block_Editor::class, 'action_init_register' ) );
+		add_action( 'init', array( Content_Model::class, 'action_init_register_cron_events' ) );
+		add_action( 'tasty_recipes_process_thumbnails', array( Content_Model::class, 'action_tasty_recipes_process_thumbnails' ) );
+		add_action( 'init', array( Content_Model::class, 'action_init_register_post_types' ) );
+		add_action( 'init', array( Content_Model::class, 'action_init_register_rewrite_rules' ) );
 		add_action( 'init', array( Shortcodes::class, 'action_init_register_shortcode' ) );
 		// Frontend.
 		add_action( 'wp_print_styles', array( Assets::class, 'action_wp_print_styles' ) );
-		add_action( 'body_class', array( ContentModel::class, 'filter_body_class' ) );
-		add_action( 'wp_head', array( DistributionMetadata::class, 'action_wp_head_google_schema' ) );
-		add_action( 'wp_head', array( DistributionMetadata::class, 'action_wp_head_noindex' ) );
+		add_action( 'body_class', array( Content_Model::class, 'filter_body_class' ) );
+		add_action( 'wp_head', array( Distribution_Metadata::class, 'action_wp_head_google_schema' ) );
+		add_action( 'wp_head', array( Distribution_Metadata::class, 'action_wp_head_noindex' ) );
 		add_action( 'admin_head', array( Ratings::class, 'action_admin_head' ) );
-		add_action( 'wpseo_robots', array( DistributionMetadata::class, 'action_wpseo_robots' ) );
-		add_filter( 'wpseo_schema_graph_pieces', array( DistributionMetadata::class, 'filter_wpseo_schema_graph_pieces' ), 10, 2 );
+		add_action( 'wpseo_robots', array( Distribution_Metadata::class, 'action_wpseo_robots' ) );
+		add_filter( 'wpseo_schema_graph_pieces', array( Distribution_Metadata::class, 'filter_wpseo_schema_graph_pieces' ), 10, 2 );
 		foreach ( array( 'wp_insert_comment', 'wp_update_comment', 'wp_set_comment_status' ) as $hook ) {
 			add_action( $hook, array( Ratings::class, 'action_modify_comment_update_recipe_ratings' ) );
 		}
@@ -336,7 +340,7 @@ class TastyRecipesLiteMain /* phpcs:ignore WordPress.NamingConventions.PrefixAll
 		global $wp_embed;
 
 		// Bootstrap.
-		add_filter( 'rewrite_rules_array', array( ContentModel::class, 'filter_rewrite_rules_array' ) );
+		add_filter( 'rewrite_rules_array', array( Content_Model::class, 'filter_rewrite_rules_array' ) );
 
 		add_filter( 'get_the_excerpt', array( Shortcodes::class, 'filter_get_the_excerpt_early' ), 1 );
 		add_filter( 'get_the_excerpt', array( Shortcodes::class, 'filter_get_the_excerpt_late' ), 1000 );
@@ -373,8 +377,8 @@ class TastyRecipesLiteMain /* phpcs:ignore WordPress.NamingConventions.PrefixAll
 		add_filter( 'teeny_mce_before_init', array( Assets::class, 'filter_teeny_mce_before_init' ), 10, 2 );
 		add_filter( 'tasty_recipes_recipe_template_vars', array( Assets::class, 'add_recipe_styles' ), 20 );
 
-		add_filter( 'update_post_metadata', array( ContentModel::class, 'filter_update_post_metadata_thumbnail_id' ), 10, 4 );
-		add_filter( 'template_include', array( ContentModel::class, 'filter_template_include' ), 1000 );
+		add_filter( 'update_post_metadata', array( Content_Model::class, 'filter_update_post_metadata_thumbnail_id' ), 10, 4 );
+		add_filter( 'template_include', array( Content_Model::class, 'filter_template_include' ), 1000 );
 		add_filter( 'allow_empty_comment', array( Ratings::class, 'filter_allow_rating_empty_comment' ), 10, 2 );
 		add_filter( 'preprocess_comment', array( Ratings::class, 'filter_preprocess_comment' ), 0 );
 		add_filter( 'comment_form_field_comment', array( Ratings::class, 'filter_comment_form_field_comment' ) );
@@ -442,7 +446,7 @@ class TastyRecipesLiteMain /* phpcs:ignore WordPress.NamingConventions.PrefixAll
 	 */
 	public static function plugin_activation() {
 		self::get_instance()->require_files();
-		ContentModel::action_init_register_rewrite_rules();
+		Content_Model::action_init_register_rewrite_rules();
 		flush_rewrite_rules();
 		update_option( self::PLUGIN_ACTIVATION_OPTION, true );
 	}
@@ -461,7 +465,7 @@ class TastyRecipesLiteMain /* phpcs:ignore WordPress.NamingConventions.PrefixAll
 		if ( false !== stripos( $post->post_content, '[' . Shortcodes::RECIPE_SHORTCODE ) ) {
 			return true;
 		}
-		if ( false !== stripos( $post->post_content, '<!-- wp:' . BlockEditor::RECIPE_BLOCK_TYPE . ' ' ) ) {
+		if ( false !== stripos( $post->post_content, '<!-- wp:' . Block_Editor::RECIPE_BLOCK_TYPE . ' ' ) ) {
 			return true;
 		}
 		return false;
@@ -554,7 +558,7 @@ class TastyRecipesLiteMain /* phpcs:ignore WordPress.NamingConventions.PrefixAll
 				}
 			}
 			if ( is_array( $block ) && ! empty( $block['blockName'] )
-				&& BlockEditor::RECIPE_BLOCK_TYPE === $block['blockName'] ) {
+				&& Block_Editor::RECIPE_BLOCK_TYPE === $block['blockName'] ) {
 				$disable_json = isset( $block['attrs']['disableJSON'] ) ? (bool) $block['attrs']['disableJSON'] : false;
 				if ( false === $options['disable-json-ld'] && $disable_json ) {
 					continue;

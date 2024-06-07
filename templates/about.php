@@ -5,7 +5,7 @@
  * @package Tasty_Recipes
  */
 
-use Tasty\Recipes\Lite\Admin;
+use Tasty_Recipes_Lite\Admin;
 ?>
 
 <style>

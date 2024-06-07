@@ -5,12 +5,10 @@
  * @package Tasty_Recipes
  */
 
-namespace Tasty_Recipes\Converters;
+namespace Tasty_Recipes_Lite\Converters;
 
-use Tasty_Recipes\Distribution_Metadata;
-use Tasty_Recipes\Objects\Recipe;
-use Tasty_Recipes\Ratings;
-use Tasty_Recipes\Shortcodes;
+use Tasty_Recipes_Lite\Distribution_Metadata;
+use Tasty_Recipes_Lite\Objects\Recipe;
 
 /**
  * Converter class for Meal Planner Pro.

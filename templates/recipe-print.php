@@ -29,16 +29,16 @@
 	<?php
 	TastyRecipesLiteMain::echo_template_part( 'recipe-print-controls' );
 	?>
-	<script><?php echo \Tasty\Recipes\Lite\Utils::get_contents( dirname( __DIR__ ) . '/assets/dist/recipe-print-controls.build.js' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></script>
+	<script><?php echo \Tasty_Recipes_Lite\Utils::get_contents( dirname( __DIR__ ) . '/assets/dist/recipe-print-controls.build.js' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></script>
 	<?php
-	$recipe_id = get_query_var( \Tasty\Recipes\Lite\ContentModel::get_print_query_var() );
+	$recipe_id = get_query_var( \Tasty_Recipes_Lite\Content_Model::get_print_query_var() );
 	/**
 	 * Fires before a recipe has been rendered for print.
 	 *
 	 * @param integer $recipe_id ID for the recipe being rendered.
 	 */
 	do_action( 'tasty_recipes_before_render_print' );
-	echo \Tasty\Recipes\Lite\Shortcodes::render_tasty_recipe_shortcode( array( 'id' => $recipe_id ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo \Tasty_Recipes_Lite\Shortcodes::render_tasty_recipe_shortcode( array( 'id' => $recipe_id ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	/**
 	 * Fires after a recipe has been rendered for print.
 	 *

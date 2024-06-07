@@ -5,13 +5,13 @@
  * @package Tasty_Recipes
  */
 
-namespace Tasty_Recipes\Converters;
+namespace Tasty_Recipes_Lite\Converters;
 
-use Tasty_Recipes\Block_Editor;
-use Tasty_Recipes\Objects\Recipe;
-use Tasty_Recipes\Ratings;
-use Tasty_Recipes\Shortcodes;
-use Tasty_Recipes\Utils;
+use Tasty_Recipes_Lite\Block_Editor;
+use Tasty_Recipes_Lite\Objects\Recipe;
+use Tasty_Recipes_Lite\Ratings;
+use Tasty_Recipes_Lite\Shortcodes;
+use Tasty_Recipes_Lite\Utils;
 
 /**
  * Base converter class.
@@ -355,7 +355,7 @@ abstract class Converter {
 
 		$id = media_handle_sideload( $file_array, 0 );
 		if ( is_wp_error( $id ) ) {
-			unlink( $file_array['tmp_name'] );
+			wp_delete_file( $file_array['tmp_name'] );
 			do_action( 'tasty_recipes_imported_image', 0 );
 			return 0;
 		}

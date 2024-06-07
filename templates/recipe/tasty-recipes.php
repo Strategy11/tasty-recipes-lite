@@ -5,8 +5,8 @@
  * @package Tasty_Recipes
  */
 
-use Tasty\Recipes\Lite\Utils;
-use Tasty\Recipes\Lite\Ratings;
+use Tasty_Recipes_Lite\Utils;
+use Tasty_Recipes_Lite\Ratings;
 
 $print_view_options = tasty_recipes_get_print_view_options();
 ?>
