@@ -18,7 +18,7 @@ class Simple_Recipe_Pro extends Converter {
 	/**
 	 * Matching string for existing recipes.
 	 *
-	 * @var string
+	 * @var array|string
 	 */
 	protected static $match_string = '[simple-recipe';
 
@@ -32,11 +32,12 @@ class Simple_Recipe_Pro extends Converter {
 	/**
 	 * Convert recipe content to Tasty Recipes format.
 	 *
-	 * @param string  $existing Existing content that may have a recipe.
-	 * @param integer $post_id  ID for the post with the recipe.
-	 * @return Recipe
+	 * @param string $existing Existing content that may have a recipe.
+	 * @param int    $post_id  ID for the post with the recipe.
+	 *
+	 * @return false|Recipe
 	 */
-	public static function create_recipe_from_existing( $existing, $post_id ) {
+	public static function create_recipe_from_existing( $existing, $post_id ) { // phpcs:ignore SlevomatCodingStandard
 
 		$existing_post = get_post( $post_id );
 		if ( ! $existing_post ) {
@@ -82,6 +83,10 @@ class Simple_Recipe_Pro extends Converter {
 		$recipe         = Recipe::create();
 		$converted_data = array();
 		$srp_option     = get_option( '_simple_recipe_pro', array() );
+
+		if ( ! $recipe ) {
+			return false;
+		}
 
 		$mapping = array(
 			// Simple Recipe Pro -> Tasty Recipes.
@@ -212,5 +217,4 @@ class Simple_Recipe_Pro extends Converter {
 
 		return self::save_converted_data_to_recipe( $converted_data, $recipe );
 	}
-
 }

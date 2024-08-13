@@ -19,7 +19,7 @@ class Mediavine_Create extends Converter {
 	/**
 	 * Matching string for existing recipes.
 	 *
-	 * @var string
+	 * @var array|string
 	 */
 	protected static $match_string = array(
 		'wp:mv/recipe',
@@ -43,12 +43,15 @@ class Mediavine_Create extends Converter {
 	/**
 	 * Convert recipe content to Tasty Recipes format.
 	 *
-	 * @param string  $existing Existing content that might contain a recipe.
-	 * @param integer $post_id  ID for the post with the recipe.
-	 * @return Recipe
+	 * @param string $existing Existing content that might contain a recipe.
+	 * @param int    $post_id  ID for the post with the recipe.
+	 *
+	 * @return false|Recipe
 	 */
-	public static function create_recipe_from_existing( $existing, $post_id ) { // phpcs:ignore VariableAnalysis
+	public static function create_recipe_from_existing( $existing, $post_id ) { // phpcs:ignore SlevomatCodingStandard
 		global $wpdb, $table_prefix;
+
+		$post_id = (int) $post_id; // Avoid UnusedVariable.
 
 		$data = self::get_existing_block_or_shortcode( $existing, 'data' );
 		// Only converting recipe cards.
@@ -72,7 +75,7 @@ class Mediavine_Create extends Converter {
 		if ( ! $existing ) {
 			return false;
 		}
-
+		$existing      = (object) $existing;
 		$existing_post = get_post( $existing->object_id );
 
 		$mapping_fields = array(
@@ -95,6 +98,11 @@ class Mediavine_Create extends Converter {
 
 		$recipe         = Recipe::create();
 		$converted_data = array();
+
+		if ( ! $recipe ) {
+			return false;
+		}
+
 		foreach ( $mapping_fields as $mc => $tr ) {
 
 			$value = $existing->$mc;
@@ -181,7 +189,7 @@ class Mediavine_Create extends Converter {
 		$output = '';
 		foreach ( $ingredients as $group => $lines ) {
 			if ( ! in_array( $group, array( 'mv-has-no-group', '_empty_' ), true ) ) {
-				$output .= '<h3>' . wp_filter_post_kses( $group ) . '</h3>' . PHP_EOL;
+				$output .= '<h3>' . wp_filter_post_kses( (string) $group ) . '</h3>' . PHP_EOL;
 			}
 			$output .= '<ul>' . PHP_EOL;
 			foreach ( $lines as $line ) {
@@ -209,7 +217,7 @@ class Mediavine_Create extends Converter {
 
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery
 		$existing_nutrition = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table_prefix}mv_nutrition WHERE creation=%d", $recipe_id ) );
-		if ( $existing_nutrition ) {
+		if ( is_object( $existing_nutrition ) ) {
 			foreach ( $mapping_fields as $mc => $tr ) {
 
 				$value = $existing_nutrition->$mc;
@@ -256,5 +264,4 @@ class Mediavine_Create extends Converter {
 
 		return self::save_converted_data_to_recipe( $converted_data, $recipe );
 	}
-
 }

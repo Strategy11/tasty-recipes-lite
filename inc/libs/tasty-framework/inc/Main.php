@@ -39,7 +39,7 @@ abstract class Main {
 	 * @return void
 	 */
 	public static function initialize_framework() {
-		define( 'TASTY_FRAMEWORK_VERSION', '1.0.5' );
+		define( 'TASTY_FRAMEWORK_VERSION', '1.0.6' );
 		define( 'TASTY_FRAMEWORK_PATH', self::plugin_path() );
 		define( 'TASTY_FRAMEWORK_PATH_ASSETS', self::plugin_path( 'assets' ) );
 
@@ -82,7 +82,11 @@ abstract class Main {
 		self::$registry['admin_menu']             = Menu::instance()->init( self::$registry['template_admin'], self::$registry['js_messagebox'] );
 		self::$registry['update']                 = Update::instance()->init();
 		self::$registry['license_apiclient']      = APIClient::instance();
-		self::$registry['license_manager']        = Manager::instance()->init( self::$registry['license_apiclient'], self::$registry['template_admin'], self::$registry['js_messagebox'] );
+		self::$registry['license_manager']        = Manager::instance()->init(
+			self::$registry['license_apiclient'],
+			self::$registry['template_admin'],
+			self::$registry['js_messagebox']
+		);
 		self::$registry['backward_compatibility'] = BackwardCompatibility::instance()->init();
 	}
 
@@ -91,8 +95,9 @@ abstract class Main {
 	 *
 	 * @param string $plugin_file Base framework plugin path.
 	 *
-	 * @return void
 	 * @throws \Exception For autoloader.
+	 *
+	 * @return void
 	 */
 	public static function init( $plugin_file ) {
 		self::$plugin_file = $plugin_file;
@@ -101,6 +106,7 @@ abstract class Main {
 
 		spl_autoload_register( array( __CLASS__, 'autoload' ) );
 
+		// phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.NotAbsolutePath
 		require_once self::plugin_path( 'functions.php' );
 
 		/**
@@ -162,6 +168,7 @@ abstract class Main {
 
 		// if the file exists, require it.
 		if ( file_exists( $file ) ) {
+			// phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 			require_once $file;
 		}
 	}

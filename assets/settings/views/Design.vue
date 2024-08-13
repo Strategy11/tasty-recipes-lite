@@ -456,7 +456,14 @@ export default {
 			return this.customization.star_ratings_style;
 		},
 		currentTemplateLabel() {
-			return this.templateOptions[this.currentTemplate] + " Template";
+			// Show the template count, and use the index for the current template.
+			const keys = Object.keys( this.templateOptions );
+
+			return this.templateOptions[this.currentTemplate] +
+				" Template ("
+				+ (keys.indexOf(this.currentTemplate) + 1) + "/"
+				+ keys.length
+				+ ")";
 		},
 		nutrifoxLogoUrl() {
 			return (

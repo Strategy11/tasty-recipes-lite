@@ -7,6 +7,7 @@
 
 namespace Tasty\Framework\Admin\License;
 
+use Tasty\Framework\Abstracts\PluginInstaller;
 use Tasty\Framework\Admin\JSMessageBox;
 use Tasty\Framework\Admin\Plugins\Factory;
 use Tasty\Framework\Traits\Singleton;
@@ -44,10 +45,17 @@ class Manager {
 	private $js_messagebox;
 
 	/**
+	 * Admin notices.
+	 *
+	 * @var array
+	 */
+	private $admin_notices = array();
+
+	/**
 	 * Initialize class.
 	 *
-	 * @param APIClient    $api_client License APIClient instance.
-	 * @param Template     $template Template engine instance.
+	 * @param APIClient    $api_client    License APIClient instance.
+	 * @param Template     $template      Template engine instance.
 	 * @param JSMessageBox $js_messagebox JS Message Box Instance.
 	 *
 	 * @return $this
@@ -66,8 +74,7 @@ class Manager {
 		add_action( 'wp_ajax_tasty_framework_remove_license', array( $this, 'ajax_remove_license' ) );
 		add_filter( 'tasty_framework_admin_localize_script_data', array( $this, 'insert_nonces_into_js' ) );
 
-		add_action( 'tasty_admin_notices', array( $this, 'show_license_notices' ) );
-		add_action( 'admin_notices', array( $this, 'show_license_notices' ) );
+		add_filter( 'tasty_framework_notification_icon', array( $this, 'maybe_show_menu_icon' ) );
 		add_action( 'current_screen', array( $this, 'remove_all_admin_notices_from_dashboard_page' ) );
 
 		return $this;
@@ -80,20 +87,13 @@ class Manager {
 	 */
 	public function ajax_get_license_key_plugins() {
 		check_ajax_referer( 'tasty_framework_license_key_plugins' );
-
-		if ( ! $this->validate_capability() ) {
-			return;
-		}
+		$this->validate_capability();
 
 		$license_key = Vars::post_param( 'license_key' );
-		if ( ! $this->validate_license_key( $license_key ) ) {
-			return;
-		}
+		$this->validate_license_key( $license_key );
 
 		$plugins = $this->api_client->get_key_plugins( $license_key );
-		if ( ! $this->validate_api_response( $plugins ) ) {
-			return;
-		}
+		$this->validate_api_response( $plugins );
 
 		$final_plugins_list = array();
 		if ( count( $plugins ) > 1 ) {
@@ -113,20 +113,13 @@ class Manager {
 	 */
 	public function ajax_activate_plugin_license() {
 		check_ajax_referer( 'tasty_framework_activate_license' );
-
-		if ( ! $this->validate_capability() ) {
-			return;
-		}
+		$this->validate_capability();
 
 		$license_key = Vars::post_param( 'license_key' );
-		if ( ! $this->validate_license_key( $license_key ) ) {
-			return;
-		}
+		$this->validate_license_key( $license_key );
 
 		$license_plugin = Vars::post_param( 'license_plugin' );
-		if ( ! $this->validate_plugin( $license_plugin ) ) {
-			return;
-		}
+		$this->validate_plugin( $license_plugin );
 
 		$license_plugin_id = Vars::post_param( 'license_plugin_id' );
 		if ( empty( $license_plugin_id ) ) {
@@ -142,7 +135,6 @@ class Manager {
 					'message' => $activated->get_error_message(),
 				)
 			);
-			return;
 		}
 
 		wp_send_json_success(
@@ -159,20 +151,13 @@ class Manager {
 	 */
 	public function ajax_download_plugin() {
 		check_ajax_referer( 'tasty_framework_download_plugin' );
-
-		if ( ! $this->validate_capability() ) {
-			return;
-		}
+		$this->validate_capability();
 
 		$license_plugin = Vars::request_param( 'license_plugin' );
-		if ( ! $this->validate_plugin( $license_plugin ) ) {
-			return;
-		}
+		$this->validate_plugin( $license_plugin );
 
 		$plugin = Factory::create( $license_plugin );
-		if ( ! $this->validate_plugin( $plugin ) ) {
-			return;
-		}
+		$this->validate_plugin( $plugin );
 
 		$download_url = $plugin->get_plugin_download_url();
 		if ( empty( $download_url ) ) {
@@ -181,7 +166,6 @@ class Manager {
 					'message' => esc_html__( 'Can\'t download plugin, please reach out to our support.', 'tasty' ),
 				)
 			);
-			return;
 		}
 
 		$plugin->maybe_install_and_activate( $download_url );
@@ -198,20 +182,13 @@ class Manager {
 	 */
 	public function ajax_activate_plugin() {
 		check_ajax_referer( 'tasty_framework_activate_plugin' );
-
-		if ( ! $this->validate_capability() ) {
-			return;
-		}
+		$this->validate_capability();
 
 		$plugin_name = Vars::get_param( 'plugin' );
-		if ( ! $this->validate_plugin( $plugin_name ) ) {
-			return;
-		}
+		$this->validate_plugin( $plugin_name );
 
 		$plugin_obj = Factory::create( $plugin_name );
-		if ( ! $this->validate_plugin( $plugin_obj ) ) {
-			return;
-		}
+		$this->validate_plugin( $plugin_obj );
 
 		$plugin_obj->activate_plugin();
 
@@ -227,20 +204,13 @@ class Manager {
 	 */
 	public function ajax_deactivate_plugin() {
 		check_ajax_referer( 'tasty_framework_deactivate_plugin' );
-
-		if ( ! $this->validate_capability() ) {
-			return;
-		}
+		$this->validate_capability();
 
 		$plugin_name = Vars::get_param( 'plugin' );
-		if ( ! $this->validate_plugin( $plugin_name ) ) {
-			return;
-		}
+		$this->validate_plugin( $plugin_name );
 
 		$plugin_obj = Factory::create( $plugin_name );
-		if ( ! $this->validate_plugin( $plugin_obj ) ) {
-			return;
-		}
+		$this->validate_plugin( $plugin_obj );
 
 		$plugin_obj->deactivate_plugin();
 
@@ -263,26 +233,73 @@ class Manager {
 	 */
 	public function ajax_remove_license() {
 		check_ajax_referer( 'tasty_framework_remove_license' );
-
-		if ( ! $this->validate_capability() ) {
-			return;
-		}
+		$this->validate_capability();
 
 		$plugin_name = Vars::get_param( 'plugin' );
-		if ( ! $this->validate_plugin( $plugin_name ) ) {
-			return;
-		}
+		$this->validate_plugin( $plugin_name );
 
 		$plugin_obj = Factory::create( $plugin_name );
-		if ( ! $this->validate_plugin( $plugin_obj ) ) {
-			return;
-		}
+		$this->validate_plugin( $plugin_obj );
 
 		$plugin_obj->remove_license();
 
 		$this->js_messagebox->add( 'success', esc_html__( 'License was removed successfully.', 'tasty' ) );
 
 		wp_send_json_success();
+	}
+
+	/**
+	 * If there are admin notices, shoe the alert icon in the admin menu.
+	 *
+	 * @since 3.12.4
+	 *
+	 * @param bool $show_icon Show icon or not.
+	 *
+	 * @return bool
+	 */
+	public function maybe_show_menu_icon( $show_icon ) {
+		$this->set_admin_notices();
+		if ( empty( $this->admin_notices ) ) {
+			return $show_icon;
+		}
+
+		add_action( 'tasty_admin_notices', array( $this, 'show_license_notices' ) );
+		add_filter( 'tasty_framework_dashboard_plugin_details', array( $this, 'maybe_show_dashboard_plugin_message' ), 10, 3 );
+		return true;
+	}
+
+	/**
+	 * Set admin notices to check for menu icon or showing the notices.
+	 *
+	 * @since 3.12.4
+	 *
+	 * @return void
+	 */
+	private function set_admin_notices() {
+		foreach ( Factory::create_active_plugins() as $active_plugin ) {
+			if ( ! $active_plugin->has_framework() ) {
+				continue;
+			}
+
+			$plugin_slug = $active_plugin->get_plugin_slug();
+			if ( ! $active_plugin->is_licensed() ) {
+				$this->admin_notices[ $plugin_slug ] = array(
+					'type'        => 'Notices/license-empty',
+					'render_atts' => array(
+						'plugin_name'        => $active_plugin->get_plugin_name(),
+						'plugin_pricing_url' => $active_plugin->get_product_pricing_page_url(),
+						'license_url'        => Url::get_main_admin_url(),
+					),
+				);
+			} elseif ( ! $active_plugin->is_valid_license() ) {
+				$this->admin_notices[ $plugin_slug ] = array(
+					'type'        => 'Notices/license-invalid',
+					'render_atts' => array(
+						'plugin_name' => $active_plugin->get_plugin_name(),
+					),
+				);
+			}
+		}
 	}
 
 	/**
@@ -297,40 +314,41 @@ class Manager {
 		}
 
 		foreach ( Factory::create_active_plugins() as $active_plugin ) {
-			if ( ! $active_plugin->has_framework() ) {
+			$plugin_slug = $active_plugin->get_plugin_slug();
+			if ( ! isset( $this->admin_notices[ $plugin_slug ] ) ) {
 				continue;
 			}
 
-			$show_notice = ! Url::is_wpt_page() || 'wp-tasty_page_' . $active_plugin->get_plugin_slug() === get_current_screen()->id;
-
+			$show_notice = 'wp-tasty_page_' . $plugin_slug === get_current_screen()->id;
 			if ( ! apply_filters( 'tasty_framework_show_license_notice', $show_notice, $active_plugin ) ) {
 				continue;
 			}
 
-			if ( ! $active_plugin->is_licensed() ) {
-				$this->template->render(
-					'Notices/license-empty',
-					array(
-						'plugin_name'        => $active_plugin->get_plugin_name(),
-						'plugin_pricing_url' => $active_plugin->get_product_pricing_page_url(),
-						'license_url'        => Url::get_main_admin_url(),
-					),
-					true
-				);
-
-				continue;
-			}
-
-			if ( ! $active_plugin->is_valid_license() ) {
-				$this->template->render(
-					'Notices/license-invalid',
-					array(
-						'plugin_name' => $active_plugin->get_plugin_name(),
-					),
-					true
-				);
-			}
+			$notice = $this->admin_notices[ $plugin_slug ];
+			$this->template->render( $notice['type'], $notice['render_atts'], true );
 		}
+	}
+
+	/**
+	 * Maybe show dashboard message to enter license.
+	 *
+	 * @param array           $details     Plugin details.
+	 * @param string          $plugin_name Plugin name.
+	 * @param PluginInstaller $plugin      Plugin instance.
+	 *
+	 * @return array
+	 */
+	public function maybe_show_dashboard_plugin_message( $details, $plugin_name, $plugin ) {
+		$plugin_slug = $plugin->get_plugin_slug();
+		if ( isset( $this->admin_notices[ $plugin_slug ] ) ) {
+			$details['message'] = sprintf(
+				// translators: %s Plugin name.
+				__( '%s is almost ready. Click the "Enter License" button above to continue.', 'tasty' ),
+				$details['name']
+			);
+		}
+
+		return $details;
 	}
 
 	/**
@@ -419,7 +437,7 @@ class Manager {
 	 *
 	 * @param string $license_key License key to be validated.
 	 *
-	 * @return bool
+	 * @return void
 	 */
 	private function validate_license_key( $license_key ) {
 		if ( empty( $license_key ) || 32 !== strlen( (string) $license_key ) ) {
@@ -428,9 +446,7 @@ class Manager {
 					'message' => esc_html__( 'That\'s not a valid license.', 'tasty' ),
 				)
 			);
-			return false;
 		}
-		return true;
 	}
 
 	/**
@@ -438,7 +454,7 @@ class Manager {
 	 *
 	 * @param array|WP_Error $response Response to be validated.
 	 *
-	 * @return bool
+	 * @return void
 	 */
 	private function validate_api_response( $response ) {
 		if ( empty( $response ) ) {
@@ -447,7 +463,6 @@ class Manager {
 					'message' => esc_html__( 'Can\'t connect to the WP Tasty server. Please try again later.', 'tasty' ),
 				)
 			);
-			return false;
 		}
 
 		if ( is_wp_error( $response ) ) {
@@ -456,10 +471,7 @@ class Manager {
 					'message' => $response->get_error_message(),
 				)
 			);
-			return false;
 		}
-
-		return true;
 	}
 
 	/**
@@ -467,7 +479,7 @@ class Manager {
 	 *
 	 * @param mixed $plugin Plugin to be validated.
 	 *
-	 * @return bool
+	 * @return void
 	 */
 	private function validate_plugin( $plugin ) {
 		if ( empty( $plugin ) ) {
@@ -476,9 +488,7 @@ class Manager {
 					'message' => esc_html__( 'That\'s not a valid plugin.', 'tasty' ),
 				)
 			);
-			return false;
 		}
-		return true;
 	}
 
 	/**
@@ -486,7 +496,7 @@ class Manager {
 	 *
 	 * @param string $cap Capability to check, default is manage_options.
 	 *
-	 * @return bool
+	 * @return void
 	 */
 	private function validate_capability( $cap = 'manage_options' ) {
 		if ( ! current_user_can( $cap ) ) {
@@ -495,9 +505,7 @@ class Manager {
 					'message' => esc_html__( 'Not authorized!', 'tasty' ),
 				)
 			);
-			return false;
 		}
-		return true;
 	}
 
 	/**

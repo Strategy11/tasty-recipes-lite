@@ -135,13 +135,16 @@ h3,
 @media print {
 	.tasty-recipes {
 		max-width: none;
-		margin: 0;
 	}
 
 	#tasty-recipes-print-controls,
 	.tasty-recipes-units-scale-container {
 		display: none !important;
 	}
+
+	a[href]:after {
+        content: none !important;
+    }
 }
 
 .tasty-recipes-print-hide-images {

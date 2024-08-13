@@ -21,7 +21,7 @@ abstract class Converter {
 	/**
 	 * Matching string for existing recipes.
 	 *
-	 * @var string
+	 * @var array|string
 	 */
 	protected static $match_string = null;
 
@@ -44,7 +44,8 @@ abstract class Converter {
 	/**
 	 * Get post ids for posts with recipes in their content.
 	 *
-	 * @param integer $per_page Number of posts to fetch. Defaults to 10.
+	 * @param int $per_page Number of posts to fetch. Defaults to 10.
+	 *
 	 * @return array
 	 */
 	public static function get_post_ids( $per_page = 10 ) {
@@ -63,6 +64,7 @@ abstract class Converter {
 	 * Get a SELECT query for posts matching the $match_string.
 	 *
 	 * @param string $select_var Selection to perform.
+	 *
 	 * @return string
 	 */
 	protected static function get_select_query( $select_var ) {
@@ -84,6 +86,7 @@ abstract class Converter {
 	 * Gets the existing content to convert, if it exists.
 	 *
 	 * @param string $content Content to search within.
+	 *
 	 * @return mixed.
 	 */
 	public static function get_existing_to_convert( $content ) {
@@ -96,6 +99,7 @@ abstract class Converter {
 	 *
 	 * @param string $content Content to search within.
 	 * @param string $retval  Return 'match' or 'data'.
+	 *
 	 * @return mixed.
 	 */
 	public static function get_existing_block_or_shortcode( $content, $retval = 'match' ) {
@@ -154,9 +158,10 @@ abstract class Converter {
 	/**
 	 * Convert the recipe content within a given post.
 	 *
-	 * @param integer $post_id ID for the post with the recipe.
-	 * @param string  $type    Whether to create a shortcode or a block.
-	 * @return Recipe|false
+	 * @param int    $post_id ID for the post with the recipe.
+	 * @param string $type    Whether to create a shortcode or a block.
+	 *
+	 * @return false|Recipe
 	 */
 	public static function convert_post( $post_id, $type = 'shortcode' ) {
 		global $wpdb;
@@ -196,11 +201,12 @@ abstract class Converter {
 	}
 
 	/**
-	 * Convert recipe content to Tasty Recipes format
+	 * Convert recipe content to Tasty Recipes format.
 	 *
-	 * @param string  $existing Existing content that may have recipe content.
-	 * @param integer $post_id  ID for the post with the recipe.
-	 * @return Recipe
+	 * @param string $existing Existing content that may have recipe content.
+	 * @param int    $post_id  ID for the post with the recipe.
+	 *
+	 * @return false|Recipe
 	 */
 	public static function create_recipe_from_existing( $existing, $post_id ) {
 		$existing = $existing;
@@ -213,13 +219,14 @@ abstract class Converter {
 	 *
 	 * @param array  $converted_data Data to be converted.
 	 * @param Recipe $recipe         Created recipe object.
+	 *
 	 * @return Recipe
 	 */
 	protected static function save_converted_data_to_recipe( $converted_data, $recipe ) {
 		/**
 		 * Filter converted data before it's applied to the recipe.
 		 *
-		 * @param array $converted_data
+		 * @param array  $converted_data
 		 * @param string $type
 		 */
 		$called_class   = get_called_class();
@@ -241,6 +248,7 @@ abstract class Converter {
 	 *
 	 * @param string $content    Content to be transformed.
 	 * @param string $list_style Either an ordered or unordered list.
+	 *
 	 * @return string
 	 */
 	protected static function process_lines_into_lists_and_headings( $content, $list_style ) {
@@ -278,6 +286,7 @@ abstract class Converter {
 	 * Process MPP, Yummly, and ZipList markdown-ish markup into HTML.
 	 *
 	 * @param string $item Content to be transformed.
+	 *
 	 * @return string
 	 */
 	protected static function process_markdownish_into_html( $item ) {
@@ -305,7 +314,8 @@ abstract class Converter {
 	 * If the image doesn't exist in the media library, it's imported.
 	 *
 	 * @param string $file Path for the file.
-	 * @return integer
+	 *
+	 * @return int
 	 */
 	protected static function get_image_id_from_file( $file ) {
 		global $wpdb;
@@ -319,10 +329,11 @@ abstract class Converter {
 	}
 
 	/**
-	 * Sideload an image URL into WordPress
+	 * Sideload an image URL into WordPress.
 	 *
 	 * @param string $file Path for the file.
-	 * @return integer
+	 *
+	 * @return int
 	 */
 	public static function media_sideload_image( $file ) {
 		/**
@@ -355,6 +366,7 @@ abstract class Converter {
 
 		$id = media_handle_sideload( $file_array, 0 );
 		if ( is_wp_error( $id ) ) {
+			// phpcs:ignore
 			unlink( $file_array['tmp_name'] );
 			do_action( 'tasty_recipes_imported_image', 0 );
 			return 0;
@@ -367,6 +379,7 @@ abstract class Converter {
 	 * Format numerical times (eg. 00:10).
 	 *
 	 * @param string $value Time string to format.
+	 *
 	 * @return string
 	 */
 	public static function format_times( $value ) {
@@ -388,5 +401,4 @@ abstract class Converter {
 		$value     = preg_replace( $incorrect, $correct, $value );
 		return $value;
 	}
-
 }

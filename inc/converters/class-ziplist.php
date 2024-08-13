@@ -18,7 +18,7 @@ class ZipList extends Converter {
 	/**
 	 * Matching string for existing recipes.
 	 *
-	 * @var string
+	 * @var array|string
 	 */
 	protected static $match_string = array(
 		'[amd-zlrecipe-recipe',
@@ -33,9 +33,10 @@ class ZipList extends Converter {
 	private static $regex_pattern = '#(\[amd-zlrecipe-recipe:([\d]+)\]|<!-- wp:zip-recipes/recipe-block(.+)/-->)#Us';
 
 	/**
-	 * Get recipe content to convert
+	 * Get recipe content to convert.
 	 *
 	 * @param string $content Existing content that could have a recipe.
+	 *
 	 * @return object|string
 	 */
 	public static function get_existing_to_convert( $content ) {
@@ -44,11 +45,12 @@ class ZipList extends Converter {
 	}
 
 	/**
-	 * Convert recipe content to Tasty Recipes format
+	 * Convert recipe content to Tasty Recipes format.
 	 *
-	 * @param string  $existing Existing content that could have a recipe.
-	 * @param integer $post_id  ID for the post with the recipe.
-	 * @return Recipe
+	 * @param string $existing Existing content that could have a recipe.
+	 * @param int    $post_id  ID for the post with the recipe.
+	 *
+	 * @return false|Recipe
 	 */
 	public static function create_recipe_from_existing( $existing, $post_id ) { // phpcs:ignore VariableAnalysis
 		global $wpdb, $table_prefix;
@@ -77,6 +79,7 @@ class ZipList extends Converter {
 		if ( ! $existing ) {
 			return false;
 		}
+		$existing = (object) $existing;
 
 		$mapping_fields = array(
 			// ZipList        -> Tasty Recipes.
@@ -107,6 +110,10 @@ class ZipList extends Converter {
 
 		$recipe         = Recipe::create();
 		$converted_data = array();
+		if ( ! $recipe ) {
+			return false;
+		}
+
 		foreach ( $mapping_fields as $zl => $tr ) {
 
 			if ( ! isset( $existing->$zl ) ) {
@@ -114,10 +121,6 @@ class ZipList extends Converter {
 			}
 
 			$value = $existing->$zl;
-
-			if ( is_null( $value ) ) {
-				continue;
-			}
 
 			if ( in_array( $tr, array( 'prep_time', 'cook_time', 'total_time' ), true ) ) {
 				$value = Distribution_Metadata::get_time_for_duration( $value );
@@ -153,5 +156,4 @@ class ZipList extends Converter {
 
 		return self::save_converted_data_to_recipe( $converted_data, $recipe );
 	}
-
 }

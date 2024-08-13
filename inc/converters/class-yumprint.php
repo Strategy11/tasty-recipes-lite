@@ -19,28 +19,30 @@ class YumPrint extends Converter {
 	/**
 	 * Matching string for existing recipes.
 	 *
-	 * @var string
+	 * @var array|string
 	 */
 	protected static $match_string = '[yumprint-recipe';
 
 	/**
-	 * Get recipe content to convert
+	 * Get recipe content to convert.
 	 *
 	 * @param string $content Existing content that may include a recipe.
-	 * @return object|string
+	 *
+	 * @return false|string
 	 */
 	public static function get_existing_to_convert( $content ) {
 		return Utils::get_existing_shortcode( $content, 'yumprint-recipe' );
 	}
 
 	/**
-	 * Convert recipe content to Tasty Recipes format
+	 * Convert recipe content to Tasty Recipes format.
 	 *
-	 * @param string  $existing Existing content that may include a recipe.
-	 * @param integer $post_id  ID for the post containing the recipe.
-	 * @return Recipe
+	 * @param string $existing Existing content that may include a recipe.
+	 * @param int    $post_id  ID for the post containing the recipe.
+	 *
+	 * @return false|Recipe
 	 */
-	public static function create_recipe_from_existing( $existing, $post_id ) { // phpcs:ignore VariableAnalysis
+	public static function create_recipe_from_existing( $existing, $post_id ) { // phpcs:ignore SlevomatCodingStandard
 		global $wpdb, $table_prefix;
 
 		$existing = substr( $existing, 1, -1 ); // Remove '[' and ']' from shortcode.
@@ -55,8 +57,13 @@ class YumPrint extends Converter {
 			return false;
 		}
 
+		$post_id = (int) $post_id; // Avoid UnusedVariable.
+
 		$recipe         = Recipe::create();
 		$converted_data = array();
+		if ( ! $recipe ) {
+			return false;
+		}
 
 		$mapping_fields = array(
 			// YumPrint      -> Tasty Recipes.
@@ -75,6 +82,10 @@ class YumPrint extends Converter {
 		);
 
 		$data = json_decode( $existing->recipe );
+		if ( ! is_object( $data ) ) {
+			return false;
+		}
+
 		foreach ( $mapping_fields as $mpp => $tr ) {
 
 			$value = isset( $data->$mpp ) ? $data->$mpp : false;
@@ -97,10 +108,9 @@ class YumPrint extends Converter {
 					if ( ! empty( $bits->title ) ) {
 						$new_value .= PHP_EOL . '<h4>' . $bits->title . '</h4>' . PHP_EOL;
 					}
-					if ( ! $is_open ) {
-						$new_value .= $list_opening . PHP_EOL;
-						$is_open    = true;
-					}
+
+					$is_open    = true;
+					$new_value .= $list_opening . PHP_EOL;
 					$new_value .= '<li>' . implode( '</li>' . PHP_EOL . '<li>', $bits->lines ) . '</li>' . PHP_EOL;
 				}
 				if ( $is_open ) {
@@ -136,6 +146,10 @@ class YumPrint extends Converter {
 			);
 
 			$data = json_decode( $existing->nutrition );
+			if ( ! is_object( $data ) ) {
+				return self::save_converted_data_to_recipe( $converted_data, $recipe );
+			}
+
 			foreach ( $mapping_fields as $mpp => $tr ) {
 
 				if ( 'unSaturatedFat' === $mpp ) {
@@ -151,5 +165,4 @@ class YumPrint extends Converter {
 		}
 		return self::save_converted_data_to_recipe( $converted_data, $recipe );
 	}
-
 }

@@ -18,7 +18,7 @@ class Yummly extends Converter {
 	/**
 	 * Matching string for existing recipes.
 	 *
-	 * @var string
+	 * @var array|string
 	 */
 	protected static $match_string = '[amd-yrecipe-recipe';
 
@@ -33,6 +33,7 @@ class Yummly extends Converter {
 	 * Get recipe content to convert.
 	 *
 	 * @param string $content Existing content that may have a recipe.
+	 *
 	 * @return object|string
 	 */
 	public static function get_existing_to_convert( $content ) {
@@ -43,11 +44,12 @@ class Yummly extends Converter {
 	/**
 	 * Convert recipe content to Tasty Recipes format.
 	 *
-	 * @param string  $existing Existing content with a recipe.
-	 * @param integer $post_id  ID for the post with the recipe.
-	 * @return Recipe|false
+	 * @param string $existing Existing content with a recipe.
+	 * @param int    $post_id  ID for the post with the recipe.
+	 *
+	 * @return false|Recipe
 	 */
-	public static function create_recipe_from_existing( $existing, $post_id ) { // phpcs:ignore VariableAnalysis
+	public static function create_recipe_from_existing( $existing, $post_id ) { // phpcs:ignore SlevomatCodingStandard
 		global $wpdb, $table_prefix;
 
 		preg_match( self::$regex_pattern, $existing, $matches );
@@ -60,6 +62,9 @@ class Yummly extends Converter {
 		if ( ! $existing ) {
 			return false;
 		}
+		$existing = (object) $existing;
+
+		$post_id = (int) $post_id; // Avoid UnusedVariable.
 
 		$mapping_fields = array(
 			// Yummly      -> Tasty Recipes.
@@ -80,6 +85,10 @@ class Yummly extends Converter {
 
 		$recipe         = Recipe::create();
 		$converted_data = array();
+		if ( ! $recipe ) {
+			return false;
+		}
+
 		foreach ( $mapping_fields as $yl => $tr ) {
 
 			$value = $existing->$yl;
@@ -112,5 +121,4 @@ class Yummly extends Converter {
 		}
 		return self::save_converted_data_to_recipe( $converted_data, $recipe );
 	}
-
 }

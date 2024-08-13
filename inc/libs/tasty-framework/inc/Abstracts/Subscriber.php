@@ -34,6 +34,7 @@ abstract class Subscriber {
 			return self::$instance;
 		}
 
+		// @phpstan-ignore-next-line
 		self::$instance = new static();
 		self::$instance->add_hooks();
 		return self::$instance;

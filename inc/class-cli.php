@@ -26,6 +26,10 @@ class CLI {
 	 * : Run against specific post ids.
 	 *
 	 * @subcommand recalculate-recipe-ratings
+	 *
+	 * @param array $args Unnamed positional arguments.
+	 *
+	 * @return void
 	 */
 	public function recalculate_recipe_ratings( $args ) {
 
@@ -80,6 +84,11 @@ class CLI {
 	 * : Whether the recipe ratings should be archived or deleted. Default is archive.
 	 *
 	 * @subcommand remove-recipe-ratings
+	 *
+	 * @param array $_          Unnamed positional arguments.
+	 * @param array $assoc_args Arguments passed to the command.
+	 *
+	 * @return void
 	 */
 	public function remove_recipe_ratings( $_, $assoc_args ) {
 		if ( ! empty( $assoc_args['post_id'] ) ) {
@@ -128,6 +137,11 @@ class CLI {
 	 * : Whether the recipe ratings should be archived or deleted. Default is archive.
 	 *
 	 * @subcommand remove-post-ratings
+	 *
+	 * @param array $_          Unnamed positional arguments.
+	 * @param array $assoc_args Arguments passed to the command.
+	 *
+	 * @return void
 	 */
 	public function remove_post_ratings( $_, $assoc_args ) {
 		global $wpdb;
@@ -216,6 +230,11 @@ class CLI {
 	 * ---
 	 *
 	 * @subcommand get-post-recipes
+	 *
+	 * @param array $args       Unnamed positional arguments.
+	 * @param array $assoc_args Arguments passed to the command.
+	 *
+	 * @return void
 	 */
 	public function get_post_recipes( $args, $assoc_args ) {
 
@@ -268,6 +287,11 @@ class CLI {
 	 * ---
 	 *
 	 * @subcommand find-legacy-wprm-video-urls
+	 *
+	 * @param array $_          Unnamed positional arguments.
+	 * @param array $assoc_args Arguments passed to the command.
+	 *
+	 * @return void
 	 */
 	public function find_legacy_wprm_video_urls( $_, $assoc_args ) { // phpcs:ignore SlevomatCodingStandard
 

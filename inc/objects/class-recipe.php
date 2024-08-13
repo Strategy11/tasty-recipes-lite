@@ -279,6 +279,8 @@ class Recipe {
 	 * Instantiate a recipe object.
 	 *
 	 * @param object $post Post object associated with the recipe.
+	 *
+	 * @return void
 	 */
 	protected function __construct( $post ) {
 		$this->post = $post;
@@ -349,6 +351,8 @@ class Recipe {
 
 	/**
 	 * Print the name for the recipe.
+	 *
+	 * @return void
 	 */
 	public function the_title() {
 		Utils::kses( apply_filters( 'tasty_recipes_the_title', $this->get_title() ), true );
@@ -358,6 +362,8 @@ class Recipe {
 	 * Set the title of the recipe.
 	 *
 	 * @param string $title Recipe title.
+	 *
+	 * @return void
 	 */
 	public function set_title( $title ) {
 		$this->set_field( 'post_title', $title );
@@ -376,6 +382,8 @@ class Recipe {
 	 * Set the author name for the recipe.
 	 *
 	 * @param string $author_name Recipe author name.
+	 *
+	 * @return void
 	 */
 	public function set_author_name( $author_name ) {
 		$this->set_meta( 'author_name', $author_name );
@@ -392,6 +400,8 @@ class Recipe {
 
 	/**
 	 * Print the description for the recipe.
+	 *
+	 * @return void
 	 */
 	public function the_description() {
 		Utils::kses( apply_filters( 'tasty_recipes_the_content', $this->get_description(), 'description' ), true );
@@ -401,6 +411,8 @@ class Recipe {
 	 * Set the description for the recipe.
 	 *
 	 * @param string $description Description value.
+	 *
+	 * @return void
 	 */
 	public function set_description( $description ) {
 		$this->set_clean_meta( 'description', $description );
@@ -419,6 +431,8 @@ class Recipe {
 	 * Set the description video settings for the recipe.
 	 *
 	 * @param string $video_settings Video settings value.
+	 *
+	 * @return void
 	 */
 	public function set_description_video_settings( $video_settings ) {
 		$this->set_meta( 'description_video_settings', $video_settings );
@@ -435,6 +449,8 @@ class Recipe {
 
 	/**
 	 * Print the ingredients for the recipe.
+	 *
+	 * @return void
 	 */
 	public function the_ingredients() {
 		Utils::kses( apply_filters( 'tasty_recipes_the_content', $this->get_ingredients(), 'ingredients' ), true );
@@ -444,6 +460,8 @@ class Recipe {
 	 * Set the ingredients for the recipe.
 	 *
 	 * @param string $ingredients Ingredients value.
+	 *
+	 * @return void
 	 */
 	public function set_ingredients( $ingredients ) {
 		$this->set_clean_meta( 'ingredients', $ingredients );
@@ -462,6 +480,8 @@ class Recipe {
 	 * Set the ingredients video settings for the recipe.
 	 *
 	 * @param string $video_settings Video settings value.
+	 *
+	 * @return void
 	 */
 	public function set_ingredients_video_settings( $video_settings ) {
 		$this->set_meta( 'ingredients_video_settings', $video_settings );
@@ -478,6 +498,8 @@ class Recipe {
 
 	/**
 	 * Print the instructions for the recipe.
+	 *
+	 * @return void
 	 */
 	public function the_instructions() {
 		Utils::kses( apply_filters( 'tasty_recipes_the_content', $this->get_instructions(), 'instructions' ), true );
@@ -487,6 +509,8 @@ class Recipe {
 	 * Set the instructions for the recipe.
 	 *
 	 * @param string $instructions Instructions value.
+	 *
+	 * @return void
 	 */
 	public function set_instructions( $instructions ) {
 		$this->set_clean_meta( 'instructions', $instructions );
@@ -505,6 +529,8 @@ class Recipe {
 	 * Set the instructions video settings for the recipe.
 	 *
 	 * @param string $video_settings Video settings value.
+	 *
+	 * @return void
 	 */
 	public function set_instructions_video_settings( $video_settings ) {
 		$this->set_meta( 'instructions_video_settings', $video_settings );
@@ -521,6 +547,8 @@ class Recipe {
 
 	/**
 	 * Print the notes for the recipe.
+	 *
+	 * @return void
 	 */
 	public function the_notes() {
 		Utils::kses( apply_filters( 'tasty_recipes_the_content', $this->get_notes(), 'notes' ), true );
@@ -530,6 +558,8 @@ class Recipe {
 	 * Set the notes for the recipe.
 	 *
 	 * @param string $notes Notes value.
+	 *
+	 * @return void
 	 */
 	public function set_notes( $notes ) {
 		$this->set_clean_meta( 'notes', $notes );
@@ -548,6 +578,8 @@ class Recipe {
 	 * Set the notes video settings for the recipe.
 	 *
 	 * @param string $video_settings Video settings value.
+	 *
+	 * @return void
 	 */
 	public function set_notes_video_settings( $video_settings ) {
 		$this->set_meta( 'notes_video_settings', $video_settings );
@@ -566,6 +598,8 @@ class Recipe {
 	 * Set the keywords for the recipe.
 	 *
 	 * @param string $keywords Keywords value.
+	 *
+	 * @return void
 	 */
 	public function set_keywords( $keywords ) {
 		$this->set_meta( 'keywords', $keywords );
@@ -584,6 +618,8 @@ class Recipe {
 	 * Set the Nutrifox id for the recipe.
 	 *
 	 * @param int $nutrifox_id Nutrifox ID value.
+	 *
+	 * @return void
 	 */
 	public function set_nutrifox_id( $nutrifox_id ) {
 		$this->set_meta( 'nutrifox_id', $nutrifox_id );
@@ -602,6 +638,8 @@ class Recipe {
 	 * Set the Nutrifox response for the recipe.
 	 *
 	 * @param array $nutrifox_response Nutrifox response value.
+	 *
+	 * @return void
 	 */
 	public function set_nutrifox_response( $nutrifox_response ) {
 		$this->set_meta( 'nutrifox_response', $nutrifox_response );
@@ -654,6 +692,8 @@ class Recipe {
 	 * Set the video url for the recipe.
 	 *
 	 * @param string $video_url Video URL value.
+	 *
+	 * @return void
 	 */
 	public function set_video_url( $video_url ) {
 		$this->set_meta( 'video_url', $video_url );
@@ -673,6 +713,8 @@ class Recipe {
 	 * Set the video URL response for the recipe.
 	 *
 	 * @param array $video_url_response Video URL response value.
+	 *
+	 * @return void
 	 */
 	public function set_video_url_response( $video_url_response ) {
 		$this->set_meta( 'video_url_response', $video_url_response );
@@ -695,6 +737,8 @@ class Recipe {
 	 * Set the average rating for the recipe.
 	 *
 	 * @param string $average_rating Average rating value.
+	 *
+	 * @return void
 	 */
 	public function set_average_rating( $average_rating ) {
 		$this->set_meta( 'average_rating', $average_rating );
@@ -713,6 +757,8 @@ class Recipe {
 	 * Set the total reviews for the recipe.
 	 *
 	 * @param float|int $total_reviews Total reviews value.
+	 *
+	 * @return void
 	 */
 	public function set_total_reviews( $total_reviews ) {
 		$this->set_meta( 'total_reviews', $total_reviews );
@@ -731,6 +777,8 @@ class Recipe {
 	 * Set the prep time for the recipe.
 	 *
 	 * @param string $prep_time Prep time value.
+	 *
+	 * @return void
 	 */
 	public function set_prep_time( $prep_time ) {
 		$this->set_meta( 'prep_time', $prep_time );
@@ -749,6 +797,8 @@ class Recipe {
 	 * Set the extra time label for the recipe.
 	 *
 	 * @param string $additional_time_label Extra time label value.
+	 *
+	 * @return void
 	 */
 	public function set_additional_time_label( $additional_time_label ) {
 		$this->set_meta( 'additional_time_label', $additional_time_label );
@@ -767,6 +817,8 @@ class Recipe {
 	 * Set the extra time value for the recipe.
 	 *
 	 * @param string $additional_time_value Extra time value.
+	 *
+	 * @return void
 	 */
 	public function set_additional_time_value( $additional_time_value ) {
 		$this->set_meta( 'additional_time_value', $additional_time_value );
@@ -785,6 +837,8 @@ class Recipe {
 	 * Set the cook time for the recipe.
 	 *
 	 * @param string $cook_time Cook time value.
+	 *
+	 * @return void
 	 */
 	public function set_cook_time( $cook_time ) {
 		$this->set_meta( 'cook_time', $cook_time );
@@ -841,6 +895,8 @@ class Recipe {
 	 * Set the total time for the recipe.
 	 *
 	 * @param string $total_time Total time value.
+	 *
+	 * @return void
 	 */
 	public function set_total_time( $total_time ) {
 		$this->set_meta( 'total_time', $total_time );
@@ -859,6 +915,8 @@ class Recipe {
 	 * Set the yield for the recipe.
 	 *
 	 * @param string $value Yield value.
+	 *
+	 * @return void
 	 */
 	public function set_yield( $value ) {
 		$this->set_meta( 'yield', $value );
@@ -877,6 +935,8 @@ class Recipe {
 	 * Set the category for the recipe.
 	 *
 	 * @param string $category Category value.
+	 *
+	 * @return void
 	 */
 	public function set_category( $category ) {
 		$this->set_meta( 'category', $category );
@@ -895,6 +955,8 @@ class Recipe {
 	 * Set the cuisine for the recipe.
 	 *
 	 * @param string $cuisine Cuisine value.
+	 *
+	 * @return void
 	 */
 	public function set_cuisine( $cuisine ) {
 		$this->set_meta( 'cuisine', $cuisine );
@@ -913,6 +975,8 @@ class Recipe {
 	 * Set the diet for the recipe.
 	 *
 	 * @param string $diet Diet value.
+	 *
+	 * @return void
 	 */
 	public function set_diet( $diet ) {
 		$this->set_meta( 'diet', $diet );
@@ -931,6 +995,8 @@ class Recipe {
 	 * Set the method for the recipe.
 	 *
 	 * @param string $method Method value.
+	 *
+	 * @return void
 	 */
 	public function set_method( $method ) {
 		$this->set_meta( 'method', $method );
@@ -949,6 +1015,8 @@ class Recipe {
 	 * Set the serving size for the recipe.
 	 *
 	 * @param string $serving_size Serving size value.
+	 *
+	 * @return void
 	 */
 	public function set_serving_size( $serving_size ) {
 		$this->set_meta( 'serving_size', $serving_size );
@@ -967,6 +1035,8 @@ class Recipe {
 	 * Set the calories for the recipe.
 	 *
 	 * @param string $calories Calories value.
+	 *
+	 * @return void
 	 */
 	public function set_calories( $calories ) {
 		$this->set_meta( 'calories', $calories );
@@ -985,6 +1055,8 @@ class Recipe {
 	 * Set the sugar for the recipe.
 	 *
 	 * @param string $sugar Sugar value.
+	 *
+	 * @return void
 	 */
 	public function set_sugar( $sugar ) {
 		$this->set_meta( 'sugar', $sugar );
@@ -1003,6 +1075,8 @@ class Recipe {
 	 * Set the sodium for the recipe.
 	 *
 	 * @param string $sodium Sodium value.
+	 *
+	 * @return void
 	 */
 	public function set_sodium( $sodium ) {
 		$this->set_meta( 'sodium', $sodium );
@@ -1021,6 +1095,8 @@ class Recipe {
 	 * Set the fat for the recipe.
 	 *
 	 * @param string $fat Fat value.
+	 *
+	 * @return void
 	 */
 	public function set_fat( $fat ) {
 		$this->set_meta( 'fat', $fat );
@@ -1039,6 +1115,8 @@ class Recipe {
 	 * Set the saturated fat for the recipe.
 	 *
 	 * @param string $saturated_fat Saturated fat value.
+	 *
+	 * @return void
 	 */
 	public function set_saturated_fat( $saturated_fat ) {
 		$this->set_meta( 'saturated_fat', $saturated_fat );
@@ -1057,6 +1135,8 @@ class Recipe {
 	 * Set the unsaturated fat for the recipe.
 	 *
 	 * @param string $unsaturated_fat Unsaturated fat value.
+	 *
+	 * @return void
 	 */
 	public function set_unsaturated_fat( $unsaturated_fat ) {
 		$this->set_meta( 'unsaturated_fat', $unsaturated_fat );
@@ -1075,6 +1155,8 @@ class Recipe {
 	 * Set the trans fat for the recipe.
 	 *
 	 * @param string $trans_fat Trans fat value.
+	 *
+	 * @return void
 	 */
 	public function set_trans_fat( $trans_fat ) {
 		$this->set_meta( 'trans_fat', $trans_fat );
@@ -1093,6 +1175,8 @@ class Recipe {
 	 * Set the carbohydrates for the recipe.
 	 *
 	 * @param string $carbohydrates Carbohydrates value.
+	 *
+	 * @return void
 	 */
 	public function set_carbohydrates( $carbohydrates ) {
 		$this->set_meta( 'carbohydrates', $carbohydrates );
@@ -1111,6 +1195,8 @@ class Recipe {
 	 * Set the fiber for the recipe.
 	 *
 	 * @param string $fiber Fiber value.
+	 *
+	 * @return void
 	 */
 	public function set_fiber( $fiber ) {
 		$this->set_meta( 'fiber', $fiber );
@@ -1129,6 +1215,8 @@ class Recipe {
 	 * Set the protein for the recipe.
 	 *
 	 * @param string $protein Protein value.
+	 *
+	 * @return void
 	 */
 	public function set_protein( $protein ) {
 		$this->set_meta( 'protein', $protein );
@@ -1147,6 +1235,8 @@ class Recipe {
 	 * Set the cholesterol for the recipe.
 	 *
 	 * @param string $cholesterol Cholesterol value.
+	 *
+	 * @return void
 	 */
 	public function set_cholesterol( $cholesterol ) {
 		$this->set_meta( 'cholesterol', $cholesterol );
@@ -1165,6 +1255,8 @@ class Recipe {
 	 * Set the image id for the post.
 	 *
 	 * @param int $image_id Image id.
+	 *
+	 * @return void
 	 */
 	public function set_image_id( $image_id ) {
 		$this->set_meta( '_thumbnail_id', (int) $image_id );
@@ -1296,6 +1388,8 @@ class Recipe {
 	 *
 	 * @param string $key   Field key.
 	 * @param mixed  $value Value for the field.
+	 *
+	 * @return void
 	 */
 	protected function set_field( $key, $value ) {
 		global $wpdb;
@@ -1322,6 +1416,8 @@ class Recipe {
 	 *
 	 * @param string $key   Meta key.
 	 * @param mixed  $value Meta value.
+	 *
+	 * @return void
 	 */
 	protected function add_meta( $key, $value ) {
 		add_post_meta( $this->get_id(), $key, $value );
@@ -1332,6 +1428,8 @@ class Recipe {
 	 *
 	 * @param string $key   Meta key.
 	 * @param mixed  $value Meta value.
+	 *
+	 * @return void
 	 */
 	protected function set_meta( $key, $value ) {
 		update_post_meta( $this->get_id(), $key, $value );

@@ -24,7 +24,7 @@
 			printf(
 				// translators: %1$s Opening anchor tag, %1$s Closing anchor tag.
 				esc_html__( '%1$sSubmit a support ticket%2$s, and we\'ll do our best to help out.', 'tasty' ),
-				'<a href="https://support.wptasty.com" target="_blank" rel="noopener">',
+				'<a href="https://www.wptasty.com/support" target="_blank" rel="noopener">',
 				'</a>'
 			);
 			?>

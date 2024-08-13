@@ -33,7 +33,7 @@ class Menu {
 	 *
 	 * @var array
 	 */
-	private $menu_hooks = array();
+	private $menu_hooks = array(); // @phpstan-ignore-line
 
 	/**
 	 * Template engine instance.
@@ -52,7 +52,7 @@ class Menu {
 	/**
 	 * Initialize class.
 	 *
-	 * @param Template     $template Template engine instance.
+	 * @param Template     $template      Template engine instance.
 	 * @param JSMessageBox $js_messagebox JS Message Box Instance.
 	 *
 	 * @return $this
@@ -115,7 +115,7 @@ class Menu {
 	}
 
 	/**
-	 * Get default menu items
+	 * Get default menu items.
 	 *
 	 * @return array
 	 */
@@ -159,12 +159,12 @@ class Menu {
 	 * Sort menu items based on active state.
 	 *
 	 * @param array $previous Previous menu item.
-	 * @param array $current Current menu item.
+	 * @param array $current  Current menu item.
 	 *
 	 * @return int
 	 */
 	public function sort_menu_items( $previous, $current ) {
-		return ( $current['active'] && ! $previous['active'] ) ? 1 : -1;
+		return $current['active'] && ! $previous['active'] ? 1 : -1;
 	}
 
 	/**

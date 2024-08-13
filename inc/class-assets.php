@@ -23,7 +23,16 @@ class Assets {
 	private static $editor_id = 'tasty-recipes-editor';
 
 	/**
+	 * Whether the CSS has been loaded.
+	 *
+	 * @var bool
+	 */
+	private static $css_loaded = false;
+
+	/**
 	 * Enqueues relevant scripts in the admin.
+	 *
+	 * @return void
 	 */
 	public static function action_admin_enqueue_scripts() {
 		global $wpdb;
@@ -39,7 +48,7 @@ class Assets {
 				'tasty-recipes-settings',
 				plugins_url( 'assets/js/settings.js', __DIR__ ),
 				array( 'jquery', 'wp-util' ),
-				$time,
+				(string) $time,
 				true
 			);
 			wp_localize_script(
@@ -56,14 +65,14 @@ class Assets {
 				'tasty-recipes-settings',
 				plugins_url( 'assets/dist/settings.css', __DIR__ ),
 				array( 'editor-buttons' ),
-				$time
+				(string) $time
 			);
 			$time = filemtime( dirname( __DIR__ ) . '/assets/dist/settings.build.js' );
 			wp_enqueue_script(
 				'tasty-recipes-settings-v2',
 				plugins_url( 'assets/dist/settings.build.js', __DIR__ ),
 				array( 'wp-i18n', 'wp-util', 'wplink' ),
-				$time,
+				(string) $time,
 				true
 			);
 		}
@@ -95,7 +104,7 @@ class Assets {
 				'jquery',
 				'tasty-recipes-editor-modal',
 			),
-			$time,
+			(string) $time,
 			true
 		);
 		$script_data = array(
@@ -128,7 +137,7 @@ class Assets {
 			'tasty-recipes-editor',
 			plugins_url( 'assets/dist/editor.css', __DIR__ ),
 			array( 'editor-buttons' ),
-			$time
+			(string) $time
 		);
 		/**
 		 * Allows the default author name to be modified.
@@ -164,6 +173,8 @@ class Assets {
 
 	/**
 	 * Enqueues relevant scripts when the editor is loaded.
+	 *
+	 * @return void
 	 */
 	public static function action_wp_enqueue_editor() {
 		if ( ! Editor::is_tasty_recipes_editor_view() ) {
@@ -180,7 +191,7 @@ class Assets {
 				'mce-view',
 				'tasty-recipes-editor-modal',
 			),
-			$time,
+			(string) $time,
 			true
 		);
 		$time = filemtime( dirname( __DIR__ ) . '/assets/dist/editor.css' );
@@ -188,7 +199,7 @@ class Assets {
 			'tasty-recipes-editor',
 			plugins_url( 'assets/dist/editor.css', __DIR__ ),
 			array(),
-			$time
+			(string) $time
 		);
 		wp_localize_script(
 			'tasty-recipes-editor',
@@ -219,6 +230,8 @@ class Assets {
 
 	/**
 	 * Registers data we need client-side as a part of the initial page load.
+	 *
+	 * @return void
 	 */
 	public static function action_enqueue_block_editor_assets() {
 		$blocks_data = array(
@@ -254,6 +267,8 @@ class Assets {
 
 	/**
 	 * Register the modal editor script with its localization.
+	 *
+	 * @return void
 	 */
 	public static function register_modal_editor_script() {
 
@@ -265,7 +280,7 @@ class Assets {
 			'tasty-recipes-recipe-editor',
 			plugins_url( 'assets/dist/recipe-editor.build.js', __DIR__ ),
 			array( 'wp-util', 'wplink' ),
-			$time,
+			(string) $time,
 			true
 		);
 
@@ -327,7 +342,7 @@ class Assets {
 			'tasty-recipes-editor-modal',
 			plugins_url( 'assets/js/editor-modal.js', __DIR__ ),
 			array( 'jquery', 'tasty-recipes-recipe-editor' ),
-			$time,
+			(string) $time,
 			true
 		);
 		/**
@@ -355,6 +370,8 @@ class Assets {
 
 	/**
 	 * Stomp on all registered styles in the print view for a recipe.
+	 *
+	 * @return void
 	 */
 	public static function action_wp_print_styles() {
 		$recipe_id = (int) get_query_var( Content_Model::get_print_query_var() );
@@ -369,7 +386,7 @@ class Assets {
 					'tasty-recipes-print',
 					plugins_url( 'assets/dist/print.css', __DIR__ ),
 					array(),
-					$time
+					(string) $time
 				);
 			}
 		}
@@ -377,6 +394,8 @@ class Assets {
 
 	/**
 	 * Prints the recipe editor modal template, but only once.
+	 *
+	 * @return void
 	 */
 	public static function action_admin_footer_render_template() {
 		static $rendered_once;
@@ -472,6 +491,10 @@ class Assets {
 	 * @return string
 	 */
 	private static function get_css_vars() {
+		if ( self::$css_loaded ) {
+			return '';
+		}
+
 		$settings = Tasty_Recipes::get_filtered_customization_settings();
 		$css_vars = array();
 
@@ -498,6 +521,29 @@ class Assets {
 	}
 
 	/**
+	 * Maybe add the TinyMCE style.
+	 *
+	 * @since 3.13
+	 *
+	 * @param array $template_vars Recipe template vars.
+	 *
+	 * @return void
+	 */
+	public static function maybe_add_tinymce_style( &$template_vars ) {
+		// Load the assets for the admin area.
+		self::action_wp_head();
+
+		if ( ! wp_doing_ajax() || Utils::get_post_value( 'action' ) !== 'tasty_recipes_parse_shortcode' ) {
+			return;
+		}
+
+		if ( empty( $template_vars['recipe_styles'] ) ) {
+			$template_vars['recipe_styles'] = '';
+		}
+		$template_vars['recipe_styles'] .= self::get_css();
+	}
+
+	/**
 	 * Add some styles to the recipe.
 	 *
 	 * @deprecated 3.12.3
@@ -515,6 +561,18 @@ class Assets {
 	}
 
 	/**
+	 * Enqueues the main Tasty Recipes stylesheet and loads in the head.
+	 *
+	 * @since 3.13
+	 *
+	 * @return void
+	 */
+	public static function action_wp_head() {
+		$styles = Shortcodes::get_styles_as_string();
+		self::add_inline_style( $styles );
+	}
+
+	/**
 	 * Add styles to the recipe.
 	 *
 	 * @since 3.12.3
@@ -524,7 +582,55 @@ class Assets {
 	 * @return void
 	 */
 	public static function add_inline_style( $styles ) {
+		if ( self::$css_loaded ) {
+			return;
+		}
+
 		wp_add_inline_style( 'tasty-recipes-main', Utils::minify_css( self::get_css_vars() . $styles ) );
 		Tasty_Recipes\Ratings::add_inline_style();
+
+		self::$css_loaded = true;
+
+		if ( Utils::is_rest_api_request() && strpos( Utils::server_param( 'REQUEST_URI' ), 'block-renderer/wp-tasty/tasty-recipe' ) ) {
+			add_filter( 'render_block', array( __CLASS__, 'add_css_to_block' ), 10, 2 );
+		}
+	}
+
+	/**
+	 * Add inline styles to a new block. Without this workaround,
+	 * the inline styles were not rendered when a new block was
+	 * added.
+	 *
+	 * @since 3.12.4
+	 *
+	 * @param string $block_content Block content.
+	 * @param array  $block         Block data.
+	 *
+	 * @return string
+	 */
+	public static function add_css_to_block( $block_content, $block ) {
+		if ( $block['blockName'] !== 'wp-tasty/tasty-recipe' ) {
+			return $block_content;
+		}
+
+		$block_content .= self::get_css();
+		return $block_content;
+	}
+
+	/**
+	 * Get the CSS for the recipe in the editor.
+	 *
+	 * @since 3.13
+	 *
+	 * @return string
+	 */
+	private static function get_css() {
+		global $wp_styles;
+		$css = '<style>';
+		foreach ( $wp_styles->get_data( 'tasty-recipes-main', 'after' ) as $inline_style ) {
+			$css .= $inline_style;
+		}
+		$css .= '</style>';
+		return $css;
 	}
 }

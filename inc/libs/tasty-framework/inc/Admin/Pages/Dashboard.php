@@ -95,6 +95,7 @@ class Dashboard {
 			'status_text' => $this->get_plugin_status_text( $status ),
 			'actions'     => $this->get_plugin_actions_by_status( $status, $plugin ),
 			'buttons'     => $this->get_plugin_buttons( $plugin ),
+			'message'     => '',
 		);
 
 		return (array) apply_filters( 'tasty_framework_dashboard_plugin_details', $details, $plugin->get_plugin_name(), $plugin, $status );
@@ -115,13 +116,13 @@ class Dashboard {
 			return 'not-installed';
 		}
 
-		if ( $installed && ! $active ) {
+		if ( ! $active ) {
 			return 'installed';
 		}
 
 		$licensed = $plugin->is_licensed();
 
-		if ( $active && ! $licensed ) {
+		if ( ! $licensed ) {
 			return 'no-license';
 		}
 
@@ -130,11 +131,11 @@ class Dashboard {
 		}
 
 		$expired = $plugin->is_expired();
-		if ( $active && $licensed && $expired ) {
+		if ( $expired ) {
 			return 'expired';
 		}
 
-		if ( $active && $licensed && ! $plugin->is_valid_license() ) {
+		if ( ! $plugin->is_valid_license() ) {
 			return 'no-license';
 		}
 
@@ -238,49 +239,79 @@ class Dashboard {
 				break;
 
 			case 'installed':
-				$learn_more_url = Url::add_utm_params(
-					$plugin->get_product_details_page_url(),
-					array(
-						'utm_medium'  => 'learn_more',
-						'utm_content' => $plugin->get_plugin_slug(),
-					)
-				);
-				$actions[]      = array(
-					'type' => 'external',
-					'name' => __( 'Learn more', 'tasty' ),
-					'link' => $learn_more_url,
-				);
-				$actions[]      = array(
-					'type' => 'ajax',
-					'name' => __( 'Activate plugin', 'tasty' ),
-					'link' => add_query_arg(
-						array(
-							'action'      => 'tasty_framework_activate_plugin',
-							'_ajax_nonce' => wp_create_nonce( 'tasty_framework_activate_plugin' ),
-							'plugin'      => $plugin->get_plugin_name(),
-						),
-						admin_url( 'admin-ajax.php' )
-					),
-				);
+				$this->installed_plugin_actions( $plugin, $actions );
 				break;
 		}
 
-		if ( $plugin->is_active() ) {
-			$actions[] = array(
-				'type' => 'ajax',
-				'name' => __( 'Deactivate', 'tasty' ),
-				'link' => add_query_arg(
-					array(
-						'action'      => 'tasty_framework_deactivate_plugin',
-						'_ajax_nonce' => wp_create_nonce( 'tasty_framework_deactivate_plugin' ),
-						'plugin'      => $plugin->get_plugin_name(),
-					),
-					admin_url( 'admin-ajax.php' )
-				),
-			);
-		}
+		$this->active_plugin_actions( $plugin, $actions );
 
 		return $actions;
+	}
+
+	/**
+	 * Add actions for installed plugins.
+	 *
+	 * @since 3.12.4
+	 *
+	 * @param PluginInstaller $plugin   Plugin instance.
+	 * @param array           &$actions Actions array.
+	 *
+	 * @return void
+	 */
+	private function installed_plugin_actions( $plugin, &$actions ) {
+		$learn_more_url = Url::add_utm_params(
+			$plugin->get_product_details_page_url(),
+			array(
+				'utm_medium'  => 'learn_more',
+				'utm_content' => $plugin->get_plugin_slug(),
+			)
+		);
+		$actions[]      = array(
+			'type' => 'external',
+			'name' => __( 'Learn more', 'tasty' ),
+			'link' => $learn_more_url,
+		);
+		$actions[]      = array(
+			'type' => 'ajax',
+			'name' => __( 'Activate plugin', 'tasty' ),
+			'link' => add_query_arg(
+				array(
+					'action'      => 'tasty_framework_activate_plugin',
+					'_ajax_nonce' => wp_create_nonce( 'tasty_framework_activate_plugin' ),
+					'plugin'      => $plugin->get_plugin_name(),
+				),
+				admin_url( 'admin-ajax.php' )
+			),
+		);
+	}
+
+	/**
+	 * Add actions for installed plugins.
+	 *
+	 * @since 3.12.4
+	 *
+	 * @param PluginInstaller $plugin   Plugin instance.
+	 * @param array           &$actions Actions array.
+	 *
+	 * @return void
+	 */
+	private function active_plugin_actions( $plugin, &$actions ) {
+		if ( ! $plugin->is_active() ) {
+			return;
+		}
+
+		$actions[] = array(
+			'type' => 'ajax',
+			'name' => __( 'Deactivate', 'tasty' ),
+			'link' => add_query_arg(
+				array(
+					'action'      => 'tasty_framework_deactivate_plugin',
+					'_ajax_nonce' => wp_create_nonce( 'tasty_framework_deactivate_plugin' ),
+					'plugin'      => $plugin->get_plugin_name(),
+				),
+				admin_url( 'admin-ajax.php' )
+			),
+		);
 	}
 
 	/**

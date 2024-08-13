@@ -36,6 +36,8 @@ class Thrive {
 
 	/**
 	 * Enqueues our templates for Thrive Editor.
+	 *
+	 * @return void
 	 */
 	public static function action_tve_editor_print_footer_scripts() {
 		wp_just_in_time_script_localization();

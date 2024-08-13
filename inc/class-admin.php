@@ -123,6 +123,8 @@ class Admin {
 
 	/**
 	 * Registers the updater object.
+	 *
+	 * @return void
 	 */
 	public static function action_admin_init() {
 		new Updater(
@@ -170,6 +172,8 @@ class Admin {
 
 	/**
 	 * Registers used settings.
+	 *
+	 * @return void
 	 */
 	public static function action_admin_menu() { // phpcs:ignore SlevomatCodingStandard
 		register_setting(
@@ -300,6 +304,8 @@ class Admin {
 	 * Renders the admin notice nag when license key isn't set or invalid.
 	 *
 	 * @deprecated 3.10
+	 *
+	 * @return void
 	 */
 	public static function action_admin_notices_license_key() {
 		_deprecated_function( __METHOD__, '3.10' );
@@ -338,6 +344,8 @@ class Admin {
 	 *
 	 * @param string $column_name Name of the column.
 	 * @param int    $post_id     ID of the post being displayed.
+	 *
+	 * @return void
 	 */
 	public static function action_manage_posts_custom_column( $column_name, $post_id ) {
 		switch ( $column_name ) {
@@ -357,6 +365,8 @@ class Admin {
 	 * Renders the 'Edit Tasty Recipe' button on Quick Edit.
 	 *
 	 * @param string $column_name Name of the column.
+	 *
+	 * @return void
 	 */
 	public static function action_quick_edit_custom_box( $column_name ) {
 		switch ( $column_name ) {
@@ -382,6 +392,8 @@ class Admin {
 	 * Activates the license when the option is updated.
 	 *
 	 * @deprecated 3.10
+	 *
+	 * @return void
 	 */
 	public static function action_update_option_register_license() {
 		_deprecated_function( __METHOD__, '3.10' );
@@ -389,6 +401,8 @@ class Admin {
 
 	/**
 	 * Clears the license and version check cache when license key is updated.
+	 *
+	 * @return void
 	 */
 	public static function action_update_option_clear_transient() {
 		delete_transient( self::LICENSE_CHECK_CACHE_KEY );
@@ -419,6 +433,8 @@ class Admin {
 	 * Handles a request to remove the license key.
 	 *
 	 * @deprecated 3.10
+	 *
+	 * @return void
 	 */
 	public static function handle_wp_ajax_remove_license_key() {
 		_deprecated_function( __METHOD__, '3.10' );
@@ -429,6 +445,8 @@ class Admin {
 
 	/**
 	 * Handles an AJAX request to preview a recipe template.
+	 *
+	 * @return void
 	 */
 	public static function handle_wp_ajax_preview_recipe_card() { // phpcs:ignore SlevomatCodingStandard
 		global $editor_styles;
@@ -709,12 +727,17 @@ EOT;
 		wp_print_styles();
 		wp_print_scripts();
 		$assets = ob_get_clean();
+		if ( ! $assets ) {
+			$assets = '';
+		}
 
 		return $assets;
 	}
 
 	/**
 	 * Handles an AJAX request to get the number of matching recipes to convert.
+	 *
+	 * @return void
 	 */
 	public static function handle_wp_ajax_get_count() {
 		$nonce = Utils::get_param( 'nonce', 'sanitize_key' );
@@ -741,6 +764,8 @@ EOT;
 
 	/**
 	 * Handles an AJAX request to batch convert some recipes.
+	 *
+	 * @return void
 	 */
 	public static function handle_wp_ajax_convert() {
 		$nonce = Utils::get_param( 'nonce', 'sanitize_key' );
@@ -796,6 +821,8 @@ EOT;
 	 * Renders in the admin header.
 	 *
 	 * @deprecated 3.10
+	 *
+	 * @return void
 	 */
 	public static function action_in_admin_header() {
 		_deprecated_function( __METHOD__, '3.10' );
@@ -803,6 +830,8 @@ EOT;
 
 	/**
 	 * Renders the Tasty Recipes settings page.
+	 *
+	 * @return void
 	 */
 	public static function handle_settings_page() { // phpcs:ignore SlevomatCodingStandard
 		add_settings_section(
@@ -1104,6 +1133,8 @@ EOT;
 
 	/**
 	 * Prints the recipe editor modal template, but only once.
+	 *
+	 * @return void
 	 */
 	public static function action_admin_footer_render_template() {
 		static $rendered_once;
@@ -1129,6 +1160,8 @@ EOT;
 	 * Render an input field.
 	 *
 	 * @param array $args Configuration arguments used by the input field.
+	 *
+	 * @return void
 	 */
 	public static function render_input_field( $args ) {
 		$defaults = array(
@@ -1266,7 +1299,7 @@ EOT;
 		}
 
 		if ( false === strpos( $color, 'rgba' ) ) {
-			return sanitize_hex_color( $color );
+			return self::sanitize_hex_color( $color );
 		}
 
 		$color = str_replace( ' ', '', $color );
@@ -1275,9 +1308,30 @@ EOT;
 	}
 
 	/**
+	 * This is a modified version of the WordPress core function.
+	 * This one also allows for 8 digit hex colors.
+	 *
+	 * @since 3.12.4
+	 *
+	 * @param string $color The color to sanitize.
+	 *
+	 * @return string The sanitized color.
+	 */
+	private static function sanitize_hex_color( $color ) {
+		// 3, 6, or 8 hex digits, or the empty string.
+		if ( preg_match( '|^#([A-Fa-f0-9]{3}){1,2}([A-Fa-f0-9]{2})?$|', $color ) ) {
+			return $color;
+		}
+
+		return '';
+	}
+
+	/**
 	 * Render a select field.
 	 *
 	 * @param array $args Configuration arguments used by the select field.
+	 *
+	 * @return void
 	 */
 	public static function render_select_field( $args ) {
 		$defaults = array(
@@ -1362,24 +1416,45 @@ EOT;
 
 	/**
 	 * Renders the card buttons field.
+	 *
+	 * @return void
 	 */
 	public static function render_card_buttons_field() {
 
 		$options = array(
-			''            => esc_html__( 'Off', 'tasty-recipes' ),
-			'print'       => esc_html__( 'Print', 'tasty-recipes' ),
-			'pin'         => esc_html__( 'Pin this recipe', 'tasty-recipes' ),
-			'slickstream' => esc_html__( 'Slickstream Favorites', 'tasty-recipes' ),
-			'mediavine'   => esc_html__( 'Mediavine Grow.me Save', 'tasty-recipes' ),
+			''            => array(
+				'label' => __( 'Off', 'tasty-recipes' ),
+			),
+			'print'       => array(
+				'label' => __( 'Print', 'tasty-recipes' ),
+			),
+			'pin'         => array(
+				'label' => __( 'Pin this recipe', 'tasty-recipes' ),
+			),
+			'mediavine'   => array(
+				'label' => __( 'Mediavine Grow.me Save', 'tasty-recipes' ),
+			),
+			'slickstream' => array(
+				'label'    => __( 'Slickstream Favorites', 'tasty-recipes' ),
+				'disabled' => true,
+			),
 		);
+
+		Integrations\Slickstream::init();
+		$options = apply_filters( 'tasty_recipes_button_options', $options );
 
 		$value = Tasty_Recipes::get_card_button_settings();
 		?>
 		<div>
 			<?php foreach ( array( 'first', 'second' ) as $position ) : ?>
 				<select name="<?php echo esc_attr( Tasty_Recipes::CARD_BUTTONS_OPTION . '[' . $position . ']' ); ?>">
-				<?php foreach ( $options as $key => $label ) : ?>
-					<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $key, $value[ $position ] ); ?>><?php echo esc_html( $label ); ?></option>
+				<?php foreach ( $options as $key => $option ) : ?>
+					<option value="<?php echo esc_attr( $key ); ?>"
+						<?php selected( $key, $value[ $position ] ); ?>
+						<?php echo empty( $option['disabled'] ) ? '' : ' disabled'; ?>
+						>
+						<?php echo esc_html( $option['label'] ); ?>
+					</option>
 					<?php endforeach; ?>
 				</select>
 			<?php endforeach; ?>

@@ -20,14 +20,15 @@ class MealPlannerPro extends Converter {
 	/**
 	 * Matching string for existing recipes.
 	 *
-	 * @var string
+	 * @var array|string
 	 */
 	protected static $match_string = '[mpprecipe-recipe';
 
 	/**
-	 * Get recipe content to convert
+	 * Get recipe content to convert.
 	 *
 	 * @param string $content Existing content that could include a recipe.
+	 *
 	 * @return object|string
 	 */
 	public static function get_existing_to_convert( $content ) {
@@ -36,11 +37,12 @@ class MealPlannerPro extends Converter {
 	}
 
 	/**
-	 * Convert recipe content to Tasty Recipes format
+	 * Convert recipe content to Tasty Recipes format.
 	 *
-	 * @param string  $existing Existing content that could include a recipe.
-	 * @param integer $post_id  ID for the post with the recipe.
-	 * @return Recipe
+	 * @param string $existing Existing content that could include a recipe.
+	 * @param int    $post_id  ID for the post with the recipe.
+	 *
+	 * @return false|Recipe
 	 */
 	public static function create_recipe_from_existing( $existing, $post_id ) {
 		global $wpdb, $table_prefix;
@@ -55,6 +57,7 @@ class MealPlannerPro extends Converter {
 		if ( ! $existing ) {
 			return false;
 		}
+		$existing = (object) $existing;
 
 		$mapping_fields = array(
 			// MPP            -> Tasty Recipes.
@@ -76,6 +79,11 @@ class MealPlannerPro extends Converter {
 
 		$recipe         = Recipe::create();
 		$converted_data = array();
+
+		if ( ! $recipe ) {
+			return false;
+		}
+
 		foreach ( $mapping_fields as $mpp => $tr ) {
 
 			$value = $existing->$mpp;
@@ -117,6 +125,7 @@ class MealPlannerPro extends Converter {
 	 * Also handle [b] and [i] tags for Meal Planner Pro.
 	 *
 	 * @param string $item String with markdown to be converted.
+	 *
 	 * @return string
 	 */
 	protected static function process_markdownish_into_html( $item ) {
@@ -130,5 +139,4 @@ class MealPlannerPro extends Converter {
 		$output         = str_replace( array_keys( $search_replace ), array_values( $search_replace ), $output );
 		return $output;
 	}
-
 }

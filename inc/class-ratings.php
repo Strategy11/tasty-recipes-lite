@@ -63,6 +63,13 @@ class Ratings {
 	const RATING_COMMENT_HASH_META_KEY = 'tasty-recipes-comment-hash';
 
 	/**
+	 * Whether the CSS has been loaded.
+	 *
+	 * @var bool
+	 */
+	private static $css_loaded = false;
+
+	/**
 	 * Whether or not ratings are enabled. Optionally pass a comment status to
 	 * check if comments are open for the current post.
 	 *
@@ -90,6 +97,8 @@ class Ratings {
 	 * Renders ratings CSS in <head> when enabled.
 	 *
 	 * @deprecated 3.11.1
+	 *
+	 * @return void
 	 */
 	public static function action_wp_head() {
 		_deprecated_function( __METHOD__, '3.11.1' );
@@ -118,10 +127,16 @@ class Ratings {
 	 * @return void
 	 */
 	public static function add_inline_style() {
+		if ( self::$css_loaded ) {
+			return;
+		}
+
 		$styles = self::get_style_content();
 		if ( ! $styles ) {
 			return;
 		}
+
+		self::$css_loaded = true;
 		wp_add_inline_style( 'tasty-recipes-main', Utils::minify_css( $styles ) );
 	}
 
@@ -141,6 +156,8 @@ class Ratings {
 
 	/**
 	 * Renders ratings CSS in <head> when enabled.
+	 *
+	 * @return void
 	 */
 	public static function action_admin_head() {
 		add_action( 'add_meta_boxes', array( __CLASS__, 'add_rating_in_admin' ) );
@@ -226,6 +243,8 @@ class Ratings {
 	 * when a comment changes in some way.
 	 *
 	 * @param int $comment_id ID of the changed comment.
+	 *
+	 * @return void
 	 */
 	public static function action_modify_comment_update_recipe_ratings( $comment_id ) {
 		$comment = get_comment( $comment_id );
@@ -248,6 +267,8 @@ class Ratings {
 	 *
 	 * @param Recipe $recipe  Existing recipe object.
 	 * @param int    $post_id ID for the post with the recipe.
+	 *
+	 * @return void
 	 */
 	public static function update_recipe_rating( $recipe, $post_id ) {
 		global $wpdb;
@@ -354,6 +375,8 @@ class Ratings {
 	 *
 	 * @param object $comment New comment object.
 	 * @param object $request Request object.
+	 *
+	 * @return void
 	 */
 	public static function action_rest_insert_comment( $comment, $request ) {
 		if ( ! empty( $request['meta']['tasty-recipes-rating'] ) ) {

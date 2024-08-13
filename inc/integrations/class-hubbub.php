@@ -1,8 +1,8 @@
 <?php
 /**
- * Handles the Tasty Pins integration with Hubbub.
+ * Handles the integration with Hubbub.
  *
- * @package Tasty_Pins
+ * @package Tasty_Recipes
  */
 
 namespace Tasty_Recipes\Integrations;
@@ -10,7 +10,7 @@ namespace Tasty_Recipes\Integrations;
 use Tasty\Framework\Traits\Singleton;
 
 /**
- * Integration with Hubbub.
+ * Integration with Hubbub (previously Mediavine Grow Social).
  */
 class Hubbub {
 	use Singleton;
@@ -44,7 +44,7 @@ class Hubbub {
 	 * @return void
 	 */
 	private function add_hooks() {
-		add_filter( 'dpsp_is_location_displayable', array( $this, 'hide_tools_in_recipe_print' ) );
+		add_filter( 'dpsp_is_location_displayable', array( __CLASS__, 'hide_tools_in_recipe_print' ) );
 	}
 
 	/**
@@ -54,7 +54,7 @@ class Hubbub {
 	 *
 	 * @return bool
 	 */
-	public function hide_tools_in_recipe_print( $displayable ) {
+	public static function hide_tools_in_recipe_print( $displayable ) {
 		return $displayable && ! tasty_recipes_is_print();
 	}
 }

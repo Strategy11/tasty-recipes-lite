@@ -15,7 +15,7 @@ class Url {
 	/**
 	 * Return url with passed utm query strings added.
 	 *
-	 * @param string $url Url to have utm query strings.
+	 * @param string $url        Url to have utm query strings.
 	 * @param array  $utm_params UTM query strings.
 	 *
 	 * @return string
@@ -73,6 +73,7 @@ class Url {
 		}
 
 		wp_safe_redirect( esc_url_raw( $url ) );
+		exit;
 	}
 
 	/**

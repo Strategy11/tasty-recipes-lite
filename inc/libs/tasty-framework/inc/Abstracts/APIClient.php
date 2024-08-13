@@ -46,8 +46,8 @@ abstract class APIClient {
 	 * Handle the request.
 	 *
 	 * @param string $request_path Request path after tasty domain.
-	 * @param array  $args Passed arguments.
-	 * @param string $type GET or POST.
+	 * @param array  $args         Passed arguments.
+	 * @param string $type         GET or POST.
 	 *
 	 * @return bool
 	 */
@@ -66,7 +66,7 @@ abstract class APIClient {
 	 * Handle remote POST.
 	 *
 	 * @param string $request_path Request path after tasty domain.
-	 * @param array  $args Array with options sent to API.
+	 * @param array  $args         Array with options sent to API.
 	 *
 	 * @return bool WP Remote request status.
 	 */
@@ -78,7 +78,7 @@ abstract class APIClient {
 	 * Handle remote GET.
 	 *
 	 * @param string $request_path Request path after tasty domain.
-	 * @param array  $args Array with options sent to API.
+	 * @param array  $args         Array with options sent to API.
 	 *
 	 * @return bool WP Remote request status.
 	 */

@@ -27,7 +27,7 @@ function tasty_recipes_is_print() {
 function tasty_recipes_get_print_url( $post_id, $recipe_id ) {
 	global $wp_rewrite;
 	$permalink = get_permalink( $post_id );
-	if ( ! empty( $wp_rewrite->permalink_structure ) && ! is_preview() ) {
+	if ( $permalink && ! empty( $wp_rewrite->permalink_structure ) && ! is_preview() ) {
 		$bits = explode( '?', $permalink );
 		$args = '';
 		if ( 2 === count( $bits ) ) {

@@ -14,6 +14,8 @@ class Rank_Math {
 
 	/**
 	 * Enqueue Rank Math JavaScript when Tasty Recipes is enqueued.
+	 *
+	 * @return void
 	 */
 	public static function action_admin_enqueue_scripts() {
 		$time = filemtime( dirname( TASTY_RECIPES_PLUGIN_FILE ) . '/assets/js/rank-math.js' );
@@ -26,7 +28,7 @@ class Rank_Math {
 				'tasty-recipes-block-editor',
 				'rank-math-analyzer',
 			),
-			$time,
+			(string) $time,
 			true
 		);
 	}

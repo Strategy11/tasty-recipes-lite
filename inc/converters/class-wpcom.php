@@ -18,7 +18,7 @@ class WPCom extends Converter {
 	/**
 	 * Matching string for existing recipes.
 	 *
-	 * @var string
+	 * @var array|string
 	 */
 	protected static $match_string = '[recipe';
 
@@ -26,7 +26,8 @@ class WPCom extends Converter {
 	 * Get recipe content to convert.
 	 *
 	 * @param string $content Existing content that might have a recipe.
-	 * @return object|string
+	 *
+	 * @return false|string
 	 */
 	public static function get_existing_to_convert( $content ) {
 		return Utils::get_existing_shortcode( $content, 'recipe' );
@@ -35,9 +36,10 @@ class WPCom extends Converter {
 	/**
 	 * Convert recipe content to Tasty Recipes format.
 	 *
-	 * @param string  $existing Existing content that might have a recipe.
-	 * @param integer $post_id  ID for the post with the recipe.
-	 * @return Recipe|false
+	 * @param string $existing Existing content that might have a recipe.
+	 * @param int    $post_id  ID for the post with the recipe.
+	 *
+	 * @return false|Recipe
 	 */
 	public static function create_recipe_from_existing( $existing, $post_id ) { // phpcs:ignore VariableAnalysis
 
@@ -95,12 +97,14 @@ class WPCom extends Converter {
 				$transformed_data .= 'ingredients' === $tr ? '</ul>' : '</ol>';
 				$transformed_data .= PHP_EOL;
 			}
-			if ( ! empty( $transformed_data ) ) {
-				$converted_data[ $tr ] = trim( $transformed_data );
-			}
+			$converted_data[ $tr ] = trim( $transformed_data );
 		}
 
 		$recipe = Recipe::create();
+		if ( ! $recipe ) {
+			return false;
+		}
+
 		return self::save_converted_data_to_recipe( $converted_data, $recipe );
 	}
 
@@ -109,7 +113,8 @@ class WPCom extends Converter {
 	 *
 	 * @param string $content       Content to parse for a shortcode.
 	 * @param string $shortcode_tag Shortcode tag to look for.
-	 * @return object|string
+	 *
+	 * @return array|false
 	 */
 	protected static function get_all_shortcodes_to_convert( $content, $shortcode_tag ) {
 		$backup_tags = $GLOBALS['shortcode_tags'];
@@ -130,5 +135,4 @@ class WPCom extends Converter {
 		$GLOBALS['shortcode_tags'] = $backup_tags; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 		return $existing;
 	}
-
 }

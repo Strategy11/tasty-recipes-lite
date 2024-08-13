@@ -47,11 +47,29 @@ class Shortcodes {
 	);
 
 	/**
+	 * Selected included template name.
+	 *
+	 * @var string
+	 */
+	private static $template = '';
+
+	/**
+	 * Custom template name if not an included template.
+	 *
+	 * @var string
+	 */
+	private static $custom_template = '';
+
+	/**
 	 * Registers shortcodes with their callbacks.
+	 *
+	 * @return void
 	 */
 	public static function action_init_register_shortcode() {
 		add_shortcode( self::RECIPE_SHORTCODE, array( __CLASS__, 'render_tasty_recipe_shortcode' ) );
 		add_shortcode( self::QUICK_LINKS_SHORTCODE, array( __CLASS__, 'render_quick_links_shortcode' ) );
+
+		add_action( 'wp_head', array( __CLASS__, 'action_wp_head' ), 7 );
 
 		wp_register_style(
 			'tasty-recipes-main',
@@ -59,6 +77,32 @@ class Shortcodes {
 			array(),
 			TASTY_RECIPES_PLUGIN_VERSION
 		);
+	}
+
+	/**
+	 * Prepare the head if the post has a recipe.
+	 * This must be loaded before the styles are printed in the head.
+	 *
+	 * @since 3.13
+	 *
+	 * @return void
+	 */
+	public static function action_wp_head() {
+		Distribution_Metadata::action_wp_head();
+		if ( ! is_singular() ) {
+			return;
+		}
+
+		$recipes = Tasty_Recipes::get_recipes_for_post(
+			0,
+			array( 'disable-json-ld' => false )
+		);
+
+		if ( empty( $recipes ) ) {
+			return;
+		}
+
+		Assets::action_wp_head();
 	}
 
 	/**
@@ -245,6 +289,8 @@ class Shortcodes {
 	 * Renders the Tasty Recipes shortcode.
 	 *
 	 * @param array $atts Shortcode attributes.
+	 *
+	 * @return string
 	 */
 	public static function render_tasty_recipe_shortcode( $atts ) { // phpcs:ignore SlevomatCodingStandard
 
@@ -297,30 +343,12 @@ class Shortcodes {
 			$wrapper_classes = array_merge( $wrapper_classes, explode( ' ', $atts['className'] ) );
 		}
 
-		/**
-		 * Modify template used in rendering recipe.
-		 *
-		 * @param string $template
-		 */
-		$template = apply_filters( 'tasty_recipes_recipe_template', 'tasty-recipes' );
-		if ( ! in_array( $template, array( 'tasty-recipes', 'easyrecipe' ), true ) ) {
+		self::set_template_info();
+		if ( ! self::$template ) {
 			return '';
 		}
 
-		$custom_design = false;
-		if ( file_exists( get_stylesheet_directory() . '/tasty-recipes.php' ) ) {
-			$template = get_stylesheet_directory() . '/tasty-recipes.php';
-		} else {
-			$custom_design = get_option( Tasty_Recipes::TEMPLATE_OPTION, '' );
-			$custom_path   = dirname( TASTY_RECIPES_PLUGIN_FILE ) . '/templates/designs/' . $custom_design . '/tasty-recipes.php';
-			if ( $custom_design && file_exists( $custom_path ) ) {
-				$template = $custom_path;
-			} else {
-				$template = 'recipe/' . $template;
-			}
-		}
-
-		if ( 'recipe/easyrecipe' === $template ) {
+		if ( 'recipe/easyrecipe' === self::$template ) {
 			$wrapper_classes[] = 'easyrecipe';
 		}
 
@@ -359,7 +387,7 @@ class Shortcodes {
 			'id="tasty-recipes-' . esc_attr( (string) $recipe->get_id() ) . '-jump-target" ' .
 			'style="display:block;padding-top:2px;margin-top:-2px;"></span>';
 		$ret           .= '<div id="tasty-recipes-' . $recipe->get_id() . '" data-tr-id="' . $recipe->get_id() . '" class="' . esc_attr( implode( ' ', $wrapper_classes ) ) . '"';
-		$customizations = self::get_card_container_customizations( $custom_design );
+		$customizations = self::get_card_container_customizations();
 		if ( $customizations ) {
 			$ret .= ' data-tasty-recipes-customization="' . esc_attr( $customizations ) . '"';
 		}
@@ -412,9 +440,10 @@ class Shortcodes {
 				$message_text = 'Ingredient unit conversion requires a valid Tasty Recipes license key. ' .
 					'Enter a valid license key, or contact Tasty Recipes support if you are seeing this message in error.';
 			}
-			$error_message  = '<div style="border:4px solid #dc3232;padding:5px 12px;margin-top:15px;margin-bottom:15px;">' . esc_html( $message_text ) . '</div>';
-			$error_message .= '</div>' . PHP_EOL;
-			$ingredients    = $error_message . $ingredients;
+			$error_message = '<div style="border:4px solid #dc3232;padding:5px 12px;margin-top:15px;margin-bottom:15px;">' .
+				esc_html( $message_text ) .
+				'</div>' . PHP_EOL;
+			$ingredients   = $error_message . $ingredients;
 		}
 
 		$ingredients = self::process_ingredients_annotate_with_spans( $ingredients );
@@ -664,18 +693,11 @@ class Shortcodes {
 			}
 		}
 
-		$styles = '';
-		if ( 'recipe/easyrecipe' === $template ) {
-			$easyrecipe_css = Utils::get_contents( dirname( __DIR__ ) . '/assets/css/easyrecipe.css' );
-			$easyrecipe_css = str_replace( 'assets/images/easyrecipe', plugins_url( 'assets/images/easyrecipe', __DIR__ ), $easyrecipe_css );
-			$styles        .= PHP_EOL . $easyrecipe_css;
-		}
-		$styles .= self::get_styles_as_string( $custom_design );
-
 		if ( $responsive_styles ) {
-			$styles .= $responsive_styles;
+			$template_vars['recipe_styles'] .= '<style>' . $responsive_styles . '</style>';
 		}
-		Assets::add_inline_style( $styles );
+
+		Assets::maybe_add_tinymce_style( $template_vars );
 
 		$template_vars['recipe_scripts'] .= PHP_EOL . self::get_common_recipe_scripts();
 		$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( __DIR__ ) . '/assets/js/smooth-scroll.js' );
@@ -710,7 +732,7 @@ class Shortcodes {
 
 		$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( __DIR__ ) . '/assets/js/ratings.js' );
 
-		self::minify_js( $template_vars['recipe_scripts'] );
+		self::prepare_js( $template_vars['recipe_scripts'] );
 
 		$total_reviews = $recipe->get_total_reviews();
 
@@ -752,12 +774,51 @@ class Shortcodes {
 		 * @param object $recipe        Recipe object.
 		 */
 		$template_vars = apply_filters( 'tasty_recipes_recipe_template_vars', $template_vars, $recipe );
-		$ret          .= Tasty_Recipes::get_template_part( $template, $template_vars );
+		$ret          .= Tasty_Recipes::get_template_part( self::$template, $template_vars );
 		$ret          .= '</div>';
 
 		self::add_powered_by( $shareasale, $ret );
 
 		return apply_filters( 'tasty_recipes_recipe_card_output', $ret, 'frontend', compact( 'recipe' ) );
+	}
+
+	/**
+	 * Get details about the selected template.
+	 *
+	 * @since 3.13
+	 *
+	 * @param bool|string $custom_design Custom design.
+	 *
+	 * @return void
+	 */
+	private static function set_template_info( $custom_design = false ) {
+		self::$template        = '';
+		self::$custom_template = '';
+
+		/**
+		 * Modify template used in rendering recipe.
+		 *
+		 * @param string $template
+		 */
+		$template = apply_filters( 'tasty_recipes_recipe_template', 'tasty-recipes' );
+		if ( ! in_array( $template, array( 'tasty-recipes', 'easyrecipe' ), true ) ) {
+			return;
+		}
+
+		if ( file_exists( get_stylesheet_directory() . '/tasty-recipes.php' ) ) {
+			self::$template = get_stylesheet_directory() . '/tasty-recipes.php';
+			return;
+		}
+
+		$custom_design = $custom_design ? $custom_design : get_option( Tasty_Recipes::TEMPLATE_OPTION, '' );
+		$custom_path   = dirname( TASTY_RECIPES_PLUGIN_FILE ) . '/templates/designs/' . $custom_design . '/tasty-recipes.php';
+
+		self::$custom_template = $custom_design;
+		if ( $custom_design && file_exists( $custom_path ) ) {
+			self::$template = $custom_path;
+		} else {
+			self::$template = 'recipe/' . $template;
+		}
 	}
 
 	/**
@@ -948,19 +1009,12 @@ EOT;
 	 *
 	 * @return void
 	 */
-	private static function minify_js( &$scripts ) {
+	private static function prepare_js( &$scripts ) {
+		$scripts = Utils::minify_js( $scripts );
 		if ( empty( $scripts ) ) {
 			return;
 		}
 
-		$debug = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG;
-		if ( ! $debug ) {
-			// Remove comments.
-			$scripts = preg_replace( '/\/\*(.|\s)*?\*\//', '', $scripts );
-
-			// Remove extra white space.
-			$scripts = str_replace( array( "\t" ), '', $scripts );
-		}
 		$scripts = PHP_EOL . '<script>' . $scripts . '</script>';
 	}
 
@@ -968,6 +1022,8 @@ EOT;
 	 * Renders the Quick Links shortcode.
 	 *
 	 * @param array $atts Shortcode attributes.
+	 *
+	 * @return string
 	 */
 	public static function render_quick_links_shortcode( $atts ) {
 		$defaults = array(
@@ -979,6 +1035,7 @@ EOT;
 		$atts = array_merge( $defaults, (array) $atts );
 
 		$should_prepend_jump_to = is_array( $atts['links'] ) ? $atts['links'] : explode( ',', $atts['links'] );
+		$should_prepend_jump_to = array_map( 'trim', $should_prepend_jump_to );
 
 		$post = get_post();
 		if ( ! $post ) {
@@ -1004,9 +1061,6 @@ EOT;
 		$btn_class = '';
 		if ( 'buttons' === get_option( Tasty_Recipes::QUICK_LINKS_STYLE ) ) {
 			$btn_class = ' button';
-		}
-		if ( is_array( $should_prepend_jump_to ) ) {
-			$should_prepend_jump_to = array_map( 'trim', $should_prepend_jump_to );
 		}
 
 		$links = array();
@@ -1048,6 +1102,8 @@ EOT;
 	 * Get the shortcode for a given recipe.
 	 *
 	 * @param Recipe $recipe Recipe instance.
+	 *
+	 * @return string
 	 */
 	public static function get_shortcode_for_recipe( Recipe $recipe ) {
 		return '[' . self::RECIPE_SHORTCODE . ' id="' . $recipe->get_id() . '"]';
@@ -1060,7 +1116,10 @@ EOT;
 	 *
 	 * @return string
 	 */
-	public static function get_card_container_customizations( $custom_design ) {
+	public static function get_card_container_customizations( $custom_design = '' ) {
+		if ( ! $custom_design ) {
+			$custom_design = self::$custom_template;
+		}
 		switch ( $custom_design ) {
 			case 'bold':
 				return 'primary-color.border-color';
@@ -1117,21 +1176,29 @@ EOT;
 	/**
 	 * Gets the styles to inject into the recipe card.
 	 *
-	 * @param string $custom_design Design being used.
+	 * @param string $override_design Design being used if not the saved option.
 	 *
 	 * @return string
 	 */
-	public static function get_styles_as_string( $custom_design ) {
+	public static function get_styles_as_string( $override_design = '' ) {
+		self::set_template_info( $override_design );
+
 		// Add stylesheet so we can add inline CSS to it.
 		wp_enqueue_style( 'tasty-recipes-main' );
 
 		$styles = '';
-		if ( $custom_design ) {
-			$custom_path = dirname( TASTY_RECIPES_PLUGIN_FILE ) . '/templates/designs/' . $custom_design . '/tasty-recipes.css';
+
+		if ( 'recipe/easyrecipe' === self::$template ) {
+			$easyrecipe_css = Utils::get_contents( dirname( __DIR__ ) . '/assets/css/easyrecipe.css' );
+			$easyrecipe_css = str_replace( 'assets/images/easyrecipe', plugins_url( 'assets/images/easyrecipe', __DIR__ ), $easyrecipe_css );
+			$styles        .= PHP_EOL . $easyrecipe_css;
+		} elseif ( self::$custom_template ) {
+			$custom_path = dirname( TASTY_RECIPES_PLUGIN_FILE ) . '/templates/designs/' . self::$custom_template . '/tasty-recipes.css';
 			if ( file_exists( $custom_path ) ) {
 				$styles .= Utils::get_contents( $custom_path );
 			}
 		}
+
 		/**
 		 * Allow third-parties to more easily inject their own styles.
 		 */

@@ -19,7 +19,7 @@ class Cookbook extends Converter {
 	/**
 	 * Matching string for existing recipes.
 	 *
-	 * @var string
+	 * @var array|string
 	 */
 	protected static $match_string = array(
 		'<!--Cookbook Recipe',
@@ -30,7 +30,8 @@ class Cookbook extends Converter {
 	 * Get recipe content to convert.
 	 *
 	 * @param string $content Existing content that may have a recipe.
-	 * @return object|string
+	 *
+	 * @return false|string
 	 */
 	public static function get_existing_to_convert( $content ) {
 		if ( preg_match( '/<!--Cookbook Recipe (\d+)-->.+?<!--End Cookbook Recipe-->/ms', $content, $matches ) ) {
@@ -42,11 +43,12 @@ class Cookbook extends Converter {
 	/**
 	 * Convert recipe content to Tasty Recipes format.
 	 *
-	 * @param string  $existing Existing content that may have a recipe.
-	 * @param integer $post_id  ID for the post with the recipe.
-	 * @return Recipe
+	 * @param string $existing Existing content that may have a recipe.
+	 * @param int    $post_id  ID for the post with the recipe.
+	 *
+	 * @return false|Recipe
 	 */
-	public static function create_recipe_from_existing( $existing, $post_id ) { // phpcs:ignore VariableAnalysis
+	public static function create_recipe_from_existing( $existing, $post_id ) { // phpcs:ignore SlevomatCodingStandard
 		preg_match( '/<!--Cookbook Recipe (\d+)-->/', $existing, $matches );
 		if ( isset( $matches[1] ) ) {
 			$id = $matches[1];
@@ -61,6 +63,7 @@ class Cookbook extends Converter {
 			return false;
 		}
 
+		$post_id       = (int) $post_id; // Avoid UnusedVariable.
 		$existing_post = get_post( $id );
 		if ( ! $existing_post ) {
 			return false;
@@ -68,6 +71,10 @@ class Cookbook extends Converter {
 
 		$recipe         = Recipe::create();
 		$converted_data = array();
+
+		if ( ! $recipe ) {
+			return false;
+		}
 
 		$mapping = array(
 			// Cookbook -> Tasty Recipes.
@@ -156,5 +163,4 @@ class Cookbook extends Converter {
 
 		return self::save_converted_data_to_recipe( $converted_data, $recipe );
 	}
-
 }

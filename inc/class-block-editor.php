@@ -24,6 +24,8 @@ class Block_Editor {
 
 	/**
 	 * Register the scripts and block type.
+	 *
+	 * @return void
 	 */
 	public static function action_init_register() {
 		if ( ! function_exists( 'register_block_type' ) ) {

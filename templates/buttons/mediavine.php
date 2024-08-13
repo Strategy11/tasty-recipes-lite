@@ -8,9 +8,16 @@
  * @var string $customization Customization options.
  */
 
+namespace Tasty_Recipes;
+
+use Tasty_Recipes\Objects\Recipe;
+use Tasty_Recipes\Integrations;
+
+Integrations\Mediavine::load_scripts();
+
 ?>
 
-<a class="button tasty-recipes-mediavine-button tasty-recipes-no-print" href="javascript:void(0)" data-tasty-recipes-customization="<?php echo esc_attr( $customization ); ?>">
+<a class="button tasty-recipes-mediavine-button tasty-recipes-no-print" href="https://app.grow.me" target="_blank" data-recipe-id="<?php echo esc_attr( $recipe instanceof Recipe ? $recipe->get_id() : '' ); ?>" data-tasty-recipes-customization="<?php echo esc_attr( $customization ); ?>">
 	<span class="tasty-recipes-not-saved">
 		<svg viewBox="0 0 24 24" class="svg-heart-regular" aria-hidden="true"><use xlink:href="#tasty-recipes-icon-heart-regular"></use></svg>
 		<?php esc_html_e( 'Save Recipe', 'tasty-recipes' ); ?>
@@ -20,34 +27,3 @@
 		<?php esc_html_e( 'Recipe Saved', 'tasty-recipes' ); ?>
 	</span>
 </a>
-<script>
-(function(){
-	function initGrowMeSdk() {
-		if (!window.growMe) {
-			window.growMe = function (e) {
-				window.growMe._.push(e);
-			}
-			window.growMe._ = [];
-		}
-	}
-	initGrowMeSdk();
-	window.growMe(function() {
-		function updateFavoriteButtonState(isFavorite) {
-			document.querySelectorAll('.tasty-recipes-mediavine-button').forEach(function(el) {
-				el.querySelector('.tasty-recipes-saved').style.display = isFavorite ? null : 'none';
-				el.querySelector('.tasty-recipes-not-saved').style.display = isFavorite ? 'none' : null;
-			});
-		}
-		document.querySelectorAll('.tasty-recipes-mediavine-button').forEach(function(el) {
-			el.addEventListener('click', function() {
-				window.growMe.addBookmark();
-			});
-		});
-		window.growMe.on('isBookmarkedChanged', function(data) {
-			updateFavoriteButtonState(data.isBookmarked);
-		});
-		var isBookmarked = window.growMe.getIsBookmarked();
-		updateFavoriteButtonState(isBookmarked);
-	});
-}())
-</script>

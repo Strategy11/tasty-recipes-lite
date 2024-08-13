@@ -44,6 +44,8 @@ class Editor {
 
 	/**
 	 * Renders a notice when a convertable recipe is detected.
+	 *
+	 * @return void
 	 */
 	public static function action_admin_notices() {
 		$screen  = get_current_screen();
@@ -300,6 +302,8 @@ class Editor {
 	 * Registers an 'Add Recipe' button to Media Buttons.
 	 *
 	 * @param string $editor_id Editor instance to be displayed.
+	 *
+	 * @return void
 	 */
 	public static function action_media_buttons( $editor_id ) {
 
@@ -319,6 +323,8 @@ class Editor {
 
 	/**
 	 * Adds a 'Add rel="nofollow" to link' checkbox to the WordPress link editor.
+	 *
+	 * @return void
 	 */
 	public static function action_after_wp_tiny_mce() {
 		?>
@@ -436,6 +442,8 @@ class Editor {
 
 	/**
 	 * Handles an AJAX request to convert a recipe.
+	 *
+	 * @return void
 	 */
 	public static function handle_wp_ajax_convert_recipe() {
 		$post = self::get_current_post_for_conversion_ajax();
@@ -460,6 +468,8 @@ class Editor {
 
 	/**
 	 * Handles an AJAX request to ignore a recipe conversion.
+	 *
+	 * @return void
 	 */
 	public static function handle_wp_ajax_ignore_convert() {
 		$post = self::get_current_post_for_conversion_ajax();
@@ -540,6 +550,8 @@ class Editor {
 
 	/**
 	 * Handles an AJAX request to render a shortcode with its data.
+	 *
+	 * @return void
 	 */
 	public static function handle_wp_ajax_parse_shortcode() {
 		$shortcode = Utils::post_param( 'shortcode' );
@@ -569,6 +581,8 @@ class Editor {
 
 	/**
 	 * Handles an AJAX request to modify a recipe.
+	 *
+	 * @return void
 	 */
 	public static function handle_wp_ajax_modify_recipe() {
 		$post_recipe = Utils::post_param( 'recipe', '' );
@@ -660,6 +674,8 @@ class Editor {
 	 *
 	 * @param string $shortcode Shortcode string to render.
 	 * @param object $post      Post containing the shortcode.
+	 *
+	 * @return void
 	 */
 	private static function render_shortcode_response( $shortcode, $post ) {
 		setup_postdata( $post );

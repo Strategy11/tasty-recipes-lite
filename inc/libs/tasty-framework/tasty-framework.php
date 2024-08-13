@@ -5,8 +5,8 @@
  * Description: Common functionality between all WP Tasty plugins.
  * Author:      WP Tasty team
  * Author URI:  https://wptasty.com/
- * Version:     1.0.5
- * License:     GPLv2 or later (license.txt)
+ * Version:     1.0.6
+ * License:     GPLv2 or later (license.txt).
  *
  * @package Tasty/Framework
  */
@@ -18,22 +18,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 use Tasty\Framework\Versions;
 use Tasty\Framework\Main;
 
-if ( ! function_exists( 'tasty_register_1_dot_0_dot_5' ) ) {
+if ( ! function_exists( 'tasty_register_1_dot_0_dot_6' ) ) {
 
 	if ( ! class_exists( Versions::class ) ) {
 		require_once __DIR__ . '/inc/Versions.php';
 		add_action( 'plugins_loaded', array( Versions::class, 'initialize_latest_version' ), 1 );
 	}
 
-	add_action( 'plugins_loaded', 'tasty_register_1_dot_0_dot_5', 0 );
+	add_action( 'plugins_loaded', 'tasty_register_1_dot_0_dot_6', 0 );
 
 	/**
 	 * Register current version of the framework.
 	 *
 	 * @return void
 	 */
-	function tasty_register_1_dot_0_dot_5() {
-		Versions::instance()->register( '1.0.5', 'tasty_initialize_1_dot_0_dot_5' );
+	function tasty_register_1_dot_0_dot_6() {
+		Versions::instance()->register( '1.0.6', 'tasty_initialize_1_dot_0_dot_6' );
 	}
 
 	/**
@@ -41,7 +41,7 @@ if ( ! function_exists( 'tasty_register_1_dot_0_dot_5' ) ) {
 	 *
 	 * @return void
 	 */
-	function tasty_initialize_1_dot_0_dot_5() {
+	function tasty_initialize_1_dot_0_dot_6() {
 		if ( class_exists( Main::class ) ) {
 			return;
 		}

@@ -1,11 +1,9 @@
 {
     "name": "wp-tasty/tasty-recipes",
+    "description": "The most complete recipe plugin for WordPress.",
     "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
     "repositories":[
-        {
-            "type":"composer",
-            "url":"https://wpackagist.org"
-        },
         {
           "type":"vcs",
           "url":"git@github.com:Strategy11/tasty-framework.git"
@@ -25,11 +23,11 @@
         "querypath/querypath": "^3.0",
         "sirbrillig/phpcs-variable-analysis": "^2.5",
         "slevomat/coding-standard": "~8.0",
-        "strategy11/tasty-framework": "1.0.5",
+        "strategy11/tasty-framework": "1.0.6",
         "wp-cli/dist-archive-command": "^2.0",
         "wp-coding-standards/wpcs": "^3.1",
-        "wpackagist-plugin/wordpress-seo": "^20.2",
-        "yoast/phpunit-polyfills": "^2"
+        "yoast/phpunit-polyfills": "^2",
+        "yoast/wordpress-seo": "^23.0"
     },
     "extra": {
         "installer-paths": {
@@ -51,7 +49,7 @@
             "phpstan/extension-installer": true
         },
         "platform": {
-            "php": "7.4"
+            "php": "8.0"
         },
         "sort-packages": true
     },

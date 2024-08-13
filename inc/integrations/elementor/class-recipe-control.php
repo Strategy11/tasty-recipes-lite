@@ -23,6 +23,8 @@ class Recipe_Control extends \Elementor\Base_Data_Control {
 
 	/**
 	 * Enqueues the necessary scripts and styles.
+	 *
+	 * @return void
 	 */
 	public function enqueue() {
 		global $post;
@@ -70,6 +72,8 @@ class Recipe_Control extends \Elementor\Base_Data_Control {
 
 	/**
 	 * Renders the content of the control.
+	 *
+	 * @return void
 	 */
 	public function content_template() {
 		$control_uid = $this->get_control_uid();

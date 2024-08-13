@@ -19,7 +19,7 @@ if ( ! function_exists( 'tasty_get_filesystem' ) ) {
 		if ( is_null( $filesystem ) ) {
 			require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php';
 			require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php';
-			$filesystem = new WP_Filesystem_Direct( new StdClass() );
+			$filesystem = new WP_Filesystem_Direct( new stdClass() );
 		}
 
 		return $filesystem;

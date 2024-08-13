@@ -25,6 +25,8 @@ class Content_Model {
 
 	/**
 	 * Registers our cron events.
+	 *
+	 * @return void
 	 */
 	public static function action_init_register_cron_events() {
 		if ( ! wp_next_scheduled( 'tasty_recipes_apply_unit_conversion' ) ) {
@@ -40,6 +42,8 @@ class Content_Model {
 
 	/**
 	 * Registers our post types.
+	 *
+	 * @return void
 	 */
 	public static function action_init_register_post_types() {
 
@@ -70,6 +74,8 @@ class Content_Model {
 
 	/**
 	 * Registers our rewrite rules for print pages.
+	 *
+	 * @return void
 	 */
 	public static function action_init_register_rewrite_rules() {
 		add_rewrite_endpoint( self::get_print_query_var(), EP_PERMALINK | EP_PAGES );
@@ -77,6 +83,8 @@ class Content_Model {
 
 	/**
 	 * Registers our custom oEmbed providers.
+	 *
+	 * @return void
 	 */
 	public static function action_init_register_oembed_providers() {
 		wp_oembed_add_provider( '#video\.mediavine\.com/videos/.*\.js#', 'https://embed.mediavine.com/oembed/', true );
@@ -340,6 +348,8 @@ class Content_Model {
 
 	/**
 	 * Cron callback to apply unit conversion to recipes without it.
+	 *
+	 * @return void
 	 */
 	public static function action_tasty_recipes_apply_unit_conversion() {
 		global $wpdb;
@@ -364,6 +374,8 @@ class Content_Model {
 
 	/**
 	 * Cron callback to generate image sizes for attachments associated with Tasty Recipes.
+	 *
+	 * @return void
 	 */
 	public static function action_tasty_recipes_process_thumbnails() {
 		global $wpdb;
@@ -423,6 +435,8 @@ class Content_Model {
 
 	/**
 	 * Cron callback to enrich YouTube responses with additional metadata.
+	 *
+	 * @return void
 	 */
 	public static function action_tasty_recipes_enrich_youtube_embeds() {
 		global $wpdb;

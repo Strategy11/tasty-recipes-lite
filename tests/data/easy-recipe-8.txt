@@ -1,0 +1,50 @@
+Now, if you are thinking to yourself, Those look yummy, but it sounds too hard. STOP! It only sounds hard. It is so easy! If my pictures aren’t inspiring you, click on the blog link below and be inspired.
+<div class="easyrecipe">
+<table class="ERHDTable" border="0">
+<tbody>
+<tr>
+<td><span class="item ERName"><span class="fn">Crab &amp; Avocado Nachos</span></span></td>
+<td align="center" valign="top"></td>
+</tr>
+</tbody>
+</table>
+<div class="ERClear"></div>
+<div class="ERHead">Author: <span class="author">Pinch of Yum</span></div>
+<div class="ERHead">Prep time: <span class="preptime">10 mins</span></div>
+<div class="ERHead">Cook time: <span class="cooktime">5 mins</span></div>
+<div class="ERHead">Total time: <span class="duration">15 mins</span></div>
+<div class="ERHead">Serves: <span class="yield">4</span></div>
+<div class="ERIngredients">
+<div class="ERIngredientsHeader">Ingredients</div>
+<ul class="ingredients">
+ 	<li class="ingredient">1 teaspoon butter</li>
+ 	<li class="ingredient">1 teaspoon oil</li>
+ 	<li class="ingredient">1 can white and yellow sweet corn</li>
+ 	<li class="ingredient">1 teaspoon cumin</li>
+ 	<li class="ingredient">1 teaspoon chili powder</li>
+ 	<li class="ingredient">1 lb. jumbo lump crab meat</li>
+ 	<li class="ingredient">1/2 cup sour cream</li>
+ 	<li class="ingredient">1/4 cup chopped chives</li>
+ 	<li class="ingredient">tortilla chips</li>
+ 	<li class="ingredient">1/2 cup shredded cheese (I used white cheddar)</li>
+ 	<li class="ingredient">1 avocado, sliced or cut into chunks</li>
+ 	<li class="ingredient">1 slice bacon, chopped or crumbled</li>
+</ul>
+</div>
+<div class="ERInstructions">
+<div class="ERInstructionsHeader">Instructions</div>
+<div class="instructions">
+<ol>
+ 	<li class="instruction">Preheat oven to 450 degrees. Melt the butter and oil in a small skillet over medium high heat. Add corn and spices. Let cook, stirring only a few times, until the corn turns golden brown on the outside.</li>
+ 	<li class="instruction">Add crab meat, sour cream, and half of the chives (reserve other half for topping). Mix everything together in the skillet and keep over low heat for 3-4 minutes, to heat through.</li>
+ 	<li class="instruction">Assemble one layer of chips on a baking sheet covered with aluminum foil. Spoon half of the crab mixture and half of the shredded cheese on top of the chips. Top with another layer of chips, the rest of the crab mixture and the rest of the cheese. Broil for 3-5 minutes.</li>
+ 	<li class="instruction">Remove from oven and sprinkle with chives, bacon, and avocado pieces.</li>
+</ol>
+</div>
+</div>
+</div>
+In honor of fried foods...
+
+What food are you most looking forward to eating at the State Fair? or, if you’re not a State Fair kind of person, isn’t it about time?
+
+Me? I wait all year for one of those deep fried Milky Ways.

@@ -78,7 +78,7 @@ use Tasty\Framework\Utils\Url;
 				</div>
 
 				<div class="tasty-framework-modal-for-active">
-					<?php esc_html_e( 'Thanks for using WP Tasty. Enjoy!', 'tasty' ); ?>
+					<?php esc_html_e( 'Thanks for choosing WP Tasty. Enjoy!', 'tasty' ); ?>
 				</div>
 
 				<div class="tasty-framework-spacer"></div>

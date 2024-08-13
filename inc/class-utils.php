@@ -229,6 +229,31 @@ class Utils {
 	}
 
 	/**
+	 * Remove tabs and comments before echoing the javascript.
+	 *
+	 * @since 3.13
+	 *
+	 * @param string $scripts All the scripts to minify.
+	 *
+	 * @return string
+	 */
+	public static function minify_js( $scripts ) {
+		if ( empty( $scripts ) ) {
+			return '';
+		}
+
+		$debug = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG;
+		if ( ! $debug ) {
+			// Remove comments.
+			$scripts = preg_replace( '/\/\*(.|\s)*?\*\//', '', $scripts );
+
+			// Remove extra white space.
+			$scripts = str_replace( array( "\t" ), '', $scripts );
+		}
+		return $scripts;
+	}
+
+	/**
 	 * Check if it's the block or classic editor.
 	 *
 	 * @param WP_Post $current_post Current post object.
@@ -389,11 +414,20 @@ class Utils {
 	/**
 	 * Get path contents.
 	 *
-	 * @param string $path File's path to get contents.
+	 * @param string $path     File's path to get contents.
+	 * @param string $use_path Use include path or not.
 	 *
 	 * @return false|string
 	 */
-	public static function get_contents( $path ) {
+	public static function get_contents( $path, $use_path = '' ) {
+		if ( $use_path ) {
+			$path = dirname( TASTY_RECIPES_PLUGIN_FILE ) . '/' . $path;
+		}
+
+		if ( ! file_exists( $path ) ) {
+			return false;
+		}
+
 		// phpcs:ignore WordPressVIPMinimum.Performance.FetchingRemoteData.FileGetContentsUnknown, WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 		return file_get_contents( $path );
 	}

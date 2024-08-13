@@ -1,0 +1,35 @@
+This is my awesome recipe!
+
+[recipe title="Summer Pasta with Basil, Tomatoes and Cheese" servings="4-6" time="2hr 30mins" difficulty="easy" image="https://en-support.files.wordpress.com/2014/01/food-dinner-pasta-broccoli.jpg" description="A fresh, light, Italian-inspired pasta recipe perfect for a late summer dinner."]
+
+Put your recipe here. Tip: use ordered and unordered lists, headings, images, and links to improve the look of your recipe. You can also use special tags to format notes, ingredients, and directions.
+
+[recipe-notes]
+Credit: allrecipes.com
+[/recipe-notes]
+
+[recipe-ingredients]
+- 2 pounds vine ripened tomatoes
+- 3 cloves garlic
+- 1/2 cup chopped fresh basil
+[/recipe-ingredients]
+
+[recipe-ingredients title="Second Ingredient Set"]
+- 2 pounds vine ripened tomatoes
+- 3 cloves garlic
+- 1/2 cup chopped fresh basil
+[/recipe-ingredients]
+
+[recipe-directions]
+1. In a medium bowl, toss together tomatoes, garlic, basil, mint, salt and black pepper.
+2. Cook and drain pasta.
+3. Mix together.
+[/recipe-directions]
+
+[recipe-directions title="Second Instruction Set"]
+1. In a medium bowl, toss together tomatoes, garlic, basil, mint, salt and black pepper.
+2. Cook and drain pasta.
+3. Mix together.
+[/recipe-directions]
+
+[/recipe]

@@ -19,7 +19,7 @@ class EasyRecipe extends Converter {
 	/**
 	 * Matching string for existing recipes.
 	 *
-	 * @var array
+	 * @var array|string
 	 */
 	protected static $match_string = array(
 		'class="easyrecipe ',
@@ -27,9 +27,10 @@ class EasyRecipe extends Converter {
 	);
 
 	/**
-	 * Get recipe content to convert
+	 * Get recipe content to convert.
 	 *
 	 * @param string $content Existing content that may contain a recipe.
+	 *
 	 * @return string
 	 */
 	public static function get_existing_to_convert( $content ) {
@@ -70,11 +71,12 @@ class EasyRecipe extends Converter {
 	/**
 	 * Convert recipe content to Tasty Recipes format.
 	 *
-	 * @param string  $existing Existing content that may contain a recipe.
-	 * @param integer $post_id  ID for the post with the recipe.
-	 * @return Recipe|false
+	 * @param string $existing Existing content that may contain a recipe.
+	 * @param int    $post_id  ID for the post with the recipe.
+	 *
+	 * @return false|Recipe
 	 */
-	public static function create_recipe_from_existing( $existing, $post_id ) {
+	public static function create_recipe_from_existing( $existing, $post_id ) { // phpcs:ignore SlevomatCodingStandard
 
 		$recipe = Recipe::create();
 		if ( ! $recipe ) {
@@ -123,9 +125,9 @@ class EasyRecipe extends Converter {
 		/**
 		 * Permit modification of the $image_id when converting.
 		 *
-		 * @param integer $image_id Image ID to be used.
-		 * @param object  $recipe   Tasty Recipe object.
-		 * @param integer $post_id  Original post ID.
+		 * @param int    $image_id Image ID to be used.
+		 * @param object $recipe   Tasty Recipe object.
+		 * @param int    $post_id  Original post ID.
 		 */
 		$image_id = apply_filters( 'tasty_recipes_convert_easyrecipe_image_id', $image_id, $recipe, $post_id );
 		if ( $image_id ) {
@@ -238,7 +240,8 @@ class EasyRecipe extends Converter {
 	 * If the image doesn't exist in the media library, it's imported.
 	 *
 	 * @param string $file File path.
-	 * @return integer
+	 *
+	 * @return int
 	 */
 	protected static function get_image_id_from_file( $file ) {
 		global $wpdb;
@@ -263,6 +266,7 @@ class EasyRecipe extends Converter {
 	 * Transform EasyRecipe markup to HTML.
 	 *
 	 * @param string $content Existing markup to transform.
+	 *
 	 * @return string
 	 */
 	public static function transform_markup_to_html( $content ) {
@@ -287,5 +291,4 @@ class EasyRecipe extends Converter {
 
 		return $content;
 	}
-
 }

@@ -18,6 +18,7 @@ class Vars {
 	 * @param string $key           The POST key to check.
 	 * @param string $sanitize      The type of sanitization to apply.
 	 * @param mixed  $default_value The default value to return if the key is not set.
+	 *
 	 * @return mixed
 	 */
 	public static function post_param( $key, $sanitize = 'sanitize_text_field', $default_value = '' ) {
@@ -31,6 +32,7 @@ class Vars {
 	 * @param string $key           The GET key to check.
 	 * @param string $sanitize      The type of sanitization to apply.
 	 * @param mixed  $default_value The default value to return if the key is not set.
+	 *
 	 * @return mixed
 	 */
 	public static function get_param( $key, $sanitize = 'sanitize_text_field', $default_value = '' ) {
@@ -46,6 +48,7 @@ class Vars {
 	 * @param string $key           The SERVER key to check.
 	 * @param string $sanitize      The type of sanitization to apply.
 	 * @param mixed  $default_value The default value to return if the key is not set.
+	 *
 	 * @return mixed
 	 */
 	public static function server_param( $key, $sanitize = 'sanitize_text_field', $default_value = '' ) {
@@ -61,6 +64,7 @@ class Vars {
 	 * @param string $key           The SERVER key to check.
 	 * @param string $sanitize      The type of sanitization to apply.
 	 * @param mixed  $default_value The default value to return if the key is not set.
+	 *
 	 * @return mixed
 	 */
 	public static function request_param( $key, $sanitize = 'sanitize_text_field', $default_value = '' ) {
@@ -71,7 +75,7 @@ class Vars {
 	/**
 	 * Sanitize item value.
 	 *
-	 * @param mixed  $item Item to be sanitized.
+	 * @param mixed  $item     Item to be sanitized.
 	 * @param string $sanitize Sanitize callback function.
 	 *
 	 * @return mixed

@@ -19,7 +19,7 @@ class WP_Ultimate_Recipe extends Converter {
 	/**
 	 * Matching string for existing recipes.
 	 *
-	 * @var string
+	 * @var array|string
 	 */
 	protected static $match_string = array(
 		'[ultimate-recipe',
@@ -43,11 +43,12 @@ class WP_Ultimate_Recipe extends Converter {
 	/**
 	 * Convert recipe content to Tasty Recipes format.
 	 *
-	 * @param string  $existing Existing content that might contain a recipe.
-	 * @param integer $post_id  ID for the post with the recipe.
-	 * @return Recipe
+	 * @param string $existing Existing content that might contain a recipe.
+	 * @param int    $post_id  ID for the post with the recipe.
+	 *
+	 * @return false|Recipe
 	 */
-	public static function create_recipe_from_existing( $existing, $post_id ) { // phpcs:ignore VariableAnalysis
+	public static function create_recipe_from_existing( $existing, $post_id ) { // phpcs:ignore SlevomatCodingStandard
 		$data = self::get_existing_block_or_shortcode( $existing, 'data' );
 		if ( empty( $data['id'] ) ) {
 			return false;
@@ -58,8 +59,14 @@ class WP_Ultimate_Recipe extends Converter {
 			return false;
 		}
 
+		$post_id = (int) $post_id; // Avoid UnusedVariable.
+
 		$recipe         = Recipe::create();
 		$converted_data = array();
+
+		if ( ! $recipe ) {
+			return false;
+		}
 
 		$mapping = array(
 			// WPUR -> Tasty Recipes.
@@ -114,9 +121,6 @@ class WP_Ultimate_Recipe extends Converter {
 					$el    = 'recipe_ingredients' === $wpur ? 'ul' : 'ol';
 					$value = '';
 					foreach ( $parsed as $heading => $items ) {
-						if ( empty( $items ) ) {
-							continue;
-						}
 						if ( ! empty( $heading ) ) {
 							$value .= '<h4>' . $heading . '</h4>' . PHP_EOL;
 						}
@@ -173,5 +177,4 @@ class WP_Ultimate_Recipe extends Converter {
 
 		return self::save_converted_data_to_recipe( $converted_data, $recipe );
 	}
-
 }

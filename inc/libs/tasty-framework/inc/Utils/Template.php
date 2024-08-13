@@ -35,7 +35,7 @@ class Template {
 	 * Render constructor.
 	 *
 	 * @param string               $templates_dir Views directory path.
-	 * @param WP_Filesystem_Direct $filesystem Filesystem instance.
+	 * @param WP_Filesystem_Direct $filesystem    Filesystem instance.
 	 *
 	 * @return self
 	 */
@@ -54,7 +54,7 @@ class Template {
 	 * @param bool   $should_echo True to echo the contents of the template file, default is false.
 	 *
 	 * @return string|void Contents of this template to be echoed wherever you want if $should_echo is false,
-	 * otherwise echo the contents without return.
+	 *                     otherwise echo the contents without return.
 	 */
 	public function render( string $template, array $data = array(), bool $should_echo = false ) {
 		$template_parts     = explode( '/', $template );
@@ -67,6 +67,7 @@ class Template {
 		}
 
 		ob_start();
+		// phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 		include $template_full_path;
 		$output = trim( ob_get_clean() );
 

@@ -62,6 +62,8 @@ class Elementor {
 
 	/**
 	 * Registers the controls.
+	 *
+	 * @return void
 	 */
 	public static function action_controls_registered() {
 		\Elementor\Plugin::instance()->controls_manager->register(
@@ -71,6 +73,8 @@ class Elementor {
 
 	/**
 	 * Registers the widgets.
+	 *
+	 * @return void
 	 */
 	public static function action_widgets_registered() {
 		\Elementor\Plugin::instance()->widgets_manager->register(
@@ -80,6 +84,8 @@ class Elementor {
 
 	/**
 	 * Runs before scripts are enqueued.
+	 *
+	 * @return void
 	 */
 	public static function action_before_enqueue_scripts() {
 		// Registers our TinyMCE settings before Elementor noops TinyMCE.
@@ -101,6 +107,8 @@ class Elementor {
 
 	/**
 	 * Renders the editor modal template.
+	 *
+	 * @return void
 	 */
 	public static function action_editor_footer() {
 		\Tasty_Recipes\Assets::action_admin_footer_render_template();

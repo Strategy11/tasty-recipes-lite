@@ -1,0 +1,44 @@
+Maecenas sed diam eget risus varius blandit sit amet non magna. Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit sit amet non magna. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.
+
+Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Nullam quis risus eget urna mollis ornare vel eu leo. Nullam id dolor id nibh ultricies vehicula ut id elit. Nullam quis risus eget urna mollis ornare vel eu leo. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
+
+Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Maecenas sed diam eget risus varius blandit sit amet non magna. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nulla vitae elit libero, a pharetra augue. Nulla vitae elit libero, a pharetra augue.
+<div class="easyrecipe" data-rating="0">
+<div class="item ERName">West Indian Bean's &amp; Rice</div>
+<div class="ERClear"></div>
+<div class="ERHead"><span class="xlate">Recipe Type</span>: <span class="type">Main</span></div>
+<div class="ERHead">Cuisine: <span class="cuisine">Caribbean</span></div>
+<div class="ERHead">Author: <span class="author">Pinch of Yum's</span></div>
+<div class="ERHead">Prep time: <time itemprop="prepTime" datetime="PT12M">12 mins</time></div>
+<div class="ERHead">Cook time: <time itemprop="cookTime" datetime="PT2H">2 hours</time></div>
+<div class="ERHead">Total time: <time itemprop="totalTime" datetime="PT2H12M">2 hours 12 mins</time></div>
+<div class="ERHead">Serves: <span class="yield">6 servings</span></div>
+<div class="ERSummary summary">Suitable accompaniment's to this risotto-like dish are crusty bread, an avocado and orange salad with a cilantro vinaigrette and, to top it off, coconut pie.</div>
+<div class="ERIngredients">
+<div class="ERIngredientsHeader">Ingredients</div>
+<ul class="ingredients">
+ 	<li class="ingredient">2 1/2 cups (about) canned vegetable broth</li>
+ 	<li class="ingredient">1 15- to 16-ounce can kidney beans, drained</li>
+ 	<li class="ingredient">1 cup canned unsweetened regular or light coconut milk</li>
+ 	<li class="ingredient">1 tablespoon minced seeded jalapeño chili</li>
+ 	<li class="ingredient">1 teaspoon dried thyme</li>
+ 	<li class="ingredient">1/4 teaspoon ground allspice</li>
+ 	<li class="ingredient">3/4 cup medium-grain white rice</li>
+ 	<li class="ingredient">1 cup thinly sliced green onions</li>
+</ul>
+</div>
+<div class="ERInstructions">
+<div class="ERInstructionsHeader">Instructions</div>
+<div class="instructions">
+<ol>
+ 	<li class="instruction">Combine 2 cups vegetable broth, kidney beans, coconut milk, minced jalapño chili, thyme and allspice in heavy large saucepan. Bring mixture to boil over medium-high heat. Stir in rice. Reduce heat to medium-low and simmer mixture uncovered until most of liquid is absorbed and rice is almost tender, stirring often, about 20 minutes.</li>
+ 	<li class="instruction">Mix 3/4 cup green onions into rice. Continue to simmer until rice is very tender and mixture is creamy, adding more broth by 1/4 cupfuls if mixture seems dry, about 5 minutes longer. Season to taste with salt and pepper. Transfer to serving bowl. Sprinkle with remaining 1/4 cup green onions and serve.</li>
+</ol>
+</div>
+</div>
+<div class="ERNutrition">Serving size: <span class="servingSize">2 cups</span> Calories: <span class="calories">581</span></div>
+<div class="endeasyrecipe" style="display: none;">3.5.3208</div>
+</div>
+&nbsp;
+
+Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.

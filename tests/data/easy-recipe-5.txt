@@ -1,0 +1,22 @@
+Below is a test recipe:
+<div class="easyrecipe mceNonEditable" data-rating="0">
+<div class="item ERName">Test Recipe!</div>
+<div class="ERClear"></div>
+<div class="ERSummary summary">This is a test recipe</div>
+<div class="ERIngredients">
+<div class="ERIngredientsHeader">Ingredients</div>
+</div>
+<div class="ERInstructions">
+<div class="ERInstructionsHeader">Instructions</div>
+<div class="instructions">
+<ol>
+	<li class="instruction">Combine spices. Heat in a pan until fragrant. Add 2 Tbsp olive oil, then the cabbage and cauliflower.</li>
+	<li class="instruction">Sautee until tender.</li>
+	<li class="instruction">Eat!</li>
+</ol>
+</div>
+</div>
+<div class="ERNutrition">Serving size: <span class="servingSize">1/2 cup</span> Calories: <span class="calories">250</span> Fat: <span class="fat">4g</span> Saturated fat: <span class="saturatedFat">0 g</span> Unsaturated fat: <span class="unsaturatedFat">0 g</span> Trans fat: <span class="transFat">1 g</span> Carbohydrates: <span class="carbohydrates">120 g</span> Sugar: <span class="sugar">2g</span> Sodium: <span class="sodium">150mg</span> Fiber: <span class="fiber">18 g</span> Protein: <span class="protein">12 g</span> Cholesterol: <span class="cholesterol">120g</span></div>
+<div class="endeasyrecipe" style="display: none;">3.5.3208</div>
+</div>
+&nbsp;

@@ -88,7 +88,7 @@ abstract class PluginInstaller {
 	abstract public function has_framework();
 
 	/**
-	 * Initialize needed
+	 * Initialize needed.
 	 *
 	 * @param WP_Filesystem_Direct $filesystem Filesystem instance.
 	 * @param APIClient            $api_client License API Client instance.
@@ -261,7 +261,7 @@ abstract class PluginInstaller {
 	public function check_license() {
 		$cached = get_transient( $this->get_license_check_cache_key() );
 		if ( false !== $cached ) {
-			return (object) $cached;
+			return is_wp_error( $cached ) ? $cached : (object) $cached;
 		}
 
 		$license_key = $this->get_license_key();
@@ -269,11 +269,11 @@ abstract class PluginInstaller {
 			return new WP_Error( 500, __( 'That\'s not a valid license.', 'tasty' ) );
 		}
 
-		$check_license = (object) $this->api_client->check_plugin_license_raw( $license_key, $this->get_plugin_name() );
+		$check_license = $this->api_client->check_plugin_license_raw( $license_key, $this->get_plugin_name() );
 		// Save an error for 1 minute to avoid API DDOS.
 		$save_for = is_wp_error( $check_license ) ? MINUTE_IN_SECONDS : 24 * HOUR_IN_SECONDS;
 		set_transient( $this->get_license_check_cache_key(), $check_license, $save_for );
-		return $check_license;
+		return is_wp_error( $check_license ) ? $check_license : (object) $check_license;
 	}
 
 	/**
@@ -328,7 +328,7 @@ abstract class PluginInstaller {
 	}
 
 	/**
-	 * Activate license for current plugin
+	 * Activate license for current plugin.
 	 *
 	 * @param string $license_key License key to be activated.
 	 *

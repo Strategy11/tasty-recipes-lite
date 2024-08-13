@@ -61,7 +61,7 @@ abstract class MessageBox {
 	/**
 	 * Add new message to the message box.
 	 *
-	 * @param string $type Type of the message.
+	 * @param string $type    Type of the message.
 	 * @param string $message Message text.
 	 *
 	 * @return bool

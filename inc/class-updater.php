@@ -16,15 +16,67 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  */
 class Updater {
 
-	private $api_url     = '';
-	private $api_data    = array();
-	private $name        = '';
-	private $slug        = '';
-	private $version     = '';
-	private $wp_override = false;
-	private $beta        = false;
-	private $cache_key   = '';
+	/**
+	 * The URL pointing to the custom API endpoint.
+	 *
+	 * @var string
+	 */
+	private $api_url = '';
 
+	/**
+	 * Optional data to send with API calls.
+	 *
+	 * @var array
+	 */
+	private $api_data = array();
+
+	/**
+	 * The plugin file.
+	 *
+	 * @var string
+	 */
+	private $name = '';
+
+	/**
+	 * The plugin slug.
+	 *
+	 * @var string
+	 */
+	private $slug = '';
+
+	/**
+	 * The plugin version.
+	 *
+	 * @var string
+	 */
+	private $version = '';
+
+	/**
+	 * Whether to override the WordPress.org check.
+	 *
+	 * @var bool
+	 */
+	private $wp_override = false;
+
+	/**
+	 * Whether the plugin is a beta version.
+	 *
+	 * @var bool
+	 */
+	private $beta = false;
+
+	/**
+	 * The cache key.
+	 *
+	 * @var string
+	 */
+	private $cache_key = '';
+
+	/**
+	 * The timeout for the health check.
+	 *
+	 * @var int
+	 */
 	private $health_check_timeout = 5;
 
 	/**
@@ -162,6 +214,8 @@ class Updater {
 	 *
 	 * @param string $file
 	 * @param array  $plugin
+	 *
+	 * @return void
 	 */
 	public function show_update_notification( $file, $plugin ) {
 
@@ -491,6 +545,8 @@ class Updater {
 
 	/**
 	 * If available, show the changelog for sites in a multisite install.
+	 *
+	 * @return void
 	 */
 	public function show_changelog() {
 
@@ -596,6 +652,8 @@ class Updater {
 	 *
 	 * @param object $value
 	 * @param string $cache_key
+	 *
+	 * @return void
 	 */
 	public function set_version_info_cache( $value, $cache_key = '' ) {
 

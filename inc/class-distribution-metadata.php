@@ -11,7 +11,7 @@ use Tasty_Recipes;
 use Tasty_Recipes\Content_Model;
 use Tasty_Recipes\Utils;
 use Tasty_Recipes\Objects\Recipe;
-use Tasty_Recipes\Integrations\Hubbub;
+use Tasty_Recipes\Integrations;
 
 /**
  * Generates distribution metadata.
@@ -51,22 +51,43 @@ class Distribution_Metadata {
 	);
 
 	/**
-	 * Renders JSON+LD markup on singular views with recipes.
+	 * Looks wp_head hooks so markup is added later.
+	 *
+	 * @return void
 	 */
-	public static function action_wp_head_google_schema() {
+	public static function action_wp_head() {
+		add_action( 'wp_head', array( __CLASS__, 'action_wp_head_noindex' ) );
+	}
+
+	/**
+	 * Load the Tasty schema if Yoast is not present.
+	 *
+	 * @since 3.13
+	 *
+	 * @return void
+	 */
+	private static function maybe_load_google_schema() {
 		if ( ! is_singular() ) {
 			return;
 		}
 
-		/**
-		 * Bailout without printing the json markup if we decided to use Yoast SEO using the filter.
-		 */
-		if ( self::use_yoast_schema() ) {
-			return;
+		if ( ! self::use_yoast_schema() ) {
+			/**
+			 * Bailout without printing the json markup if we decided to use Yoast SEO using the filter.
+			 */
+			self::action_wp_head_google_schema();
 		}
+	}
+
+	/**
+	 * Renders JSON+LD markup on singular views with recipes.
+	 *
+	 * @return void
+	 */
+	public static function action_wp_head_google_schema() {
 
 		$recipes = Tasty_Recipes::get_recipes_for_post(
-			get_queried_object()->ID,
+			0,
 			array(
 				'disable-json-ld' => false,
 			)
@@ -91,13 +112,16 @@ class Distribution_Metadata {
 
 	/**
 	 * Adds noindex to print template rendering.
+	 *
+	 * @return void
 	 */
 	public static function action_wp_head_noindex() {
+		self::maybe_load_google_schema();
 		if ( ! tasty_recipes_is_print() ) {
 			return;
 		}
 
-		Hubbub::init(); // Only load this integration inside print page.
+		Integrations\Hubbub::init(); // Only load this integration inside print page.
 
 		if ( ! did_action( 'wpseo_head' ) ) {
 			echo '<meta name="robots" content="noindex,follow">' . PHP_EOL;
@@ -175,8 +199,8 @@ class Distribution_Metadata {
 	/**
 	 * Gets the enriched form of a Google Schema for a recipe.
 	 *
-	 * @param Recipe $recipe Recipe object.
-	 * @param object $post   Post object.
+	 * @param Recipe   $recipe Recipe object.
+	 * @param \WP_Post $post   Post object.
 	 *
 	 * @return array
 	 */
@@ -410,7 +434,7 @@ class Distribution_Metadata {
 	 *
 	 * @since 3.12.3
 	 *
-	 * @param object $recipe Recipe object.
+	 * @param Recipe $recipe Recipe object.
 	 * @param array  $schema Existing Google Schema data.
 	 *
 	 * @return void
@@ -431,7 +455,7 @@ class Distribution_Metadata {
 	 *
 	 * @since 3.12.3
 	 *
-	 * @param object $recipe      Recipe object.
+	 * @param Recipe $recipe      Recipe object.
 	 * @param array  $recipe_json Recipe JSON data.
 	 * @param array  $schema      Existing Google Schema data.
 	 *
@@ -475,7 +499,7 @@ class Distribution_Metadata {
 	 *
 	 * @since 3.12.3
 	 *
-	 * @param object $recipe Recipe object.
+	 * @param Recipe $recipe Recipe object.
 	 * @param array  $schema Existing Google Schema data.
 	 *
 	 * @return void
@@ -584,7 +608,7 @@ class Distribution_Metadata {
 	 * Enriches a Google Schema with post author if the author doesn't exist.
 	 *
 	 * @param array  $schema Existing Google Schema data.
-	 * @param object $recipe Recipe object.
+	 * @param Recipe $recipe Recipe object.
 	 * @param object $post   Post object.
 	 *
 	 * @return array
@@ -615,9 +639,9 @@ class Distribution_Metadata {
 	/**
 	 * Enrich a Google Schema with video from post content if video doesn't exist.
 	 *
-	 * @param array  $schema Existing Google Schema data.
-	 * @param object $recipe Recipe object.
-	 * @param object $post   Post object.
+	 * @param array    $schema Existing Google Schema data.
+	 * @param object   $recipe Recipe object.
+	 * @param \WP_Post $post   Post object.
 	 *
 	 * @return array
 	 */
@@ -630,8 +654,8 @@ class Distribution_Metadata {
 		/**
 		 * Allow themes to override the post video with a value stored in post meta (or elsewhere).
 		 *
-		 * @param mixed  $video_url Override video URL.
-		 * @param object $post      Post object.
+		 * @param mixed   $video_url Override video URL.
+		 * @param \WP_Post $post      Post object.
 		 */
 		$video_url = apply_filters( 'tasty_recipes_enrich_google_schema_post_video_url', false, $post );
 
@@ -776,7 +800,9 @@ class Distribution_Metadata {
 						'upload_date' => isset( $atts['upload_date'] ) ? $atts['upload_date'] : '',
 					)
 				);
-				return self::get_google_schema_video_from_oembed_data( json_decode( $oembed_data ) );
+				if ( $oembed_data ) {
+					return self::get_google_schema_video_from_oembed_data( json_decode( $oembed_data ) );
+				}
 			}
 			return false;
 		}

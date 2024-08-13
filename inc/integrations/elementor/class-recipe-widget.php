@@ -52,6 +52,8 @@ class Recipe_Widget extends \Elementor\Widget_Base {
 
 	/**
 	 * Registers necessary controls.
+	 *
+	 * @return void
 	 */
 	protected function _register_controls() { // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 		$this->start_controls_section(
@@ -74,6 +76,8 @@ class Recipe_Widget extends \Elementor\Widget_Base {
 
 	/**
 	 * Renders the shortcode on the frontend.
+	 *
+	 * @return void
 	 */
 	protected function render() {
 		$settings = $this->get_settings_for_display();
@@ -86,6 +90,8 @@ class Recipe_Widget extends \Elementor\Widget_Base {
 
 	/**
 	 * Renders the shortcode for saving to the database.
+	 *
+	 * @return void
 	 */
 	public function render_plain_content() {
 		$settings = $this->get_settings_for_display();
@@ -94,6 +100,8 @@ class Recipe_Widget extends \Elementor\Widget_Base {
 
 	/**
 	 * Renders the shortcode in the editor.
+	 *
+	 * @return void
 	 */
 	protected function _content_template() {} // phpcs:ignore PSR2.Methods.MethodDeclaration.Underscore
 }

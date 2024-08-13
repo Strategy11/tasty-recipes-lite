@@ -94,6 +94,8 @@ class Frontend {
 	 * Renders CSS vars in <head>.
 	 *
 	 * @deprecated 3.11.1
+	 *
+	 * @return void
 	 */
 	public static function action_wp_head() {
 		_deprecated_function( __METHOD__, '3.11.1' );

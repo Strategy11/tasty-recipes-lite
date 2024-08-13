@@ -19,7 +19,7 @@ class WP_Recipe_Maker extends Converter {
 	/**
 	 * Matching string for existing recipes.
 	 *
-	 * @var string
+	 * @var array|string
 	 */
 	protected static $match_string = array(
 		'<!--WPRM Recipe',
@@ -46,7 +46,8 @@ class WP_Recipe_Maker extends Converter {
 	/**
 	 * Get post ids for posts with recipes in their content.
 	 *
-	 * @param integer $per_page Number of posts to fetch. Defaults to 10.
+	 * @param int $per_page Number of posts to fetch. Defaults to 10.
+	 *
 	 * @return array
 	 */
 	public static function get_post_ids( $per_page = 10 ) {
@@ -69,6 +70,7 @@ class WP_Recipe_Maker extends Converter {
 	 * Get recipe content to convert.
 	 *
 	 * @param string $content Existing content to convert.
+	 *
 	 * @return object|string
 	 */
 	public static function get_existing_to_convert( $content ) {
@@ -86,11 +88,13 @@ class WP_Recipe_Maker extends Converter {
 	/**
 	 * Convert recipe content to Tasty Recipes format.
 	 *
-	 * @param string  $existing Existing content to convert.
-	 * @param integer $post_id  Post id for the post being converted.
-	 * @return Recipe
+	 * @param string $existing Existing content to convert.
+	 * @param int    $post_id  Post id for the post being converted.
+	 *
+	 * @return false|Recipe
 	 */
-	public static function create_recipe_from_existing( $existing, $post_id ) { // phpcs:ignore VariableAnalysis
+	public static function create_recipe_from_existing( $existing, $post_id ) { // phpcs:ignore SlevomatCodingStandard
+		$post_id = (int) $post_id; // Avoid UnusedVariable.
 		if ( preg_match( '/<!--WPRM Recipe (\d+)-->/', $existing, $matches ) ) {
 			$id = $matches[1];
 		} elseif ( preg_match( '#<!-- wp:wp-recipe-maker/recipe(.+)/?-->#Us', $existing, $matches ) ) {
@@ -110,6 +114,9 @@ class WP_Recipe_Maker extends Converter {
 
 		$recipe         = Recipe::create();
 		$converted_data = array();
+		if ( ! $recipe ) {
+			return false;
+		}
 
 		$mapping = array(
 			// WP Recipe Maker -> Tasty Recipes.
@@ -186,10 +193,10 @@ class WP_Recipe_Maker extends Converter {
 								}
 								if ( ! empty( $bits ) ) {
 									$joined = implode( ' ', $bits );
-									// Replace <p> with <br/>, because ours will end up in a list.
-									$joined = str_replace( array( '<p>', '</p>' ), array( '', '<br/>' ), $joined );
-									if ( '<br/>' === substr( $joined, -5 ) ) {
-										$joined = substr( $joined, 0, -5 );
+									// Replace <p> with <br>, because ours will end up in a list.
+									$joined = str_replace( array( '<p>', '</p>' ), array( '', '<br>' ), $joined );
+									if ( '<br>' === substr( $joined, -4 ) ) {
+										$joined = substr( $joined, 0, -4 );
 									}
 									$parsed[ $group ][] = $joined;
 								}
@@ -229,13 +236,14 @@ class WP_Recipe_Maker extends Converter {
 				case 'wprm_nutrition':
 					$nutrition = $value;
 					if ( ! empty( $nutrition ) && ! empty( $nutrition['calories'] ) ) {
-						foreach ( $nutrition as $tr => $value ) {
-							if ( 'serving_unit' === $tr ) {
+						foreach ( $nutrition as $attr => $nutrient ) {
+							if ( 'serving_unit' === $attr ) {
 								continue;
 							}
-							if ( false !== $value && '' !== $value && method_exists( $recipe, "set_{$tr}" ) ) {
-								$converted_data[ $tr ] = $value;
+							if ( false !== $nutrient && '' !== $nutrient && method_exists( $recipe, "set_{$attr}" ) ) {
+								$converted_data[ $attr ] = $nutrient;
 							}
+							unset( $attr, $nutrient );
 						}
 					}
 					if ( isset( $converted_data['serving_size'] )
@@ -296,5 +304,4 @@ class WP_Recipe_Maker extends Converter {
 
 		return self::save_converted_data_to_recipe( $converted_data, $recipe );
 	}
-
 }

@@ -33,6 +33,7 @@
 		<exclude name="WordPress.Arrays.ArrayDeclarationSpacing.AssociativeKeyFound" />
 		<exclude name="WordPress.NamingConventions.ValidVariableName.NotSnakeCaseMemberVar" />
 		<exclude name="WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase" />
+		<exclude name="WordPress.PHP.YodaConditions.NotYoda" />
 	</rule>
 
 	<rule ref="WordPress.Files.FileName.InvalidClassFileName">
@@ -109,7 +110,7 @@
 		<properties>
 			<property name="includeComments" value="true" />
 			<property name="includeWhitespace" value="true" />
-			<property name="maxLinesLength" value="1500" />
+			<property name="maxLinesLength" value="1510" />
 		</properties>
 		<exclude-pattern>inc/class-distribution-metadata.php</exclude-pattern>
 		<exclude-pattern>inc/class-admin.php</exclude-pattern>

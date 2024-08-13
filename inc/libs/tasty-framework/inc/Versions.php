@@ -15,7 +15,7 @@ class Versions {
 	/**
 	 * Current instance.
 	 *
-	 * @var null
+	 * @var self
 	 */
 	private static $instance = null;
 
@@ -42,7 +42,7 @@ class Versions {
 	/**
 	 * Register framework version.
 	 *
-	 * @param string   $version Framework Version.
+	 * @param string   $version  Framework Version.
 	 * @param callable $callback Version callback.
 	 *
 	 * @return void
@@ -71,7 +71,7 @@ class Versions {
 	 */
 	public function latest_version() {
 		if ( empty( $this->versions ) ) {
-			return false;
+			return '';
 		}
 		$versions = array_keys( $this->versions );
 		uasort( $versions, 'version_compare' );
