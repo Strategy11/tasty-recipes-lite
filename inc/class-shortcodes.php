@@ -702,18 +702,6 @@ class Shortcodes {
 		$template_vars['recipe_scripts'] .= PHP_EOL . self::get_common_recipe_scripts();
 		$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( __DIR__ ) . '/assets/js/smooth-scroll.js' );
 
-		if ( $recipe_convertable || $recipe_scalable ) {
-			$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( __DIR__ ) . '/assets/js/frac.js' );
-		}
-
-		if ( $recipe_convertable ) {
-			$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( __DIR__ ) . '/assets/js/convert-buttons.js' );
-		}
-
-		if ( $recipe_scalable ) {
-			$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( __DIR__ ) . '/assets/js/scale-buttons.js' );
-		}
-
 		if ( $copy_ingredients ) {
 			$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( __DIR__ ) . '/assets/js/copy-ingredients.js' );
 		}
@@ -721,16 +709,6 @@ class Shortcodes {
 		if ( $template_vars['recipe_instructions_has_video'] ) {
 			$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( __DIR__ ) . '/assets/js/video-toggle.js' );
 		}
-
-		if ( get_option( Tasty_Recipes::INGREDIENT_CHECKBOXES_OPTION ) ) {
-			$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( __DIR__ ) . '/assets/js/ingredient-checkboxes.js' );
-		}
-
-		if ( Admin::is_cook_mode_enabled() ) {
-			$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( __DIR__ ) . '/assets/js/cook-mode.js' );
-		}
-
-		$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( __DIR__ ) . '/assets/js/ratings.js' );
 
 		self::prepare_js( $template_vars['recipe_scripts'] );
 
@@ -1480,28 +1458,6 @@ EOT;
 		ob_start();
 		do_action( 'tasty_recipes_card_after_ingredients', $recipe );
 		return ob_get_clean();
-	}
-
-	/**
-	 * Print cook mode html.
-	 *
-	 * @since 3.8
-	 *
-	 * @return void
-	 */
-	public static function print_cook_mode() {
-		if ( ! Admin::is_cook_mode_enabled() ) {
-			return;
-		}
-
-		Tasty_Recipes::echo_template_part(
-			'parts/cookmode',
-			array(
-				'recipe_unique_id'            => uniqid( 'tasty_recipes_' ),
-				'recipe_show_cook_mode_label' => __( 'Cook Mode', 'tasty-recipes' ),
-				'recipe_show_cook_mode_help'  => Admin::get_cook_mode_helper(),
-			)
-		);
 	}
 
 	/**

@@ -60,20 +60,6 @@ class Tasty_Recipes {
 	const DEFAULT_AUTHOR_LINK_OPTION = 'tasty_recipes_default_author_link';
 
 	/**
-	 * Option name for the Instacart enable field.
-	 *
-	 * @var string
-	 */
-	const INSTACART_OPTION = 'tasty_recipes_instacart';
-
-	/**
-	 * Option name for the Instacart affiliate ID.
-	 *
-	 * @var string
-	 */
-	const INSTACART_AFFILIATE_ID_OPTION = 'tasty_recipes_instacart_affiliate_id';
-
-	/**
 	 * Option name for the Instagram handle.
 	 *
 	 * @var string
@@ -272,7 +258,6 @@ class Tasty_Recipes {
 		add_filter( 'tasty_recipes_customization_settings', array( 'Tasty_Recipes\Ratings', 'apply_default_rating_stars_color' ) );
 
 		if ( is_admin() || Utils::is_rest_api_request() ) {
-			add_action( 'tasty_recipes_card_after_ingredients', array( 'Tasty_Recipes\Admin', 'print_mock_instacart_html' ) );
 		} else {
 			Frontend::get_instance();
 		}
@@ -355,7 +340,6 @@ class Tasty_Recipes {
 		add_filter( 'tasty_recipes_the_content', array( 'Tasty_Recipes\Shortcodes', 'add_inside_ingredients' ), 10, 2 );
 		add_filter( 'tasty_recipes_recipe_card_output', array( 'Tasty_Recipes\Shortcodes', 'inside_ingredients_handler' ), 10, 3 );
 		add_action( 'tasty_recipes_card_after_ingredients', array( 'Tasty_Recipes\Shortcodes', 'run_after_ingredients' ) );
-		add_action( 'tasty_recipes_card_after_ingredients', array( 'Tasty_Recipes\Shortcodes', 'print_cook_mode' ) );
 
 		// Plugin-specific filters.
 		add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( 'Tasty_Recipes\Admin', 'filter_plugin_action_links' ) );
