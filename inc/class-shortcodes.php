@@ -715,16 +715,6 @@ class Shortcodes {
 			$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( __DIR__ ) . '/assets/js/video-toggle.js' );
 		}
 
-		if ( get_option( Tasty_Recipes::INGREDIENT_CHECKBOXES_OPTION ) ) {
-			$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( __DIR__ ) . '/assets/js/ingredient-checkboxes.js' );
-		}
-
-		if ( Admin::is_cook_mode_enabled() ) {
-			$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( __DIR__ ) . '/assets/js/cook-mode.js' );
-		}
-
-		$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( __DIR__ ) . '/assets/js/ratings.js' );
-
 		self::prepare_js( $template_vars['recipe_scripts'] );
 
 		self::add_author_info( $template_vars );
