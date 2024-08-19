@@ -75,7 +75,7 @@ class Shortcodes {
 			'tasty-recipes-main',
 			plugins_url( '/assets/dist/recipe.css', __DIR__ ),
 			array(),
-			TASTY_RECIPES_PLUGIN_VERSION
+			TASTY_RECIPES_LITE_VERSION
 		);
 	}
 
@@ -185,7 +185,7 @@ class Shortcodes {
 		 * Filter to allow for more granular control over whether 'Jump to'
 		 * should appear.
 		 *
-		 * @param bool  $quick_links Whether or not to prepend.
+		 * @param array $quick_links The links to prepend.
 		 * @param int   $post_id     ID for the recipe's post.
 		 * @param array $recipe_ids  Recipe IDs within the post.
 		 */
@@ -193,13 +193,6 @@ class Shortcodes {
 
 		if ( empty( $quick_links ) ) {
 			return '';
-		}
-
-		if ( ! Ratings::is_enabled() ) {
-			$jump_key = array_search( 'rating', $quick_links, true );
-			if ( false !== $jump_key ) {
-				unset( $quick_links[ $jump_key ] );
-			}
 		}
 
 		return implode( ',', (array) $quick_links );
@@ -734,23 +727,6 @@ class Shortcodes {
 
 		self::prepare_js( $template_vars['recipe_scripts'] );
 
-		$total_reviews = $recipe->get_total_reviews();
-
-		$template_vars['recipe_rating_label'] = '<span data-tasty-recipes-customization="detail-label-color.color" class="rating-label">';
-
-		if ( $total_reviews ) {
-			add_filter( 'comments_clauses', array( 'Tasty_Recipes\Ratings', 'exclude_empty_comments' ), 10, 2 );
-
-			$average_rating                        = $recipe->get_average_rating();
-			$template_vars['recipe_rating_label'] .= Ratings::get_rating_label( $total_reviews, $average_rating );
-		} else {
-			$template_vars['recipe_rating_label'] .= Ratings::is_enabled() ? __( 'No reviews', 'tasty-recipes' ) : '';
-			$average_rating                        = 0;
-		}
-
-		$template_vars['recipe_rating_icons']  = Ratings::get_rating_stars_html( true, $average_rating );
-		$template_vars['recipe_rating_label'] .= '</span>';
-
 		self::add_author_info( $template_vars );
 		self::add_cooking_attrs( $template_vars );
 
@@ -811,7 +787,7 @@ class Shortcodes {
 		}
 
 		$custom_design = $custom_design ? $custom_design : get_option( Tasty_Recipes::TEMPLATE_OPTION, '' );
-		$custom_path   = dirname( TASTY_RECIPES_PLUGIN_FILE ) . '/templates/designs/' . $custom_design . '/tasty-recipes.php';
+		$custom_path   = dirname( TASTY_RECIPES_LITE_FILE ) . '/templates/designs/' . $custom_design . '/tasty-recipes.php';
 
 		self::$custom_template = $custom_design;
 		if ( $custom_design && file_exists( $custom_path ) ) {
@@ -911,35 +887,26 @@ class Shortcodes {
 	private static function add_nutrition_attrs( $recipe, $nutrifox_display_style, &$template_vars ) {
 		$nutrifox = $recipe->get_nutrifox_response();
 		foreach ( Recipe::get_nutrition_attributes() as $attribute => $meta ) {
-			// '0' is a valid value.
-			if ( '' === $recipe_json[ $attribute ] ) {
-				// See if the data exists in Nutrifox now.
-				if ( $nutrifox
-					&& isset( $meta['nutrifox_key'] )
-					&& ( ! isset( $nutrifox['nutrients'][ $meta['nutrifox_key'] ]['visible'] )
-						|| true === $nutrifox['nutrients'][ $meta['nutrifox_key'] ]['visible'] ) ) {
-					$nutrifox_value = $recipe->get_formatted_nutrifox_value( $attribute );
-					$template_vars['recipe_hidden_nutrition'][ $attribute ] = array(
-						'value' => '<span data-tasty-recipes-customization="detail-value-color.color" ' .
+			// See if the data exists in Nutrifox now.
+			if ( $nutrifox
+				&& isset( $meta['nutrifox_key'] )
+				&& ( ! isset( $nutrifox['nutrients'][ $meta['nutrifox_key'] ]['visible'] )
+					|| true === $nutrifox['nutrients'][ $meta['nutrifox_key'] ]['visible'] ) ) {
+				$nutrifox_value = $recipe->get_formatted_nutrifox_value( $attribute );
+				$template_vars['recipe_hidden_nutrition'][ $attribute ] = array(
+					'value' => '<span data-tasty-recipes-customization="detail-value-color.color" ' .
+						'class="' . esc_attr( 'tasty-recipes-' . str_replace( '_', '-', $attribute ) ) . '">' .
+						esc_html( $nutrifox_value ) . '</span>',
+				);
+				if ( 'card' === $nutrifox_display_style ) {
+					$template_vars['recipe_nutrition'][ $attribute ] = array(
+						'label' => $meta['label'],
+						'value' => '<span data-tasty-recipes-customization="body-color.color" ' .
 							'class="' . esc_attr( 'tasty-recipes-' . str_replace( '_', '-', $attribute ) ) . '">' .
 							esc_html( $nutrifox_value ) . '</span>',
 					);
-					if ( 'card' === $nutrifox_display_style ) {
-						$template_vars['recipe_nutrition'][ $attribute ] = array(
-							'label' => $meta['label'],
-							'value' => '<span data-tasty-recipes-customization="body-color.color" ' .
-								'class="' . esc_attr( 'tasty-recipes-' . str_replace( '_', '-', $attribute ) ) . '">' .
-								esc_html( $nutrifox_value ) . '</span>',
-						);
-					}
 				}
-				continue;
 			}
-			$template_vars['recipe_nutrition'][ $attribute ] = array(
-				'label' => $meta['label'],
-				'value' => '<span data-tasty-recipes-customization="body-color.color" class="' . esc_attr( 'tasty-recipes-' . str_replace( '_', '-', $attribute ) ) . '">' .
-					$recipe_json[ $attribute ] . '</span>',
-			);
 		}
 	}
 
@@ -1191,7 +1158,7 @@ EOT;
 			$easyrecipe_css = str_replace( 'assets/images/easyrecipe', plugins_url( 'assets/images/easyrecipe', __DIR__ ), $easyrecipe_css );
 			$styles        .= PHP_EOL . $easyrecipe_css;
 		} elseif ( self::$custom_template ) {
-			$custom_path = dirname( TASTY_RECIPES_PLUGIN_FILE ) . '/templates/designs/' . self::$custom_template . '/tasty-recipes.css';
+			$custom_path = dirname( TASTY_RECIPES_LITE_FILE ) . '/templates/designs/' . self::$custom_template . '/tasty-recipes.css';
 			if ( file_exists( $custom_path ) ) {
 				$styles .= Utils::get_contents( $custom_path );
 			}
@@ -1250,73 +1217,6 @@ EOT;
 				continue;
 			}
 			$bits[ $i ] = $start . Unit_Amount_Parser::annotate_string_with_spans( $bit ) . $end;
-		}
-		return implode( PHP_EOL, $bits );
-	}
-
-	/**
-	 * Process ingredients to annotate <li> with checkboxes.
-	 *
-	 * @param string $ingredients Existing ingredients string.
-	 *
-	 * @return string
-	 */
-	public static function process_ingredients_for_checkboxes( $ingredients ) {
-		// Prioritize list items.
-		$ingredients = preg_replace_callback(
-			'#(<li[^\>]*>)(.*)(<\/li>)#U',
-			function ( $m ) {
-				$start = $m[1];
-				$end   = $m[3];
-				$bit   = $m[2];
-				if ( Distribution_Metadata::is_empty( $bit ) ) {
-					return '';
-				}
-
-				$label = sanitize_text_field( $bit );
-				$id    = uniqid( 'ingredient_checkbox_' );
-				$input = '<span class="tr-ingredient-checkbox-container">' .
-					'<input type="checkbox" name="' . esc_attr( $id ) . '" ' .
-					'id="' . esc_attr( $id ) . '" aria-label="' . esc_attr( $label ) . '">' .
-					'<label for="' . esc_attr( $id ) . '"></label>' .
-					'</span>';
-				$start = str_replace( '<li', '<li data-tr-ingredient-checkbox=""', $start );
-				return $start . $input . $bit . $end;
-			},
-			$ingredients,
-			-1,
-			$count
-		);
-		if ( $count ) {
-			return $ingredients;
-		}
-		// Fall back when there weren't list items.
-		$bits = explode( PHP_EOL, $ingredients );
-		foreach ( $bits as $i => $bit ) {
-			if ( Distribution_Metadata::get_heading( $bit ) ) {
-				continue;
-			}
-			$start = '';
-			$end   = '';
-			// String starts with some HTML element.
-			if ( preg_match( '#^(<p[^>]*>)(.+)(</p>)#', $bit, $matches ) ) {
-				$start = $matches[1];
-				$end   = $matches[3];
-				$bit   = $matches[2];
-				$start = str_replace( '<p', '<p data-tr-ingredient-checkbox=""', $start );
-			} elseif ( ! empty( trim( $bit ) ) ) {
-				$start = '<span data-tr-ingredient-checkbox="">' . $start;
-				$end   = $end . '</span>';
-			}
-			if ( ! empty( trim( $bit ) ) ) {
-				$label      = sanitize_text_field( $bit );
-				$id         = uniqid( 'ingredient_checkbox_' );
-				$input      = '<span class="tr-ingredient-checkbox-container">' .
-					'<input type="checkbox" name="' . esc_attr( $id ) . '" id="' . esc_attr( $id ) . '" aria-label="' . esc_attr( $label ) . '">' .
-					'<label for="' . esc_attr( $id ) . '"></label>' .
-					'</span>';
-				$bits[ $i ] = $start . $input . $bit . $end;
-			}
 		}
 		return implode( PHP_EOL, $bits );
 	}

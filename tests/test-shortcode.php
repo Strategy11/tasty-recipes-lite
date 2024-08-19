@@ -628,7 +628,7 @@ EOT;
 				'footer_description'     => '',
 			)
 		);
-		foreach ( array_keys( Tasty_Recipes\Admin::TEMPLATE_OPTIONS ) as $i => $template ) {
+		foreach ( array_keys( Tasty_Recipes\Templates::get_all_templates() ) as $i => $template ) {
 			update_option( Tasty_Recipes::TEMPLATE_OPTION, $template );
 			$dom = $this->get_dom( Shortcodes::render_tasty_recipe_shortcode( array( 'id' => $recipe->get_id() ) ) );
 			$this->assertEquals(

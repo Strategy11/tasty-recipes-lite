@@ -455,15 +455,15 @@ class Assets {
 			}
 		}
 		$external_plugins['tr_heading'] = plugins_url(
-			'assets/js/tinymce-tr-heading.js?v=' . TASTY_RECIPES_PLUGIN_VERSION,
+			'assets/js/tinymce-tr-heading.js?v=' . TASTY_RECIPES_LITE_VERSION,
 			__DIR__
 		);
 		$external_plugins['tr_image']   = plugins_url(
-			'assets/js/tinymce-tr-image.js?v=' . TASTY_RECIPES_PLUGIN_VERSION,
+			'assets/js/tinymce-tr-image.js?v=' . TASTY_RECIPES_LITE_VERSION,
 			__DIR__
 		);
 		$external_plugins['tr_video']   = plugins_url(
-			'assets/js/tinymce-tr-video.js?v=' . TASTY_RECIPES_PLUGIN_VERSION,
+			'assets/js/tinymce-tr-video.js?v=' . TASTY_RECIPES_LITE_VERSION,
 			__DIR__
 		);
 		$mce_init['external_plugins']   = wp_json_encode( $external_plugins );

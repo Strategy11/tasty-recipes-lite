@@ -119,13 +119,7 @@ class Admin {
 	 * @var array
 	 */
 	const TEMPLATE_OPTIONS = array(
-		''               => 'Default',
-		'bold'           => 'Bold',
-		'snap'           => 'Snap',
-		'fresh'          => 'Fresh',
-		'simple'         => 'Simple',
-		'modern-compact' => 'Modern Compact',
-		'elegant'        => 'Elegant',
+		'deprecated',
 	);
 
 	/**
@@ -143,9 +137,9 @@ class Admin {
 	public static function action_admin_init() {
 		new Updater(
 			self::STORE_URL,
-			TASTY_RECIPES_PLUGIN_FILE,
+			TASTY_RECIPES_LITE_FILE,
 			array(
-				'version'   => TASTY_RECIPES_PLUGIN_VERSION,
+				'version'   => TASTY_RECIPES_LITE_VERSION,
 				'license'   => get_option( Tasty_Recipes::LICENSE_KEY_OPTION ),
 				'item_name' => self::ITEM_NAME,
 				'author'    => self::ITEM_AUTHOR,
@@ -180,7 +174,7 @@ class Admin {
 
 		$r['user-agent'] = rtrim( $r['user-agent'], ';' )
 			. '; PHP/' . PHP_VERSION . '; '
-			. self::ITEM_NAME . '/' . TASTY_RECIPES_PLUGIN_VERSION;
+			. self::ITEM_NAME . '/' . TASTY_RECIPES_LITE_VERSION;
 		return $r;
 	}
 
@@ -295,10 +289,10 @@ class Admin {
 	 */
 	public static function action_update_option_clear_transient() {
 		delete_transient( self::LICENSE_CHECK_CACHE_KEY );
-		$cache_key = md5( 'edd_plugin_' . sanitize_key( plugin_basename( TASTY_RECIPES_PLUGIN_FILE ) ) . '_version_info' );
+		$cache_key = md5( 'edd_plugin_' . sanitize_key( plugin_basename( TASTY_RECIPES_LITE_FILE ) ) . '_version_info' );
 		delete_site_transient( $cache_key );
 		// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
-		$cache_key = 'edd_api_request_' . substr( md5( serialize( basename( TASTY_RECIPES_PLUGIN_FILE, '.php' ) ) ), 0, 15 );
+		$cache_key = 'edd_api_request_' . substr( md5( serialize( basename( TASTY_RECIPES_LITE_FILE, '.php' ) ) ), 0, 15 );
 		delete_site_transient( $cache_key );
 		delete_site_transient( 'update_plugins' );
 	}

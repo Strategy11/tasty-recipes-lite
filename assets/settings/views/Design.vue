@@ -1,6 +1,11 @@
 <template>
 	<div class="tasty-recipes-design-settings tasty-settings tasty-flex tasty-items-start">
-		<div class="tasty-recipes-card-preview-container">
+		<div
+			:class="{
+				'tasty-recipes-card-preview-container': true,
+				'tasty-recipes-card-locked': isLocked
+			}"
+		>
 			<div class="tasty-recipes-card-chooser">
 				<button type="button" @click.prevent="goToPreviousTemplate">
 					<svg
@@ -19,7 +24,7 @@
 						></path>
 					</svg>
 				</button>
-				<h3>{{ currentTemplateLabel }}</h3>
+				<h3 v-html="currentTemplateLabel"></h3>
 				<button type="button" @click.prevent="goToNextTemplate">
 					<svg
 						aria-hidden="true"
@@ -69,7 +74,7 @@
 						></path>
 					</svg>
 				</button>
-				<h3>{{ currentTemplateLabel }}</h3>
+				<h3 v-html="currentTemplateLabel"></h3>
 				<button type="button" @click.prevent="goToNextTemplate">
 					<svg
 						aria-hidden="true"
@@ -227,26 +232,6 @@
 					</fieldset>
 				</div>
 				<hr />
-				<h3>Star Ratings</h3>
-				<div class="tasty-recipes-card-field-container tasty-flex">
-					<fieldset>
-						<label>Star Color</label>
-						<color-picker
-							v-model="customization.star_color"
-							name="tasty_recipes_customization[star_color]"
-						></color-picker>
-					</fieldset>
-					<fieldset>
-						<label>Star Style</label>
-						<select
-							v-model="customization.star_ratings_style"
-							name="tasty_recipes_customization[star_ratings_style]"
-						>
-							<option value="solid">Solid</option>
-							<option value="outline">Outline</option>
-						</select>
-					</fieldset>
-				</div>
 				<div class="tasty-recipes-nutrifox-field-container">
 					<div>
 						<h3>Nutrifox Display</h3>
@@ -389,10 +374,11 @@ export default {
 			const keys = Object.keys( this.templateOptions );
 
 			return this.templateOptions[this.currentTemplate] +
-				" Template ("
+				" ("
 				+ (keys.indexOf(this.currentTemplate) + 1) + "/"
 				+ keys.length
-				+ ")";
+				+ ")"
+				+ (this.isLocked ? this.getProBadge() : "");
 		},
 		nutrifoxLogoUrl() {
 			return this.getImage( 'nutrifox-logo.png' );
@@ -515,6 +501,15 @@ export default {
 				window.tastyRecipesSettings.pluginUrl +
 				"/assets/images/" + image
 			);
+		},
+		getProBadge() {
+			return `
+				<span class="tasty-recipes-pro-badge">
+					<a href="${this.initialOptions.upgrade_url}" target="_blank" rel="noopener" class="tasty-framework-pro-badge">
+						Premium
+					</a>
+				</span>
+			`;
 		},
 		handleScroll() {
 			const currentScrollY = window.scrollY;

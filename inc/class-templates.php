@@ -40,7 +40,6 @@ class Templates {
 			'elegant'        => Templates\Elegant::instance(),
 			'modern-compact' => Templates\Modern_Compact::instance(),
 		);
-
 		self::$template_objects = (array) apply_filters( 'tasty_recipes_template_objects', $template_objects );
 	}
 
