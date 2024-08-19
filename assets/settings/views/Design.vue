@@ -1,6 +1,11 @@
 <template>
 	<div class="tasty-recipes-design-settings tasty-settings tasty-flex tasty-items-start">
-		<div class="tasty-recipes-card-preview-container">
+		<div
+			:class="{
+				'tasty-recipes-card-preview-container': true,
+				'tasty-recipes-card-locked': isLocked
+			}"
+		>
 			<div class="tasty-recipes-card-chooser">
 				<button type="button" @click.prevent="goToPreviousTemplate">
 					<svg
@@ -19,7 +24,7 @@
 						></path>
 					</svg>
 				</button>
-				<h3>{{ currentTemplateLabel }}</h3>
+				<h3 v-html="currentTemplateLabel"></h3>
 				<button type="button" @click.prevent="goToNextTemplate">
 					<svg
 						aria-hidden="true"
@@ -69,7 +74,7 @@
 						></path>
 					</svg>
 				</button>
-				<h3>{{ currentTemplateLabel }}</h3>
+				<h3 v-html="currentTemplateLabel"></h3>
 				<button type="button" @click.prevent="goToNextTemplate">
 					<svg
 						aria-hidden="true"
@@ -227,26 +232,6 @@
 					</fieldset>
 				</div>
 				<hr />
-				<h3>Star Ratings</h3>
-				<div class="tasty-recipes-card-field-container tasty-flex">
-					<fieldset>
-						<label>Star Color</label>
-						<color-picker
-							v-model="customization.star_color"
-							name="tasty_recipes_customization[star_color]"
-						></color-picker>
-					</fieldset>
-					<fieldset>
-						<label>Star Style</label>
-						<select
-							v-model="customization.star_ratings_style"
-							name="tasty_recipes_customization[star_ratings_style]"
-						>
-							<option value="solid">Solid</option>
-							<option value="outline">Outline</option>
-						</select>
-					</fieldset>
-				</div>
 				<div class="tasty-recipes-nutrifox-field-container">
 					<div>
 						<h3>Nutrifox Display</h3>
@@ -309,78 +294,8 @@
 						></a>
 					</div>
 				</div>
-				<hr />
-				<h3>Social Footer</h3>
-				<div
-					v-show="canCustomizeSocialIcon"
-					class="tasty-recipes-card-field-container tasty-flex"
-				>
-					<fieldset>
-						<label>Social Platform</label>
-						<select
-							class="w-full"
-							v-model="customization.footer_social_platform"
-							name="tasty_recipes_customization[footer_social_platform]"
-							:disabled="!canCustomizeSocialIcon"
-						>
-							<option value="">None</option>
-							<option value="instagram">Instagram</option>
-							<option value="pinterest">Pinterest</option>
-							<option value="facebook">Facebook</option>
-						</select>
-						<input
-							v-if="!canCustomizeSocialIcon"
-							type="hidden"
-							v-model="customization.footer_social_platform"
-							:name="
-								!canCustomizeSocialIcon
-									? 'tasty_recipes_customization[footer_social_platform]'
-									: ''
-							"
-						/>
-					</fieldset>
-					<fieldset>
-						<label>Icon Color</label>
-						<color-picker
-							v-model="customization.footer_icon_color"
-							name="tasty_recipes_customization[footer_icon_color]"
-							:disabled="!canCustomizeSocialIcon"
-						></color-picker>
-					</fieldset>
-				</div>
-				<div class="tasty-recipes-card-field-container tasty-flex">
-					<fieldset>
-						<label>Heading</label>
-						<input
-							class="w-full"
-							type="text"
-							v-model="customization.footer_heading"
-							name="tasty_recipes_customization[footer_heading]"
-						/>
-					</fieldset>
-					<fieldset>
-						<label>Heading Color</label>
-						<color-picker
-							v-model="customization.footer_heading_color"
-							name="tasty_recipes_customization[footer_heading_color]"
-						></color-picker>
-					</fieldset>
-					<fieldset>
-						<label>Description Color</label>
-						<color-picker
-							v-model="customization.footer_description_color"
-							name="tasty_recipes_customization[footer_description_color]"
-						></color-picker>
-					</fieldset>
-				</div>
-				<div class="tasty-recipes-card-field-container tasty-flex">
-					<rich-textarea
-						class="w-full"
-						label="Description"
-						v-model="customization.footer_description"
-						name="tasty_recipes_customization[footer_description]"
-					></rich-textarea>
-				</div>
+				<slot name="tasty-after-style-settings"></slot>
+
 				<p class="submit">
 					<input
 						type="submit"
@@ -460,10 +375,11 @@ export default {
 			const keys = Object.keys( this.templateOptions );
 
 			return this.templateOptions[this.currentTemplate] +
-				" Template ("
+				" ("
 				+ (keys.indexOf(this.currentTemplate) + 1) + "/"
 				+ keys.length
-				+ ")";
+				+ ")"
+				+ (this.isLocked ? this.getProBadge() : "");
 		},
 		nutrifoxLogoUrl() {
 			return (
@@ -473,6 +389,11 @@ export default {
 		},
 		isNutrifoxUser() {
 			return window.tastyRecipesSettings.isNutrifoxUser;
+		},
+		isLocked() {
+			return this.initialOptions.locked.includes(
+				this.currentTemplate
+			);
 		},
 	},
 	methods: {
@@ -566,6 +487,15 @@ export default {
 				"&footer_social_platform=" +
 				platform
 			);
+		},
+		getProBadge() {
+			return `
+				<span class="tasty-recipes-pro-badge">
+					<a href="${this.initialOptions.upgrade_url}" target="_blank" rel="noopener" class="tasty-framework-pro-badge">
+						Premium
+					</a>
+				</span>
+			`;
 		},
 		handleScroll() {
 			const currentScrollY = window.scrollY;

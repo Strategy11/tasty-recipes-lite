@@ -35,6 +35,7 @@ const templateOptions = {
 	elegant: "Elegant",
 	snap: "Snap",
 };
+const lockedTemplates = ["bold", "fresh"];
 
 describe("design", () => {
 	it("shows all color options for the Bold template", async () => {
