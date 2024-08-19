@@ -152,8 +152,8 @@ use Tasty\Framework\Utils\Url;
 	<div class="tasty-recipes-settings tasty-settings tasty-tab-content">
 		<form method="POST" action="<?php echo esc_url( admin_url( 'options.php' ) ); ?>">
 		<?php
-			settings_fields( Tasty_Recipes\Admin::SETTINGS_GROUP_CARD );
-			do_settings_sections( Tasty_Recipes\Admin::PAGE_SLUG );
+			settings_fields( Tasty_Recipes\Settings::SETTINGS_GROUP_CARD );
+			do_settings_sections( Tasty_Recipes\Settings::PAGE_SLUG );
 		?>
 		<?php submit_button(); ?>
 		</form>
