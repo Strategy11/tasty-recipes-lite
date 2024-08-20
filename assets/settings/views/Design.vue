@@ -294,7 +294,10 @@
 						></a>
 					</div>
 				</div>
-				<slot name="tasty-after-style-settings"></slot>
+				<slot name="tasty-after-style-settings">
+					TODO Show ratings options<br/>
+					TODO Show social footer
+				</slot>
 
 				<p class="submit">
 					<input
@@ -489,13 +492,9 @@ export default {
 			);
 		},
 		getProBadge() {
-			return `
-				<span class="tasty-recipes-pro-badge">
-					<a href="${this.initialOptions.upgrade_url}" target="_blank" rel="noopener" class="tasty-framework-pro-badge">
-						Premium
-					</a>
-				</span>
-			`;
+			let badge = window.TastyFramework.f.getProBadge();
+			badge = badge.replace( /href=""/, `href="${this.initialOptions.upgrade_url}"` );
+			return badge;
 		},
 		handleScroll() {
 			const currentScrollY = window.scrollY;

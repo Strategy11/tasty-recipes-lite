@@ -15,6 +15,9 @@ use Tasty\Framework\Traits\Singleton;
 class Bold extends Abstract_Template {
 	use Singleton;
 
+	/**
+	 * Sets the variables.
+	 */
 	public function set_vars() {
 		$this->id            = 'bold';
 		$this->template_name = 'Bold';

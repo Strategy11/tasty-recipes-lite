@@ -8,7 +8,7 @@
 ?>
 
 <select name="<?php echo esc_attr( $name ); ?>"
-	<?php echo ( ! empty( $disabled ) ) ? 'disabled' : ''; ?>
+	<?php echo ! empty( $disabled ) ? 'disabled' : ''; ?>
 >
 	<?php
 	foreach ( $options as $key => $label ) :

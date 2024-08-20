@@ -332,8 +332,7 @@ class Admin {
 	 */
 	public static function handle_wp_ajax_preview_recipe_card() {
 		_deprecated_function( __METHOD__, 'x.x', 'Templates::handle_wp_ajax_preview_recipe_card' );
-
-		return Templates::handle_wp_ajax_preview_recipe_card();
+		Templates::handle_wp_ajax_preview_recipe_card();
 	}
 
 	/**
@@ -586,8 +585,8 @@ class Admin {
 	 * @return bool
 	 */
 	public static function can_enable_cook_mode() {
-		_deprecated_fuction( __METHOD__, 'x.x', 'Settings::can_enable_cook_mode' );
-		return Settings::can_enable_cook_mode();
+		_deprecated_fuction( __METHOD__, 'x.x', 'Tasty_Recipes_Pro\Settings::can_enable_cook_mode' );
+		return Tasty_Recipes_Pro\Settings::can_enable_cook_mode();
 	}
 
 	/**
@@ -603,6 +602,22 @@ class Admin {
 		}
 
 		Utils::send_json_error( __( 'You don\'t have permission to do this.', 'tasty-recipes' ) );
+	}
+
+	/**
+	 * Add lite update modal html.
+	 *
+	 * @return void
+	 */
+	public static function add_lite_upgrade_modal() {
+		$tasty_recipes_lite_upgrade_url = Url::get_upgrade_url(
+			'Tasty Recipes',
+			[
+				'utm_campaign' => 'modal',
+				'utm_content'  => '__setting_utm_content__',
+			]
+		);
+		Tasty_Recipes::echo_template_part( 'admin/upgrade-modal', compact( 'tasty_recipes_lite_upgrade_url' ) );
 	}
 
 	/**
@@ -632,5 +647,17 @@ class Admin {
 	public static function handle_quick_links_backward_compatibility( $option_value ) {
 		_deprecated_function( __METHOD__, 'x.x', 'Settings::handle_quick_links_backward_compatibility' );
 		return Settings::handle_quick_links_backward_compatibility( $option_value );
+	}
+
+	/**
+	 * Show SSL certificate error message.
+	 *
+	 * @since 3.8
+	 * @deprecated x.x
+	 *
+	 * @return void
+	 */
+	public static function show_ssl_error() {
+		_deprecated_function( __METHOD__, 'x.x' );
 	}
 }

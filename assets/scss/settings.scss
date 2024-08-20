@@ -96,3 +96,8 @@
 	color: red;
 	margin-top: 5px;
 }
+
+.tasty-recipes-disabled {
+	opacity: 0.5;
+	pointer-events: none;
+}

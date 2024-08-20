@@ -15,6 +15,9 @@ use Tasty\Framework\Traits\Singleton;
 class Elegant extends Abstract_Template {
 	use Singleton;
 
+	/**
+	 * Sets the variables.
+	 */
 	public function set_vars() {
 		$this->id            = 'elegant';
 		$this->template_name = 'Elegant';

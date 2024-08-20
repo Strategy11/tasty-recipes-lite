@@ -211,7 +211,7 @@ class Tasty_Recipes {
 		load_plugin_textdomain( 'tasty-recipes', false, basename( __DIR__ ) . '/languages' );
 
 		spl_autoload_register(
-			function( $class_name ) {
+			function ( $class_name ) {
 				self::register_autoloader( $class_name, __DIR__ );
 			}
 		);
@@ -280,8 +280,7 @@ class Tasty_Recipes {
 		add_action( 'wpseo_robots', array( 'Tasty_Recipes\Distribution_Metadata', 'action_wpseo_robots' ) );
 		add_filter( 'wpseo_schema_graph_pieces', array( 'Tasty_Recipes\Distribution_Metadata', 'filter_wpseo_schema_graph_pieces' ), 10, 2 );
 
-		if ( is_admin() || Utils::is_rest_api_request() ) {
-		} else {
+		if ( ! is_admin() && ! Utils::is_rest_api_request() ) {
 			Frontend::get_instance();
 		}
 
@@ -315,6 +314,8 @@ class Tasty_Recipes {
 
 		add_action( 'wp_insert_post', array( 'Tasty_Recipes\Editor', 'handle_add_new_post' ), 10, 3 );
 		add_action( 'post_updated', array( 'Tasty_Recipes\Editor', 'handle_edit_post' ), 10, 3 );
+
+		add_action( 'tasty_framework_admin_footer_after', array( 'Tasty_Recipes\Admin', 'add_lite_upgrade_modal' ) );
 
 		if ( is_admin() ) {
 			MetaBox::get_instance();

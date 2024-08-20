@@ -14,6 +14,11 @@ use Tasty_Recipes;
  */
 class Templates {
 
+	/**
+	 * Array of template objects.
+	 *
+	 * @var array
+	 */
 	protected static $template_objects = array();
 
 	/**
@@ -35,6 +40,7 @@ class Templates {
 			'elegant'        => Templates\Elegant::instance(),
 			'modern-compact' => Templates\Modern_Compact::instance(),
 		);
+
 		self::$template_objects = (array) apply_filters( 'tasty_recipes_template_objects', $template_objects );
 	}
 
@@ -46,8 +52,9 @@ class Templates {
 	public static function get_all_templates() {
 		self::set_template_objects();
 
+		$templates = [];
 		if ( empty( self::$template_objects ) ) {
-			return array();
+			return $templates;
 		}
 
 		foreach ( self::$template_objects as $template ) {

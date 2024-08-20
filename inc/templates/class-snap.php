@@ -16,6 +16,9 @@ class Snap extends Abstract_Template {
 
 	use Singleton;
 
+	/**
+	 * Sets the variables.
+	 */
 	public function set_vars() {
 		$this->id            = 'snap';
 		$this->template_name = 'Snap';

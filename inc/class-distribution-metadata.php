@@ -211,6 +211,8 @@ class Distribution_Metadata {
 		$schema = self::enrich_google_schema_with_post_video( $schema, $recipe, $post );
 
 		/**
+		 * Permit modification of the Google Schema data generated for a recipe.
+		 *
 		 * @since x.x
 		 */
 		$schema = apply_filters( 'tasty_recipes_enriched_google_schema', $schema, compact( 'recipe', 'post' ) );
@@ -432,7 +434,7 @@ class Distribution_Metadata {
 		}
 	}
 
-		/**
+	/**
 	 * Add nutrition information to a Google Schema.
 	 *
 	 * @since 3.12.3

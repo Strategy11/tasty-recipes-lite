@@ -15,6 +15,9 @@ use Tasty\Framework\Traits\Singleton;
 class Fresh extends Abstract_Template {
 	use Singleton;
 
+	/**
+	 * Sets the variables.
+	 */
 	public function set_vars() {
 		$this->id            = 'fresh';
 		$this->template_name = 'Fresh';

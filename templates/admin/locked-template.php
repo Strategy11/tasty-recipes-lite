@@ -10,14 +10,12 @@ echo $recipe_styles; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEs
 if ( ! $template_object ) {
 	return;
 }
+
+/* translators: %s: template name */
+$preview_template = sprintf( __( 'Preview %s template', 'tasty-recipes' ), $template_object->get_template_name() );
 ?>
 <div class="tasty-recipes-pro-template">
 	<img src="<?php echo esc_url( $template_object->get_template_url() ); ?>images/template.png"
-		alt="<?php esc_attr(
-			sprintf(
-				__( 'Preview %s template', 'tasty-recipes' ),
-				$template_object->get_template_name()
-			)
-		); ?>"
+		alt="<?php echo esc_attr( $preview_template ); ?>"
 	>
 </div>

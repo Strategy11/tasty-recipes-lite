@@ -15,6 +15,9 @@ use Tasty\Framework\Traits\Singleton;
 class Modern_Compact extends Abstract_Template {
 	use Singleton;
 
+	/**
+	 * Sets the variables.
+	 */
 	public function set_vars() {
 		$this->id            = 'modern-compact';
 		$this->template_name = 'Modern Compact';
