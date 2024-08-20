@@ -215,28 +215,7 @@ class Tasty_Recipes {
 		 */
 		spl_autoload_register(
 			function ( $class_name ) {
-				$class_name = ltrim( $class_name, '\\' );
-				if ( 0 !== stripos( $class_name, 'Tasty_Recipes\\' ) ) {
-					return;
-				}
-
-				$parts = explode( '\\', $class_name );
-				array_shift( $parts ); // Don't need "Tasty_Recipes".
-				$last    = array_pop( $parts ); // File should be 'class-[...].php'.
-				$last    = 'class-' . $last . '.php';
-				$parts[] = $last;
-				$file    = __DIR__ . '/inc/' . str_replace( '_', '-', strtolower( implode( '/', $parts ) ) );
-				if ( file_exists( $file ) ) {
-					// phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
-					require $file;
-				}
-
-					// Might be a trait.
-				$file = str_replace( '/class-', '/trait-', $file );
-				if ( file_exists( $file ) ) {
-					// phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
-					require $file;
-				}
+				self::register_autoloader( $class_name, __DIR__ );
 			}
 		);
 	}
@@ -271,9 +250,7 @@ class Tasty_Recipes {
 
 		add_filter( 'tasty_recipes_customization_settings', array( 'Tasty_Recipes\Ratings', 'apply_default_rating_stars_color' ) );
 
-		if ( is_admin() || Utils::is_rest_api_request() ) {
-			add_action( 'tasty_recipes_card_after_ingredients', array( 'Tasty_Recipes\Admin', 'print_mock_instacart_html' ) );
-		} else {
+		if ( ! is_admin() && ! Utils::is_rest_api_request() ) {
 			Frontend::get_instance();
 		}
 
@@ -309,6 +286,8 @@ class Tasty_Recipes {
 
 		add_action( 'wp_insert_post', array( 'Tasty_Recipes\Editor', 'handle_add_new_post' ), 10, 3 );
 		add_action( 'post_updated', array( 'Tasty_Recipes\Editor', 'handle_edit_post' ), 10, 3 );
+
+		add_action( 'tasty_framework_admin_footer_after', array( 'Tasty_Recipes\Admin', 'add_lite_upgrade_modal' ) );
 
 		if ( is_admin() ) {
 			MetaBox::get_instance();

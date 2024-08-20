@@ -209,7 +209,13 @@ class Distribution_Metadata {
 		$schema = self::enrich_google_schema_with_post_permalink( $schema, $post );
 		$schema = self::enrich_google_schema_with_post_author( $schema, $recipe, $post );
 		$schema = self::enrich_google_schema_with_post_video( $schema, $recipe, $post );
-		$schema = self::enrich_google_schema_with_comments( $schema, $recipe, self::get_wp_query_comments() );
+
+		/**
+		 * Permit modification of the Google Schema data generated for a recipe.
+		 *
+		 * @since x.x
+		 */
+		$schema = apply_filters( 'tasty_recipes_enriched_google_schema', $schema, compact( 'recipe', 'post' ) );
 
 		if ( '0000-00-00 00:00:00' !== $post->post_date ) {
 			$schema['datePublished'] = gmdate( 'Y-m-d', strtotime( $post->post_date ) );

@@ -8,6 +8,7 @@
 namespace Tasty_Recipes;
 
 use Tasty\Framework\Utils\Url;
+use Tasty\Framework\Utils\Common;
 use Tasty_Recipes;
 
 /**
@@ -43,6 +44,11 @@ class Settings {
 	 */
 	private static $editor_id = 'tasty-recipes-settings';
 
+	/**
+	 * Load hooks.
+	 *
+	 * @return void
+	 */
 	public static function load_hooks() {
 		add_action( 'admin_menu', array( __CLASS__, 'register_settings' ) );
 		add_filter( 'tasty_recipes_admin_settings_field_args', array( __CLASS__, 'filter_quick_links_backward_compatibility' ) );
@@ -74,57 +80,59 @@ class Settings {
 	 */
 	public static function register_settings() {
 		$settings = [
-			Tasty_Recipes::CUSTOMIZATION_OPTION             => [
+			Tasty_Recipes::CUSTOMIZATION_OPTION          => [
 				'sanitize_callback' => array( __CLASS__, 'sanitize_customization_option' ),
 			],
-			Tasty_Recipes::TEMPLATE_OPTION                  => [
+			Tasty_Recipes::TEMPLATE_OPTION               => [
 				'sanitize_callback' => 'sanitize_title',
 			],
-			Tasty_Recipes::QUICK_LINKS_OPTION               => [
+			Tasty_Recipes::QUICK_LINKS_OPTION            => [
 				'sanitize_callback' => array( __CLASS__, 'sanitize_quick_links' ),
 			],
-			Tasty_Recipes::QUICK_LINKS_STYLE                => [
+			Tasty_Recipes::QUICK_LINKS_STYLE             => [
 				'sanitize_callback' => 'sanitize_title',
 			],
-			Tasty_Recipes::CARD_BUTTONS_OPTION              => [
+			Tasty_Recipes::CARD_BUTTONS_OPTION           => [
 				'sanitize_callback' => array( __CLASS__, 'sanitize_card_buttons' ),
 			],
-			Tasty_Recipes::UNIT_CONVERSION_OPTION           => [
+			Tasty_Recipes::UNIT_CONVERSION_OPTION        => [
 				'sanitize_callback' => 'sanitize_title',
 			],
 			Tasty_Recipes::AUTOMATIC_UNIT_CONVERSION_OPTION => [
 				'sanitize_callback' => 'sanitize_title',
 			],
-			Tasty_Recipes::INGREDIENT_CHECKBOXES_OPTION     => [
+			Tasty_Recipes::INGREDIENT_CHECKBOXES_OPTION  => [
 				'sanitize_callback' => 'sanitize_title',
 			],
-			Tasty_Recipes::COOK_MODE_OPTION                 => [
+			Tasty_Recipes::COOK_MODE_OPTION              => [
 				'sanitize_callback' => 'sanitize_title',
 			],
-			Tasty_Recipes::COOK_MODE_HELPER_OPTION          => [
+			Tasty_Recipes::COOK_MODE_HELPER_OPTION       => [
 				'sanitize_callback' => 'sanitize_text_field',
 			],
-			Tasty_Recipes::INSTACART_OPTION                 => [
+			Tasty_Recipes::INSTACART_OPTION              => [
 				'sanitize_callback' => 'sanitize_title',
 			],
-			Tasty_Recipes::INSTACART_AFFILIATE_ID_OPTION    => [
+			Tasty_Recipes::INSTACART_AFFILIATE_ID_OPTION => [
 				'sanitize_callback' => 'sanitize_title',
 			],
-			Tasty_Recipes::DISABLE_SCALING_OPTION           => [
+			Tasty_Recipes::DISABLE_SCALING_OPTION        => [
 				'sanitize_callback' => 'sanitize_title',
 			],
-			Tasty_Recipes::COPY_TO_CLIPBOARD_OPTION         => [
+			Tasty_Recipes::COPY_TO_CLIPBOARD_OPTION      => [
 				'sanitize_callback' => 'sanitize_title',
 			],
-			Tasty_Recipes::DEFAULT_AUTHOR_LINK_OPTION       => [
+			Tasty_Recipes::DEFAULT_AUTHOR_LINK_OPTION    => [
 				'sanitize_callback' => 'esc_url_raw',
 			],
-			Tasty_Recipes::SHAREASALE_OPTION                => [
+			Tasty_Recipes::SHAREASALE_OPTION             => [
 				'sanitize_callback' => 'sanitize_text_field',
 			],
 		];
 
 		/**
+		 * Filter the settings to be registered.
+		 *
 		 * @since x.x
 		 *
 		 * @param array $settings Array of settings to be registered.
@@ -156,9 +164,9 @@ class Settings {
 
 		$settings = self::prepare_ordered_settings();
 		foreach ( $settings as $option_name => $option ) {
-			$option['args']['name'] = $option_name;
+			$option['name'] = $option_name;
 			if ( empty( $option['render'] ) ) {
-				$option['render'] = empty( $option['args']['options'] ) ? 'input' : 'select';
+				$option['render'] = empty( $option['options'] ) ? 'input' : 'select';
 			}
 
 			add_settings_field(
@@ -167,7 +175,7 @@ class Settings {
 				[ __CLASS__, 'render_' . $option['render'] . '_field' ],
 				self::PAGE_SLUG,
 				self::SETTINGS_SECTION_CARD_DESIGN,
-				self::filter_settings_args( $option['args'] )
+				self::filter_settings_args( $option )
 			);
 		}
 
@@ -183,7 +191,7 @@ class Settings {
 	 * @return array
 	 */
 	private static function prepare_ordered_settings() {
-		$settings = [];
+		$settings  = [];
 		$functions = [
 			'quick_links',
 			'card_button',
@@ -210,9 +218,16 @@ class Settings {
 				if ( ! isset( $option['order'] ) ) {
 					$settings[ $option_name ]['order'] = $order;
 				}
-				$order ++;
+				++$order;
 			}
 		}
+
+		/**
+		 * Filter the settings array.
+		 *
+		 * @since x.x
+		 */
+		$settings = apply_filters( 'tasty_recipes_settings', $settings );
 
 		uasort( $settings, array( __CLASS__, 'sort_settings' ) );
 		return $settings;
@@ -227,31 +242,27 @@ class Settings {
 	 */
 	private static function add_quick_links_settings( &$settings ) {
 		$settings[ Tasty_Recipes::QUICK_LINKS_OPTION ] = [
-			'label'  => __( 'Quick Links', 'tasty-recipes' ),
-			'render' => 'multiselect_checkboxes',
-			'args'   => [
-				'description'    => __( 'Enable or disable quick links below the post title.', 'tasty-recipes' ),
-				'default_values' => array(
-					'jump',
-					'print',
-				),
-				'options'        => array(
-					'jump'   => __( '\'Jump to Recipe\' link', 'tasty-recipes' ),
-					'print'  => __( '\'Print Recipe\' link', 'tasty-recipes' ),
-					'rating' => __( '\'Leave a Review\' link', 'tasty-recipes' ),
-				),
-			]
+			'label'          => __( 'Quick Links', 'tasty-recipes' ),
+			'render'         => 'multiselect_checkboxes',
+			'description'    => __( 'Enable or disable quick links below the post title.', 'tasty-recipes' ),
+			'default_values' => array(
+				'jump',
+				'print',
+			),
+			'options'        => array(
+				'jump'   => __( '\'Jump to Recipe\' link', 'tasty-recipes' ),
+				'print'  => __( '\'Print Recipe\' link', 'tasty-recipes' ),
+				'rating' => __( '\'Leave a Review\' link', 'tasty-recipes' ),
+			),
 		];
 
 		$settings[ Tasty_Recipes::QUICK_LINKS_STYLE ] = [
-			'label'  => __( 'Quick Links Style', 'tasty-recipes' ),
-			'args'   => [
-				'options'       => array(
-					'links'   => __( 'Links', 'tasty-recipes' ),
-					'buttons' => __( 'Buttons', 'tasty-recipes' ),
-				),
-				'default_value' => 'links',
-			]
+			'label'         => __( 'Quick Links Style', 'tasty-recipes' ),
+			'options'       => array(
+				'links'   => __( 'Links', 'tasty-recipes' ),
+				'buttons' => __( 'Buttons', 'tasty-recipes' ),
+			),
+			'default_value' => 'links',
 		];
 	}
 
@@ -278,15 +289,13 @@ class Settings {
 	 */
 	private static function add_conversion_settings( &$settings ) {
 		$settings[ Tasty_Recipes::UNIT_CONVERSION_OPTION ] = [
-			'label'  => __( 'Unit Conversion', 'tasty-recipes' ),
-			'args'   => [
-				'description'       => __( 'Allow visitors to convert between US Customary and Metric.', 'tasty-recipes' ),
-				'options'           => array(
-					false => __( 'Off', 'tasty-recipes' ),
-					true  => __( 'On', 'tasty-recipes' ),
-				),
-				'is_pro'            => true,
-			],
+			'label'       => __( 'Unit Conversion', 'tasty-recipes' ),
+			'description' => __( 'Allow visitors to convert between US Customary and Metric.', 'tasty-recipes' ),
+			'options'     => array(
+				false => __( 'Off', 'tasty-recipes' ),
+				true  => __( 'On', 'tasty-recipes' ),
+			),
+			'is_pro'      => true,
 		];
 	}
 
@@ -299,15 +308,13 @@ class Settings {
 	 */
 	private static function add_ingredient_checkbox_settings( &$settings ) {
 		$settings[ Tasty_Recipes::INGREDIENT_CHECKBOXES_OPTION ] = [
-			'label'  => __( 'Ingredient Checkboxes', 'tasty-recipes' ),
-			'args'   => [
-				'description' => __( 'Allow visitors to check off recipe ingredients.', 'tasty-recipes' ),
-				'options'     => array(
-					false => __( 'Off', 'tasty-recipes' ),
-					true  => __( 'On', 'tasty-recipes' ),
-				),
-				'is_pro'      => true,
-			],
+			'label'       => __( 'Ingredient Checkboxes', 'tasty-recipes' ),
+			'description' => __( 'Allow visitors to check off recipe ingredients.', 'tasty-recipes' ),
+			'options'     => array(
+				false => __( 'Off', 'tasty-recipes' ),
+				true  => __( 'On', 'tasty-recipes' ),
+			),
+			'is_pro'      => true,
 		];
 	}
 
@@ -320,27 +327,13 @@ class Settings {
 	 */
 	private static function add_cookmode_settings( &$settings ) {
 		$settings[ Tasty_Recipes::COOK_MODE_OPTION ] = [
-			'label'  => __( 'Enable Cook Mode', 'tasty-recipes' ),
-			'args'   => [
-				'description'       => __( 'Show Cook Mode toggle to let visitors prevent sleep mode for supported devices.', 'tasty-recipes' ),
-				'options'           => array(
-					true  => __( 'On', 'tasty-recipes' ),
-					false => __( 'Off', 'tasty-recipes' ),
-				),
-				'disabled'          => ! self::can_enable_cook_mode(),
-				'default_value'     => self::can_enable_cook_mode(),
-				'forced_value'      => self::can_enable_cook_mode() ? null : false,
-				'after_description' => array( __CLASS__, 'show_ssl_error' ),
-				'is_pro'            => true,
-			],
-		];
-
-		$settings[ Tasty_Recipes::COOK_MODE_HELPER_OPTION ] = [
-			'label'  => __( 'Cook Mode Description', 'tasty-recipes' ),
-			'args'   => [
-				'default_value' => esc_html__( 'Prevent your screen from going dark', 'tasty-recipes' ),
-				'is_pro'        => true,
-			],
+			'label'       => __( 'Cook Mode', 'tasty-recipes' ),
+			'description' => __( 'Show Cook Mode toggle to let visitors prevent sleep mode for supported devices.', 'tasty-recipes' ),
+			'options'     => array(
+				true  => __( 'On', 'tasty-recipes' ),
+				false => __( 'Off', 'tasty-recipes' ),
+			),
+			'is_pro'      => true,
 		];
 	}
 
@@ -353,14 +346,13 @@ class Settings {
 	 */
 	private static function add_scaling_settings( &$settings ) {
 		$settings[ Tasty_Recipes::DISABLE_SCALING_OPTION ] = [
-			'label'  => __( 'Scaling', 'tasty-recipes' ),
-			'args'   => [
-				'description' => __( 'Allow visitors to scale the recipe 1x, 2x, or 3x.', 'tasty-recipes' ),
-				'options'     => array(
-					true  => __( 'Off', 'tasty-recipes' ),
-					false => __( 'On', 'tasty-recipes' ),
-				),
-			],
+			'label'       => __( 'Scaling', 'tasty-recipes' ),
+			'description' => __( 'Allow visitors to scale the recipe 1x, 2x, or 3x.', 'tasty-recipes' ),
+			'options'     => array(
+				true  => __( 'Off', 'tasty-recipes' ),
+				false => __( 'On', 'tasty-recipes' ),
+			),
+			'is_pro'      => true,
 		];
 	}
 
@@ -373,14 +365,12 @@ class Settings {
 	 */
 	private static function add_clipboard_settings( &$settings ) {
 		$settings[ Tasty_Recipes::COPY_TO_CLIPBOARD_OPTION ] = [
-			'label'  => __( 'Copy to Clipboard', 'tasty-recipes' ),
-			'args'   => [
-				'description' => __( 'Allow visitors to copy ingredients to clipboard.', 'tasty-recipes' ),
-				'options'     => array(
-					false => __( 'Off', 'tasty-recipes' ),
-					true  => __( 'On', 'tasty-recipes' ),
-				),
-			],
+			'label'       => __( 'Copy to Clipboard', 'tasty-recipes' ),
+			'description' => __( 'Allow visitors to copy ingredients to clipboard.', 'tasty-recipes' ),
+			'options'     => array(
+				false => __( 'Off', 'tasty-recipes' ),
+				true  => __( 'On', 'tasty-recipes' ),
+			),
 		];
 	}
 
@@ -393,7 +383,7 @@ class Settings {
 	 */
 	private static function add_author_settings( &$settings ) {
 		$settings[ Tasty_Recipes::DEFAULT_AUTHOR_LINK_OPTION ] = [
-			'label'  => __( 'Default Author Link', 'tasty-recipes' ),
+			'label' => __( 'Default Author Link', 'tasty-recipes' ),
 		];
 	}
 
@@ -406,34 +396,19 @@ class Settings {
 	 */
 	private static function add_instacart_settings( &$settings ) {
 		$settings[ Tasty_Recipes::INSTACART_OPTION ] = [
-			'label'  => __( 'Add an Instacart button', 'tasty-recipes' ),
-			'args'   => [
-				'description'   => sprintf(
-					// translators: %1$s opening anchor tag, %2$s closing tag.
-					esc_html__( 'By turning this on, you agree to the %1$sInstacart terms of service%2$s, available in the US only at the moment.', 'tasty-recipes' ),
-					'<a target="_blank" rel="noopener" href="https://affiliate.instacart.com/terms">',
-					'</a>'
-				),
-				'options'       => array(
-					true  => __( 'On', 'tasty-recipes' ),
-					false => __( 'Off', 'tasty-recipes' ),
-				),
-				'default_value' => false,
-				'is_pro'        => true,
-			]
-		];
-
-		$settings[ Tasty_Recipes::INSTACART_AFFILIATE_ID_OPTION ] = [
-			'label'   => __( 'Instacart Tastemakers Affiliate ID', 'tasty-recipes' ),
-			'args'    => [
-				'description' => sprintf(
-					// translators: %1$s opening anchor tag, %2$s closing tag.
-					__( '%1$sGet commissions%2$s when visitors order ingredients.', 'tasty-recipes' ),
-					'<a target="_blank" rel="noopener" href="https://www.wptasty.com/go/instacart">',
-					'</a>'
-				),
-				'is_pro'      => true,
-			]
+			'label'         => __( 'Instacart Button', 'tasty-recipes' ),
+			'description'   => sprintf(
+				// translators: %1$s opening anchor tag, %2$s closing tag.
+				esc_html__( 'By turning this on, you agree to the %1$sInstacart terms of service%2$s, available in the US only at the moment.', 'tasty-recipes' ),
+				'<a target="_blank" rel="noopener" href="https://affiliate.instacart.com/terms">',
+				'</a>'
+			),
+			'options'       => array(
+				true  => __( 'On', 'tasty-recipes' ),
+				false => __( 'Off', 'tasty-recipes' ),
+			),
+			'default_value' => false,
+			'is_pro'        => true,
 		];
 	}
 
@@ -446,18 +421,16 @@ class Settings {
 	 */
 	private static function add_shareasale_settings( &$settings ) {
 		$settings[ Tasty_Recipes::SHAREASALE_OPTION ] = [
-			'label'  => __( 'ShareASale Affiliate ID', 'tasty-recipes' ),
-			'order'  => 200,
-			'args'   => [
-				'description' => sprintf(
-					// translators: %1$s opening link tag, %2$s closing tag, %3$s opening link tag, %4$s closing tag.
-					esc_html__( '%1$sApply for the affiliate program%2$s, or %3$sfind your affiliate ID%4$s.', 'tasty-recipes' ),
-					'<a href="https://www.wptasty.com/affiliate" target="_blank">',
-					'</a>',
-					'<a href="https://www.wptasty.com/affiliate-id" target="_blank">',
-					'</a>'
-				),
-			]
+			'label'       => __( 'ShareASale Affiliate ID', 'tasty-recipes' ),
+			'order'       => 200,
+			'description' => sprintf(
+				// translators: %1$s opening link tag, %2$s closing tag, %3$s opening link tag, %4$s closing tag.
+				esc_html__( '%1$sApply for the affiliate program%2$s, or %3$sfind your affiliate ID%4$s.', 'tasty-recipes' ),
+				'<a href="https://www.wptasty.com/affiliate" target="_blank">',
+				'</a>',
+				'<a href="https://www.wptasty.com/affiliate-id" target="_blank">',
+				'</a>'
+			),
 		];
 	}
 
@@ -487,22 +460,25 @@ class Settings {
 	 * @return array
 	 */
 	public static function filter_settings_args( $args ) {
-		if ( ! empty( $args['is_pro'] ) ) {
-			$args['disabled']        = true;
-			/**
-			$args['container_class'] = 'tasty-show-modal tasty-recipes-disabled';
-			$args['tasty_datasets']  = " data-modal_id='tasty_recipes_upgrade_modal' data-replacements='" . esc_attr(
-				wp_json_encode(
-					array(
-						'modal_title'         => $args['name'],
-						//'setting_utm_content' => sanitize_title( $this->get_utm_content() ),
-					)
-				)
-			) . "' ";
-			*/
+		$args = (array) apply_filters( 'tasty_recipes_admin_settings_field_args', $args );
+		if ( empty( $args['is_pro'] ) ) {
+			return $args;
 		}
 
-		return (array) apply_filters( 'tasty_recipes_admin_settings_field_args', $args );
+		$args['container_class'] = 'tasty-show-modal tasty-recipes-disabled';
+		$utm_content             = str_replace( 'tasty_recipes_', '', sanitize_title( $args['name'] ) );
+		$args['tasty_dataset']   = [
+			'modal_id'     => 'tasty_recipes_upgrade_modal',
+			'modal_parent' => 'tr',
+			'replacements' => wp_json_encode(
+				[
+					'modal_title'         => $args['label'],
+					'setting_utm_content' => $utm_content,
+				]
+			),
+		];
+
+		return $args;
 	}
 
 	/**
@@ -723,9 +699,14 @@ class Settings {
 		if ( empty( $args['name'] ) ) {
 			return;
 		}
-		$args['value']  = get_option( $args['name'], $args['default_value'] );
+		$args['value'] = get_option( $args['name'], $args['default_value'] );
 
-		Tasty_Recipes::echo_template_part( 'admin/settings/input', $args );
+		self::echo_container_div( $args );
+		Tasty_Recipes::echo_template_part(
+			'admin/settings/input',
+			self::filter_settings_args( $args )
+		);
+		echo '</div>';
 	}
 
 	/**
@@ -763,11 +744,40 @@ class Settings {
 			}
 		}
 
-		Tasty_Recipes::echo_template_part( 'admin/settings/select', $args );
+		self::echo_container_div( $args );
+		Tasty_Recipes::echo_template_part(
+			'admin/settings/select',
+			apply_filters( 'tasty_recipes_admin_settings_field_args', $args )
+		);
+		echo '</div>';
 
 		if ( ! empty( $args['after_description'] ) && is_callable( $args['after_description'] ) ) {
 			$args['after_description']( $args );
 		}
+	}
+
+	/**
+	 * Add continer around the field for modal handling.
+	 *
+	 * @since x.x
+	 *
+	 * @param array $args Field args.
+	 *
+	 * @return void
+	 */
+	private static function echo_container_div( $args ) {
+		$params = [];
+		if ( ! empty( $args['container_class'] ) ) {
+			$params['class'] = $args['container_class'];
+		}
+		if ( ! empty( $args['tasty_dataset'] ) ) {
+			foreach ( $args['tasty_dataset'] as $key => $value ) {
+				$params[ 'data-' . $key ] = $value;
+			}
+		}
+		echo '<div ';
+		Common::render_html_attributes( $params );
+		echo '>';
 	}
 
 	/**
@@ -830,22 +840,6 @@ class Settings {
 				'value'   => Tasty_Recipes::get_card_button_settings(),
 			]
 		);
-	}
-
-	/**
-	 * Check if Cook Mode can be enabled in this site or not.
-	 *
-	 * @since 3.8
-	 *
-	 * @return bool
-	 */
-	public static function can_enable_cook_mode() {
-		/**
-		 * Filters the capability of enabling cook mode be enabled in this site.
-		 *
-		 * @param bool $can_enable True to enable, false otherwise.
-		 */
-		return (bool) apply_filters( 'tasty_recipes_enable_cook_mode', is_ssl() );
 	}
 
 	/**

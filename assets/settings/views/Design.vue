@@ -309,78 +309,11 @@
 						></a>
 					</div>
 				</div>
-				<hr />
-				<h3>Social Footer</h3>
-				<div
-					v-show="canCustomizeSocialIcon"
-					class="tasty-recipes-card-field-container tasty-flex"
-				>
-					<fieldset>
-						<label>Social Platform</label>
-						<select
-							class="w-full"
-							v-model="customization.footer_social_platform"
-							name="tasty_recipes_customization[footer_social_platform]"
-							:disabled="!canCustomizeSocialIcon"
-						>
-							<option value="">None</option>
-							<option value="instagram">Instagram</option>
-							<option value="pinterest">Pinterest</option>
-							<option value="facebook">Facebook</option>
-						</select>
-						<input
-							v-if="!canCustomizeSocialIcon"
-							type="hidden"
-							v-model="customization.footer_social_platform"
-							:name="
-								!canCustomizeSocialIcon
-									? 'tasty_recipes_customization[footer_social_platform]'
-									: ''
-							"
-						/>
-					</fieldset>
-					<fieldset>
-						<label>Icon Color</label>
-						<color-picker
-							v-model="customization.footer_icon_color"
-							name="tasty_recipes_customization[footer_icon_color]"
-							:disabled="!canCustomizeSocialIcon"
-						></color-picker>
-					</fieldset>
-				</div>
-				<div class="tasty-recipes-card-field-container tasty-flex">
-					<fieldset>
-						<label>Heading</label>
-						<input
-							class="w-full"
-							type="text"
-							v-model="customization.footer_heading"
-							name="tasty_recipes_customization[footer_heading]"
-						/>
-					</fieldset>
-					<fieldset>
-						<label>Heading Color</label>
-						<color-picker
-							v-model="customization.footer_heading_color"
-							name="tasty_recipes_customization[footer_heading_color]"
-						></color-picker>
-					</fieldset>
-					<fieldset>
-						<label>Description Color</label>
-						<color-picker
-							v-model="customization.footer_description_color"
-							name="tasty_recipes_customization[footer_description_color]"
-						></color-picker>
-					</fieldset>
-				</div>
-				<div class="tasty-recipes-card-field-container tasty-flex">
-					<rich-textarea
-						class="w-full"
-						label="Description"
-						v-model="customization.footer_description"
-						name="tasty_recipes_customization[footer_description]"
-					></rich-textarea>
-				</div>
+				<slot name="tasty-after-style-settings">
+					TODO Show ratings options<br/>
+					TODO Show social footer
+				</slot>
+
 				<p class="submit">
 					<input
 						type="submit"
@@ -566,6 +499,11 @@ export default {
 				"&footer_social_platform=" +
 				platform
 			);
+		},
+		getProBadge() {
+			let badge = window.TastyFramework.f.getProBadge();
+			badge = badge.replace( /href=""/, `href="${this.initialOptions.upgrade_url}"` );
+			return badge;
 		},
 		handleScroll() {
 			const currentScrollY = window.scrollY;
