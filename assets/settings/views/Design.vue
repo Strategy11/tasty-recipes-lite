@@ -295,8 +295,17 @@
 					</div>
 				</div>
 				<slot name="tasty-after-style-settings">
-					TODO Show ratings options<br/>
-					TODO Show social footer
+					<hr/>
+					<h3>Social Icons <span v-html="getProBadge()"></span></h3>
+					<img
+						alt="Social Footer Preview"
+						class="tasty-social-preview tasty-show-modal tasty-recipes-disabled"
+						:src="getImage('social-footer.png')"
+						width="550"
+						height="100"
+						data-modal_id="tasty_recipes_upgrade_modal"
+						:data-replacements="getSocialModal"
+					/>
 				</slot>
 
 				<p class="submit">
@@ -316,7 +325,6 @@
 export default {
 	components: {
 		ColorPicker: require("../components/ColorPicker.vue").default,
-		RichTextarea: require("../components/RichTextarea.vue").default,
 	},
 	props: {
 		initialOptions: {
@@ -343,9 +351,8 @@ export default {
 			iframeHeight: 0,
 			recipeCardPreviewUrl: this.getRecipeCardPreviewUrl(
 				this.initialOptions.template,
-				this.initialOptions.customization.star_ratings_style,
-				this.initialOptions.customization.footer_social_platform,
-				this.initialOptions.customization.nutrifox_display_style
+				this.initialOptions.customization,
+				this.getPreviewSettings()
 			),
 			prevScrollY: 0,
 		};
@@ -359,19 +366,8 @@ export default {
 		window.removeEventListener("scroll", this.handleScroll);
 	},
 	computed: {
-		canCustomizeSocialIcon() {
-			return (
-				-1 !== ["bold", "fresh", "snap"].indexOf(this.currentTemplate)
-			);
-		},
-		currentFooterSocialPlatform() {
-			return this.customization.footer_social_platform;
-		},
 		currentNutrifoxDisplayStyle() {
 			return this.customization.nutrifox_display_style;
-		},
-		currentStarRatingsStyle() {
-			return this.customization.star_ratings_style;
 		},
 		currentTemplateLabel() {
 			// Show the template count, and use the index for the current template.
@@ -385,10 +381,7 @@ export default {
 				+ (this.isLocked ? this.getProBadge() : "");
 		},
 		nutrifoxLogoUrl() {
-			return (
-				window.tastyRecipesSettings.pluginUrl +
-				"/assets/images/nutrifox-logo.png"
-			);
+			return this.getImage( 'nutrifox-logo.png' );
 		},
 		isNutrifoxUser() {
 			return window.tastyRecipesSettings.isNutrifoxUser;
@@ -397,6 +390,12 @@ export default {
 			return this.initialOptions.locked.includes(
 				this.currentTemplate
 			);
+		},
+		getSocialModal() {
+			return JSON.stringify({
+				modal_title: 'Social Footers',
+				setting_utm_content: 'social-footer'
+			});
 		},
 	},
 	methods: {
@@ -478,23 +477,30 @@ export default {
 				this.currentTemplate = keys[index + 1];
 			}
 		},
-		getRecipeCardPreviewUrl(template, style, platform, nutrifox) {
-			return (
-				this.recipeCardPreviewUrlBase +
-				"&template=" +
-				template +
-				"&nutrifox_display_style=" +
-				nutrifox +
-				"&star_ratings_style=" +
-				style +
-				"&footer_social_platform=" +
-				platform
-			);
+		getRecipeCardPreviewUrl(template, settings, include) {
+			const params = Object.entries(settings)
+				.filter(([key]) => include.includes(key)) // Only include keys that are in the "include" array
+				.map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+				.join('&');
+
+			return `${this.recipeCardPreviewUrlBase}&template=${template}&${params}`;
+		},
+		getPreviewSettings() {
+			return ['nutrifox_display_style'];
 		},
 		getProBadge() {
+			if ( ! window.TastyFramework || ! window.TastyFramework.f ) {
+				return '';
+			}
 			let badge = window.TastyFramework.f.getProBadge();
 			badge = badge.replace( /href=""/, `href="${this.initialOptions.upgrade_url}"` );
 			return badge;
+		},
+		getImage( image ) {
+			return (
+				window.tastyRecipesSettings.pluginUrl +
+				"/assets/images/" + image
+			);
 		},
 		handleScroll() {
 			const currentScrollY = window.scrollY;
@@ -533,39 +539,20 @@ export default {
 				JSON.stringify(data)
 			);
 		},
+		updateRecipeCardPreviewUrl() {
+			this.recipeCardPreviewUrl = this.getRecipeCardPreviewUrl(
+				this.currentTemplate,
+				this.customization,
+				this.getPreviewSettings()
+			);
+		},
 	},
 	watch: {
-		currentFooterSocialPlatform(val) {
-			this.recipeCardPreviewUrl = this.getRecipeCardPreviewUrl(
-				this.currentTemplate,
-				this.customization.star_ratings_style,
-				val,
-				this.customization.nutrifox_display_style
-			);
+		currentNutrifoxDisplayStyle() {
+			this.updateRecipeCardPreviewUrl();
 		},
-		currentNutrifoxDisplayStyle(val) {
-			this.recipeCardPreviewUrl = this.getRecipeCardPreviewUrl(
-				this.currentTemplate,
-				this.customization.star_ratings_style,
-				this.customization.footer_social_platform,
-				val
-			);
-		},
-		currentStarRatingsStyle(val) {
-			this.recipeCardPreviewUrl = this.getRecipeCardPreviewUrl(
-				this.currentTemplate,
-				val,
-				this.customization.footer_social_platform,
-				this.customization.nutrifox_display_style
-			);
-		},
-		currentTemplate(val) {
-			this.recipeCardPreviewUrl = this.getRecipeCardPreviewUrl(
-				val,
-				this.customization.star_ratings_style,
-				this.customization.footer_social_platform,
-				this.customization.nutrifox_display_style
-			);
+		currentTemplate() {
+			this.updateRecipeCardPreviewUrl();
 		},
 		customization: {
 			deep: true,

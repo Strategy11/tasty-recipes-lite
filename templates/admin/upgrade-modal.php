@@ -15,8 +15,6 @@
 			<h2>__modal_title__</h2>
 		</div>
 
-		<div class="tasty-framework-spacer"></div>
-
 		<div class="tasty-framework-modal-body">
 			<?php esc_html_e( 'This is a premium feature. Consider upgrading to a paid plan to get this and more.', 'tasty-recipes' ); ?>
 
