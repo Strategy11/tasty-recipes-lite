@@ -84,10 +84,10 @@ class Settings {
 		];
 
 		$design_settings = [
-			Tasty_Recipes::CUSTOMIZATION_OPTION          => [
+			Tasty_Recipes::CUSTOMIZATION_OPTION => [
 				'sanitize_callback' => array( __CLASS__, 'sanitize_customization_option' ),
 			],
-			Tasty_Recipes::TEMPLATE_OPTION               => $sanitize_title,
+			Tasty_Recipes::TEMPLATE_OPTION      => $sanitize_title,
 		];
 
 		/**
@@ -108,18 +108,18 @@ class Settings {
 		}
 
 		$settings = [
-			Tasty_Recipes::QUICK_LINKS_OPTION            => [
+			Tasty_Recipes::QUICK_LINKS_OPTION         => [
 				'sanitize_callback' => array( __CLASS__, 'sanitize_quick_links' ),
 			],
-			Tasty_Recipes::QUICK_LINKS_STYLE             => $sanitize_title,
-			Tasty_Recipes::CARD_BUTTONS_OPTION           => [
+			Tasty_Recipes::QUICK_LINKS_STYLE          => $sanitize_title,
+			Tasty_Recipes::CARD_BUTTONS_OPTION        => [
 				'sanitize_callback' => array( __CLASS__, 'sanitize_card_buttons' ),
 			],
-			Tasty_Recipes::COPY_TO_CLIPBOARD_OPTION      => $sanitize_title,
-			Tasty_Recipes::DEFAULT_AUTHOR_LINK_OPTION    => [
+			Tasty_Recipes::COPY_TO_CLIPBOARD_OPTION   => $sanitize_title,
+			Tasty_Recipes::DEFAULT_AUTHOR_LINK_OPTION => [
 				'sanitize_callback' => 'esc_url_raw',
 			],
-			Tasty_Recipes::SHAREASALE_OPTION             => [
+			Tasty_Recipes::SHAREASALE_OPTION          => [
 				'sanitize_callback' => 'sanitize_text_field',
 			],
 		];
@@ -248,7 +248,7 @@ class Settings {
 				'print'  => __( '\'Print Recipe\' link', 'tasty-recipes' ),
 				'rating' => __( '\'Leave a Review\' link', 'tasty-recipes' ),
 			),
-			'pro_option' => [ 'rating' ],
+			'pro_option'     => [ 'rating' ],
 		];
 
 		$settings[ Tasty_Recipes::QUICK_LINKS_STYLE ] = [
@@ -560,6 +560,8 @@ class Settings {
 		foreach ( array( 'first', 'second' ) as $position ) {
 			if ( in_array( $original[ $position ], array( '', 'print', 'pin', 'mediavine', 'slickstream' ), true ) ) {
 				$sanitized[ $position ] = $original[ $position ];
+			} else {
+				$sanitized[ $position ] = '';
 			}
 		}
 		return $sanitized;
@@ -835,11 +837,11 @@ class Settings {
 				'label' => __( 'Print', 'tasty-recipes' ),
 			),
 			'pin'         => array(
-				'label' => __( 'Pin this recipe', 'tasty-recipes' ),
+				'label'    => __( 'Pin this recipe', 'tasty-recipes' ),
 				'disabled' => true,
 			),
 			'mediavine'   => array(
-				'label' => __( 'Mediavine Grow.me Save', 'tasty-recipes' ),
+				'label'    => __( 'Mediavine Grow.me Save', 'tasty-recipes' ),
 				'disabled' => true,
 			),
 			'slickstream' => array(

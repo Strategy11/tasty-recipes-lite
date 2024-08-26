@@ -47,7 +47,7 @@ abstract class Abstract_Template {
 		'card_buttons' => [
 			'first'  => 'print',
 			'second' => '',
-		]
+		],
 	];
 
 	/**
@@ -58,6 +58,14 @@ abstract class Abstract_Template {
 		$this->id            = sanitize_title_with_dashes( $this->template_name );
 	}
 
+	/**
+	 * Magic method to intercept calls to get_ methods.
+	 *
+	 * @param string $name      Method name.
+	 * @param array  $arguments Method arguments.
+	 *
+	 * @return mixed
+	 */
 	public function __call( $name, $arguments ) {
 		// Intercept only methods starting with 'get_'.
 		if ( strncmp( $name, 'get_', 4 ) !== 0 || ! method_exists( $this, $name ) ) {
@@ -103,6 +111,8 @@ abstract class Abstract_Template {
 	}
 
 	/**
+	 * Get the image size for the template.
+	 *
 	 * @return string
 	 */
 	private function get_image_size() {
@@ -111,6 +121,8 @@ abstract class Abstract_Template {
 
 	/**
 	 * Get customize options.
+	 *
+	 * @param string $key Setting to get.
 	 *
 	 * @return string
 	 */

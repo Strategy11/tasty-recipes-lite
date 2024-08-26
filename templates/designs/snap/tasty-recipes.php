@@ -259,10 +259,12 @@ if ( '.svg' === $ext ) {
 				<img class="<?php echo esc_attr( 'svg-' . $footer_social_platform ); ?>" data-pin-nopin="true" src="<?php echo esc_url( plugins_url( 'images/icon-' . $footer_social_platform . '.png', __FILE__ ) ); ?>">
 			<?php endif; ?>
 		<?php endif; ?>
+		<?php if ( ! empty( $footer_heading ) ) : ?>
 		<div class="tasty-recipes-footer-copy">
 			<h3 data-tasty-recipes-customization="footer-heading-color.color h3-transform.text-transform footer-heading.innerText"><?php echo esc_html( $footer_heading ); ?></h3>
 			<div data-tasty-recipes-customization="footer-description-color.color footer-description.innerHTML"><?php echo wp_kses_post( $footer_description ); ?></div>
 		</div>
+		<?php endif; ?>
 	</div>
 </footer>
 

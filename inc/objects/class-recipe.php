@@ -198,61 +198,49 @@ class Recipe {
 	public static function get_nutrition_attributes() {
 		$attributes = array(
 			'serving_size'    => array(
-				'label'        => __( 'Serving Size', 'tasty-recipes' ),
 				'property'     => 'servingSize',
 				'nutrifox_key' => 'serving_size',
 			),
 			'calories'        => array(
-				'label'        => __( 'Calories', 'tasty-recipes' ),
 				'property'     => 'calories',
 				'nutrifox_key' => 'ENERC_KCAL',
 			),
 			'sugar'           => array(
-				'label'        => __( 'Sugar', 'tasty-recipes' ),
 				'property'     => 'sugarContent',
 				'nutrifox_key' => 'SUGAR',
 			),
 			'sodium'          => array(
-				'label'        => __( 'Sodium', 'tasty-recipes' ),
 				'property'     => 'sodiumContent',
 				'nutrifox_key' => 'NA',
 			),
 			'fat'             => array(
-				'label'        => __( 'Fat', 'tasty-recipes' ),
 				'property'     => 'fatContent',
 				'nutrifox_key' => 'FAT',
 			),
 			'saturated_fat'   => array(
-				'label'        => __( 'Saturated Fat', 'tasty-recipes' ),
 				'property'     => 'saturatedFatContent',
 				'nutrifox_key' => 'FASAT',
 			),
 			'unsaturated_fat' => array(
-				'label'    => __( 'Unsaturated Fat', 'tasty-recipes' ),
 				'property' => 'unsaturatedFatContent',
 			),
 			'trans_fat'       => array(
-				'label'        => __( 'Trans Fat', 'tasty-recipes' ),
 				'property'     => 'transFatContent',
 				'nutrifox_key' => 'FATRN',
 			),
 			'carbohydrates'   => array(
-				'label'        => __( 'Carbohydrates', 'tasty-recipes' ),
 				'property'     => 'carbohydrateContent',
 				'nutrifox_key' => 'CHOCDF',
 			),
 			'fiber'           => array(
-				'label'        => __( 'Fiber', 'tasty-recipes' ),
 				'property'     => 'fiberContent',
 				'nutrifox_key' => 'FIBTG',
 			),
 			'protein'         => array(
-				'label'        => __( 'Protein', 'tasty-recipes' ),
 				'property'     => 'proteinContent',
 				'nutrifox_key' => 'PROCNT',
 			),
 			'cholesterol'     => array(
-				'label'        => __( 'Cholesterol', 'tasty-recipes' ),
 				'property'     => 'cholesterolContent',
 				'nutrifox_key' => 'CHOLE',
 			),
