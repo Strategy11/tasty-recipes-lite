@@ -5,7 +5,7 @@
  * @package Tasty_Recipes
  */
 
-namespace Tasty_Recipes\Templates;
+namespace Tasty_Recipes\Designs;
 
 use Tasty_Recipes;
 
@@ -36,23 +36,42 @@ abstract class Abstract_Template {
 	protected $is_pro = false;
 
 	/**
-	 * Get template unique ID.
+	 * Customize options.
 	 *
-	 * @return string
+	 * @var array
 	 */
-	public function get_id() {
-		$this->set_vars();
-		return $this->id;
-	}
+	protected $customized = [
+		'container'    => '',
+		'admin_button' => 'button-color.border-color button-color.background button-text-color.color',
+		'image_size'   => 'thumbnail',
+		'card_buttons' => [
+			'first'  => 'print',
+			'second' => '',
+		]
+	];
 
 	/**
-	 * Get template name.
-	 *
-	 * @return string
+	 * Sets the variables.
 	 */
-	public function get_template_name() {
-		$this->set_vars();
-		return $this->template_name;
+	public function set_vars() {
+		$this->template_name = str_replace( '_', ' ', substr( strrchr( get_class( $this ), '\\' ), 1 ) );
+		$this->id            = sanitize_title_with_dashes( $this->template_name );
+	}
+
+	public function __call( $name, $arguments ) {
+		// Intercept only methods starting with 'get_'.
+		if ( strncmp( $name, 'get_', 4 ) !== 0 || ! method_exists( $this, $name ) ) {
+			return null;
+		}
+
+		// Check if method is private.
+		$reflection = new \ReflectionMethod( $this, $name );
+		if ( $reflection->isPrivate() ) {
+			$this->set_vars();
+			return call_user_func_array( [ $this, $name ], $arguments );
+		}
+
+		return null;
 	}
 
 	/**
@@ -63,6 +82,40 @@ abstract class Abstract_Template {
 	public function is_pro() {
 		$this->set_vars();
 		return $this->is_pro;
+	}
+
+	/**
+	 * Get template unique ID.
+	 *
+	 * @return string
+	 */
+	private function get_id() {
+		return $this->id;
+	}
+
+	/**
+	 * Get template name.
+	 *
+	 * @return string
+	 */
+	private function get_template_name() {
+		return $this->template_name;
+	}
+
+	/**
+	 * @return string
+	 */
+	private function get_image_size() {
+		return $this->get_customized( 'image_size' );
+	}
+
+	/**
+	 * Get customize options.
+	 *
+	 * @return string
+	 */
+	private function get_customized( $key = '' ) {
+		return $this->customized[ $key ];
 	}
 
 	/**

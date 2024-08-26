@@ -9,6 +9,7 @@ namespace Tasty_Recipes;
 
 use Tasty_Recipes;
 use Tasty_Recipes\Objects\Recipe;
+use Tasty_Recipes\Designs\Template;
 use WP_Post;
 
 /**
@@ -49,9 +50,12 @@ class Shortcodes {
 	/**
 	 * Selected included template name.
 	 *
-	 * @var string
+	 * @var array
 	 */
-	private static $template = '';
+	private static $template = [
+		'css' => '',
+		'php' => '',
+	];
 
 	/**
 	 * Custom template name if not an included template.
@@ -314,10 +318,9 @@ class Shortcodes {
 			$wrapper_classes[] = 'tasty-recipes-display';
 		}
 
-		$image_size = 'thumbnail';
-		if ( 'snap' === get_option( Tasty_Recipes::TEMPLATE_OPTION, '' ) ) {
-			$image_size = 'medium_large';
-		}
+		$template_obj = Template::get_object_by_name( 'current' );
+		$image_size = $template_obj->get_image_size();
+
 		/**
 		 * Image size used for the recipe card.
 		 *
@@ -337,11 +340,11 @@ class Shortcodes {
 		}
 
 		self::set_template_info();
-		if ( ! self::$template ) {
+		if ( empty( self::$template['php'] ) ) {
 			return '';
 		}
 
-		if ( 'recipe/easyrecipe' === self::$template ) {
+		if ( 'recipe/easyrecipe' === self::$template['php'] ) {
 			$wrapper_classes[] = 'easyrecipe';
 		}
 
@@ -727,8 +730,8 @@ class Shortcodes {
 		 * @param array  $template_vars Template variables to be used.
 		 * @param object $recipe        Recipe object.
 		 */
-		$template_vars = apply_filters( 'tasty_recipes_recipe_template_vars', $template_vars, $recipe );
-		$ret          .= Tasty_Recipes::get_template_part( self::$template, $template_vars );
+		$template_vars = apply_filters( 'tasty_recipes_recipe_template_vars', $template_vars, $recipe, compact( 'atts' ) );
+		$ret          .= Tasty_Recipes::get_template_part( self::$template['php'], $template_vars );
 		$ret          .= '</div>';
 
 		self::add_powered_by( $shareasale, $ret );
@@ -746,7 +749,7 @@ class Shortcodes {
 	 * @return void
 	 */
 	private static function set_template_info( $custom_design = false ) {
-		self::$template        = '';
+		self::$template['php'] = '';
 		self::$custom_template = '';
 
 		/**
@@ -760,18 +763,20 @@ class Shortcodes {
 		}
 
 		if ( file_exists( get_stylesheet_directory() . '/tasty-recipes.php' ) ) {
-			self::$template = get_stylesheet_directory() . '/tasty-recipes.php';
+			self::$template['php'] = get_stylesheet_directory() . '/tasty-recipes.php';
 			return;
 		}
 
 		$custom_design = $custom_design ? $custom_design : get_option( Tasty_Recipes::TEMPLATE_OPTION, '' );
+		$template_obj  = Template::get_object_by_name( $custom_design );
 		$custom_path   = dirname( TASTY_RECIPES_LITE_FILE ) . '/templates/designs/' . $custom_design . '/tasty-recipes.php';
 
 		self::$custom_template = $custom_design;
-		if ( $custom_design && file_exists( $custom_path ) ) {
-			self::$template = $custom_path;
+		if ( $custom_design ) {
+			self::$template['php'] = $template_obj->get_template_path();
+			self::$template['css'] = $template_obj->get_style_path();
 		} else {
-			self::$template = 'recipe/' . $template;
+			self::$template['php'] = 'recipe/' . $template;
 		}
 	}
 
@@ -1063,19 +1068,9 @@ EOT;
 		if ( ! $custom_design ) {
 			$custom_design = self::$custom_template;
 		}
-		switch ( $custom_design ) {
-			case 'bold':
-				return 'primary-color.border-color';
-			case 'fresh':
-				return 'primary-color.background-color';
-			case 'simple':
-				return 'primary-color.background-color secondary-color.border-color';
-			case 'modern-compact':
-				return 'primary-color.background-color secondary-color.border-color';
-			case 'elegant':
-				return 'primary-color.background-color primary-color.outline-color';
-		}
-		return '';
+
+		$template_obj = Template::get_object_by_name( $custom_design );
+		return $template_obj->get_customized( 'container' );
 	}
 
 	/**
@@ -1094,8 +1089,9 @@ EOT;
 		}
 
 		if ( null === $template ) {
-			$template = get_option( Tasty_Recipes::TEMPLATE_OPTION, '' );
+			$template = 'current';
 		}
+		$template_obj = Template::get_object_by_name( $template );
 
 		$atts = array(
 			'recipe'        => $recipe,
@@ -1104,11 +1100,7 @@ EOT;
 
 		if ( is_admin() ) {
 			// Set the colors dynamically in the preview.
-			if ( in_array( $template, array( 'bold', 'fresh' ), true ) ) {
-				$atts['customization'] = 'button-color.background button-text-color.color';
-			} else {
-				$atts['customization'] = 'button-color.border-color button-color.background button-text-color.color';
-			}
+			$atts['customization'] = $template_obj->get_customized( 'admin_button' );
 		}
 		return Tasty_Recipes::get_template_part(
 			'buttons/' . $settings[ $position ],
@@ -1131,12 +1123,12 @@ EOT;
 
 		$styles = '';
 
-		if ( 'recipe/easyrecipe' === self::$template ) {
+		if ( 'recipe/easyrecipe' === self::$template['php'] ) {
 			$easyrecipe_css = Utils::get_contents( dirname( __DIR__ ) . '/assets/css/easyrecipe.css' );
 			$easyrecipe_css = str_replace( 'assets/images/easyrecipe', plugins_url( 'assets/images/easyrecipe', __DIR__ ), $easyrecipe_css );
 			$styles        .= PHP_EOL . $easyrecipe_css;
 		} elseif ( self::$custom_template ) {
-			$custom_path = dirname( TASTY_RECIPES_LITE_FILE ) . '/templates/designs/' . self::$custom_template . '/tasty-recipes.css';
+			$custom_path = self::$template['css'];
 			if ( file_exists( $custom_path ) ) {
 				$styles .= Utils::get_contents( $custom_path );
 			}

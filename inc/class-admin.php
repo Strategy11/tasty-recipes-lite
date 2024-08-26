@@ -331,8 +331,8 @@ class Admin {
 	 * @return void
 	 */
 	public static function handle_wp_ajax_preview_recipe_card() {
-		_deprecated_function( __METHOD__, 'x.x', 'Templates::handle_wp_ajax_preview_recipe_card' );
-		Templates::handle_wp_ajax_preview_recipe_card();
+		_deprecated_function( __METHOD__, 'x.x', 'Designs\Template::handle_wp_ajax_preview_recipe_card' );
+		Designs\Template::handle_wp_ajax_preview_recipe_card();
 	}
 
 	/**

@@ -5,14 +5,18 @@
  * @package Tasty_Recipes
  */
 
-namespace Tasty_Recipes;
+namespace Tasty_Recipes\Designs;
 
 use Tasty_Recipes;
+use Tasty_Recipes\Utils;
+use Tasty_Recipes\Admin;
+use Tasty_Recipes\Shortcodes;
+use Tasty_Recipes\Ratings;
 
 /**
  * Manages the recipe templates.
  */
-class Templates {
+class Template {
 
 	/**
 	 * Array of template objects.
@@ -32,13 +36,13 @@ class Templates {
 		}
 
 		$template_objects = array(
-			'default'        => Templates\Default_Template::instance(),
-			'simple'         => Templates\Simple::instance(),
-			'snap'           => Templates\Snap::instance(),
-			'bold'           => Templates\Bold::instance(),
-			'fresh'          => Templates\Fresh::instance(),
-			'elegant'        => Templates\Elegant::instance(),
-			'modern-compact' => Templates\Modern_Compact::instance(),
+			'default'        => Default_Template::instance(),
+			'simple'         => Simple::instance(),
+			'snap'           => Snap::instance(),
+			'bold'           => Bold::instance(),
+			'fresh'          => Fresh::instance(),
+			'elegant'        => Elegant::instance(),
+			'modern-compact' => Modern_Compact::instance(),
 		);
 
 		self::$template_objects = (array) apply_filters( 'tasty_recipes_template_objects', $template_objects );
@@ -67,15 +71,23 @@ class Templates {
 	/**
 	 * Get template object with its ID.
 	 *
-	 * @param string $template Template ID.
+	 * @param string $template Template ID or 'current'.
 	 *
 	 * @return Abstract_Template
 	 */
 	public static function get_object_by_name( $template ) {
+		if ( $template === 'current' ) {
+			$template = get_option( Tasty_Recipes::TEMPLATE_OPTION, '' );
+		}
+
+		if ( empty( $template ) ) {
+			return Default_Template::instance();
+		}
+
 		$templates = self::get_all_templates();
 
 		if ( empty( $templates ) || ! isset( $templates[ $template ] ) ) {
-			return Templates\Default_Template::instance();
+			return Default_Template::instance();
 		}
 
 		return self::$template_objects[ $template ];
@@ -231,7 +243,7 @@ EOT;
 				Tasty_Recipes::nutrifox_url(),
 				$nutrifox_id
 			);
-			$nutrifox_resize_script = Utils::get_contents( dirname( __DIR__ ) . '/assets/js/nutrifox-resize.js' );
+			$nutrifox_resize_script = Utils::get_contents( dirname( TASTY_RECIPES_LITE_FILE ) . '/assets/js/nutrifox-resize.js' );
 
 			$recipe_nutrifox_embed = <<<EOT
 <script data-cfasync="false">
@@ -248,7 +260,7 @@ EOT;
 			'recipe_json'                   => $recipe_json,
 			'recipe_title'                  => 'Almond Butter Cups',
 			'recipe_image'                  => '<img width="183" height="183" ' .
-				'src="' . esc_url( plugins_url( 'assets/images/Almond-Butter-Cups-Recipe-370x370.jpg', __DIR__ ) ) . '" ' .
+				'src="' . esc_url( plugins_url( 'assets/images/Almond-Butter-Cups-Recipe-370x370.jpg', TASTY_RECIPES_LITE_FILE ) ) . '" ' .
 				'class="attachment-thumbnail size-thumbnail" alt="Chocolate Chip Cookies on parchment paper." ' .
 				'loading="lazy" data-pin-nopin="true">',
 			'recipe_rating_icons'           => Ratings::get_rendered_rating(
@@ -329,7 +341,7 @@ EOT;
 			'copy_ingredients'              => get_option( Tasty_Recipes::COPY_TO_CLIPBOARD_OPTION )
 				? '<button aria-label="' . esc_attr__( 'Copy ingredients to clipboard', 'tasty-recipes' ) . '" ' .
 				'class="tasty-recipes-copy-button" id="copy-ingredients" data-text="' . esc_attr__( 'Copy ingredients', 'tasty-recipes' ) . '">' .
-				Utils::get_contents( dirname( __DIR__ ) . '/assets/images/icons/icon-copy-to-clipboard.svg' ) .
+				Utils::get_contents( dirname( TASTY_RECIPES_LITE_FILE ) . '/assets/images/icons/icon-copy-to-clipboard.svg' ) .
 				'</button>'
 				: false,
 			'first_button'                  => Shortcodes::get_card_button( $recipe, 'first', $custom_design ),
@@ -339,7 +351,7 @@ EOT;
 			'footer_social_platform'        => $footer_social_platform,
 			'footer_heading'                => $settings['footer_heading'],
 			'footer_description'            => $settings['footer_description'],
-			'template_object'               => $template_object ? $template_object : false,
+			'template_object'               => ! empty( $template_object ) ? $template_object : false,
 		);
 
 		$stylesheets = '';
@@ -368,7 +380,7 @@ EOT;
 		$ret .= '>' . PHP_EOL;
 		$ret .= Tasty_Recipes::get_template_part( $template, $template_vars );
 		$ret .= '</div>';
-		$ret .= '<script>' . PHP_EOL . Utils::get_contents( dirname( __DIR__ ) . '/assets/dist/settings-recipe-card-preview.build.js' ) . PHP_EOL . '</script>';
+		$ret .= '<script>' . PHP_EOL . Utils::get_contents( dirname( TASTY_RECIPES_LITE_FILE ) . '/assets/dist/settings-recipe-card-preview.build.js' ) . PHP_EOL . '</script>';
 		$ret .= '</body></html>';
 		echo apply_filters( 'tasty_recipes_recipe_card_output', $ret, 'admin', compact( 'recipe' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		exit;

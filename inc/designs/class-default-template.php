@@ -5,7 +5,7 @@
  * @package Tasty_Recipes
  */
 
-namespace Tasty_Recipes\Templates;
+namespace Tasty_Recipes\Designs;
 
 use Tasty\Framework\Traits\Singleton;
 
@@ -13,7 +13,6 @@ use Tasty\Framework\Traits\Singleton;
  * Default template class.
  */
 class Default_Template extends Abstract_Template {
-
 	use Singleton;
 
 	/**

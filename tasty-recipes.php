@@ -302,7 +302,7 @@ class Tasty_Recipes {
 		add_action( 'update_option_' . self::LICENSE_KEY_OPTION, array( 'Tasty_Recipes\Admin', 'action_update_option_clear_transient' ) );
 		add_action( 'media_buttons', array( 'Tasty_Recipes\Editor', 'action_media_buttons' ) );
 
-		add_action( 'wp_ajax_tasty_recipes_preview_recipe_card', array( 'Tasty_Recipes\Templates', 'handle_wp_ajax_preview_recipe_card' ) );
+		add_action( 'wp_ajax_tasty_recipes_preview_recipe_card', array( 'Tasty_Recipes\Designs\Template', 'handle_wp_ajax_preview_recipe_card' ) );
 		add_action( 'wp_ajax_tasty_recipes_get_count', array( 'Tasty_Recipes\Admin', 'handle_wp_ajax_get_count' ) );
 		add_action( 'wp_ajax_tasty_recipes_convert', array( 'Tasty_Recipes\Admin', 'handle_wp_ajax_convert' ) );
 		add_action( 'wp_ajax_tasty_recipes_ignore_convert', array( 'Tasty_Recipes\Editor', 'handle_wp_ajax_ignore_convert' ) );
@@ -711,23 +711,16 @@ class Tasty_Recipes {
 	 */
 	public static function get_card_button_settings( $template = null ) {
 		$value = get_option( self::CARD_BUTTONS_OPTION );
-		// Set defaults based on template.
-		if ( empty( $value ) ) {
-			if ( null === $template ) {
-				$template = get_option( self::TEMPLATE_OPTION, '' );
-			}
-			if ( in_array( $template, array( 'bold', 'fresh' ), true ) ) {
-				$value = array(
-					'first'  => 'print',
-					'second' => 'pin',
-				);
-			} else {
-				$value = array(
-					'first'  => 'print',
-					'second' => '',
-				);
-			}
+		if ( $value ) {
+			return $value;
 		}
+		// Set defaults based on template.
+		if ( null === $template ) {
+			$template = 'current';
+		}
+		$template_obj = Tasty_Recipes\Designs\Template::get_object_by_name( $template );
+		$value        = (array) $template_obj->get_customized( 'card_buttons' );
+
 		return $value;
 	}
 

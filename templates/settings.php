@@ -7,6 +7,7 @@
 
 use Tasty_Recipes\Admin;
 use Tasty_Recipes\Utils;
+use Tasty_Recipes\Designs\Template;
 use Tasty\Framework\Utils\Common;
 use Tasty\Framework\Utils\Url;
 
@@ -39,12 +40,12 @@ use Tasty\Framework\Utils\Url;
 					'template'      => get_option( Tasty_Recipes::TEMPLATE_OPTION, '' ),
 					'customization' => Tasty_Recipes::get_customization_settings(),
 					'upgrade_url'   => Url::get_upgrade_url( 'Tasty Recipes', [ 'utm_content' => 'template' ] ),
-					'locked'        => Tasty_Recipes\Templates::get_locked_templates(),
+					'locked'        => Template::get_locked_templates(),
 				);
 				?>
 				<tasty-recipes-design-settings
 					recipe-card-preview-url-base="<?php echo esc_url( $recipe_card_preview_url_base ); ?>"
-					:template-options="<?php echo esc_attr( wp_json_encode( Tasty_Recipes\Templates::get_all_templates() ) ); ?>"
+					:template-options="<?php echo esc_attr( wp_json_encode( Template::get_all_templates() ) ); ?>"
 					:initial-options="<?php echo esc_attr( wp_json_encode( $initial_options ) ); ?>"></tasty-recipes-design-settings>
 			</form>
 			<?php
