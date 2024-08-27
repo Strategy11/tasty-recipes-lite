@@ -10,6 +10,7 @@ namespace Tasty_Recipes;
 use Tasty\Framework\Utils\Vars;
 use Tasty_Recipes;
 use Tasty_Recipes\Objects\Recipe;
+use Tasty_Recipes_Pro;
 
 /**
  * Manages ratings integration with comments.
@@ -61,13 +62,6 @@ class Ratings {
 	const RATING_COMMENT_HASH_META_KEY = 'tasty-recipes-comment-hash';
 
 	/**
-	 * Whether the CSS has been loaded.
-	 *
-	 * @var bool
-	 */
-	private static $css_loaded = false;
-
-	/**
 	 * Get rating needed styles.
 	 *
 	 * @since 3.11.1
@@ -75,11 +69,8 @@ class Ratings {
 	 * @return string
 	 */
 	public static function get_styles() {
-		$styles = self::get_style_content();
-		if ( ! $styles ) {
-			return '';
-		}
-		return '<style>' . $styles . '</style>' . PHP_EOL;
+		_deprecated_function( __METHOD__, 'x.x', 'Tasty_Recipes_Pro\Ratings::get_styles' );
+		return Tasty_Recipes_Pro\Ratings::get_styles();
 	}
 
 	/**
@@ -90,28 +81,8 @@ class Ratings {
 	 * @return void
 	 */
 	public static function add_inline_style() {
-		if ( self::$css_loaded ) {
-			return;
-		}
-
-		$styles = self::get_style_content();
-		if ( ! $styles ) {
-			return;
-		}
-
-		self::$css_loaded = true;
-		wp_add_inline_style( 'tasty-recipes-main', Utils::minify_css( $styles ) );
-	}
-
-	/**
-	 * Get the CSS content for ratings.
-	 *
-	 * @since 3.12.3
-	 *
-	 * @return string
-	 */
-	private static function get_style_content() {
-		return Utils::get_contents( dirname( __DIR__ ) . '/assets/dist/ratings.css' );
+		_deprecated_function( __METHOD__, 'x.x', 'Tasty_Recipes_Pro\Ratings::add_inline_style' );
+		Tasty_Recipes_Pro\Ratings::add_inline_style();
 	}
 
 	/**
@@ -124,70 +95,8 @@ class Ratings {
 	 * @return string
 	 */
 	public static function get_rendered_rating( $rating, $customization = '', $style = null ) {
-		if ( ! $rating ) {
-			return '';
-		}
-
-		if ( is_null( $style ) ) {
-			$settings = Tasty_Recipes::get_customization_settings();
-			$style    = $settings['star_ratings_style'];
-		}
-
-		$icons = self::get_icons_by_type( $style );
-		if ( empty( $icons ) ) {
-			return '';
-		}
-
-		$ret = '';
-		for ( $i = 1; $i <= 5; $i++ ) {
-			if ( ceil( $rating ) >= $i || in_array( $style, array( 'outline', 'solid' ), true ) ) {
-				$percentage = self::get_fill_percent(
-					array(
-						'i'       => $i,
-						'average' => $rating,
-					)
-				);
-
-				$ret .= '<span';
-				if ( ! empty( $customization ) ) {
-					$ret .= ' data-tasty-recipes-customization="' . esc_attr( $customization ) . '"';
-				}
-				$ret .= ' class="' . esc_attr( 'tasty-recipes-rating tasty-recipes-rating-' . $style ) . '"';
-				$ret .= ' data-tr-clip="' . esc_attr( (string) $percentage ) . '"';
-				$ret .= ' data-rating="' . intval( $i ) . '"';
-				$ret .= '>';
-				$ret .= $icons['checked'];
-				$ret .= '</span>';
-			}
-		}
-		return $ret;
-	}
-
-	/**
-	 * Get the rating icon HTML.
-	 *
-	 * @since 3.12
-	 *
-	 * @param string $style Type of the icon. ie. solid or outline.
-	 *
-	 * @return array
-	 */
-	private static function get_icons_by_type( $style ) {
-		if ( 'solid' === $style ) {
-			$svg_name = 'star-rating-solid.svg';
-		} elseif ( 'outline' === $style ) {
-			$svg_name = 'star-rating-clip.svg';
-		}
-
-		if ( empty( $svg_name ) ) {
-			return array();
-		}
-
-		$star_svg = Utils::get_contents( dirname( __DIR__ ) . '/assets/images/' . $svg_name );
-		return array(
-			'checked'   => $star_svg,
-			'unchecked' => $star_svg,
-		);
+		_deprecated_function( __METHOD__, 'x.x', 'Tasty_Recipes_Pro\Ratings::get_rendered_rating' );
+		return Tasty_Recipes_Pro\Ratings::get_rendered_rating( $rating, $customization, $style );
 	}
 
 	/**
@@ -200,12 +109,8 @@ class Ratings {
 	 * @return array
 	 */
 	public static function apply_default_rating_stars_color( $settings = array() ) {
-		if ( ! empty( $settings['star_color'] ) ) {
-			return $settings;
-		}
-
-		$settings['star_color'] = ! empty( $settings['detail_value_color'] ) ? $settings['detail_value_color'] : '#F2B955';
-		return $settings;
+		_deprecated_function( __METHOD__, 'x.x', 'Tasty_Recipes_Pro\Ratings::apply_default_rating_stars_color' );
+		return Tasty_Recipes_Pro\Ratings::apply_default_rating_stars_color( $settings );
 	}
 
 	/**
@@ -217,23 +122,8 @@ class Ratings {
 	 * @return string
 	 */
 	public static function get_rating_stars_html( $no_ratings = false, $average = 0 ) {
-		if ( ! comments_open() && ! is_admin() ) {
-			return '';
-		}
-
-		$settings     = Tasty_Recipes::get_customization_settings();
-		$rating_style = $settings['star_ratings_style'];
-
-		return Tasty_Recipes::get_template_part(
-			'parts/ratings',
-			array(
-				'no_ratings'       => $no_ratings,
-				'icons'            => self::get_icons_by_type( $rating_style ),
-				'remove_new_lines' => true,
-				'average'          => $average,
-				'rating_style'     => $rating_style,
-			)
-		);
+		_deprecated_function( __METHOD__, 'x.x', 'Tasty_Recipes_Pro\Ratings::get_rating_stars_html' );
+		return Tasty_Recipes_Pro\Ratings::get_rating_stars_html( $no_ratings, $average );
 	}
 
 	/**
@@ -251,16 +141,8 @@ class Ratings {
 	 * @return int
 	 */
 	public static function get_fill_percent( $atts ) {
-		$diff = round( $atts['average'], 1 ) - $atts['i'] + 1;
-		if ( $diff < 1 && $diff > 0 ) {
-			$percentage = $diff * 100;
-		} elseif ( $diff >= 1 ) {
-			$percentage = 100;
-		} else {
-			$percentage = 0;
-		}
-
-		return $percentage;
+		_deprecated_function( __METHOD__, 'x.x', 'Tasty_Recipes_Pro\Ratings::get_fill_percent' );
+		return Tasty_Recipes_Pro\Ratings::get_fill_percent( $atts );
 	}
 
 	/**
@@ -272,14 +154,8 @@ class Ratings {
 	 * @return bool
 	 */
 	public static function filter_allow_rating_empty_comment( $allow, $comment_data ) {
-		$recipes = Tasty_Recipes::get_recipes_for_post( (int) $comment_data['comment_post_ID'] );
-		if ( 1 !== count( $recipes ) ) {
-			return $allow;
-		}
-
-		$minimum_rating_without_comment = self::get_minimum_rating_without_comment( $comment_data );
-		$post_rating                    = (int) Utils::get_post_value( 'tasty-recipes-rating' );
-		return ! empty( $post_rating ) && $post_rating >= $minimum_rating_without_comment;
+		_deprecated_function( __METHOD__, 'x.x', 'Tasty_Recipes_Pro\Ratings::filter_allow_rating_empty_comment' );
+		return Tasty_Recipes_Pro\Ratings::filter_allow_rating_empty_comment( $allow, $comment_data );
 	}
 
 	/**
@@ -290,31 +166,8 @@ class Ratings {
 	 * @return int
 	 */
 	public static function get_minimum_rating_without_comment( $comment_data = array() ) {
-		/**
-		 * Control minimum rating number where comment is not mandatory.
-		 *
-		 * @param int   $min_rating   Rating minimum integer value, default is 4.
-		 * @param array $comment_data Array of comment data.
-		 */
-		return (int) apply_filters( 'tasty_recipes_min_rating_without_comment', 6, $comment_data );
-	}
-
-	/**
-	 * Check if the rating has a comment or not.
-	 *
-	 * @since 3.12
-	 *
-	 * @param int $comment_id Comment ID.
-	 *
-	 * @return bool|object
-	 */
-	private static function has_comment( $comment_id ) {
-		$has_comment = false;
-		if ( $comment_id ) {
-			$comment     = get_comment( $comment_id );
-			$has_comment = $comment && ! empty( $comment->comment_content );
-		}
-		return $has_comment ? $comment : false;
+		_deprecated_function( __METHOD__, 'x.x', 'Tasty_Recipes_Pro\Ratings::get_minimum_rating_without_comment' );
+		return Tasty_Recipes_Pro\Ratings::get_minimum_rating_without_comment( $comment_data );
 	}
 
 	/**
@@ -326,11 +179,7 @@ class Ratings {
 	 * @return string
 	 */
 	public static function get_rating_label( $total_reviews, $average_rating ) {
-		return sprintf(
-			// translators: Ratings from number of reviews.
-			_n( '%1$s from %2$s review', '%1$s from %2$s reviews', (int) $total_reviews, 'tasty-recipes' ),
-			'<span class="average">' . $average_rating . '</span>',
-			'<span class="count">' . (int) $total_reviews . '</span>'
-		);
+		_deprecated_function( __METHOD__, 'x.x', 'Tasty_Recipes_Pro\Ratings::get_rating_label' );
+		return Tasty_Recipes_Pro\Ratings::get_rating_label( $total_reviews, $average_rating );
 	}
 }

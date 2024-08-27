@@ -6,7 +6,6 @@
 	<exclude-pattern>*/stubs.php</exclude-pattern>
 	<exclude-pattern>/tests/*</exclude-pattern>
 	<exclude-pattern>*.min.css</exclude-pattern>
-	<exclude-pattern>*/css/easyrecipe.css</exclude-pattern>
 	<exclude-pattern>*/assets/dist/*</exclude-pattern>
 
 	<!-- Check all PHP files in directory tree by default. -->

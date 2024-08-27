@@ -75,31 +75,13 @@ class Admin {
 	const PAGE_SLUG = 'tasty-recipes';
 
 	/**
-	 * Group used for authentication settings.
-	 *
-	 * @deprecated x.x
-	 *
-	 * @var string
-	 */
-	const SETTINGS_GROUP_LICENSE = '';
-
-	/**
-	 * Section used for authentication settings.
-	 *
-	 * @deprecated x.x
-	 *
-	 * @var string
-	 */
-	const SETTINGS_SECTION_LICENSE = '';
-
-	/**
 	 * Group used for card settings.
 	 *
 	 * @deprecated x.x
 	 *
 	 * @var string
 	 */
-	const SETTINGS_GROUP_CARD = '';
+	const SETTINGS_GROUP_CARD = 'deprecated';
 
 	/**
 	 * Section used for card settings.
@@ -108,7 +90,7 @@ class Admin {
 	 *
 	 * @var string
 	 */
-	const SETTINGS_SECTION_CARD_DESIGN = '';
+	const SETTINGS_SECTION_CARD_DESIGN = 'deprecated';
 
 	/**
 	 * Available template options.

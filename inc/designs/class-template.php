@@ -76,6 +76,11 @@ class Template {
 	 * @return Abstract_Template
 	 */
 	public static function get_object_by_name( $template ) {
+		$custom_template = self::has_custom_template();
+		if ( $custom_template ) {
+			return $custom_template;
+		}
+
 		if ( $template === 'current' ) {
 			$template = get_option( Tasty_Recipes::TEMPLATE_OPTION, '' );
 		}
@@ -91,6 +96,17 @@ class Template {
 		}
 
 		return self::$template_objects[ $template ];
+	}
+
+	/**
+	 * Check if a custom template exists in the theme.
+	 *
+	 * @return Abstract_Template|false
+	 */
+	public static function has_custom_template() {
+		$custom = Custom_Template::instance();
+		$file   = $custom->get_template_path();
+		return file_exists( $file ) ? $custom : false;
 	}
 
 	/**
@@ -135,21 +151,13 @@ class Template {
 		}
 
 		$get_template               = Utils::get_param( 'template', 'sanitize_key' );
-		$get_star_ratings_style     = Utils::get_param( 'star_ratings_style', 'sanitize_key' );
 		$get_nutrifox_display_style = Utils::get_param( 'nutrifox_display_style', 'sanitize_key' );
-		$get_footer_social_platform = Utils::get_param( 'footer_social_platform', 'sanitize_key' );
 
 		$custom_design          = ! empty( $get_template ) && array_key_exists( $get_template, self::get_all_templates() ) ? $get_template : '';
-		$star_ratings_style     = ! empty( $get_star_ratings_style ) && in_array( $get_star_ratings_style, array( 'solid', 'outline' ), true ) ? $get_star_ratings_style : null;
 		$show_nutrifox          = ! empty( $get_nutrifox_display_style ) && in_array( $get_nutrifox_display_style, array( 'label', 'card' ), true );
 		$nutrifox_display_style = $show_nutrifox ? $get_nutrifox_display_style : null;
-		$show_socials           = ! empty( $get_footer_social_platform ) && in_array( $get_footer_social_platform, array( 'instagram', 'pinterest', 'facebook' ), true );
-		$footer_social_platform = $show_socials ? $get_footer_social_platform : '';
-
-		$settings = Tasty_Recipes::get_filtered_customization_settings();
 
 		$styles  = Shortcodes::get_styles_as_string( $custom_design );
-		$styles .= Utils::get_contents( dirname( TASTY_RECIPES_LITE_FILE ) . '/assets/dist/ratings.css' );
 		$styles .= Utils::get_contents( dirname( TASTY_RECIPES_LITE_FILE ) . '/assets/dist/recipe-card-preview.css' );
 
 		$template = 'recipe/tasty-recipes';
@@ -263,13 +271,6 @@ EOT;
 				'src="' . esc_url( plugins_url( 'assets/images/Almond-Butter-Cups-Recipe-370x370.jpg', TASTY_RECIPES_LITE_FILE ) ) . '" ' .
 				'class="attachment-thumbnail size-thumbnail" alt="Chocolate Chip Cookies on parchment paper." ' .
 				'loading="lazy" data-pin-nopin="true">',
-			'recipe_rating_icons'           => Ratings::get_rendered_rating(
-				4.6,
-				'star-color.color',
-				$star_ratings_style
-			),
-			'recipe_rating_label'           => '<span data-tasty-recipes-customization="detail-label-color.color" class="rating-label">' .
-				'<span class="average">4.6</span> from <span class="count">1376</span> reviews</span>',
 			'recipe_author_name'            => '',
 			'recipe_details'                => array(
 				'author'     =>
@@ -327,9 +328,6 @@ EOT;
 			'recipe_description'            => '<p>Almond Butter Cups: made with five ingredients and no refined sugar. So creamy, rich, and yummy!</p>',
 			'recipe_ingredients'            => $ingredients,
 			'recipe_instructions_has_video' => false,
-			'recipe_scalable'               => '<button class="tasty-recipes-scale-button tasty-recipes-scale-button-active" data-amount="1">1x</button>' .
-				'<button class="tasty-recipes-scale-button" data-amount="2">2x</button>' .
-				'<button class="tasty-recipes-scale-button" data-amount="3">3x</button>',
 			'recipe_instructions'           => $instructions,
 			'recipe_keywords'               => '',
 			'recipe_notes'                  => $notes,
@@ -338,21 +336,19 @@ EOT;
 			'recipe_video_embed'            => '',
 			'recipe_nutrition'              => $recipe_nutrition,
 			'recipe_hidden_nutrition'       => array(),
-			'copy_ingredients'              => get_option( Tasty_Recipes::COPY_TO_CLIPBOARD_OPTION )
-				? '<button aria-label="' . esc_attr__( 'Copy ingredients to clipboard', 'tasty-recipes' ) . '" ' .
-				'class="tasty-recipes-copy-button" id="copy-ingredients" data-text="' . esc_attr__( 'Copy ingredients', 'tasty-recipes' ) . '">' .
-				Utils::get_contents( dirname( TASTY_RECIPES_LITE_FILE ) . '/assets/images/icons/icon-copy-to-clipboard.svg' ) .
-				'</button>'
-				: false,
+			'copy_ingredients'              => false,
 			'first_button'                  => Shortcodes::get_card_button( $recipe, 'first', $custom_design ),
 			'second_button'                 => Shortcodes::get_card_button( $recipe, 'second', $custom_design ),
-			'instagram_handle'              => get_option( Tasty_Recipes::INSTAGRAM_HANDLE_OPTION ),
-			'instagram_hashtag'             => get_option( Tasty_Recipes::INSTAGRAM_HASHTAG_OPTION ),
-			'footer_social_platform'        => $footer_social_platform,
-			'footer_heading'                => $settings['footer_heading'],
-			'footer_description'            => $settings['footer_description'],
 			'template_object'               => ! empty( $template_object ) ? $template_object : false,
 		);
+		/**
+		 * Filter the template vars for the recipe card preview.
+		 *
+		 * @since x.x
+		 *
+		 * @param array $template_vars Array of template vars.
+		 */
+		$template_vars = apply_filters( 'tasty_recipes_preview_vars', $template_vars );
 
 		$stylesheets = '';
 		if ( $editor_styles && current_theme_supports( 'editor-styles' ) ) {
@@ -367,7 +363,7 @@ EOT;
 			}
 		}
 
-		$template_vars['recipe_styles'] = '<style>' . $styles . PHP_EOL . '</style>' . PHP_EOL;
+		$template_vars['recipe_styles'] .= '<style>' . $styles . PHP_EOL . '</style>' . PHP_EOL;
 
 		$ret            = '<!DOCTYPE html><html><head>' .
 			$stylesheets . self::load_enqueued_assets() .

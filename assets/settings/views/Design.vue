@@ -294,7 +294,7 @@
 						></a>
 					</div>
 				</div>
-				<slot name="tasty-after-style-settings">
+				<slot name="after-style-settings">
 					<hr/>
 					<h3>Social Icons <span v-html="getProBadge()"></span></h3>
 					<img

@@ -555,7 +555,6 @@ class Assets {
 	public static function add_recipe_styles( $template_vars = array() ) {
 		_deprecated_function( __METHOD__, '3.12.3', 'Assets::add_inline_style' );
 		$template_vars['recipe_styles'] .= '<style>' . self::get_css_vars() . '</style>' . PHP_EOL;
-		$template_vars['recipe_styles'] .= Tasty_Recipes\Ratings::get_styles();
 
 		return $template_vars;
 	}
@@ -587,7 +586,6 @@ class Assets {
 		}
 
 		wp_add_inline_style( 'tasty-recipes-main', Utils::minify_css( self::get_css_vars() . $styles ) );
-		Tasty_Recipes\Ratings::add_inline_style();
 
 		self::$css_loaded = true;
 

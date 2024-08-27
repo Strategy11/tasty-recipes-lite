@@ -140,12 +140,24 @@ abstract class Abstract_Template {
 	}
 
 	/**
-	 * Get templates base path.
+	 * Get templates base path with trailing slash.
 	 *
 	 * @return string
 	 */
-	private function get_base_templates_path() {
-		return dirname( $this->get_template_plugin() ) . '/templates/';
+	protected function get_base_templates_path() {
+		return trailingslashit(
+			dirname( $this->get_template_plugin() ) .
+			'/' . $this->get_template_folder()
+		);
+	}
+
+	/**
+	 * Get current template folder.
+	 *
+	 * @return string
+	 */
+	protected function get_template_folder() {
+		return 'templates/designs/' . $this->id;
 	}
 
 	/**
@@ -154,11 +166,7 @@ abstract class Abstract_Template {
 	 * @return string
 	 */
 	public function get_template_path() {
-		if ( empty( $this->id ) ) {
-			return '';
-		}
-
-		return $this->get_base_templates_path() . 'designs/' . $this->id . '/tasty-recipes.php';
+		return $this->get_file_path( 'tasty-recipes.php' );
 	}
 
 	/**
@@ -167,11 +175,20 @@ abstract class Abstract_Template {
 	 * @return string
 	 */
 	public function get_style_path() {
+		return $this->get_file_path( 'tasty-recipes.css' );
+	}
+
+	/**
+	 * Get current template style or template file path.
+	 *
+	 * @return string
+	 */
+	protected function get_file_path( $file ) {
 		if ( empty( $this->id ) ) {
 			return '';
 		}
 
-		return $this->get_base_templates_path() . 'designs/' . $this->id . '/tasty-recipes.css';
+		return $this->get_base_templates_path() . $file;
 	}
 
 	/**
@@ -183,6 +200,8 @@ abstract class Abstract_Template {
 		if ( empty( $this->id ) ) {
 			return '';
 		}
-		return plugins_url( 'templates/designs/' . $this->id . '/', $this->get_template_plugin() );
+		return trailingslashit(
+			plugins_url( $this->get_template_folder(), $this->get_template_plugin() )
+		);
 	}
 }

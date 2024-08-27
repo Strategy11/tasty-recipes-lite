@@ -20,7 +20,7 @@ use Tasty\Framework\Utils\Url;
 
 	<?php if ( 'design' === $active_tab ) : ?>
 		<?php
-		if ( file_exists( get_stylesheet_directory() . '/tasty-recipes.php' ) ) {
+		if ( Template::has_custom_template() ) {
 			?>
 			<div class="tasty-recipes-custom-template-notice tasty-tab-content"><p><?php esc_html_e( 'Looks like you\'re using a custom recipe card template. To enable design customization options, you\'ll need to remove the custom tasty-recipes.php file from your theme folder.', 'tasty-recipes' ); ?></p></div>
 			<?php
@@ -35,7 +35,7 @@ use Tasty\Framework\Utils\Url;
 			?>
 			<form method="POST" action="<?php echo esc_url( admin_url( 'options.php' ) ); ?>" class="tasty-recipes-design-settings-app tasty-tab-content">
 				<?php
-				settings_fields( Tasty_Recipes\Admin::SETTINGS_SECTION_CARD_DESIGN );
+				settings_fields( Tasty_Recipes\Settings::SETTINGS_SECTION_CARD_DESIGN );
 				$initial_options = array(
 					'template'      => get_option( Tasty_Recipes::TEMPLATE_OPTION, '' ),
 					'customization' => Tasty_Recipes::get_customization_settings(),

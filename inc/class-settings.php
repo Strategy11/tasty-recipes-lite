@@ -50,12 +50,13 @@ class Settings {
 	 * @return void
 	 */
 	public static function load_hooks() {
+		if ( ! is_admin() ) {
+			return;
+		}
+
+		add_filter( 'tasty_framework_admin_menu_items', array( __CLASS__, 'add_menu_item' ) );
 		add_action( 'admin_menu', array( __CLASS__, 'register_settings' ) );
 		add_filter( 'tasty_recipes_admin_settings_field_args', array( __CLASS__, 'filter_quick_links_backward_compatibility' ) );
-
-		if ( is_admin() ) {
-			add_filter( 'tasty_framework_admin_menu_items', array( __CLASS__, 'add_menu_item' ) );
-		}
 	}
 
 	/**

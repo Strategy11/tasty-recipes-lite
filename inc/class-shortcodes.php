@@ -405,7 +405,10 @@ class Shortcodes {
 			'recipe_scalable'    => false,
 			'copy_ingredients'   => false,
 		);
-		$template_vars = apply_filters( 'tasty_recipes_pre_ingredients', $template_vars, compact( 'atts' ) );
+		/**
+		 * @since x.x
+		 */
+		$template_vars = apply_filters( 'tasty_recipes_pre_template_vars', $template_vars, compact( 'atts' ) );
 
 		// Strip out this <span> so Tasty Links can apply to ingredient names.
 		if ( false !== stripos( $template_vars['recipe_ingredients'], '<span class="nutrifox-name">' ) ) {
@@ -665,20 +668,13 @@ class Shortcodes {
 			return;
 		}
 
-		if ( file_exists( get_stylesheet_directory() . '/tasty-recipes.php' ) ) {
-			self::$template['php'] = get_stylesheet_directory() . '/tasty-recipes.php';
-			return;
-		}
-
 		$custom_design = $custom_design ? $custom_design : get_option( Tasty_Recipes::TEMPLATE_OPTION, '' );
 		$template_obj  = Template::get_object_by_name( $custom_design );
 
 		self::$custom_template = $custom_design;
-		if ( $custom_design ) {
+		if ( $template_obj ) {
 			self::$template['php'] = $template_obj->get_template_path();
 			self::$template['css'] = $template_obj->get_style_path();
-		} else {
-			self::$template['php'] = 'recipe/' . $template;
 		}
 	}
 
@@ -1023,27 +1019,42 @@ EOT;
 		// Add stylesheet so we can add inline CSS to it.
 		wp_enqueue_style( 'tasty-recipes-main' );
 
-		$styles = '';
-
-		if ( 'recipe/easyrecipe' === self::$template['php'] ) {
-			$easyrecipe_css = Utils::get_contents( dirname( __DIR__ ) . '/assets/css/easyrecipe.css' );
-			$easyrecipe_css = str_replace( 'assets/images/easyrecipe', plugins_url( 'assets/images/easyrecipe', __DIR__ ), $easyrecipe_css );
-			$styles        .= PHP_EOL . $easyrecipe_css;
-		} elseif ( self::$custom_template ) {
-			$custom_path = self::$template['css'];
-			if ( file_exists( $custom_path ) ) {
-				$styles .= Utils::get_contents( $custom_path );
-			}
+		$css_files = [];
+		if ( self::$custom_template && self::$template['css'] ) {
+			$css_files[] = self::$template['css'];
 		}
 
 		/**
 		 * Allow third-parties to more easily inject their own styles.
 		 */
-		$custom_styles_path = apply_filters( 'tasty_recipes_custom_css', get_stylesheet_directory() . '/tasty-recipes.css' );
+		$custom_styles_path = apply_filters( 'tasty_recipes_custom_css', '' );
 		if ( file_exists( $custom_styles_path ) ) {
-			$styles .= PHP_EOL . Utils::get_contents( $custom_styles_path );
+			$css_files[] = $custom_styles_path;
 		}
-		return $styles;
+
+		/**
+		 * Filters the styles to be injected into the recipe card.
+		 *
+		 * @since x.x
+		 *
+		 * @param array $css_files Existing styles.
+		 */
+		$css_files = (array) apply_filters( 'tasty_recipes_styles', $css_files );
+		$styles    = '';
+		foreach ( $css_files as $css_file ) {
+			if ( file_exists( $css_file ) ) {
+				$styles .= Utils::get_contents( $css_file );
+			}
+		}
+
+		/**
+		 * Filters the styles to be injected into the recipe card.
+		 *
+		 * @since x.x
+		 *
+		 * @param string $styles Existing styles.
+		 */
+		return apply_filters( 'tasty_recipes_styles_string', $styles );
 	}
 
 	/**
@@ -1227,11 +1238,18 @@ EOT;
 	private static function get_common_recipe_scripts() {
 		global $post;
 		$vars = array(
-			'minRating'   => Ratings::get_minimum_rating_without_comment(),
-			'ajaxurl'     => esc_url_raw( admin_url( 'admin-ajax.php' ) ),
-			'ratingNonce' => is_user_logged_in() ? wp_create_nonce( 'tasty-recipes-save-rating' ) : '',
-			'postId'      => $post ? $post->ID : 0,
+			'ajaxurl' => esc_url_raw( admin_url( 'admin-ajax.php' ) ),
+			'postId'  => $post ? $post->ID : 0,
 		);
+
+		/**
+		 * Filters the common recipe scripts.
+		 *
+		 * @since x.x
+		 *
+		 * @param array $vars Existing variables.
+		 */
+		$vars = apply_filters( 'tasty_recipes_common_js_vars', $vars );
 
 		return 'window.trCommon=' . wp_json_encode( $vars ) . ';';
 	}
