@@ -38,7 +38,7 @@ class Default_Template extends Abstract_Template {
 	 * @return string
 	 */
 	public function get_template_path() {
-		return $this->get_base_templates_path() . 'recipe/tasty-recipes.php';
+		return $this->get_base_templates_path() . 'templates/recipe/tasty-recipes.php';
 	}
 
 	/**

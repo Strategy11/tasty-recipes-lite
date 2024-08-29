@@ -83,15 +83,15 @@ class Template {
 
 		if ( $template === 'current' ) {
 			$template = get_option( Tasty_Recipes::TEMPLATE_OPTION, '' );
-		}
-
-		if ( empty( $template ) ) {
-			return Default_Template::instance();
+			if ( $template && self::is_locked( $template ) ) {
+				// If the selected template is locked, use the default.
+				$template = '';
+			}
 		}
 
 		$templates = self::get_all_templates();
 
-		if ( empty( $templates ) || ! isset( $templates[ $template ] ) ) {
+		if ( ! $template || empty( $templates ) && ! isset( $templates[ $template ] ) ) {
 			return Default_Template::instance();
 		}
 
@@ -104,9 +104,27 @@ class Template {
 	 * @return Abstract_Template|false
 	 */
 	public static function has_custom_template() {
-		$custom = Custom_Template::instance();
+		$custom = Custom::instance();
 		$file   = $custom->get_template_path();
 		return file_exists( $file ) ? $custom : false;
+	}
+
+	/**
+	 * Check if a template is locked.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $template Template ID.
+	 *
+	 * @return bool
+	 */
+	private static function is_locked( $template ) {
+		if ( ! $template ) {
+			return false;
+		}
+
+		$locked_templates = self::get_locked_templates();
+		return in_array( $template, $locked_templates, true );
 	}
 
 	/**

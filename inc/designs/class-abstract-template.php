@@ -166,6 +166,10 @@ abstract class Abstract_Template {
 	 * @return string
 	 */
 	public function get_template_path() {
+		if ( $this->is_pro() ) {
+			return dirname( $this->get_template_plugin() ) . '/templates/admin/locked-template.php';
+		}
+
 		return $this->get_file_path( 'tasty-recipes.php' );
 	}
 

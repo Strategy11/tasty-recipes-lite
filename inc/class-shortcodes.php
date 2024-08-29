@@ -404,6 +404,8 @@ class Shortcodes {
 			'recipe_ingredients' => $recipe_json['ingredients'],
 			'recipe_scalable'    => false,
 			'copy_ingredients'   => false,
+			'footer_heading'     => '',
+			'footer_description' => '',
 		);
 		/**
 		 * @since x.x
@@ -668,11 +670,12 @@ class Shortcodes {
 			return;
 		}
 
-		$custom_design = $custom_design ? $custom_design : get_option( Tasty_Recipes::TEMPLATE_OPTION, '' );
+		$custom_design = $custom_design ? $custom_design : 'current';
 		$template_obj  = Template::get_object_by_name( $custom_design );
 
 		self::$custom_template = $custom_design;
 		if ( $template_obj ) {
+			self::$custom_template = $template_obj->get_id();
 			self::$template['php'] = $template_obj->get_template_path();
 			self::$template['css'] = $template_obj->get_style_path();
 		}
