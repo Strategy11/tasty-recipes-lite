@@ -169,8 +169,16 @@ if ( ! empty( $recipe_equipment ) ) :
 <?php endif; ?>
 
 <footer class="tasty-recipes-entry-footer">
-	<h3 data-tasty-recipes-customization="footer-heading-color.color h3-transform.text-transform footer-heading.innerText"><?php echo esc_html( $footer_heading ); ?></h3>
-	<div data-tasty-recipes-customization="footer-description-color.color footer-description.innerHTML"><?php \Tasty_Recipes\Utils::kses( $footer_description, true ); ?></div>
+	<?php
+	/**
+	 * Add content inside the footer of the recipe card.
+	 *
+	 * @since x.x
+	 *
+	 * @var array $vars Array of variables to pass to the action.
+	 */
+	do_action( 'tasty_recipes_card_footer', $vars );
+	?>
 </footer>
 
 <?php if ( tasty_recipes_is_print() && get_post() ) : ?>

@@ -42,21 +42,6 @@
 	vertical-align: top;
 }
 
-.tasty-recipes-rating a {
-	text-decoration: none;
-}
-
-.tasty-recipes-rating p {
-	margin-bottom: 1rem;
-	display: inline-block;
-}
-
-.tasty-recipes-rating .rating-label,
-.tasty-recipes-rating-link .rating-label{
-	font-style: italic;
-	font-size: 0.8em;
-}
-
 .tasty-recipes-notes {
 	margin-bottom: 1rem;
 }
@@ -170,13 +155,4 @@
 .tasty-recipes-print-view .tasty-recipes-ingredients,
 .tasty-recipes-print-view .tasty-recipes-instructions {
 	padding: 1.25em 0;
-}
-
-.tasty-recipes-cook-mode__label{
-	color: #797B7C;
-}
-
-.tasty-recipes-cook-mode__label,
-.tasty-recipes-cook-mode__helper{
-	font-size: 0.8em;
 }

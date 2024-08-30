@@ -727,7 +727,13 @@ class Tasty_Recipes {
 	 */
 	public static function get_template_path( $template ) {
 		$full_path = __DIR__ . '/templates/' . $template . '.php';
-		return apply_filters( 'tasty_recipes_template_path', $full_path, $template );
+		$full_path = apply_filters( 'tasty_recipes_template_path', $full_path, $template );
+		if ( strpos( $full_path, 'designs/' ) !== false && ! file_exists( $full_path ) ) {
+			// Fallback to the default template by removing designs/template name.
+			$full_path = preg_replace( '#designs/[^/]+/#', 'parts/', $full_path );
+		}
+
+		return $full_path;
 	}
 
 	/**

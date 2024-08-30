@@ -357,6 +357,7 @@ EOT;
 			'copy_ingredients'              => false,
 			'first_button'                  => Shortcodes::get_card_button( $recipe, 'first', $custom_design ),
 			'second_button'                 => Shortcodes::get_card_button( $recipe, 'second', $custom_design ),
+			'template'                      => $custom_design,
 			'template_object'               => ! empty( $template_object ) ? $template_object : false,
 		);
 		/**

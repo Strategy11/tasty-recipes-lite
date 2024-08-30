@@ -34,32 +34,6 @@
 	text-align: center;
 }
 
-.tasty-recipes-rating-solid,
-.tasty-recipes-rating-outline {
-	width: 1.5em;
-}
-
-.tasty-recipes-rating a {
-	text-decoration: none;
-}
-
-.tasty-recipes-entry-header .tasty-recipes-rating {
-	text-align: center;
-	color: #000;
-	color: var(--tr-star-color, #000);
-	line-height: 1em;
-}
-
-.tasty-recipes-entry-header .tasty-recipes-rating p {
-	margin: 0;
-}
-
-.tasty-recipes-entry-header .tasty-recipes-rating .rating-label,
-.tasty-recipes-rating-link .rating-label {
-	font-style: italic;
-	font-size: 0.75em;
-}
-
 .tasty-recipes-entry-header .tasty-recipes-buttons {
 	display: flex;
 	margin-top: 1em;
@@ -144,15 +118,6 @@ body.foodie-pro a.button:hover {
 	font-weight: bold;
 }
 
-.tasty-recipes-entry-header .tasty-recipes-details .tasty-recipes-yield-scale {
-	border: 1px solid #000;
-	color: #000;
-}
-
-.tasty-recipes-print .tasty-recipes-units-scale-container {
-	display: none;
-}
-
 .tasty-recipes-entry-header .tasty-recipes-details ul {
 	list-style-type: none;
 	margin: 0;
@@ -182,22 +147,6 @@ body.foodie-pro a.button:hover {
 	}
 }
 
-.tasty-recipes-entry-content
-	.tasty-recipes-ingredients
-	.tasty-recipes-convert-container
-	button {
-	padding: 6px 4px;
-}
-
-.tasty-recipes-entry-content
-	.tasty-recipes-ingredients
-	.tasty-recipes-convert-container
-	button {
-	padding: 4px;
-}
-
-.tasty-recipes-convert-container .tasty-recipes-convert-label,
-.tasty-recipes-scale-container .tasty-recipes-scale-label,
 label[for="tasty-recipes-video-toggle"] {
 	font-size: 0.75rem;
 	color: #000;
@@ -219,10 +168,6 @@ button[name="tasty-recipes-video-toggle"][aria-checked="true"] :first-child {
 	background-color: #fff;
 	border-top: 1px solid #dadada;
 	padding: 1.25em;
-}
-
-.tasty-recipes-ingredients-header .tasty-recipes-ingredients-clipboard-container {
-	align-items: flex-start;
 }
 
 .tasty-recipes-entry-content .tasty-recipes-ingredients-header,
@@ -594,22 +539,6 @@ button[name="tasty-recipes-video-toggle"][aria-checked="true"] :first-child {
 	margin-bottom: 1.25em;
 }
 
-.tasty-recipes-entry-footer .tasty-recipes-footer-copy,
-.tasty-recipes-entry-footer .tasty-recipes-footer-copy div p span,
-.tasty-recipes-entry-footer .tasty-recipes-footer-copy div p span a {
-	color: #fff;
-}
-
-.tasty-recipes-entry-footer .tasty-recipes-footer-copy h3 {
-	font-size: 0.938em;
-	margin: 0.125em 0;
-	color: #fff;
-}
-.tasty-recipes-entry-footer img,
-.tasty-recipes-entry-footer svg {
-	color: #fff;
-}
-
 @media only screen and (max-width: 520px) {
 	.tasty-recipes-entry-content .tasty-recipes-ingredients ol > li:before,
 	.tasty-recipes-entry-content .tasty-recipes-instructions ol > li:before,
@@ -809,8 +738,7 @@ body.tasty-recipes-print-view {
 .tasty-recipes-print
 	.tasty-recipes-entry-header
 	.tasty-recipes-details
-	.detail-icon,
-.tasty-recipes-print .tasty-recipes-entry-footer img {
+	.detail-icon {
 	display: none;
 }
 
@@ -834,13 +762,4 @@ body.tasty-recipes-print-view {
 	.tasty-recipes-description-body
 	p:first-of-type {
 	margin-top: 0.5em;
-}
-
-.tasty-recipes-cook-mode__label,
-.tasty-recipes-cook-mode__helper{
-	font-size: 0.875em;
-}
-
-.tasty-recipes-cook-mode .tasty-recipes-cook-mode__switch .tasty-recipes-cook-mode__switch-slider {
-	background-color: #000;
 }

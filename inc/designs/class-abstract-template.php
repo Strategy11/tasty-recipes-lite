@@ -170,7 +170,13 @@ abstract class Abstract_Template {
 			return dirname( $this->get_template_plugin() ) . '/templates/admin/locked-template.php';
 		}
 
-		return $this->get_file_path( 'tasty-recipes.php' );
+		$template = $this->get_file_path( 'tasty-recipes.php' );
+		if ( file_exists( $template ) ) {
+			return $template;
+		}
+
+		// Fallback to default template.
+		return dirname( $this->get_template_plugin() ) . '/templates/recipe/tasty-recipes.php';
 	}
 
 	/**

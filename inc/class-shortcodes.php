@@ -395,7 +395,6 @@ class Shortcodes {
 		}
 		$ret .= '>' . PHP_EOL;
 
-		$atts['template'] = self::$template['php'];
 		$template_vars = array(
 			'recipe'             => $recipe,
 			'recipe_styles'      => '',
@@ -406,6 +405,7 @@ class Shortcodes {
 			'copy_ingredients'   => false,
 			'footer_heading'     => '',
 			'footer_description' => '',
+			'template'           => self::$custom_template,
 		);
 		/**
 		 * @since x.x
