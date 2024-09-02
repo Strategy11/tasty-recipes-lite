@@ -23,7 +23,6 @@
         "querypath/querypath": "^3.0",
         "sirbrillig/phpcs-variable-analysis": "^2.5",
         "slevomat/coding-standard": "~8.0",
-        "strategy11/tasty-framework": "1.0.6",
         "wp-cli/dist-archive-command": "^2.0",
         "wp-coding-standards/wpcs": "^3.1",
         "yoast/phpunit-polyfills": "^2",
@@ -54,6 +53,7 @@
         "sort-packages": true
     },
     "require": {
-        "composer/installers": "^2.2"
+        "composer/installers": "^2.2",
+        "strategy11/tasty-framework": "1.0.7"
     }
 }
