@@ -66,13 +66,13 @@ namespace Elementor {
 }
 
 namespace WP_CLI\Utils {
-   /**
-    * @param string       $format Format to use: 'table', 'json', 'csv', 'yaml', 'ids', 'count'.
-    * @param array        $items  An array of items to output.
-    * @param array|string $fields Named fields for each item of data. Can be array or comma-separated list.
-    */
-   function format_items( $format, $items, $fields ) {
-   }
+	/**
+	 * @param string       $format Format to use: 'table', 'json', 'csv', 'yaml', 'ids', 'count'.
+	 * @param array        $items  An array of items to output.
+	 * @param array|string $fields Named fields for each item of data. Can be array or comma-separated list.
+	 */
+	function format_items( $format, $items, $fields ) {
+	}
 }
 
 namespace Yoast\WP\SEO\Config {
@@ -90,5 +90,39 @@ namespace Yoast\WP\SEO\Context {
 namespace Yoast\WP\SEO\Generators\Schema {
 	abstract class Abstract_Schema_Piece {
 		public $context;
+	}
+}
+
+namespace Tasty\Framework\Admin\License{
+	class Updater {
+		public function __construct( $_api_url, $_plugin_file, $_api_data = null ) {
+		}
+
+		public function init() {
+		}
+
+		public function check_update( $_transient_data ) {
+		}
+
+		public function get_repo_api_data() {
+		}
+
+		public function show_update_notification( $file, $plugin ) {
+		}
+
+		public function plugins_api_filter( $_data, $_action = '', $_args = null ) {
+		}
+
+		public function http_request_args( $args, $url ) {
+		}
+
+		public function show_changelog() {
+		}
+
+		public function get_cached_version_info( $cache_key = '' ) {
+		}
+
+		public function set_version_info_cache( $value = '', $cache_key = '' ) {
+		}
 	}
 }
