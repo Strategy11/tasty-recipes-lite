@@ -1147,10 +1147,10 @@ class Distribution_Metadata {
 				if ( $parse_names && preg_match( self::COMPONENT_NAME_REGEX, $bit, $name_matches ) ) {
 					$item['name'] = rtrim( $name_matches['name'], '.: ' );
 					$bit          = $name_matches['remaining'];
-					if ( isset( $name_matches['p'] ) ) {
+					if ( ! empty( $name_matches['p'] ) ) {
 						$bit = $name_matches['p'] . $bit;
 					}
-					if ( isset( $name_matches['li'] ) ) {
+					if ( ! empty( $name_matches['li'] ) ) {
 						$bit = $name_matches['li'] . $bit;
 					}
 				}
@@ -1186,10 +1186,10 @@ class Distribution_Metadata {
 				if ( $parse_names && preg_match( self::COMPONENT_NAME_REGEX, $bit, $name_matches ) ) {
 					$item['name'] = rtrim( $name_matches['name'], '.: ' );
 					$bit          = $name_matches['remaining'];
-					if ( isset( $name_matches['p'] ) ) {
+					if ( ! empty( $name_matches['p'] ) ) {
 						$bit = $name_matches['p'] . $bit;
 					}
-					if ( isset( $name_matches['li'] ) ) {
+					if ( ! empty( $name_matches['li'] ) ) {
 						$bit = $name_matches['li'] . $bit;
 					}
 				}
@@ -1220,10 +1220,10 @@ class Distribution_Metadata {
 				if ( $parse_names && preg_match( self::COMPONENT_NAME_REGEX, $bit, $name_matches ) ) {
 					$item['name'] = rtrim( $name_matches['name'], '.: ' );
 					$bit          = $name_matches['remaining'];
-					if ( isset( $name_matches['p'] ) ) {
+					if ( ! empty( $name_matches['p'] ) ) {
 						$bit = $name_matches['p'] . $bit;
 					}
-					if ( isset( $name_matches['li'] ) ) {
+					if ( ! empty( $name_matches['li'] ) ) {
 						$bit = $name_matches['li'] . $bit;
 					}
 				}
