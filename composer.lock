@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b83b2276d6220c9886963bae063224d3",
+    "content-hash": "3144ee1d1650d5c2f72dbbf65af686da",
     "packages": [
         {
             "name": "composer/installers",
@@ -151,6 +151,93 @@
                 }
             ],
             "time": "2024-06-24T20:46:46+00:00"
+        },
+        {
+            "name": "strategy11/tasty-framework",
+            "version": "v1.0.7",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:Strategy11/tasty-framework.git",
+                "reference": "aec2a9d544d4690095cf88f5f74941d19f60d1b3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Strategy11/tasty-framework/zipball/aec2a9d544d4690095cf88f5f74941d19f60d1b3",
+                "reference": "aec2a9d544d4690095cf88f5f74941d19f60d1b3",
+                "shasum": ""
+            },
+            "require-dev": {
+                "automattic/vipwpcs": "^3.0",
+                "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
+                "friendsofphp/php-cs-fixer": "^3.54",
+                "php": "^8",
+                "php-stubs/wordpress-stubs": "^6",
+                "phpcompatibility/phpcompatibility-wp": "^2.0",
+                "phpstan/extension-installer": "^1.3",
+                "phpstan/phpstan": "^1.10",
+                "phpstan/phpstan-strict-rules": "^1.5",
+                "phpunit/phpunit": "^7.5.20 || ^9",
+                "slevomat/coding-standard": "~8.0",
+                "squizlabs/php_codesniffer": "^3.9",
+                "wp-coding-standards/wpcs": "^3",
+                "yoast/phpunit-polyfills": "^2"
+            },
+            "type": "wordpress-plugin",
+            "autoload-dev": {
+                "psr-4": {
+                    "Tasty\\Tests\\": "Tests/"
+                }
+            },
+            "scripts": {
+                "test-unit": [
+                    "\"vendor/bin/phpunit\" --configuration tests/Unit/phpunit.xml.dist"
+                ],
+                "test-integration": [
+                    "\"vendor/bin/phpunit\" --configuration tests/Integration/phpunit.xml.dist"
+                ],
+                "run-tests": [
+                    "@test-unit",
+                    "@test-integration"
+                ],
+                "install-codestandards": [
+                    "Dealerdirect\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\Plugin::run"
+                ],
+                "phpcs": [
+                    "phpcs --basepath=."
+                ],
+                "phpcs:fix": [
+                    "phpcbf"
+                ],
+                "phpcsfixer": [
+                    "vendor/bin/php-cs-fixer fix --dry-run --verbose"
+                ],
+                "phpstan": [
+                    "vendor/bin/phpstan analyze ./ --memory-limit=2G"
+                ],
+                "post-install-cmd": [
+                    "composer dump-autoload"
+                ],
+                "post-update-cmd": [
+                    "composer dump-autoload"
+                ]
+            },
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "WP Tasty team",
+                    "email": "support@wptasty.com",
+                    "homepage": "https://wptasty.com"
+                }
+            ],
+            "description": "Common functionality between all WP Tasty plugins.",
+            "homepage": "https://github.com/Strategy11/tasty-framework",
+            "support": {
+                "issues": "https://github.com/Strategy11/tasty-framework/issues",
+                "source": "https://github.com/Strategy11/tasty-framework"
+            },
+            "time": "2024-08-30T09:11:12+00:00"
         }
     ],
     "packages-dev": [
@@ -274,30 +361,38 @@
         },
         {
             "name": "composer/pcre",
-            "version": "3.1.4",
+            "version": "3.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/pcre.git",
-                "reference": "04229f163664973f68f38f6f73d917799168ef24"
+                "reference": "63aaeac21d7e775ff9bc9d45021e1745c97521c4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/pcre/zipball/04229f163664973f68f38f6f73d917799168ef24",
-                "reference": "04229f163664973f68f38f6f73d917799168ef24",
+                "url": "https://api.github.com/repos/composer/pcre/zipball/63aaeac21d7e775ff9bc9d45021e1745c97521c4",
+                "reference": "63aaeac21d7e775ff9bc9d45021e1745c97521c4",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.4 || ^8.0"
             },
+            "conflict": {
+                "phpstan/phpstan": "<1.11.10"
+            },
             "require-dev": {
-                "phpstan/phpstan": "^1.3",
+                "phpstan/phpstan": "^1.11.10",
                 "phpstan/phpstan-strict-rules": "^1.1",
-                "symfony/phpunit-bridge": "^5"
+                "phpunit/phpunit": "^8 || ^9"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
                     "dev-main": "3.x-dev"
+                },
+                "phpstan": {
+                    "includes": [
+                        "extension.neon"
+                    ]
                 }
             },
             "autoload": {
@@ -325,7 +420,7 @@
             ],
             "support": {
                 "issues": "https://github.com/composer/pcre/issues",
-                "source": "https://github.com/composer/pcre/tree/3.1.4"
+                "source": "https://github.com/composer/pcre/tree/3.3.1"
             },
             "funding": [
                 {
@@ -341,7 +436,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-05-27T13:40:54+00:00"
+            "time": "2024-08-27T18:44:43+00:00"
         },
         {
             "name": "composer/semver",
@@ -687,16 +782,16 @@
         },
         {
             "name": "fidry/cpu-core-counter",
-            "version": "1.1.0",
+            "version": "1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/theofidry/cpu-core-counter.git",
-                "reference": "f92996c4d5c1a696a6a970e20f7c4216200fcc42"
+                "reference": "8520451a140d3f46ac33042715115e290cf5785f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/theofidry/cpu-core-counter/zipball/f92996c4d5c1a696a6a970e20f7c4216200fcc42",
-                "reference": "f92996c4d5c1a696a6a970e20f7c4216200fcc42",
+                "url": "https://api.github.com/repos/theofidry/cpu-core-counter/zipball/8520451a140d3f46ac33042715115e290cf5785f",
+                "reference": "8520451a140d3f46ac33042715115e290cf5785f",
                 "shasum": ""
             },
             "require": {
@@ -736,7 +831,7 @@
             ],
             "support": {
                 "issues": "https://github.com/theofidry/cpu-core-counter/issues",
-                "source": "https://github.com/theofidry/cpu-core-counter/tree/1.1.0"
+                "source": "https://github.com/theofidry/cpu-core-counter/tree/1.2.0"
             },
             "funding": [
                 {
@@ -744,20 +839,20 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-02-07T09:43:46+00:00"
+            "time": "2024-08-06T10:04:20+00:00"
         },
         {
             "name": "friendsofphp/php-cs-fixer",
-            "version": "v3.59.3",
+            "version": "v3.64.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer.git",
-                "reference": "30ba9ecc2b0e5205e578fe29973c15653d9bfd29"
+                "reference": "58dd9c931c785a79739310aef5178928305ffa67"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/30ba9ecc2b0e5205e578fe29973c15653d9bfd29",
-                "reference": "30ba9ecc2b0e5205e578fe29973c15653d9bfd29",
+                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/58dd9c931c785a79739310aef5178928305ffa67",
+                "reference": "58dd9c931c785a79739310aef5178928305ffa67",
                 "shasum": ""
             },
             "require": {
@@ -839,7 +934,7 @@
             ],
             "support": {
                 "issues": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/issues",
-                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.59.3"
+                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.64.0"
             },
             "funding": [
                 {
@@ -847,7 +942,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-06-16T14:17:03+00:00"
+            "time": "2024-08-30T23:09:38+00:00"
         },
         {
             "name": "masterminds/html5",
@@ -1204,27 +1299,28 @@
         },
         {
             "name": "php-stubs/wordpress-stubs",
-            "version": "v6.5.3",
+            "version": "v6.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-stubs/wordpress-stubs.git",
-                "reference": "e611a83292d02055a25f83291a98fadd0c21e092"
+                "reference": "86e8753e89d59849276dcdd91b9a7dd78bb4abe2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-stubs/wordpress-stubs/zipball/e611a83292d02055a25f83291a98fadd0c21e092",
-                "reference": "e611a83292d02055a25f83291a98fadd0c21e092",
+                "url": "https://api.github.com/repos/php-stubs/wordpress-stubs/zipball/86e8753e89d59849276dcdd91b9a7dd78bb4abe2",
+                "reference": "86e8753e89d59849276dcdd91b9a7dd78bb4abe2",
                 "shasum": ""
             },
             "require-dev": {
                 "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
                 "nikic/php-parser": "^4.13",
-                "php": "^7.4 || ~8.0.0",
+                "php": "^7.4 || ^8.0",
                 "php-stubs/generator": "^0.8.3",
-                "phpdocumentor/reflection-docblock": "5.3",
+                "phpdocumentor/reflection-docblock": "^5.4.1",
                 "phpstan/phpstan": "^1.10.49",
                 "phpunit/phpunit": "^9.5",
-                "szepeviktor/phpcs-psr-12-neutron-hybrid-ruleset": "^0.11"
+                "szepeviktor/phpcs-psr-12-neutron-hybrid-ruleset": "^1.0",
+                "wp-coding-standards/wpcs": "3.1.0 as 2.3.0"
             },
             "suggest": {
                 "paragonie/sodium_compat": "Pure PHP implementation of libsodium",
@@ -1245,9 +1341,9 @@
             ],
             "support": {
                 "issues": "https://github.com/php-stubs/wordpress-stubs/issues",
-                "source": "https://github.com/php-stubs/wordpress-stubs/tree/v6.5.3"
+                "source": "https://github.com/php-stubs/wordpress-stubs/tree/v6.6.0"
             },
-            "time": "2024-05-08T02:12:31+00:00"
+            "time": "2024-07-17T08:50:38+00:00"
         },
         {
             "name": "phpcompatibility/php-compatibility",
@@ -1621,16 +1717,16 @@
         },
         {
             "name": "phpstan/extension-installer",
-            "version": "1.4.1",
+            "version": "1.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/extension-installer.git",
-                "reference": "f6b87faf9fc7978eab2f7919a8760bc9f58f9203"
+                "reference": "46c8219b3fb0deb3fc08301e8f0797d321d17dcd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/extension-installer/zipball/f6b87faf9fc7978eab2f7919a8760bc9f58f9203",
-                "reference": "f6b87faf9fc7978eab2f7919a8760bc9f58f9203",
+                "url": "https://api.github.com/repos/phpstan/extension-installer/zipball/46c8219b3fb0deb3fc08301e8f0797d321d17dcd",
+                "reference": "46c8219b3fb0deb3fc08301e8f0797d321d17dcd",
                 "shasum": ""
             },
             "require": {
@@ -1657,24 +1753,28 @@
                 "MIT"
             ],
             "description": "Composer plugin for automatic installation of PHPStan extensions",
+            "keywords": [
+                "dev",
+                "static analysis"
+            ],
             "support": {
                 "issues": "https://github.com/phpstan/extension-installer/issues",
-                "source": "https://github.com/phpstan/extension-installer/tree/1.4.1"
+                "source": "https://github.com/phpstan/extension-installer/tree/1.4.2"
             },
-            "time": "2024-06-10T08:20:49+00:00"
+            "time": "2024-08-26T07:38:00+00:00"
         },
         {
             "name": "phpstan/phpdoc-parser",
-            "version": "1.29.1",
+            "version": "1.30.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpdoc-parser.git",
-                "reference": "fcaefacf2d5c417e928405b71b400d4ce10daaf4"
+                "reference": "5ceb0e384997db59f38774bf79c2a6134252c08f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/fcaefacf2d5c417e928405b71b400d4ce10daaf4",
-                "reference": "fcaefacf2d5c417e928405b71b400d4ce10daaf4",
+                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/5ceb0e384997db59f38774bf79c2a6134252c08f",
+                "reference": "5ceb0e384997db59f38774bf79c2a6134252c08f",
                 "shasum": ""
             },
             "require": {
@@ -1706,22 +1806,22 @@
             "description": "PHPDoc parser with support for nullable, intersection and generic types",
             "support": {
                 "issues": "https://github.com/phpstan/phpdoc-parser/issues",
-                "source": "https://github.com/phpstan/phpdoc-parser/tree/1.29.1"
+                "source": "https://github.com/phpstan/phpdoc-parser/tree/1.30.0"
             },
-            "time": "2024-05-31T08:52:43+00:00"
+            "time": "2024-08-29T09:54:52+00:00"
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.11.7",
+            "version": "1.12.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "52d2bbfdcae7f895915629e4694e9497d0f8e28d"
+                "reference": "384af967d35b2162f69526c7276acadce534d0e1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/52d2bbfdcae7f895915629e4694e9497d0f8e28d",
-                "reference": "52d2bbfdcae7f895915629e4694e9497d0f8e28d",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/384af967d35b2162f69526c7276acadce534d0e1",
+                "reference": "384af967d35b2162f69526c7276acadce534d0e1",
                 "shasum": ""
             },
             "require": {
@@ -1766,7 +1866,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-07-06T11:17:41+00:00"
+            "time": "2024-08-27T09:18:05+00:00"
         },
         {
             "name": "phpstan/phpstan-strict-rules",
@@ -1819,35 +1919,35 @@
         },
         {
             "name": "phpunit/php-code-coverage",
-            "version": "9.2.31",
+            "version": "9.2.32",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "48c34b5d8d983006bd2adc2d0de92963b9155965"
+                "reference": "85402a822d1ecf1db1096959413d35e1c37cf1a5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/48c34b5d8d983006bd2adc2d0de92963b9155965",
-                "reference": "48c34b5d8d983006bd2adc2d0de92963b9155965",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/85402a822d1ecf1db1096959413d35e1c37cf1a5",
+                "reference": "85402a822d1ecf1db1096959413d35e1c37cf1a5",
                 "shasum": ""
             },
             "require": {
                 "ext-dom": "*",
                 "ext-libxml": "*",
                 "ext-xmlwriter": "*",
-                "nikic/php-parser": "^4.18 || ^5.0",
+                "nikic/php-parser": "^4.19.1 || ^5.1.0",
                 "php": ">=7.3",
-                "phpunit/php-file-iterator": "^3.0.3",
-                "phpunit/php-text-template": "^2.0.2",
-                "sebastian/code-unit-reverse-lookup": "^2.0.2",
-                "sebastian/complexity": "^2.0",
-                "sebastian/environment": "^5.1.2",
-                "sebastian/lines-of-code": "^1.0.3",
-                "sebastian/version": "^3.0.1",
-                "theseer/tokenizer": "^1.2.0"
+                "phpunit/php-file-iterator": "^3.0.6",
+                "phpunit/php-text-template": "^2.0.4",
+                "sebastian/code-unit-reverse-lookup": "^2.0.3",
+                "sebastian/complexity": "^2.0.3",
+                "sebastian/environment": "^5.1.5",
+                "sebastian/lines-of-code": "^1.0.4",
+                "sebastian/version": "^3.0.2",
+                "theseer/tokenizer": "^1.2.3"
             },
             "require-dev": {
-                "phpunit/phpunit": "^9.3"
+                "phpunit/phpunit": "^9.6"
             },
             "suggest": {
                 "ext-pcov": "PHP extension that provides line coverage",
@@ -1856,7 +1956,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "9.2-dev"
+                    "dev-main": "9.2.x-dev"
                 }
             },
             "autoload": {
@@ -1885,7 +1985,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/php-code-coverage/issues",
                 "security": "https://github.com/sebastianbergmann/php-code-coverage/security/policy",
-                "source": "https://github.com/sebastianbergmann/php-code-coverage/tree/9.2.31"
+                "source": "https://github.com/sebastianbergmann/php-code-coverage/tree/9.2.32"
             },
             "funding": [
                 {
@@ -1893,7 +1993,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-03-02T06:37:42+00:00"
+            "time": "2024-08-22T04:23:01+00:00"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -2807,31 +2907,31 @@
         },
         {
             "name": "react/socket",
-            "version": "v1.15.0",
+            "version": "v1.16.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/reactphp/socket.git",
-                "reference": "216d3aec0b87f04a40ca04f481e6af01bdd1d038"
+                "reference": "23e4ff33ea3e160d2d1f59a0e6050e4b0fb0eac1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/reactphp/socket/zipball/216d3aec0b87f04a40ca04f481e6af01bdd1d038",
-                "reference": "216d3aec0b87f04a40ca04f481e6af01bdd1d038",
+                "url": "https://api.github.com/repos/reactphp/socket/zipball/23e4ff33ea3e160d2d1f59a0e6050e4b0fb0eac1",
+                "reference": "23e4ff33ea3e160d2d1f59a0e6050e4b0fb0eac1",
                 "shasum": ""
             },
             "require": {
                 "evenement/evenement": "^3.0 || ^2.0 || ^1.0",
                 "php": ">=5.3.0",
-                "react/dns": "^1.11",
+                "react/dns": "^1.13",
                 "react/event-loop": "^1.2",
-                "react/promise": "^3 || ^2.6 || ^1.2.1",
-                "react/stream": "^1.2"
+                "react/promise": "^3.2 || ^2.6 || ^1.2.1",
+                "react/stream": "^1.4"
             },
             "require-dev": {
                 "phpunit/phpunit": "^9.6 || ^5.7 || ^4.8.36",
-                "react/async": "^4 || ^3 || ^2",
+                "react/async": "^4.3 || ^3.3 || ^2",
                 "react/promise-stream": "^1.4",
-                "react/promise-timer": "^1.10"
+                "react/promise-timer": "^1.11"
             },
             "type": "library",
             "autoload": {
@@ -2875,7 +2975,7 @@
             ],
             "support": {
                 "issues": "https://github.com/reactphp/socket/issues",
-                "source": "https://github.com/reactphp/socket/tree/v1.15.0"
+                "source": "https://github.com/reactphp/socket/tree/v1.16.0"
             },
             "funding": [
                 {
@@ -2883,7 +2983,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2023-12-15T11:02:10+00:00"
+            "time": "2024-07-26T10:38:09+00:00"
         },
         {
             "name": "react/stream",
@@ -4051,16 +4151,16 @@
         },
         {
             "name": "squizlabs/php_codesniffer",
-            "version": "3.10.1",
+            "version": "3.10.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCSStandards/PHP_CodeSniffer.git",
-                "reference": "8f90f7a53ce271935282967f53d0894f8f1ff877"
+                "reference": "86e5f5dd9a840c46810ebe5ff1885581c42a3017"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/8f90f7a53ce271935282967f53d0894f8f1ff877",
-                "reference": "8f90f7a53ce271935282967f53d0894f8f1ff877",
+                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/86e5f5dd9a840c46810ebe5ff1885581c42a3017",
+                "reference": "86e5f5dd9a840c46810ebe5ff1885581c42a3017",
                 "shasum": ""
             },
             "require": {
@@ -4127,107 +4227,20 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2024-05-22T21:24:41+00:00"
-        },
-        {
-            "name": "strategy11/tasty-framework",
-            "version": "v1.0.6",
-            "source": {
-                "type": "git",
-                "url": "git@github.com:Strategy11/tasty-framework.git",
-                "reference": "1bf61d85eff1b5f5871c73e300224de71ac7d17a"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Strategy11/tasty-framework/zipball/1bf61d85eff1b5f5871c73e300224de71ac7d17a",
-                "reference": "1bf61d85eff1b5f5871c73e300224de71ac7d17a",
-                "shasum": ""
-            },
-            "require-dev": {
-                "automattic/vipwpcs": "^3.0",
-                "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
-                "friendsofphp/php-cs-fixer": "^3.54",
-                "php": "^8",
-                "php-stubs/wordpress-stubs": "^6",
-                "phpcompatibility/phpcompatibility-wp": "^2.0",
-                "phpstan/extension-installer": "^1.3",
-                "phpstan/phpstan": "^1.10",
-                "phpstan/phpstan-strict-rules": "^1.5",
-                "phpunit/phpunit": "^7.5.20 || ^9",
-                "slevomat/coding-standard": "~8.0",
-                "squizlabs/php_codesniffer": "^3.9",
-                "wp-coding-standards/wpcs": "^3",
-                "yoast/phpunit-polyfills": "^2"
-            },
-            "type": "wordpress-plugin",
-            "autoload-dev": {
-                "psr-4": {
-                    "Tasty\\Tests\\": "Tests/"
-                }
-            },
-            "scripts": {
-                "test-unit": [
-                    "\"vendor/bin/phpunit\" --configuration tests/Unit/phpunit.xml.dist"
-                ],
-                "test-integration": [
-                    "\"vendor/bin/phpunit\" --configuration tests/Integration/phpunit.xml.dist"
-                ],
-                "run-tests": [
-                    "@test-unit",
-                    "@test-integration"
-                ],
-                "install-codestandards": [
-                    "Dealerdirect\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\Plugin::run"
-                ],
-                "phpcs": [
-                    "phpcs --basepath=."
-                ],
-                "phpcs:fix": [
-                    "phpcbf"
-                ],
-                "phpcsfixer": [
-                    "vendor/bin/php-cs-fixer fix --dry-run --verbose"
-                ],
-                "phpstan": [
-                    "vendor/bin/phpstan analyze ./ --memory-limit=2G"
-                ],
-                "post-install-cmd": [
-                    "composer dump-autoload"
-                ],
-                "post-update-cmd": [
-                    "composer dump-autoload"
-                ]
-            },
-            "license": [
-                "GPL-2.0+"
-            ],
-            "authors": [
-                {
-                    "name": "WP Tasty team",
-                    "email": "support@wptasty.com",
-                    "homepage": "https://wptasty.com"
-                }
-            ],
-            "description": "Common functionality between all WP Tasty plugins.",
-            "homepage": "https://github.com/Strategy11/tasty-framework",
-            "support": {
-                "issues": "https://github.com/Strategy11/tasty-framework/issues",
-                "source": "https://github.com/Strategy11/tasty-framework"
-            },
-            "time": "2024-07-02T21:15:35+00:00"
+            "time": "2024-07-21T23:26:44+00:00"
         },
         {
             "name": "symfony/console",
-            "version": "v5.4.41",
+            "version": "v5.4.43",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "6473d441a913cb997123b59ff2dbe3d1cf9e11ba"
+                "reference": "e86f8554de667c16dde8aeb89a3990cfde924df9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/6473d441a913cb997123b59ff2dbe3d1cf9e11ba",
-                "reference": "6473d441a913cb997123b59ff2dbe3d1cf9e11ba",
+                "url": "https://api.github.com/repos/symfony/console/zipball/e86f8554de667c16dde8aeb89a3990cfde924df9",
+                "reference": "e86f8554de667c16dde8aeb89a3990cfde924df9",
                 "shasum": ""
             },
             "require": {
@@ -4297,7 +4310,7 @@
                 "terminal"
             ],
             "support": {
-                "source": "https://github.com/symfony/console/tree/v5.4.41"
+                "source": "https://github.com/symfony/console/tree/v5.4.43"
             },
             "funding": [
                 {
@@ -4313,7 +4326,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-06-28T07:48:55+00:00"
+            "time": "2024-08-13T16:31:56+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -4615,16 +4628,16 @@
         },
         {
             "name": "symfony/finder",
-            "version": "v5.4.40",
+            "version": "v5.4.43",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
-                "reference": "f51cff4687547641c7d8180d74932ab40b2205ce"
+                "reference": "ae25a9145a900764158d439653d5630191155ca0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/finder/zipball/f51cff4687547641c7d8180d74932ab40b2205ce",
-                "reference": "f51cff4687547641c7d8180d74932ab40b2205ce",
+                "url": "https://api.github.com/repos/symfony/finder/zipball/ae25a9145a900764158d439653d5630191155ca0",
+                "reference": "ae25a9145a900764158d439653d5630191155ca0",
                 "shasum": ""
             },
             "require": {
@@ -4658,7 +4671,7 @@
             "description": "Finds files and directories via an intuitive fluent interface",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/finder/tree/v5.4.40"
+                "source": "https://github.com/symfony/finder/tree/v5.4.43"
             },
             "funding": [
                 {
@@ -4674,7 +4687,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-05-31T14:33:22+00:00"
+            "time": "2024-08-13T14:03:51+00:00"
         },
         {
             "name": "symfony/options-resolver",
@@ -5504,16 +5517,16 @@
         },
         {
             "name": "symfony/string",
-            "version": "v5.4.41",
+            "version": "v5.4.43",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/string.git",
-                "reference": "065a9611e0b1fd2197a867e1fb7f2238191b7096"
+                "reference": "8be1d484951ff5ca995eaf8edcbcb8b9a5888450"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/string/zipball/065a9611e0b1fd2197a867e1fb7f2238191b7096",
-                "reference": "065a9611e0b1fd2197a867e1fb7f2238191b7096",
+                "url": "https://api.github.com/repos/symfony/string/zipball/8be1d484951ff5ca995eaf8edcbcb8b9a5888450",
+                "reference": "8be1d484951ff5ca995eaf8edcbcb8b9a5888450",
                 "shasum": ""
             },
             "require": {
@@ -5570,7 +5583,7 @@
                 "utf8"
             ],
             "support": {
-                "source": "https://github.com/symfony/string/tree/v5.4.41"
+                "source": "https://github.com/symfony/string/tree/v5.4.43"
             },
             "funding": [
                 {
@@ -5586,7 +5599,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-06-28T09:20:55+00:00"
+            "time": "2024-08-01T10:24:28+00:00"
         },
         {
             "name": "theseer/tokenizer",
@@ -5816,16 +5829,16 @@
         },
         {
             "name": "wp-cli/wp-cli",
-            "version": "v2.10.0",
+            "version": "v2.11.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wp-cli/wp-cli.git",
-                "reference": "a339dca576df73c31af4b4d8054efc2dab9a0685"
+                "reference": "53f0df112901fcf95099d0f501912a209429b6a9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wp-cli/wp-cli/zipball/a339dca576df73c31af4b4d8054efc2dab9a0685",
-                "reference": "a339dca576df73c31af4b4d8054efc2dab9a0685",
+                "url": "https://api.github.com/repos/wp-cli/wp-cli/zipball/53f0df112901fcf95099d0f501912a209429b6a9",
+                "reference": "53f0df112901fcf95099d0f501912a209429b6a9",
                 "shasum": ""
             },
             "require": {
@@ -5855,7 +5868,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "2.10.x-dev"
+                    "dev-main": "2.11.x-dev"
                 }
             },
             "autoload": {
@@ -5882,7 +5895,7 @@
                 "issues": "https://github.com/wp-cli/wp-cli/issues",
                 "source": "https://github.com/wp-cli/wp-cli"
             },
-            "time": "2024-02-08T16:52:43+00:00"
+            "time": "2024-08-08T03:04:55+00:00"
         },
         {
             "name": "wp-coding-standards/wpcs",
@@ -6067,16 +6080,16 @@
         },
         {
             "name": "yoast/wordpress-seo",
-            "version": "23.0",
+            "version": "23.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Yoast-dist/wordpress-seo.git",
-                "reference": "2d33d9c6fbb4537286ae58d7444e780aabaadf64"
+                "reference": "0c83fc04a001166eadcc9abe03707fe1ff43b86c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Yoast-dist/wordpress-seo/zipball/2d33d9c6fbb4537286ae58d7444e780aabaadf64",
-                "reference": "2d33d9c6fbb4537286ae58d7444e780aabaadf64",
+                "url": "https://api.github.com/repos/Yoast-dist/wordpress-seo/zipball/0c83fc04a001166eadcc9abe03707fe1ff43b86c",
+                "reference": "0c83fc04a001166eadcc9abe03707fe1ff43b86c",
                 "shasum": ""
             },
             "require": {
@@ -6136,7 +6149,7 @@
                 "source": "https://github.com/Yoast/wordpress-seo",
                 "wiki": "https://github.com/Yoast/wordpress-seo/wiki"
             },
-            "time": "2024-07-02T07:57:10+00:00"
+            "time": "2024-08-20T07:46:11+00:00"
         }
     ],
     "aliases": [],
@@ -6149,5 +6162,5 @@
     "platform-overrides": {
         "php": "8.0"
     },
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }
