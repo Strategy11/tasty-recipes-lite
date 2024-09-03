@@ -933,7 +933,7 @@ EOT;
 		$schema = Distribution_Metadata::get_google_schema_for_recipe( $recipe );
 		$this->assertFalse( isset( $schema['video'] ) );
 		update_post_meta( $post->ID, 'post_video', 'https://www.youtube.com/watch?v=GRtWNZwgGn8' );
-		$filter = function( $retval, $post ) {
+		$filter = function ( $retval, $post ) {
 			return get_post_meta( $post->ID, 'post_video', true );
 		};
 		add_filter( 'tasty_recipes_enrich_google_schema_post_video_url', $filter, 10, 2 );

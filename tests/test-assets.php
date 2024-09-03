@@ -81,5 +81,4 @@ class Test_Assets extends Tasty_Recipes_Testcase {
 			),
 		);
 	}
-
 }

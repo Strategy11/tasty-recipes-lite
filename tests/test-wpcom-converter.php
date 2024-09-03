@@ -98,7 +98,5 @@ EOT;
 				'food-dinner-pasta-broccoli',
 			),
 		);
-
 	}
-
 }

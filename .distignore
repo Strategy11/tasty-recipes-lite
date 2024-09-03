@@ -32,11 +32,15 @@ phpunit.xml
 phpunit.xml.dist
 multisite.xml
 multisite.xml.dist
+.php-cs-fixer.cache
+.php-cs-fixer.php
 .phpcs.xml
 phpcs.xml
 .phpcs.xml.dist
 phpcs.xml.dist
 .phpunit.result.*
+phpstan.neon
+stubs.php
 README.md
 webpack.config.js
 webpack.mix.js
@@ -47,5 +51,6 @@ vendor
 node_modules
 *.sql
 *.tar.gz
+*.vue
 *.zip
 */__tests__/*

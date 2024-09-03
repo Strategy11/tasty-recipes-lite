@@ -1,5 +1,6 @@
 .DS_Store
 .phpunit.result.*
+auth.json
 Thumbs.db
 wp-cli.local.yml
 mix-manifest.json
@@ -9,4 +10,7 @@ node_modules/
 *.zip
 
 /vendor/
-/inc/libs
+/inc/libs/
+
+# PHP CS Fixer
+.php-cs-fixer.cache

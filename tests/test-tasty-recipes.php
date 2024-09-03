@@ -240,7 +240,7 @@ EOT;
 		// With a query string.
 		add_filter(
 			'post_link',
-			function( $link ) {
+			function ( $link ) {
 				return add_query_arg( 'lang', 'de', $link );
 			}
 		);
