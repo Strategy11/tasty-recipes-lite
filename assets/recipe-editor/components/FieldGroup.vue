@@ -6,7 +6,7 @@
 			v-for="(field, name) in fields"
 			:class="'tasty-recipes-recipe-' + name + '-container'"
 			:key="name"
-			v-show="showField(name)">
+			v-show="showField(field)">
 			<span>
 				<label :for="'tasty-recipes-recipe-' + name" v-if="showLabels && field.label">
 					{{ field.label }}
@@ -32,7 +32,7 @@
 				</select>
 				<input v-if="!field.options"
 					:id="'tasty-recipes-recipe-' + name"
-					:type="field.label ? 'text' : 'hidden'"
+					type="text"
 					:placeholder="field.placeholder"
 					:name="name"
 					class="inline-field"
@@ -104,8 +104,8 @@ export default {
 		}
 	},
 	methods: {
-		showField() {
-			if ('nutrition' === this.group && this.fieldValues.nutrifox_id) {
+		showField(field) {
+			if (field.is_pro || ('nutrition' === this.group && this.fieldValues.nutrifox_id)) {
 				return false;
 			}
 			return true;
