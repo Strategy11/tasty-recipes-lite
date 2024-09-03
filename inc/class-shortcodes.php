@@ -713,13 +713,6 @@ class Shortcodes {
 				continue;
 			}
 			$value = $recipe_json[ $attribute ];
-			if ( 'yield' === $attribute && $template_vars['recipe_scalable'] ) {
-				$old_value = $value;
-				$value     = Unit_Amount_Parser::annotate_string_with_spans( $value );
-				if ( $value !== $old_value ) {
-					$value .= ' <span class="tasty-recipes-yield-scale"><span data-amount="1">1</span>x</span>';
-				}
-			}
 
 			// Use the display/localized version of the Diet.
 			if ( 'diet' === $attribute ) {
@@ -747,6 +740,12 @@ class Shortcodes {
 				continue;
 			}
 
+			/**
+			 * Filter the HTML for the cooking attribute.
+			 *
+			 * @since x.x
+			 */
+			$value = apply_filters( 'tasty_recipes_cooking_html', $value, $attribute, $template_vars );
 			$value = '<span data-tasty-recipes-customization="detail-value-color.color" ' .
 				'class="' . esc_attr( 'tasty-recipes-' . str_replace( '_', '-', $attribute ) ) . '">'
 				. $value .

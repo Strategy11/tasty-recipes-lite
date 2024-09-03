@@ -316,12 +316,10 @@ EOT;
 					'value' => '<span data-tasty-recipes-customization="detail-value-color.color" class="tasty-recipes-total-time">1 hour, 10 minutes</span>',
 					'class' => 'total-time',
 				),
-				'yield'      =>
-				array(
+				'yield'      => array(
 					'label' => 'Yield',
 					'value' => '<span data-tasty-recipes-customization="detail-value-color.color" class="tasty-recipes-yield">' .
-						'<span data-amount="12">12</span> almond butter cups' .
-						'<span class="tasty-recipes-yield-scale"><span data-amount="1">1</span>x</span></span>',
+						'12 almond butter cups</span>',
 					'class' => 'yield',
 				),
 				'category'   =>

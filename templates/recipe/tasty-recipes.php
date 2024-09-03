@@ -121,7 +121,7 @@ if ( ! empty( $recipe_equipment ) ) :
 	</div>
 <?php endif; ?>
 
-<?php do_action( 'tasty_recipes_card_before_nutrition' ); ?>
+<?php do_action( 'tasty_recipes_card_before_nutrition', $vars ); ?>
 
 <?php if ( ! empty( $recipe_nutrifox_embed ) && isset( $print_view_options['nutrition'] ) ) : ?>
 	<div class="tasty-recipes-nutrifox">
