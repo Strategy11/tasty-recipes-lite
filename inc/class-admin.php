@@ -9,6 +9,7 @@ namespace Tasty_Recipes;
 
 use Tasty\Framework\Utils\Url;
 use Tasty\Framework\Admin\License\Updater;
+
 use Tasty_Recipes;
 
 /**

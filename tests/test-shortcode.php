@@ -639,5 +639,4 @@ EOT;
 		}
 		$this->assertEquals( 7, $i + 1 );
 	}
-
 }

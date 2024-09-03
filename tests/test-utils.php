@@ -32,5 +32,4 @@ class Test_Utils extends Tasty_Recipes_Testcase {
 		$this->assertEquals( 'https://apple.com', Utils::get_element_attribute( '<a href="https://apple.com"></a>', 'a', 'href' ) );
 		$this->assertFalse( Utils::get_element_attribute( 'foobar', 'a', 'href' ) );
 	}
-
 }

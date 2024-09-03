@@ -418,5 +418,4 @@ class Test_Unit_Amount_Parser extends Tasty_Recipes_Testcase {
 			),
 		);
 	}
-
 }
