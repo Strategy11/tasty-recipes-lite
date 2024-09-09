@@ -6,6 +6,7 @@ wp-cli.local.yml
 mix-manifest.json
 assets/dist/
 node_modules/
+.idea/
 *.sql
 *.zip
 
