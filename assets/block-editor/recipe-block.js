@@ -2,13 +2,12 @@
  * WordPress dependencies
  */
 const {
-	InspectorAdvancedControls,
+	InspectorControls,
 	BlockControls
 } = wp.blockEditor;
 
 const {
 	TextControl,
-	CheckboxControl,
 	PanelBody,
 	ToolbarGroup,
 	ToolbarButton
@@ -150,23 +149,11 @@ const edit = props => {
 					attributes={props.attributes}
 				/>
 			</div>
-			<InspectorAdvancedControls>
+			<InspectorControls>
 				<PanelBody
 					title={__("Recipe options", "tasty-recipes")}
 					initialOpen={true}
 				>
-					<CheckboxControl
-						label={__(
-							"This is a non-food recipe (craft, cleaning product, etc)",
-							"tasty-recipes"
-						)}
-						checked={props.attributes.disableJSON}
-						onChange={() => {
-							props.setAttributes({
-								disableJSON: !props.attributes.disableJSON
-							});
-						}}
-					/>
 					<TextControl
 						label={__("Override Author Link", "tasty-recipes")}
 						value={props.attributes.author_link}
@@ -176,32 +163,8 @@ const edit = props => {
 							});
 						}}
 					/>
-					<CheckboxControl
-						label={__(
-							"Disable unit conversion for this recipe",
-							"tasty-recipes"
-						)}
-						checked={props.attributes.disable_unit_conversion}
-						onChange={() => {
-							props.setAttributes({
-								disable_unit_conversion: !props.attributes.disable_unit_conversion
-							});
-						}}
-					/>
-					<CheckboxControl
-						label={__(
-							"Disable scaling for this recipe",
-							"tasty-recipes"
-						)}
-						checked={props.attributes.disable_scaling}
-						onChange={() => {
-							props.setAttributes({
-								disable_scaling: !props.attributes.disable_scaling
-							});
-						}}
-					/>
 				</PanelBody>
-			</InspectorAdvancedControls>
+			</InspectorControls>
 		</Fragment>
 	);
 };
@@ -228,18 +191,6 @@ const blockRegistration = {
 		author_link: {
 			type: "string",
 			default: ""
-		},
-		disableJSON: {
-			type: "boolean",
-			default: false
-		},
-		disable_unit_conversion: {
-			type: "boolean",
-			default: false,
-		},
-		disable_scaling: {
-			type: "boolean",
-			default: false,
 		},
 	},
 	edit,
