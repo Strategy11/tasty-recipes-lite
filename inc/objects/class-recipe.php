@@ -740,9 +740,12 @@ class Recipe {
 	/**
 	 * Get the average rating for the recipe.
 	 *
+	 * @deprecated x.x
+	 *
 	 * @return float|string
 	 */
 	public function get_average_rating() {
+		_deprecated_function( __METHOD__, 'x.x', 'Tasty_Recipes_Pro\Ratings::get_average_rating' );
 		$rating = $this->get_meta( 'average_rating' );
 		if ( $rating ) {
 			$rating = round( (float) $rating, 1 );
@@ -753,31 +756,39 @@ class Recipe {
 	/**
 	 * Set the average rating for the recipe.
 	 *
+	 * @deprecated x.x
+	 *
 	 * @param string $average_rating Average rating value.
 	 *
 	 * @return void
 	 */
 	public function set_average_rating( $average_rating ) {
-		$this->set_meta( 'average_rating', $average_rating );
+		_deprecated_function( __METHOD__, 'x.x', 'Tasty_Recipes_Pro\Ratings::set_average_rating' );
 	}
 
 	/**
 	 * Get the total reviews for the recipe.
 	 *
+	 * @deprecated x.x
+	 *
 	 * @return int
 	 */
 	public function get_total_reviews() {
+		_deprecated_function( __METHOD__, 'x.x', 'Tasty_Recipes_Pro\Ratings::get_total_reviews' );
 		return (int) $this->get_meta( 'total_reviews' );
 	}
 
 	/**
 	 * Set the total reviews for the recipe.
 	 *
+	 * @deprecated x.x
+	 *
 	 * @param float|int $total_reviews Total reviews value.
 	 *
 	 * @return void
 	 */
 	public function set_total_reviews( $total_reviews ) {
+		_deprecated_function( __METHOD__, 'x.x', 'Tasty_Recipes_Pro\Ratings::set_total_reviews' );
 		$this->set_meta( 'total_reviews', $total_reviews );
 	}
 

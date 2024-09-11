@@ -210,11 +210,6 @@ class Simple_Recipe_Pro extends Converter {
 			}
 		}
 
-		$ratings = get_post_meta( $existing_post->ID, '_ratings', true );
-		if ( ! empty( $ratings ) ) {
-			update_post_meta( $recipe->get_id(), 'srp_ratings', $ratings );
-		}
-
-		return self::save_converted_data_to_recipe( $converted_data, $recipe );
+		return self::save_converted_data_to_recipe( $converted_data, $recipe, compact( 'existing_post' ) );
 	}
 }

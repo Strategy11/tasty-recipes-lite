@@ -277,11 +277,6 @@ class WP_Recipe_Maker extends Converter {
 			}
 		}
 
-		$ratings = get_post_meta( $existing_post->ID, 'wprm_rating', true );
-		if ( ! empty( $ratings ) ) {
-			update_post_meta( $recipe->get_id(), 'wprm_ratings', $ratings );
-		}
-
 		// Back up registered taxonomies so we can restore them after we've
 		// fetched the data.
 		$backup_taxonomies        = $GLOBALS['wp_taxonomies'];
@@ -302,6 +297,6 @@ class WP_Recipe_Maker extends Converter {
 		// Restore registered taxonomies.
 		$GLOBALS['wp_taxonomies'] = $backup_taxonomies; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 
-		return self::save_converted_data_to_recipe( $converted_data, $recipe );
+		return self::save_converted_data_to_recipe( $converted_data, $recipe, compact( 'existing_post' ) );
 	}
 }

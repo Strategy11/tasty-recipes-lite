@@ -251,17 +251,10 @@ class Mediavine_Create extends Converter {
 			$GLOBALS['wp_taxonomies'] = $backup_taxonomies; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 		}
 
-		if ( ! empty( $existing->rating ) ) {
-			update_post_meta(
-				$recipe->get_id(),
-				'create_ratings',
-				array(
-					'rating'       => $existing->rating,
-					'rating_count' => $existing->rating_count,
-				)
-			);
-		}
-
-		return self::save_converted_data_to_recipe( $converted_data, $recipe );
+		return self::save_converted_data_to_recipe(
+			$converted_data,
+			$recipe,
+			compact( 'existing_post', 'existing' )
+		);
 	}
 }

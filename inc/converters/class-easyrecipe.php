@@ -8,7 +8,6 @@
 namespace Tasty_Recipes\Converters;
 
 use Tasty_Recipes\Objects\Recipe;
-use Tasty_Recipes\Ratings;
 use Tasty_Recipes\Shortcodes;
 
 /**

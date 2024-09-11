@@ -11,7 +11,6 @@ use Tasty_Recipes;
 use Tasty_Recipes\Utils;
 use Tasty_Recipes\Admin;
 use Tasty_Recipes\Shortcodes;
-use Tasty_Recipes\Ratings;
 
 /**
  * Manages the recipe templates.
@@ -381,7 +380,6 @@ EOT;
 		}
 
 		$template_vars['recipe_styles'] .= '<style>' . $styles . PHP_EOL . '</style>' . PHP_EOL;
-		self::load_pro_previews( $template_vars );
 
 		$ret            = '<!DOCTYPE html><html><head>' .
 			$stylesheets . self::load_enqueued_assets() .
@@ -398,23 +396,6 @@ EOT;
 		$ret .= '</body></html>';
 		echo apply_filters( 'tasty_recipes_recipe_card_output', $ret, 'admin', compact( 'recipe' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		exit;
-	}
-
-	/**
-	 * Load pro previews for the recipe card preview.
-	 *
-	 * @param array $template_vars Array of template vars.
-	 *
-	 * @return void
-	 */
-	private static function load_pro_previews( $template_vars ) {
-		if ( class_exists( 'Tasty_Recipes_Pro' ) ) {
-			// Skip if Pro is installed.
-			return;
-		}
-
-		// TODO. Add preview for ratings, social cards, scaling, cook mode.
-		//add_action( 'tasty_recipes_card_before_ingredients', $vars );
 	}
 
 	/**

@@ -393,12 +393,6 @@ class Settings {
 	private static function add_instacart_settings( &$settings ) {
 		$settings[ Tasty_Recipes::INSTACART_OPTION ] = [
 			'label'         => __( 'Instacart Button', 'tasty-recipes' ),
-			'description'   => sprintf(
-				// translators: %1$s opening anchor tag, %2$s closing tag.
-				esc_html__( 'By turning this on, you agree to the %1$sInstacart terms of service%2$s, available in the US only at the moment.', 'tasty-recipes' ),
-				'<a target="_blank" rel="noopener" href="https://affiliate.instacart.com/terms">',
-				'</a>'
-			),
 			'options'       => array(
 				true  => __( 'On', 'tasty-recipes' ),
 				false => __( 'Off', 'tasty-recipes' ),

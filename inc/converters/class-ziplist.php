@@ -145,15 +145,6 @@ class ZipList extends Converter {
 			$converted_data[ $tr ] = $value;
 		}
 
-		// Persist ratings data if it exists.
-		$ratings_table = "{$table_prefix}zrdn_visitor_ratings";
-		$results       = $wpdb->get_results( $wpdb->prepare( 'SHOW TABLES LIKE %s', $ratings_table ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
-		if ( ! empty( $results ) ) {
-			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery
-			$ratings = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$ratings_table} WHERE recipe_id=%d", $recipe_id ) );
-			update_post_meta( $recipe->get_id(), 'zrp_ratings', $ratings );
-		}
-
 		return self::save_converted_data_to_recipe( $converted_data, $recipe );
 	}
 }

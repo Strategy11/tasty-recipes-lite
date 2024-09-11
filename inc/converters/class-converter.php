@@ -9,7 +9,6 @@ namespace Tasty_Recipes\Converters;
 
 use Tasty_Recipes\Block_Editor;
 use Tasty_Recipes\Objects\Recipe;
-use Tasty_Recipes\Ratings;
 use Tasty_Recipes\Shortcodes;
 use Tasty_Recipes\Utils;
 
@@ -183,7 +182,11 @@ abstract class Converter {
 		if ( ! $recipe ) {
 			return false;
 		}
-		// Ratings::update_recipe_rating( $recipe, $post_id ); // TODO.
+		/**
+		 * @since x.x
+		 */
+		do_action( 'tasty_recipes_after_convert_recipe', compact( 'recipe', 'existing', 'post_id' ) );
+
 		if ( 'shortcode' === $type ) {
 			$shortcode = PHP_EOL . Shortcodes::get_shortcode_for_recipe( $recipe ) . PHP_EOL;
 			$content   = str_replace( $existing, $shortcode, $content );
@@ -219,10 +222,11 @@ abstract class Converter {
 	 *
 	 * @param array  $converted_data Data to be converted.
 	 * @param Recipe $recipe         Created recipe object.
+	 * @param array  $vars           Additional variables.
 	 *
 	 * @return Recipe
 	 */
-	protected static function save_converted_data_to_recipe( $converted_data, $recipe ) {
+	protected static function save_converted_data_to_recipe( $converted_data, $recipe, $vars = [] ) {
 		/**
 		 * Filter converted data before it's applied to the recipe.
 		 *
@@ -233,7 +237,8 @@ abstract class Converter {
 		$bits           = explode( '\\', $called_class );
 		$type           = array_pop( $bits );
 		$type           = strtolower( $type );
-		$converted_data = apply_filters( 'tasty_recipes_convert_recipe', $converted_data, $type );
+		$vars['recipe'] = $recipe;
+		$converted_data = apply_filters( 'tasty_recipes_convert_recipe', $converted_data, $type, $vars );
 		foreach ( $converted_data as $key => $value ) {
 			$setter = "set_{$key}";
 			$recipe->$setter( $value );
