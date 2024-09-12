@@ -144,23 +144,6 @@
 
 			cookModeSelect.change();
 		}
-
-		const instacartOptionSelect = $('select[name="tasty_recipes_instacart"]');
-		if ( instacartOptionSelect.length > 0 ) {
-			instacartOptionSelect.change(function(){
-				const instacartOption        = $(this);
-				const instacartAffiliateIdTr = instacartOption.parents('tr').next('tr');
-
-				if ( 1 === parseInt( instacartOption.val() ) ) {
-					instacartAffiliateIdTr.show();
-				} else {
-					instacartAffiliateIdTr.hide();
-				}
-			});
-
-			instacartOptionSelect.change();
-		}
-
 	});
 
 }(window.wp, jQuery));
