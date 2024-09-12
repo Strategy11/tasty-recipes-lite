@@ -36,8 +36,7 @@ body:not(.tasty-recipes-print-view) {
 }
 
 body.tasty-recipes-print-view{
-	.tasty-recipes-buttons,
-	.tasty-recipes-cook-mode{
+	.tasty-recipes-buttons {
 		display: none;
 	}
 }
@@ -480,72 +479,6 @@ label[for="tasty-recipes-video-toggle"] {
 [data-tr-ingredient-checkbox="checked"] {
 	text-decoration: line-through;
 	opacity: 0.8;
-}
-
-.tasty-recipes-cook-mode{
-	&__container{
-		display: flex;
-		align-items: center;
-		line-height: 100%;
-
-		label{
-			font-size: inherit;
-		}
-	}
-	&__switch{
-		display: inline-block;
-		height: 17px;
-		position: relative;
-		width: 30px;
-		margin-right: 10px;
-
-		&-slider{
-			background-color: #737373;
-			bottom: 0;
-			cursor: pointer;
-			left: 0;
-			position: absolute;
-			right: 0;
-			top: 0;
-			transition: .4s;
-			opacity: 0.4;
-			display: block;
-
-			&:before{
-				background-color: #fff;
-				bottom: 2px;
-				content: "";
-				height: 13px;
-				left: 2px;
-				position: absolute;
-				transition: .4s;
-				width: 13px;
-			}
-		}
-
-		input{
-			display:none;
-			&:checked{
-				& + span{
-					opacity: 1;
-
-					&:before{
-						transform: translateX(13px);
-					}
-				}
-			}
-		}
-
-		&-round{
-			border-radius: 34px;
-			&:before{
-				border-radius: 50%;
-			}
-		}
-	}
-	&__label{
-		font-weight: bold;
-	}
 }
 
 @media only screen and (max-width: 767px){
