@@ -666,6 +666,31 @@ class Admin {
 	}
 
 	/**
+	 * Print instacart image in admin instead of real iframe.
+	 *
+	 * @since 3.8
+	 *
+	 * @return void
+	 */
+	public static function print_mock_instacart_html() {
+		if ( ! self::can_show_instacart_button() ) {
+			return;
+		}
+
+		echo '<p><a href=""><img src="' . esc_url( plugins_url( 'assets/images/instacart.svg', TASTY_RECIPES_LITE_FILE ) ) . '"></a></p>';
+	}
+
+	/**
+	 *
+	 * @since 3.8
+	 *
+	 * @return bool
+	 */
+	public static function can_show_instacart_button() {
+		return (bool) get_option( Tasty_Recipes::INSTACART_OPTION, false );
+	}
+
+	/**
 	 * Add lite update modal html.
 	 *
 	 * @return void

@@ -41,6 +41,13 @@ class Frontend {
 		return self::$instance;
 	}
 
+	/**
+	 * Subscribe hooks.
+	 *
+	 * @since 3.8
+	 *
+	 * @return void
+	 */
 	private function add_hooks() {
 		add_action( 'tasty_recipes_card_after_ingredients', array( $this, 'print_instacart_html' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'insert_instacart_script' ) );
@@ -79,8 +86,8 @@ class Frontend {
 			return;
 		}
 
-		$instacart_filemtime = filemtime( plugin_dir_path( TASTY_RECIPES_PLUGIN_FILE ) . '/assets/js/instacart.js' );
-		wp_enqueue_script( 'tasty-recipes-instacart', plugins_url( 'assets/js/instacart.js', TASTY_RECIPES_PLUGIN_FILE ), array(), $instacart_filemtime, true );
+		$instacart_filemtime = filemtime( plugin_dir_path( TASTY_RECIPES_LITE_FILE ) . '/assets/js/instacart.js' );
+		wp_enqueue_script( 'tasty-recipes-instacart', plugins_url( 'assets/js/instacart.js', TASTY_RECIPES_LITE_FILE ), array(), $instacart_filemtime, true );
 	}
 
 	/**

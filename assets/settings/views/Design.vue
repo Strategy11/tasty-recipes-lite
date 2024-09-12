@@ -506,7 +506,13 @@ export default {
 				.map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
 				.join('&');
 
-			return `${this.recipeCardPreviewUrlBase}&template=${template}&${params}`;
+			return (
+				this.recipeCardPreviewUrlBase +
+				"&template=" +
+				template +
+				"&" +
+				params
+			);
 		},
 		getPreviewSettings() {
 			return ['nutrifox_display_style', 'star_ratings_style'];
