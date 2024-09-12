@@ -939,7 +939,6 @@ class Shortcodes {
 				'value' => '<span data-tasty-recipes-customization="body-color.color" class="' . esc_attr( 'tasty-recipes-' . str_replace( '_', '-', $attribute ) ) . '">' .
 					$recipe_json[ $attribute ] . '</span>',
 			);
-
 		}
 	}
 

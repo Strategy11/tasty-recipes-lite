@@ -49,7 +49,9 @@
 				/>
 			</div>
 			<iframe
-				class="tasty-shadow-lg"
+				:class="{
+					'tasty-shadow-lg': ! isLocked
+				}"
 				width="600"
 				:height="iframeHeight"
 				ref="previewIframe"
