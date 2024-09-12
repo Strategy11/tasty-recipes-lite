@@ -5,7 +5,7 @@
  * @package Tasty_Recipes
  */
 
-namespace Tasty_Recipes\Templates;
+namespace Tasty_Recipes\Designs;
 
 use Tasty\Framework\Traits\Singleton;
 
@@ -19,8 +19,7 @@ class Modern_Compact extends Abstract_Template {
 	 * Sets the variables.
 	 */
 	public function set_vars() {
-		$this->id            = 'modern-compact';
-		$this->template_name = 'Modern Compact';
-		$this->is_pro        = true;
+		parent::set_vars();
+		$this->is_pro = true;
 	}
 }

@@ -5,7 +5,7 @@
  * @package Tasty_Recipes
  */
 
-namespace Tasty_Recipes\Templates;
+namespace Tasty_Recipes\Designs;
 
 use Tasty\Framework\Traits\Singleton;
 
@@ -13,14 +13,13 @@ use Tasty\Framework\Traits\Singleton;
  * Manages Snap template class.
  */
 class Snap extends Abstract_Template {
-
 	use Singleton;
 
 	/**
 	 * Sets the variables.
 	 */
 	public function set_vars() {
-		$this->id            = 'snap';
-		$this->template_name = 'Snap';
+		parent::set_vars();
+		$this->customized['image_size'] = 'medium_large';
 	}
 }

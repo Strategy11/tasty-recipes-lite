@@ -7,15 +7,19 @@
 
 echo $recipe_styles; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
-if ( ! $template_object ) {
+if ( empty( $template_object ) ) {
 	return;
 }
 
 /* translators: %s: template name */
 $preview_template = sprintf( __( 'Preview %s template', 'tasty-recipes' ), $template_object->get_template_name() );
+$image            = plugins_url(
+	'assets/images/templates/' . $template_object->get_id() . '.png',
+	TASTY_RECIPES_LITE_FILE
+);
 ?>
 <div class="tasty-recipes-pro-template">
-	<img src="<?php echo esc_url( $template_object->get_template_url() ); ?>images/template.png"
+	<img src="<?php echo esc_url( $image ); ?>"
 		alt="<?php echo esc_attr( $preview_template ); ?>"
 	>
 </div>

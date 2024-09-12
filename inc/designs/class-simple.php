@@ -5,7 +5,7 @@
  * @package Tasty_Recipes
  */
 
-namespace Tasty_Recipes\Templates;
+namespace Tasty_Recipes\Designs;
 
 use Tasty\Framework\Traits\Singleton;
 
@@ -19,7 +19,7 @@ class Simple extends Abstract_Template {
 	 * Sets the variables.
 	 */
 	public function set_vars() {
-		$this->id            = 'simple';
-		$this->template_name = 'Simple';
+		parent::set_vars();
+		$this->customized['container'] = 'primary-color.background-color secondary-color.border-color';
 	}
 }

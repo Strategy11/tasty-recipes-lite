@@ -171,12 +171,3 @@
 .tasty-recipes-print-view .tasty-recipes-instructions {
 	padding: 1.25em 0;
 }
-
-.tasty-recipes-cook-mode__label{
-	color: #797B7C;
-}
-
-.tasty-recipes-cook-mode__label,
-.tasty-recipes-cook-mode__helper{
-	font-size: 0.8em;
-}

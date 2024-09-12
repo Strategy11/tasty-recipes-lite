@@ -302,7 +302,7 @@ class Tasty_Recipes {
 		add_action( 'update_option_' . self::LICENSE_KEY_OPTION, array( 'Tasty_Recipes\Admin', 'action_update_option_clear_transient' ) );
 		add_action( 'media_buttons', array( 'Tasty_Recipes\Editor', 'action_media_buttons' ) );
 
-		add_action( 'wp_ajax_tasty_recipes_preview_recipe_card', array( 'Tasty_Recipes\Templates', 'handle_wp_ajax_preview_recipe_card' ) );
+		add_action( 'wp_ajax_tasty_recipes_preview_recipe_card', array( 'Tasty_Recipes\Designs\Template', 'handle_wp_ajax_preview_recipe_card' ) );
 		add_action( 'wp_ajax_tasty_recipes_get_count', array( 'Tasty_Recipes\Admin', 'handle_wp_ajax_get_count' ) );
 		add_action( 'wp_ajax_tasty_recipes_convert', array( 'Tasty_Recipes\Admin', 'handle_wp_ajax_convert' ) );
 		add_action( 'wp_ajax_tasty_recipes_ignore_convert', array( 'Tasty_Recipes\Editor', 'handle_wp_ajax_ignore_convert' ) );

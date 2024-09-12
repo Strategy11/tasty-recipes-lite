@@ -602,21 +602,6 @@ class Admin {
 	}
 
 	/**
-	 * Show SSL certificate error message.
-	 *
-	 * @since 3.8
-	 *
-	 * @return void
-	 */
-	public static function show_ssl_error() {
-		if ( self::can_enable_cook_mode() ) {
-			return;
-		}
-		$error_message = __( 'Cook Mode requires SSL (HTTPS)', 'tasty-recipes' );
-		echo "<div class='tasty-recipes-settings-error'>" . esc_html( $error_message ) . '</div>';
-	}
-
-	/**
 	 * Get Cook Mode helper message.
 	 *
 	 * @since 3.8
