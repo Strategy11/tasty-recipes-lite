@@ -232,6 +232,26 @@
 					</fieldset>
 				</div>
 				<hr />
+				<h3>Star Ratings</h3>
+				<div class="tasty-recipes-card-field-container tasty-flex">
+					<fieldset>
+						<label>Star Color</label>
+						<color-picker
+							v-model="customization.star_color"
+							name="tasty_recipes_customization[star_color]"
+						></color-picker>
+					</fieldset>
+					<fieldset>
+						<label>Star Style</label>
+						<select
+							v-model="customization.star_ratings_style"
+							name="tasty_recipes_customization[star_ratings_style]"
+						>
+							<option value="solid">Solid</option>
+							<option value="outline">Outline</option>
+						</select>
+					</fieldset>
+				</div>
 				<div class="tasty-recipes-nutrifox-field-container">
 					<div>
 						<h3>Nutrifox Display</h3>
@@ -486,7 +506,7 @@ export default {
 			return `${this.recipeCardPreviewUrlBase}&template=${template}&${params}`;
 		},
 		getPreviewSettings() {
-			return ['nutrifox_display_style'];
+			return ['nutrifox_display_style', 'star_ratings_style'];
 		},
 		getProBadge() {
 			if ( ! window.TastyFramework || ! window.TastyFramework.f ) {
@@ -559,6 +579,9 @@ export default {
 	watch: {
 		currentNutrifoxDisplayStyle() {
 			this.updateRecipeCardPreviewUrl();
+		},
+		currentStarRatingsStyle() {
+			return this.customization.star_ratings_style;
 		},
 		currentTemplate() {
 			this.updateRecipeCardPreviewUrl();

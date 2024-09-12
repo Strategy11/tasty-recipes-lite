@@ -183,7 +183,7 @@ abstract class Converter {
 		if ( ! $recipe ) {
 			return false;
 		}
-		//Ratings::update_recipe_rating( $recipe, $post_id ); // TODO
+		Ratings::update_recipe_rating( $recipe, $post_id );
 		if ( 'shortcode' === $type ) {
 			$shortcode = PHP_EOL . Shortcodes::get_shortcode_for_recipe( $recipe ) . PHP_EOL;
 			$content   = str_replace( $existing, $shortcode, $content );

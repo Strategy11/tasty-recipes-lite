@@ -586,8 +586,12 @@ class Admin {
 	 * @return bool
 	 */
 	public static function can_enable_cook_mode() {
-		_deprecated_fuction( __METHOD__, 'x.x', 'Tasty_Recipes_Pro\Settings::can_enable_cook_mode' );
-		return Tasty_Recipes_Pro\Settings::can_enable_cook_mode();
+		/**
+		 * Filters the capability of enabling cook mode be enabled in this site.
+		 *
+		 * @param bool $can_enable True to enable, false otherwise.
+		 */
+		return (bool) apply_filters( 'tasty_recipes_enable_cook_mode', is_ssl() );
 	}
 
 	/**

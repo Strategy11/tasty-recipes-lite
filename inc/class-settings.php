@@ -248,7 +248,6 @@ class Settings {
 				'print'  => __( '\'Print Recipe\' link', 'tasty-recipes' ),
 				'rating' => __( '\'Leave a Review\' link', 'tasty-recipes' ),
 			),
-			'pro_option' => [ 'rating' ],
 		];
 
 		$settings[ Tasty_Recipes::QUICK_LINKS_STYLE ] = [

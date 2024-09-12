@@ -9,7 +9,9 @@ namespace Tasty_Recipes;
 
 use Tasty\Framework\Utils\Vars;
 use Tasty_Recipes;
+use WP_Comment_Query;
 use Tasty_Recipes\Objects\Recipe;
+use Tasty_Recipes\Integrations\Bigscoots;
 
 /**
  * Manages ratings integration with comments.
@@ -68,6 +70,41 @@ class Ratings {
 	private static $css_loaded = false;
 
 	/**
+	 * Whether or not ratings are enabled. Optionally pass a comment status to
+	 * check if comments are open for the current post.
+	 *
+	 * @param string $comment_status Comment status to check. 'open' or 'any'.
+	 *
+	 * @return bool
+	 */
+	public static function is_enabled( $comment_status = 'open' ) {
+		global $post;
+
+		$enabled = true;
+		if ( 'open' === $comment_status && $post && ! comments_open( $post ) ) {
+			$enabled = false;
+		}
+
+		/**
+		 * Permit ratings to be disabled by the end user.
+		 *
+		 * @param bool
+		 */
+		return apply_filters( 'tasty_recipes_enable_ratings', $enabled );
+	}
+
+	/**
+	 * Renders ratings CSS in <head> when enabled.
+	 *
+	 * @deprecated 3.11.1
+	 *
+	 * @return void
+	 */
+	public static function action_wp_head() {
+		_deprecated_function( __METHOD__, '3.11.1' );
+	}
+
+	/**
 	 * Get rating needed styles.
 	 *
 	 * @since 3.11.1
@@ -111,7 +148,344 @@ class Ratings {
 	 * @return string
 	 */
 	private static function get_style_content() {
+		if ( ! self::is_enabled( 'any' ) ) {
+			return '';
+		}
 		return Utils::get_contents( dirname( __DIR__ ) . '/assets/dist/ratings.css' );
+	}
+
+	/**
+	 * Renders ratings CSS in <head> when enabled.
+	 *
+	 * @return void
+	 */
+	public static function action_admin_head() {
+		add_action( 'add_meta_boxes', array( __CLASS__, 'add_rating_in_admin' ) );
+
+		$current_screen = get_current_screen()->id;
+		if ( ! in_array( $current_screen, array( 'edit-comments', 'comment' ), true ) ) {
+			return;
+		}
+
+		$styles = self::get_styles();
+		if ( empty( $styles ) ) {
+			return;
+		}
+
+		echo $styles; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
+
+	/**
+	 * Add rating meta box in admin comment form.
+	 *
+	 * @since 3.12
+	 *
+	 * @return void
+	 */
+	public static function add_rating_in_admin() {
+		add_meta_box(
+			'tasty-recipes-comment-rating',
+			__( 'Tasty Recipes', 'tasty-recipes' ),
+			array( __CLASS__, 'render_rating_meta_box' ),
+			'comment',
+			'normal'
+		);
+	}
+
+	/**
+	 * Show star rating options in admin comment form.
+	 *
+	 * @since 3.12
+	 *
+	 * @param object $comment Comment object.
+	 *
+	 * @return void
+	 */
+	public static function render_rating_meta_box( $comment ) {
+		$rating = get_comment_meta( $comment->comment_ID, self::COMMENT_META_KEY, true );
+
+		echo '<script>' .
+			'const tastyRecipesRating = ' . (int) $rating . ';' .
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			Utils::get_contents( dirname( __DIR__ ) . '/assets/js/ratings.js' ) .
+			'</script>';
+		echo '<style>.tasty-recipes-ratings-buttons{--tr-star-size:18px;}</style>';
+		?>
+		<p class="tasty-recipes-comment-form">
+			<label for="tasty-recipes-rating">
+				<?php esc_html_e( 'Recipe rating', 'tasty-recipes' ); ?>
+			</label>
+			<br>
+			<?php echo self::get_rating_stars_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		</p>
+		<?php
+	}
+
+	/**
+	 * Update rating in admin comment.
+	 *
+	 * @since 3.12
+	 *
+	 * @param int $comment_id Comment ID.
+	 *
+	 * @return void
+	 */
+	public static function update_rating_in_admin( $comment_id ) {
+		$rating = Utils::post_param( 'tasty-recipes-rating', 'absint' );
+		if ( $rating ) {
+			update_comment_meta( $comment_id, self::COMMENT_META_KEY, $rating );
+			self::action_modify_comment_update_recipe_ratings( $comment_id );
+		}
+	}
+
+	/**
+	 * Recalculate total reviews and average rating for the embedded recipe
+	 * when a comment changes in some way.
+	 *
+	 * @param int $comment_id ID of the changed comment.
+	 *
+	 * @return void
+	 */
+	public static function action_modify_comment_update_recipe_ratings( $comment_id ) {
+		$comment = get_comment( $comment_id );
+		if ( ! self::is_enabled( 'any' ) || ! $comment || ! $comment->comment_post_ID ) {
+			return;
+		}
+
+		// Only process when there is one embedded recipe in a post.
+		$recipes = Tasty_Recipes::get_recipes_for_post( (int) $comment->comment_post_ID );
+		if ( 1 !== count( $recipes ) ) {
+			return;
+		}
+
+		$recipe = reset( $recipes );
+		self::update_recipe_rating( $recipe, (int) $comment->comment_post_ID );
+	}
+
+	/**
+	 * Update rating for a recipe embedded within a given post.
+	 *
+	 * @param Recipe $recipe  Existing recipe object.
+	 * @param int    $post_id ID for the post with the recipe.
+	 *
+	 * @return void
+	 */
+	public static function update_recipe_rating( $recipe, $post_id ) {
+		global $wpdb;
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		$ratings = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT $wpdb->commentmeta.comment_id, $wpdb->commentmeta.meta_value
+				FROM $wpdb->commentmeta
+				LEFT JOIN $wpdb->comments ON $wpdb->commentmeta.comment_id = $wpdb->comments.comment_ID
+				WHERE $wpdb->comments.comment_post_ID=%d
+				AND $wpdb->comments.comment_approved=1
+				AND (
+					$wpdb->commentmeta.meta_key=%s OR
+					$wpdb->commentmeta.meta_key=%s OR
+					$wpdb->commentmeta.meta_key=%s OR
+					$wpdb->commentmeta.meta_key=%s OR
+					$wpdb->commentmeta.meta_key=%s
+				)",
+				$post_id,
+				self::COMMENT_META_KEY,
+				self::CB_COMMENT_META_KEY,
+				self::SRP_COMMENT_META_KEY,
+				self::WPRM_COMMENT_META_KEY,
+				self::ZRP_COMMENT_META_KEY
+			)
+		);
+		// Some comments may have ER, Cookbook, and Simple Recipe Pro.
+		$comment_ratings = array();
+		foreach ( $ratings as $rating ) {
+			if ( $rating->meta_value >= 1 ) {
+				$comment_ratings[ $rating->comment_id ] = $rating->meta_value;
+			}
+		}
+		$ratings        = array_values( $comment_ratings );
+		$total_reviews  = count( $ratings );
+		$create_ratings = get_post_meta( $recipe->get_id(), 'create_ratings', true );
+		if ( ! empty( $create_ratings ) ) {
+			$ratings        = array_merge( $ratings, array_fill( 0, $create_ratings['rating_count'], $create_ratings['rating'] ) );
+			$total_reviews += $create_ratings['rating_count'];
+		}
+		$srp_ratings = get_post_meta( $recipe->get_id(), 'srp_ratings', true );
+		if ( ! empty( $srp_ratings ) ) {
+			$srp_ratings    = json_decode( $srp_ratings, true );
+			$ratings        = array_merge( $ratings, array_values( $srp_ratings ) );
+			$total_reviews += count( $srp_ratings );
+		}
+		$wprm_ratings = get_post_meta( $recipe->get_id(), 'wprm_ratings', true );
+		if ( ! empty( $wprm_ratings ) ) {
+			$ratings        = array_merge( $ratings, array( $wprm_ratings['total'] ) );
+			$total_reviews += $wprm_ratings['count'];
+		}
+		$zrp_ratings = get_post_meta( $recipe->get_id(), 'zrp_ratings', true );
+		if ( ! empty( $zrp_ratings ) ) {
+			$zrp_ratings_data = wp_list_pluck( $zrp_ratings, 'rating' );
+			$ratings          = array_merge( $ratings, array_values( $zrp_ratings_data ) );
+			$total_reviews   += count( $zrp_ratings_data );
+		}
+		$average_rating = '';
+		if ( $total_reviews ) {
+			$average_rating = round( array_sum( $ratings ) / $total_reviews, 4 );
+		}
+		$recipe->set_total_reviews( $total_reviews );
+		$recipe->set_average_rating( $average_rating );
+		/**
+		 * Fires when a recipe's rating has been updated.
+		 *
+		 * @param object $recipe  Recipe object.
+		 * @param int    $post_id ID for the post.
+		 */
+		do_action( 'tasty_recipes_updated_recipe_rating', $recipe, $post_id );
+	}
+
+	/**
+	 * Processes comment submission for its rating (if set).
+	 *
+	 * @param array $commentdata Comment data to be saved.
+	 *
+	 * @return array
+	 */
+	public static function filter_preprocess_comment( $commentdata ) {
+		// We need to remove the old quick rating that was added before from this user if found.
+		list( $comment_hash, $comment_id ) = self::get_previous_comment( $commentdata['comment_post_ID'] );
+		if ( $comment_id ) {
+			wp_delete_comment( $comment_id );
+		}
+
+		$rating = Utils::post_param( 'tasty-recipes-rating' );
+		if ( empty( $rating ) ) {
+			return $commentdata;
+		}
+
+		if ( ! isset( $commentdata['comment_meta'] ) ) {
+			$commentdata['comment_meta'] = array();
+		}
+		$commentdata['comment_meta'][ self::COMMENT_META_KEY ]             = (int) $rating;
+		$commentdata['comment_meta'][ self::RATING_COMMENT_HASH_META_KEY ] = $comment_hash;
+
+		return $commentdata;
+	}
+
+	/**
+	 * Handles a REST API request to create a new comment.
+	 *
+	 * @param object $comment New comment object.
+	 * @param object $request Request object.
+	 *
+	 * @return void
+	 */
+	public static function action_rest_insert_comment( $comment, $request ) {
+		if ( ! empty( $request['meta']['tasty-recipes-rating'] ) ) {
+			update_comment_meta(
+				$comment->comment_ID,
+				self::COMMENT_META_KEY,
+				(int) $request['meta']['tasty-recipes-rating']
+			);
+		}
+	}
+
+	/**
+	 * Filters the comment form HTML to include a ratings input.
+	 *
+	 * @param string $comment_form Existing comment form HTML.
+	 *
+	 * @return string
+	 */
+	public static function filter_comment_form_field_comment( $comment_form ) {
+		$post_id = get_queried_object_id();
+		if ( ! self::is_enabled( 'any' ) || ! $post_id ) {
+			return $comment_form;
+		}
+		$recipes = Tasty_Recipes::get_recipes_for_post( $post_id );
+		if ( 1 !== count( $recipes ) ) {
+			return $comment_form;
+		}
+		ob_start();
+		?>
+		<fieldset class="tasty-recipes-ratings tasty-recipes-comment-form">
+			<legend><?php esc_html_e( 'Recipe rating', 'tasty-recipes' ); ?></legend>
+			<?php echo self::get_rating_stars_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		</fieldset>
+		<?php
+		$rating_html = ob_get_clean();
+		/**
+		 * Control whether the rating HTML appears before or after the comment form.
+		 *
+		 * @param string $position Can be one of 'before' or 'after'
+		 */
+		$position = apply_filters( 'tasty_recipes_comment_form_rating_position', 'before' );
+		if ( 'before' === $position ) {
+			return $rating_html . $comment_form;
+		}
+		if ( 'after' === $position ) {
+			return $comment_form . $rating_html;
+		}
+		// Invalid $position, so just return the comment form.
+		return $comment_form;
+	}
+
+	/**
+	 * Filters the rendered comment text to include a rating when it exists.
+	 *
+	 * @param string $comment_text Existing comment text.
+	 * @param object $comment      Comment object, if included.
+	 *
+	 * @return string
+	 */
+	public static function filter_comment_text( $comment_text, $comment = null ) {
+
+		if ( ! self::is_enabled( 'any' )
+			|| ! $comment
+			|| ! Tasty_Recipes::has_recipe( $comment->comment_post_ID ) ) {
+			return $comment_text;
+		}
+
+		$rating_keys = array(
+			self::COMMENT_META_KEY,
+			self::CB_COMMENT_META_KEY,
+			self::SRP_COMMENT_META_KEY,
+			self::WPRM_COMMENT_META_KEY,
+			self::ZRP_COMMENT_META_KEY,
+		);
+		$rating      = '';
+		foreach ( $rating_keys as $rating_key ) {
+			$rating = get_comment_meta( $comment->comment_ID, $rating_key, true );
+			if ( $rating ) {
+				break;
+			}
+		}
+
+		if ( ! $rating ) {
+			return $comment_text;
+		}
+
+		$rating = PHP_EOL . '<p class="tasty-recipes-ratings">' . self::get_rendered_rating( $rating ) . '</p>';
+		return $comment_text . $rating;
+	}
+
+	/**
+	 * Filters the comment query to exclude empty comments.
+	 * Triggered from the recipe card, so we already know there is
+	 * a recipe on the page.
+	 *
+	 * @since 3.12
+	 *
+	 * @param array  $clauses The current comment query clauses.
+	 * @param object $query   Comment query object.
+	 *
+	 * @return array
+	 */
+	public static function exclude_empty_comments( $clauses, $query ) {
+		if ( empty( $query->query_vars['post_id'] ) ) {
+			return $clauses;
+		}
+
+		$clauses['where'] .= ' AND comment_content<>""';
+		return $clauses;
 	}
 
 	/**
@@ -300,6 +674,71 @@ class Ratings {
 	}
 
 	/**
+	 * Save the quick rating.
+	 *
+	 * @since 3.12
+	 *
+	 * @return void
+	 */
+	public static function save_rating() {
+		if ( is_user_logged_in() ) {
+			check_ajax_referer( 'tasty-recipes-save-rating', 'nonce' );
+		}
+
+		$rating    = Vars::post_param( 'rating', 'intval' );
+		$post_id   = Vars::post_param( 'post_id', 'intval' );
+		$recipe_id = Vars::post_param( 'recipe_id', 'intval' );
+		$recipe    = ! empty( $recipe_id ) ? Recipe::get_by_id( $recipe_id ) : null;
+
+		if ( ! $rating || ! $post_id || ! $recipe ) {
+			Utils::send_json_error( __( 'Invalid request', 'tasty-recipes' ) );
+		}
+
+		list( $comment_hash, $comment_id ) = self::get_previous_comment( $post_id );
+
+		$has_comment = self::has_comment( $comment_id );
+		$creating    = empty( $comment_id ); // No previous rating found.
+		$low_rating  = $rating < self::get_minimum_rating_without_comment();
+		$message_id  = self::generate_message_id( $creating, $low_rating, $has_comment );
+
+		if ( $low_rating ) {
+			wp_send_json_success(
+				array(
+					'message' => self::rating_message( $message_id, $rating ),
+					'average' => $recipe->get_average_rating(),
+					'comment' => self::prepare_comment_response( $has_comment ),
+				)
+			);
+		}
+
+		if ( $creating ) {
+			self::create_rating( $comment_hash );
+		} else {
+			// Update the rating on existing comment.
+			update_comment_meta( $comment_id, self::COMMENT_META_KEY, $rating );
+		}
+
+		self::update_recipe_rating( $recipe, $post_id );
+
+		$response = array(
+			'hash'    => $comment_hash,
+			'message' => self::rating_message( $message_id, $rating ),
+			'count'   => (int) $recipe->get_total_reviews(),
+			'average' => $recipe->get_average_rating(),
+		);
+
+		if ( 2 >= $response['count'] ) {
+			$response['label'] = self::get_rating_label( $response['count'], $response['average'] );
+		}
+
+		Bigscoots::init();
+
+		do_action( 'tasty_recipes_after_saving_rating', $post_id, $recipe_id, $rating );
+
+		wp_send_json_success( $response );
+	}
+
+	/**
 	 * Check if the rating has a comment or not.
 	 *
 	 * @since 3.12
@@ -315,6 +754,268 @@ class Ratings {
 			$has_comment = $comment && ! empty( $comment->comment_content );
 		}
 		return $has_comment ? $comment : false;
+	}
+
+	/**
+	 * Save new rating.
+	 *
+	 * @since 3.12
+	 *
+	 * @param string $comment_hash Comment hash.
+	 *
+	 * @return void
+	 */
+	private static function create_rating( $comment_hash ) {
+		$rating  = Vars::post_param( 'rating', 'intval' );
+		$post_id = Vars::post_param( 'post_id', 'intval' );
+
+		$comment_args = array(
+			'comment_post_ID'   => $post_id,
+			'comment_author_IP' => Vars::server_param( 'REMOTE_ADDR' ),
+			'comment_meta'      => array(
+				self::RATING_COMMENT_HASH_META_KEY => $comment_hash,
+				self::COMMENT_META_KEY             => $rating,
+			),
+		);
+		if ( is_user_logged_in() ) {
+			$comment_args['user_id'] = get_current_user_id();
+		}
+		$created = wp_insert_comment( $comment_args );
+
+		if ( ! $created ) {
+			Utils::send_json_error( __( 'Something went wrong. Your rating was not saved.', 'tasty-recipes' ) );
+		}
+	}
+
+	/**
+	 * Check if comment is already added and get its hash and ID.
+	 *
+	 * @since 3.12
+	 *
+	 * @param int $post_id Post ID.
+	 *
+	 * @return array Comment hash and comment ID
+	 */
+	private static function get_previous_comment( $post_id ) {
+		$comment_hash = self::generate_comment_hash( $post_id );
+		return array(
+			$comment_hash,
+			self::get_comment_id_by_hash( $comment_hash, $post_id ),
+		);
+	}
+
+	/**
+	 * Generate comment hash for specific post and the current user.
+	 *
+	 * @since 3.12
+	 *
+	 * @param int $post_id Post ID.
+	 *
+	 * @return string
+	 */
+	private static function generate_comment_hash( $post_id ) {
+		$params = array(
+			$post_id,
+			Vars::server_param( 'REMOTE_ADDR' ),
+			Vars::server_param( 'HTTP_USER_AGENT' ),
+			wp_nonce_tick( 'tasty-recipes-rating-hash-tick' ),
+		);
+
+		if ( is_user_logged_in() ) {
+			$params[] = get_current_user_id();
+		}
+
+		if ( defined( 'AUTH_SALT' ) && ! empty( AUTH_SALT ) ) {
+			$params[] = AUTH_SALT;
+		}
+
+		return md5( implode( '::', $params ) );
+	}
+
+	/**
+	 * Get comment ID by hash and possibly post ID.
+	 *
+	 * @since 3.12
+	 *
+	 * @param string $hash    Comment hash.
+	 * @param int    $post_id Post ID.
+	 *
+	 * @return int
+	 */
+	private static function get_comment_id_by_hash( $hash, $post_id = 0 ) {
+		$args = array(
+			'fields'     => 'ids',
+			'meta_key'   => self::RATING_COMMENT_HASH_META_KEY, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+			'meta_value' => $hash, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+			'number'     => 1,
+		);
+		if ( $post_id ) {
+			$args['post_id'] = $post_id;
+		}
+
+		$comments_query = new WP_Comment_Query( $args );
+		$comments       = $comments_query->get_comments();
+
+		// Return the first comment ID.
+		return $comments ? $comments[0] : 0;
+	}
+
+	/**
+	 * Get rating message with the message ID.
+	 *
+	 * @since 3.12
+	 *
+	 * @param string $message_id Message ID to get its message.
+	 * @param int    $rating     Rating value.
+	 *
+	 * @return string
+	 */
+	private static function rating_message( $message_id, $rating ) {
+		$messages = array(
+			'create-low-rating'          => array(
+				'message' => self::comment_required_message( $rating ),
+				'button'  => self::leave_comment_message(),
+			),
+			'create-high-rating'         => array(
+				'message' => __( 'Thank you for rating!', 'tasty-recipes' ),
+				'button'  => self::leave_comment_message(),
+			),
+			'update-low-rating-comment'  => array(
+				'message' => self::comment_required_to_update_message( $rating ),
+				'button'  => __( 'Update comment', 'tasty-recipes' ),
+			),
+			'update-high-rating-comment' => array(
+				'message' => self::rating_updated_message( $rating ),
+				'button'  => __( 'Update comment', 'tasty-recipes' ),
+			),
+			'update-low-rating'          => array(
+				'message' => self::comment_required_to_update_message( $rating ),
+				'button'  => self::leave_comment_message(),
+			),
+			'update-high-rating'         => array(
+				'message' => self::rating_updated_message( $rating ),
+				'button'  => self::leave_comment_message(),
+			),
+		);
+
+		if ( ! isset( $messages[ $message_id ] ) ) {
+			return '';
+		}
+
+		return sprintf(
+			'%1$s<a href="#respond" class="tasty-recipes-scrollto">%2$s</a>',
+			esc_html( $messages[ $message_id ]['message'] ),
+			esc_html( $messages[ $message_id ]['button'] )
+		);
+	}
+
+	/**
+	 * Get message when comment is required to create new rating.
+	 *
+	 * @since 3.12
+	 *
+	 * @param int $rating The selected rating.
+	 *
+	 * @return string
+	 */
+	private static function comment_required_message( $rating ) {
+		return sprintf(
+			// translators: %1$d star rating.
+			__( 'To leave a %1$d-star rating, please share your feedback.', 'tasty-recipes' ),
+			$rating
+		);
+	}
+
+	/**
+	 * Get message when comment is required to edit.
+	 *
+	 * @since 3.12
+	 *
+	 * @param int $rating The selected rating.
+	 *
+	 * @return string
+	 */
+	private static function comment_required_to_update_message( $rating ) {
+		return sprintf(
+			// translators: %1$d star rating.
+			_n(
+				'To change your rating to %1$d star, please share your feedback.',
+				'To change your rating to %1$d stars, please share your feedback.',
+				$rating,
+				'tasty-recipes'
+			),
+			$rating
+		);
+	}
+
+	/**
+	 * Get success message when rating is updated.
+	 *
+	 * @since 3.12
+	 *
+	 * @param int $rating The selected rating.
+	 *
+	 * @return string
+	 */
+	private static function rating_updated_message( $rating ) {
+		return sprintf(
+			// translators: %1$d star rating.
+			__( 'Rating updated to %1$d stars!', 'tasty-recipes' ),
+			$rating
+		);
+	}
+
+	/**
+	 * Get the message for leaving a comment.
+	 *
+	 * @since 3.12
+	 *
+	 * @return string
+	 */
+	private static function leave_comment_message() {
+		return __( 'Leave a comment', 'tasty-recipes' );
+	}
+
+	/**
+	 * Return comment details in ajax response to prefill for editing.
+	 *
+	 * @since 3.12.2
+	 *
+	 * @param bool|object $has_comment The comment if it exists.
+	 *
+	 * @return array
+	 */
+	private static function prepare_comment_response( $has_comment ) {
+		$comment = array();
+		if ( ! $has_comment || ! is_object( $has_comment ) ) {
+			return $comment;
+		}
+
+		$comment['content'] = $has_comment->comment_content;
+		if ( ! is_user_logged_in() ) {
+			$comment['email'] = $has_comment->comment_author_email;
+			$comment['name']  = $has_comment->comment_author;
+		}
+		return $comment;
+	}
+
+	/**
+	 * Generate rating message ID based on some criteria.
+	 *
+	 * @param bool $create       Create new rating or update current one.
+	 * @param bool $low_rating   This rating is less than the minimum rating.
+	 * @param bool $with_comment This rating has a comment message.
+	 *
+	 * @return string
+	 */
+	private static function generate_message_id( $create, $low_rating, $with_comment = false ) {
+		$message_id_components   = array();
+		$message_id_components[] = $create ? 'create' : 'update';
+		$message_id_components[] = $low_rating ? 'low-rating' : 'high-rating';
+		if ( ! $create && $with_comment ) {
+			$message_id_components[] = 'comment';
+		}
+		return implode( '-', $message_id_components );
 	}
 
 	/**

@@ -279,6 +279,15 @@ class Tasty_Recipes {
 		add_action( 'body_class', array( 'Tasty_Recipes\Content_Model', 'filter_body_class' ) );
 		add_action( 'wpseo_robots', array( 'Tasty_Recipes\Distribution_Metadata', 'action_wpseo_robots' ) );
 		add_filter( 'wpseo_schema_graph_pieces', array( 'Tasty_Recipes\Distribution_Metadata', 'filter_wpseo_schema_graph_pieces' ), 10, 2 );
+		foreach ( array( 'wp_insert_comment', 'wp_update_comment', 'wp_set_comment_status' ) as $hook ) {
+			add_action( $hook, array( 'Tasty_Recipes\Ratings', 'action_modify_comment_update_recipe_ratings' ) );
+		}
+		add_action( 'rest_insert_comment', array( 'Tasty_Recipes\Ratings', 'action_rest_insert_comment' ), 10, 2 );
+		add_action( 'admin_head', array( 'Tasty_Recipes\Ratings', 'action_admin_head' ) );
+		add_action( 'edit_comment', array( 'Tasty_Recipes\Ratings', 'update_rating_in_admin' ) );
+
+
+		add_filter( 'tasty_recipes_customization_settings', array( 'Tasty_Recipes\Ratings', 'apply_default_rating_stars_color' ) );
 
 		if ( ! is_admin() && ! Utils::is_rest_api_request() ) {
 			Frontend::get_instance();
@@ -302,6 +311,8 @@ class Tasty_Recipes {
 		add_action( 'update_option_' . self::LICENSE_KEY_OPTION, array( 'Tasty_Recipes\Admin', 'action_update_option_clear_transient' ) );
 		add_action( 'media_buttons', array( 'Tasty_Recipes\Editor', 'action_media_buttons' ) );
 
+		add_action( 'wp_ajax_tasty_recipes_save_rating', array( 'Tasty_Recipes\Ratings', 'save_rating' ) );
+		add_action( 'wp_ajax_nopriv_tasty_recipes_save_rating', array( 'Tasty_Recipes\Ratings', 'save_rating' ) );
 		add_action( 'wp_ajax_tasty_recipes_preview_recipe_card', array( 'Tasty_Recipes\Designs\Template', 'handle_wp_ajax_preview_recipe_card' ) );
 		add_action( 'wp_ajax_tasty_recipes_get_count', array( 'Tasty_Recipes\Admin', 'handle_wp_ajax_get_count' ) );
 		add_action( 'wp_ajax_tasty_recipes_convert', array( 'Tasty_Recipes\Admin', 'handle_wp_ajax_convert' ) );
@@ -421,6 +432,16 @@ class Tasty_Recipes {
 				'action_tve_editor_print_footer_scripts',
 			)
 		);
+
+		add_filter(
+			'wpdiscuz_after_comment_post',
+			array(
+				'Tasty_Recipes\Integrations\WpDiscuz',
+				'action_wpdiscuz_after_comment_post',
+			)
+		);
+
+		Integrations\Akismet::instance();
 	}
 
 	/**

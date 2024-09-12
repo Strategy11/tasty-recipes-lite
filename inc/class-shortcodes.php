@@ -195,6 +195,13 @@ class Shortcodes {
 			return '';
 		}
 
+		if ( ! Ratings::is_enabled() ) {
+			$jump_key = array_search( 'rating', $quick_links, true );
+			if ( false !== $jump_key ) {
+				unset( $quick_links[ $jump_key ] );
+			}
+		}
+
 		return implode( ',', (array) $quick_links );
 	}
 
@@ -716,6 +723,23 @@ class Shortcodes {
 		}
 
 		self::prepare_js( $template_vars['recipe_scripts'] );
+
+		$total_reviews = $recipe->get_total_reviews();
+
+		$template_vars['recipe_rating_label'] = '<span data-tasty-recipes-customization="detail-label-color.color" class="rating-label">';
+
+		if ( $total_reviews ) {
+			add_filter( 'comments_clauses', array( 'Tasty_Recipes\Ratings', 'exclude_empty_comments' ), 10, 2 );
+
+			$average_rating                        = $recipe->get_average_rating();
+			$template_vars['recipe_rating_label'] .= Ratings::get_rating_label( $total_reviews, $average_rating );
+		} else {
+			$template_vars['recipe_rating_label'] .= Ratings::is_enabled() ? __( 'No reviews', 'tasty-recipes' ) : '';
+			$average_rating                        = 0;
+		}
+
+		$template_vars['recipe_rating_icons']  = Ratings::get_rating_stars_html( true, $average_rating );
+		$template_vars['recipe_rating_label'] .= '</span>';
 
 		self::add_author_info( $template_vars );
 		self::add_cooking_attrs( $template_vars );
