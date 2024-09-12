@@ -525,15 +525,6 @@ export default {
 				"/assets/images/" + image
 			);
 		},
-		getProBadge() {
-			return `
-				<span class="tasty-recipes-pro-badge">
-					<a href="${this.initialOptions.upgrade_url}" target="_blank" rel="noopener" class="tasty-framework-pro-badge">
-						Premium
-					</a>
-				</span>
-			`;
-		},
 		handleScroll() {
 			const currentScrollY = window.scrollY;
 			if (this.prevScrollY < currentScrollY) {

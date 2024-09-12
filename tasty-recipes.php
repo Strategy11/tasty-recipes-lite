@@ -293,15 +293,7 @@ class Tasty_Recipes {
 		}
 
 		// Admin.
-		add_action( 'admin_init', array( 'Tasty_Recipes\Admin', 'action_admin_init' ) );
-		// phpcs:ignore WordPressVIPMinimum.Hooks.RestrictedHooks.http_request_args
-		add_action( 'http_request_args', array( 'Tasty_Recipes\Admin', 'filter_http_request_args' ), 10, 2 );
-		add_filter( 'manage_posts_columns', array( 'Tasty_Recipes\Admin', 'action_manage_posts_columns' ) );
-		add_filter( 'manage_pages_columns', array( 'Tasty_Recipes\Admin', 'action_manage_posts_columns' ) );
-		add_action( 'manage_posts_custom_column', array( 'Tasty_Recipes\Admin', 'action_manage_posts_custom_column' ), 10, 2 );
-		add_action( 'manage_pages_custom_column', array( 'Tasty_Recipes\Admin', 'action_manage_posts_custom_column' ), 10, 2 );
-		add_action( 'quick_edit_custom_box', array( 'Tasty_Recipes\Admin', 'action_quick_edit_custom_box' ) );
-		add_filter( 'hidden_columns', array( 'Tasty_Recipes\Admin', 'filter_hidden_columns' ) );
+		Tasty_Recipes\Admin::load_hooks();
 		add_action( 'admin_enqueue_scripts', array( 'Tasty_Recipes\Assets', 'action_admin_enqueue_scripts' ) );
 		add_action( 'wp_enqueue_editor', array( 'Tasty_Recipes\Assets', 'action_wp_enqueue_editor' ) );
 		add_action( 'enqueue_block_editor_assets', array( 'Tasty_Recipes\Assets', 'action_enqueue_block_editor_assets' ) );
@@ -313,8 +305,6 @@ class Tasty_Recipes {
 		add_action( 'wp_ajax_tasty_recipes_save_rating', array( 'Tasty_Recipes\Ratings', 'save_rating' ) );
 		add_action( 'wp_ajax_nopriv_tasty_recipes_save_rating', array( 'Tasty_Recipes\Ratings', 'save_rating' ) );
 		add_action( 'wp_ajax_tasty_recipes_preview_recipe_card', array( 'Tasty_Recipes\Designs\Template', 'handle_wp_ajax_preview_recipe_card' ) );
-		add_action( 'wp_ajax_tasty_recipes_get_count', array( 'Tasty_Recipes\Admin', 'handle_wp_ajax_get_count' ) );
-		add_action( 'wp_ajax_tasty_recipes_convert', array( 'Tasty_Recipes\Admin', 'handle_wp_ajax_convert' ) );
 		add_action( 'wp_ajax_tasty_recipes_ignore_convert', array( 'Tasty_Recipes\Editor', 'handle_wp_ajax_ignore_convert' ) );
 		add_action( 'wp_ajax_tasty_recipes_convert_recipe', array( 'Tasty_Recipes\Editor', 'handle_wp_ajax_convert_recipe' ) );
 		add_action( 'wp_ajax_tasty_recipes_ignore_type_convert', array( 'Tasty_Recipes\Editor', 'handle_wp_ajax_ignore_type_convert' ) );
@@ -324,8 +314,6 @@ class Tasty_Recipes {
 
 		add_action( 'wp_insert_post', array( 'Tasty_Recipes\Editor', 'handle_add_new_post' ), 10, 3 );
 		add_action( 'post_updated', array( 'Tasty_Recipes\Editor', 'handle_edit_post' ), 10, 3 );
-
-		add_action( 'tasty_framework_admin_footer_after', array( 'Tasty_Recipes\Admin', 'add_lite_upgrade_modal' ) );
 
 		if ( is_admin() ) {
 			MetaBox::get_instance();
@@ -374,7 +362,6 @@ class Tasty_Recipes {
 		add_action( 'tasty_recipes_card_after_ingredients', array( 'Tasty_Recipes\Shortcodes', 'print_cook_mode' ) );
 
 		// Plugin-specific filters.
-		add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( 'Tasty_Recipes\Admin', 'filter_plugin_action_links' ) );
 		add_filter( 'teeny_mce_buttons', array( 'Tasty_Recipes\Admin', 'filter_teeny_mce_buttons' ), 10, 2 );
 		add_filter( 'teeny_mce_buttons', array( 'Tasty_Recipes\Assets', 'filter_teeny_mce_buttons' ), 10, 2 );
 		add_filter( 'teeny_mce_before_init', array( 'Tasty_Recipes\Assets', 'filter_teeny_mce_before_init' ), 10, 2 );
