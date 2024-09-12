@@ -158,8 +158,8 @@ class Admin {
 			return;
 		}
 
-		add_action( 'wp_ajax_tasty_recipes_get_count', array( 'Tasty_Recipes\Admin', 'handle_wp_ajax_get_count' ) );
-		add_action( 'wp_ajax_tasty_recipes_convert', array( 'Tasty_Recipes\Admin', 'handle_wp_ajax_convert' ) );
+		add_action( 'wp_ajax_tasty_recipes_get_count', array( __CLASS__, 'handle_wp_ajax_get_count' ) );
+		add_action( 'wp_ajax_tasty_recipes_convert', array( __CLASS__, 'handle_wp_ajax_convert' ) );
 	}
 
 	/**
