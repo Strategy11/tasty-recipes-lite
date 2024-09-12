@@ -50,12 +50,13 @@ class Settings {
 	 * @return void
 	 */
 	public static function load_hooks() {
+		if ( ! is_admin() ) {
+			return;
+		}
+
+		add_filter( 'tasty_framework_admin_menu_items', array( __CLASS__, 'add_menu_item' ) );
 		add_action( 'admin_menu', array( __CLASS__, 'register_settings' ) );
 		add_filter( 'tasty_recipes_admin_settings_field_args', array( __CLASS__, 'filter_quick_links_backward_compatibility' ) );
-
-		if ( is_admin() ) {
-			add_filter( 'tasty_framework_admin_menu_items', array( __CLASS__, 'add_menu_item' ) );
-		}
 	}
 
 	/**
@@ -84,10 +85,10 @@ class Settings {
 		];
 
 		$design_settings = [
-			Tasty_Recipes::CUSTOMIZATION_OPTION          => [
+			Tasty_Recipes::CUSTOMIZATION_OPTION => [
 				'sanitize_callback' => array( __CLASS__, 'sanitize_customization_option' ),
 			],
-			Tasty_Recipes::TEMPLATE_OPTION               => $sanitize_title,
+			Tasty_Recipes::TEMPLATE_OPTION      => $sanitize_title,
 		];
 
 		/**
@@ -108,18 +109,18 @@ class Settings {
 		}
 
 		$settings = [
-			Tasty_Recipes::QUICK_LINKS_OPTION            => [
+			Tasty_Recipes::QUICK_LINKS_OPTION         => [
 				'sanitize_callback' => array( __CLASS__, 'sanitize_quick_links' ),
 			],
-			Tasty_Recipes::QUICK_LINKS_STYLE             => $sanitize_title,
-			Tasty_Recipes::CARD_BUTTONS_OPTION           => [
+			Tasty_Recipes::QUICK_LINKS_STYLE          => $sanitize_title,
+			Tasty_Recipes::CARD_BUTTONS_OPTION        => [
 				'sanitize_callback' => array( __CLASS__, 'sanitize_card_buttons' ),
 			],
-			Tasty_Recipes::COPY_TO_CLIPBOARD_OPTION      => $sanitize_title,
-			Tasty_Recipes::DEFAULT_AUTHOR_LINK_OPTION    => [
+			Tasty_Recipes::COPY_TO_CLIPBOARD_OPTION   => $sanitize_title,
+			Tasty_Recipes::DEFAULT_AUTHOR_LINK_OPTION => [
 				'sanitize_callback' => 'esc_url_raw',
 			],
-			Tasty_Recipes::SHAREASALE_OPTION             => [
+			Tasty_Recipes::SHAREASALE_OPTION          => [
 				'sanitize_callback' => 'sanitize_text_field',
 			],
 		];
@@ -189,8 +190,8 @@ class Settings {
 		$functions = [
 			'quick_links',
 			'card_button',
-			'clipboard',
 			'author',
+			'clipboard',
 			'conversion',
 			'ingredient_checkbox',
 			'cookmode',
@@ -365,6 +366,7 @@ class Settings {
 				false => __( 'Off', 'tasty-recipes' ),
 				true  => __( 'On', 'tasty-recipes' ),
 			),
+			'is_pro'      => true,
 		];
 	}
 
@@ -553,6 +555,8 @@ class Settings {
 		foreach ( array( 'first', 'second' ) as $position ) {
 			if ( in_array( $original[ $position ], array( '', 'print', 'pin', 'mediavine', 'slickstream' ), true ) ) {
 				$sanitized[ $position ] = $original[ $position ];
+			} else {
+				$sanitized[ $position ] = '';
 			}
 		}
 		return $sanitized;
@@ -828,11 +832,11 @@ class Settings {
 				'label' => __( 'Print', 'tasty-recipes' ),
 			),
 			'pin'         => array(
-				'label' => __( 'Pin this recipe', 'tasty-recipes' ),
+				'label'    => __( 'Pin this recipe', 'tasty-recipes' ),
 				'disabled' => true,
 			),
 			'mediavine'   => array(
-				'label' => __( 'Mediavine Grow.me Save', 'tasty-recipes' ),
+				'label'    => __( 'Mediavine Grow.me Save', 'tasty-recipes' ),
 				'disabled' => true,
 			),
 			'slickstream' => array(

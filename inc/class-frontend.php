@@ -41,15 +41,46 @@ class Frontend {
 		return self::$instance;
 	}
 
+	private function add_hooks() {
+		add_action( 'tasty_recipes_card_after_ingredients', array( $this, 'print_instacart_html' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'insert_instacart_script' ) );
+		add_filter( 'tasty_recipes_quick_links', array( $this, 'insert_rating_quick_link' ), 10, 4 );
+	}
+
 	/**
-	 * Subscribe hooks.
+	 * Print instacart HTML.
 	 *
 	 * @since 3.8
 	 *
 	 * @return void
 	 */
-	private function add_hooks() {
-		add_filter( 'tasty_recipes_quick_links', array( $this, 'insert_rating_quick_link' ), 10, 4 );
+	public function print_instacart_html() {
+		if ( ! Admin::can_show_instacart_button() ) {
+			return;
+		}
+
+		Tasty_Recipes::echo_template_part(
+			'parts/instacart',
+			array(
+				'instacart_affiliate_id' => get_option( Tasty_Recipes::INSTACART_AFFILIATE_ID_OPTION ),
+			)
+		);
+	}
+
+	/**
+	 * Insert Instacart widget script.
+	 *
+	 * @since 3.8
+	 *
+	 * @return void
+	 */
+	public function insert_instacart_script() {
+		if ( ! Admin::can_show_instacart_button() ) {
+			return;
+		}
+
+		$instacart_filemtime = filemtime( plugin_dir_path( TASTY_RECIPES_PLUGIN_FILE ) . '/assets/js/instacart.js' );
+		wp_enqueue_script( 'tasty-recipes-instacart', plugins_url( 'assets/js/instacart.js', TASTY_RECIPES_PLUGIN_FILE ), array(), $instacart_filemtime, true );
 	}
 
 	/**

@@ -286,7 +286,6 @@ class Tasty_Recipes {
 		add_action( 'admin_head', array( 'Tasty_Recipes\Ratings', 'action_admin_head' ) );
 		add_action( 'edit_comment', array( 'Tasty_Recipes\Ratings', 'update_rating_in_admin' ) );
 
-
 		add_filter( 'tasty_recipes_customization_settings', array( 'Tasty_Recipes\Ratings', 'apply_default_rating_stars_color' ) );
 
 		if ( ! is_admin() && ! Utils::is_rest_api_request() ) {

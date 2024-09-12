@@ -899,27 +899,38 @@ class Shortcodes {
 	 * @return void
 	 */
 	private static function add_nutrition_attrs( $recipe, $nutrifox_display_style, &$template_vars ) {
+		$recipe_json = $template_vars['recipe_json'];
+
 		$nutrifox = $recipe->get_nutrifox_response();
 		foreach ( Recipe::get_nutrition_attributes() as $attribute => $meta ) {
-			// See if the data exists in Nutrifox now.
-			if ( $nutrifox
-				&& isset( $meta['nutrifox_key'] )
-				&& ( ! isset( $nutrifox['nutrients'][ $meta['nutrifox_key'] ]['visible'] )
-					|| true === $nutrifox['nutrients'][ $meta['nutrifox_key'] ]['visible'] ) ) {
-				$nutrifox_value = $recipe->get_formatted_nutrifox_value( $attribute );
-				$template_vars['recipe_hidden_nutrition'][ $attribute ] = array(
-					'value' => '<span data-tasty-recipes-customization="detail-value-color.color" ' .
-						'class="' . esc_attr( 'tasty-recipes-' . str_replace( '_', '-', $attribute ) ) . '">' .
-						esc_html( $nutrifox_value ) . '</span>',
-				);
-				if ( 'card' === $nutrifox_display_style ) {
-					$template_vars['recipe_nutrition'][ $attribute ] = array(
-						'label' => $meta['label'],
-						'value' => '<span data-tasty-recipes-customization="body-color.color" ' .
+			/// '0' is a valid value.
+			if ( '' === $recipe_json[ $attribute ] ) {
+				// See if the data exists in Nutrifox now.
+				if ( $nutrifox
+					&& isset( $meta['nutrifox_key'] )
+					&& ( ! isset( $nutrifox['nutrients'][ $meta['nutrifox_key'] ]['visible'] )
+						|| true === $nutrifox['nutrients'][ $meta['nutrifox_key'] ]['visible'] ) ) {
+					$nutrifox_value = $recipe->get_formatted_nutrifox_value( $attribute );
+					$template_vars['recipe_hidden_nutrition'][ $attribute ] = array(
+						'value' => '<span data-tasty-recipes-customization="detail-value-color.color" ' .
 							'class="' . esc_attr( 'tasty-recipes-' . str_replace( '_', '-', $attribute ) ) . '">' .
 							esc_html( $nutrifox_value ) . '</span>',
 					);
+					if ( 'card' === $nutrifox_display_style ) {
+						$template_vars['recipe_nutrition'][ $attribute ] = array(
+							'label' => $meta['label'],
+							'value' => '<span data-tasty-recipes-customization="body-color.color" ' .
+								'class="' . esc_attr( 'tasty-recipes-' . str_replace( '_', '-', $attribute ) ) . '">' .
+								esc_html( $nutrifox_value ) . '</span>',
+						);
+					}
+					continue;
 				}
+				$template_vars['recipe_nutrition'][ $attribute ] = array(
+					'label' => $meta['label'],
+					'value' => '<span data-tasty-recipes-customization="body-color.color" class="' . esc_attr( 'tasty-recipes-' . str_replace( '_', '-', $attribute ) ) . '">' .
+						$recipe_json[ $attribute ] . '</span>',
+				);
 			}
 		}
 	}
@@ -1231,6 +1242,73 @@ EOT;
 				continue;
 			}
 			$bits[ $i ] = $start . Unit_Amount_Parser::annotate_string_with_spans( $bit ) . $end;
+		}
+		return implode( PHP_EOL, $bits );
+	}
+
+	/**
+	 * Process ingredients to annotate <li> with checkboxes.
+	 *
+	 * @param string $ingredients Existing ingredients string.
+	 *
+	 * @return string
+	 */
+	public static function process_ingredients_for_checkboxes( $ingredients ) {
+		// Prioritize list items.
+		$ingredients = preg_replace_callback(
+			'#(<li[^\>]*>)(.*)(<\/li>)#U',
+			function ( $m ) {
+				$start = $m[1];
+				$end   = $m[3];
+				$bit   = $m[2];
+				if ( Distribution_Metadata::is_empty( $bit ) ) {
+					return '';
+				}
+
+				$label = sanitize_text_field( $bit );
+				$id    = uniqid( 'ingredient_checkbox_' );
+				$input = '<span class="tr-ingredient-checkbox-container">' .
+					'<input type="checkbox" name="' . esc_attr( $id ) . '" ' .
+					'id="' . esc_attr( $id ) . '" aria-label="' . esc_attr( $label ) . '">' .
+					'<label for="' . esc_attr( $id ) . '"></label>' .
+					'</span>';
+				$start = str_replace( '<li', '<li data-tr-ingredient-checkbox=""', $start );
+				return $start . $input . $bit . $end;
+			},
+			$ingredients,
+			-1,
+			$count
+		);
+		if ( $count ) {
+			return $ingredients;
+		}
+		// Fall back when there weren't list items.
+		$bits = explode( PHP_EOL, $ingredients );
+		foreach ( $bits as $i => $bit ) {
+			if ( Distribution_Metadata::get_heading( $bit ) ) {
+				continue;
+			}
+			$start = '';
+			$end   = '';
+			// String starts with some HTML element.
+			if ( preg_match( '#^(<p[^>]*>)(.+)(</p>)#', $bit, $matches ) ) {
+				$start = $matches[1];
+				$end   = $matches[3];
+				$bit   = $matches[2];
+				$start = str_replace( '<p', '<p data-tr-ingredient-checkbox=""', $start );
+			} elseif ( ! empty( trim( $bit ) ) ) {
+				$start = '<span data-tr-ingredient-checkbox="">' . $start;
+				$end   = $end . '</span>';
+			}
+			if ( ! empty( trim( $bit ) ) ) {
+				$label      = sanitize_text_field( $bit );
+				$id         = uniqid( 'ingredient_checkbox_' );
+				$input      = '<span class="tr-ingredient-checkbox-container">' .
+					'<input type="checkbox" name="' . esc_attr( $id ) . '" id="' . esc_attr( $id ) . '" aria-label="' . esc_attr( $label ) . '">' .
+					'<label for="' . esc_attr( $id ) . '"></label>' .
+					'</span>';
+				$bits[ $i ] = $start . $input . $bit . $end;
+			}
 		}
 		return implode( PHP_EOL, $bits );
 	}

@@ -183,7 +183,8 @@ class Admin {
 	 *
 	 * @return void
 	 */
-	public static function action_admin_menu() { // phpcs:ignore SlevomatCodingStandard
+	public static function action_admin_menu() {
+		_deprecated_function( __METHOD__, 'x.x', 'Settings::register_settings' );
 		Settings::register_settings();
 	}
 

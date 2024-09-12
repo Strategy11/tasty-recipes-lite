@@ -389,6 +389,9 @@ export default {
 		currentNutrifoxDisplayStyle() {
 			return this.customization.nutrifox_display_style;
 		},
+		currentStarRatingsStyle() {
+			return this.customization.star_ratings_style;
+		},
 		currentTemplateLabel() {
 			// Show the template count, and use the index for the current template.
 			const keys = Object.keys( this.templateOptions );
@@ -581,7 +584,7 @@ export default {
 			this.updateRecipeCardPreviewUrl();
 		},
 		currentStarRatingsStyle() {
-			return this.customization.star_ratings_style;
+			this.updateRecipeCardPreviewUrl();
 		},
 		currentTemplate() {
 			this.updateRecipeCardPreviewUrl();
