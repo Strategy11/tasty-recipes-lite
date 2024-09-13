@@ -14,7 +14,6 @@
 
 use Tasty_Recipes\MetaBox;
 use Tasty_Recipes\Frontend;
-use Tasty_Recipes\Utils;
 use Tasty_Recipes\Integrations;
 
 define( 'TASTY_RECIPES_LITE_VERSION', '1.0' );
@@ -220,10 +219,12 @@ class Tasty_Recipes {
 	/**
 	 * Register the class autoloader.
 	 *
+	 * @since x.x
+	 *
 	 * @param string $class_name The class name to load.
 	 * @param string $base The base directory to search in.
 	 *
-	 * @since x.x
+	 * @return void
 	 */
 	public static function register_autoloader( $class_name, $base = __DIR__ ) {
 		$class_name = ltrim( $class_name, '\\' );
@@ -288,7 +289,7 @@ class Tasty_Recipes {
 
 		add_filter( 'tasty_recipes_customization_settings', array( 'Tasty_Recipes\Ratings', 'apply_default_rating_stars_color' ) );
 
-		if ( ! is_admin() && ! Utils::is_rest_api_request() ) {
+		if ( ! is_admin() && ! Tasty_Recipes\Utils::is_rest_api_request() ) {
 			Frontend::get_instance();
 		}
 

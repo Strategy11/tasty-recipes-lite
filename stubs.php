@@ -126,3 +126,15 @@ namespace Tasty\Framework\Admin\License{
 		}
 	}
 }
+
+namespace Tasty\Framework\Utils {
+	class Common {
+		/**
+		 * @param array $attributes Array of attributes to render.
+		 *
+		 * @return void
+		 */
+		public static function render_html_attributes( $attributes ) {
+		}
+	}
+}

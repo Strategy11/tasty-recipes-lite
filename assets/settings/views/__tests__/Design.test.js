@@ -28,64 +28,11 @@ const recipeCardPreviewUrlBase =
 	'"http://tastyrecipes.test/wp-admin/admin-ajax.php?action=tasty_recipes_preview_recipe_card&nonce=6c8f2158d1"';
 const templateOptions = {
 	"": "Default",
-	bold: "Bold",
-	fresh: "Fresh",
 	simple: "Simple",
-	"modern-compact": "Modern Compact",
-	elegant: "Elegant",
 	snap: "Snap",
 };
-const lockedTemplates = ["bold", "fresh"];
 
 describe("design", () => {
-	it("shows all color options for the Bold template", async () => {
-		expect.assertions(7);
-		const wrapper = mount(Design, {
-			propsData: {
-				initialOptions,
-				recipeCardPreviewUrlBase,
-				templateOptions,
-			},
-		});
-		wrapper.setData({ currentTemplate: "bold" });
-		await wrapper.vm.$nextTick();
-		expect(
-			wrapper
-				.find("fieldset.tasty-recipes-primary-color-fieldset")
-				.isVisible()
-		).toBe(true);
-		expect(
-			wrapper
-				.find("fieldset.tasty-recipes-secondary-color-fieldset")
-				.isVisible()
-		).toBe(true);
-		expect(
-			wrapper
-				.find("fieldset.tasty-recipes-icon-color-fieldset")
-				.isVisible()
-		).toBe(true);
-		expect(
-			wrapper
-				.find("fieldset.tasty-recipes-button-color-fieldset")
-				.isVisible()
-		).toBe(true);
-		expect(
-			wrapper
-				.find("fieldset.tasty-recipes-button-text-color-fieldset")
-				.isVisible()
-		).toBe(true);
-		expect(
-			wrapper
-				.find("fieldset.tasty-recipes-detail-label-color-fieldset")
-				.isVisible()
-		).toBe(true);
-		expect(
-			wrapper
-				.find("fieldset.tasty-recipes-detail-value-color-fieldset")
-				.isVisible()
-		).toBe(true);
-	});
-
 	it("shows only some color options for the Simple template", async () => {
 		expect.assertions(7);
 		const wrapper = mount(Design, {

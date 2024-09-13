@@ -208,8 +208,13 @@ class Settings {
 				array( &$settings )
 			);
 
-			// Set the default order for settings that don't have an 'order' set.
+			/**
+			 * Let phpstan know that $settings isn't empty.
+			 *
+			 * @var array<string, array{order?: int}> $settings
+			 */
 			foreach ( $settings as $option_name => $option ) {
+				// Set the default order for settings that don't have an 'order' set.
 				if ( ! isset( $option['order'] ) ) {
 					$settings[ $option_name ]['order'] = $order;
 				}
