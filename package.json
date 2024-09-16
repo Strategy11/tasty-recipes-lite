@@ -12,7 +12,7 @@
     "babel-core": "^7.0.0-bridge.0",
     "babel-loader": "^9.1",
     "babel-plugin-transform-react-jsx": "^6.24",
-    "css-loader": "^6",
+    "css-loader": "^7",
     "cross-env": "^7.0.3",
     "eslint-plugin-vue": "^9",
     "grunt": "^1.6",
