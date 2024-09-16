@@ -607,17 +607,17 @@ class Settings {
 				'label',
 				'card',
 			),
-			'footer_social_platform'   => array(
-				'instagram',
-				'pinterest',
-				'facebook',
-			),
-			'footer_icon_color'        => array( __CLASS__, 'sanitize_color' ),
-			'footer_heading'           => 'sanitize_text_field',
-			'footer_heading_color'     => array( __CLASS__, 'sanitize_color' ),
-			'footer_description'       => 'wp_filter_post_kses',
-			'footer_description_color' => array( __CLASS__, 'sanitize_color' ),
 		);
+
+		/**
+		 * Filter the allowed settings.
+		 *
+		 * @since x.x
+		 *
+		 * @param array $allowed Array of allowed settings and how to sanitize them.
+		 */
+		$allowed = apply_filters( 'tasty_recipes_allowed_customization_settings', $allowed );
+
 		foreach ( $original as $key => $value ) {
 			if ( ! isset( $allowed[ $key ] ) ) {
 				continue;
