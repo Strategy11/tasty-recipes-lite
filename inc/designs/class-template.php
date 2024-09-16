@@ -8,6 +8,7 @@
 namespace Tasty_Recipes\Designs;
 
 use Tasty_Recipes;
+use Tasty_Recipes\Ratings;
 use Tasty_Recipes\Utils;
 use Tasty_Recipes\Admin;
 use Tasty_Recipes\Shortcodes;
@@ -90,7 +91,7 @@ class Template {
 
 		$templates = self::get_all_templates();
 
-		if ( ! $template || empty( $templates ) && ! isset( $templates[ $template ] ) ) {
+		if ( ! $template || empty( $templates ) || ! isset( $templates[ $template ] ) ) {
 			return Default_Template::instance();
 		}
 
@@ -168,22 +169,23 @@ class Template {
 		}
 
 		$get_template               = Utils::get_param( 'template', 'sanitize_key' );
+		$get_star_ratings_style     = Utils::get_param( 'star_ratings_style', 'sanitize_key' );
 		$get_nutrifox_display_style = Utils::get_param( 'nutrifox_display_style', 'sanitize_key' );
 
 		$custom_design          = ! empty( $get_template ) && array_key_exists( $get_template, self::get_all_templates() ) ? $get_template : '';
+		$star_ratings_style     = ! empty( $get_star_ratings_style ) && in_array( $get_star_ratings_style, array( 'solid', 'outline' ), true ) ? $get_star_ratings_style : null;
 		$show_nutrifox          = ! empty( $get_nutrifox_display_style ) && in_array( $get_nutrifox_display_style, array( 'label', 'card' ), true );
 		$nutrifox_display_style = $show_nutrifox ? $get_nutrifox_display_style : null;
 
 		$styles  = Shortcodes::get_styles_as_string( $custom_design );
+		$styles .= Utils::get_contents( dirname( TASTY_RECIPES_LITE_FILE ) . '/assets/dist/ratings.css' );
 		$styles .= Utils::get_contents( dirname( TASTY_RECIPES_LITE_FILE ) . '/assets/dist/recipe-card-preview.css' );
 
-		$template = 'recipe/tasty-recipes';
-		if ( $custom_design || $custom_design === '' ) {
-			$template_object = self::get_object_by_name( $custom_design );
-			$custom_path     = $template_object->get_template_path();
-			if ( file_exists( $custom_path ) ) {
-				$template = $custom_path;
-			}
+		$template        = 'recipe/tasty-recipes';
+		$template_object = self::get_object_by_name( $custom_design );
+		$custom_path     = $template_object->get_template_path();
+		if ( file_exists( $custom_path ) ) {
+			$template = $custom_path;
 		}
 
 		$stylesheet = get_option( 'stylesheet' );
@@ -288,6 +290,13 @@ EOT;
 				'src="' . esc_url( plugins_url( 'assets/images/Almond-Butter-Cups-Recipe-370x370.jpg', TASTY_RECIPES_LITE_FILE ) ) . '" ' .
 				'class="attachment-thumbnail size-thumbnail" alt="Chocolate Chip Cookies on parchment paper." ' .
 				'loading="lazy" data-pin-nopin="true">',
+			'recipe_rating_icons'           => Ratings::get_rendered_rating(
+				4.6,
+				'star-color.color',
+				$star_ratings_style
+			),
+			'recipe_rating_label'           => '<span data-tasty-recipes-customization="detail-label-color.color" class="rating-label">' .
+				'<span class="average">4.6</span> from <span class="count">1376</span> reviews</span>',
 			'recipe_author_name'            => '',
 			'recipe_details'                => array(
 				'author'     =>
@@ -386,7 +395,7 @@ EOT;
 			'</head><body>';
 		$ret           .= '<div class="' . esc_attr( implode( ' ', $wrapper_classes ) ) . '"';
 		$customizations = Shortcodes::get_card_container_customizations( $custom_design );
-		if ( $customizations && ( ! $template_object || ! $template_object->is_pro() ) ) {
+		if ( $customizations && ! $template_object->is_pro() ) {
 			$ret .= ' data-tasty-recipes-customization="' . esc_attr( $customizations ) . '"';
 		}
 		$ret .= '>' . PHP_EOL;

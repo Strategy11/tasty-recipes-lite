@@ -28,7 +28,7 @@ use Tasty\Framework\Utils\Url;
 			$recipe_card_preview_url_base = add_query_arg(
 				array(
 					'action' => 'tasty_recipes_preview_recipe_card',
-					'nonce'  => wp_create_nonce( \Tasty_Recipes\Admin::NONCE_KEY ),
+					'nonce'  => wp_create_nonce( Admin::NONCE_KEY ),
 				),
 				admin_url( 'admin-ajax.php' )
 			);

@@ -190,8 +190,8 @@ class Settings {
 		$functions = [
 			'quick_links',
 			'card_button',
-			'clipboard',
 			'author',
+			'clipboard',
 			'conversion',
 			'ingredient_checkbox',
 			'cookmode',
@@ -208,8 +208,13 @@ class Settings {
 				array( &$settings )
 			);
 
-			// Set the default order for settings that don't have an 'order' set.
+			/**
+			 * Let phpstan know that $settings isn't empty.
+			 *
+			 * @var array<string, array{order?: int}> $settings
+			 */
 			foreach ( $settings as $option_name => $option ) {
+				// Set the default order for settings that don't have an 'order' set.
 				if ( ! isset( $option['order'] ) ) {
 					$settings[ $option_name ]['order'] = $order;
 				}
@@ -249,7 +254,6 @@ class Settings {
 				'print'  => __( '\'Print Recipe\' link', 'tasty-recipes' ),
 				'rating' => __( '\'Leave a Review\' link', 'tasty-recipes' ),
 			),
-			'pro_option'     => [ 'rating' ],
 		];
 
 		$settings[ Tasty_Recipes::QUICK_LINKS_STYLE ] = [
@@ -367,6 +371,7 @@ class Settings {
 				false => __( 'Off', 'tasty-recipes' ),
 				true  => __( 'On', 'tasty-recipes' ),
 			),
+			'is_pro'      => true,
 		];
 	}
 

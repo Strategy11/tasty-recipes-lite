@@ -13,11 +13,12 @@ use Tasty\Framework\Traits\Singleton;
  * Manages Snap template class.
  */
 class Snap extends Abstract_Template {
-
 	use Singleton;
 
 	/**
 	 * Sets the variables.
+	 *
+	 * @return void
 	 */
 	public function set_vars() {
 		parent::set_vars();

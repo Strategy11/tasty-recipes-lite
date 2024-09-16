@@ -49,7 +49,9 @@
 				/>
 			</div>
 			<iframe
-				class="tasty-shadow-lg"
+				:class="{
+					'tasty-shadow-lg': ! isLocked
+				}"
 				width="600"
 				:height="iframeHeight"
 				ref="previewIframe"
@@ -483,10 +485,16 @@ export default {
 				.map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
 				.join('&');
 
-			return `${this.recipeCardPreviewUrlBase}&template=${template}&${params}`;
+			return (
+				this.recipeCardPreviewUrlBase +
+				"&template=" +
+				template +
+				"&" +
+				params
+			);
 		},
 		getPreviewSettings() {
-			return ['nutrifox_display_style'];
+			return ['nutrifox_display_style', 'star_ratings_style'];
 		},
 		getProBadge() {
 			if ( ! window.TastyFramework || ! window.TastyFramework.f ) {
@@ -549,6 +557,9 @@ export default {
 	},
 	watch: {
 		currentNutrifoxDisplayStyle() {
+			this.updateRecipeCardPreviewUrl();
+		},
+		currentStarRatingsStyle() {
 			this.updateRecipeCardPreviewUrl();
 		},
 		currentTemplate() {

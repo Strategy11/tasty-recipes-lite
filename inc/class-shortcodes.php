@@ -181,7 +181,7 @@ class Shortcodes {
 				$quick_links = array();
 				break;
 			default:
-				$quick_links = Admin::handle_quick_links_backward_compatibility( get_option( Tasty_Recipes::QUICK_LINKS_OPTION, array( 'jump', 'print' ) ) );
+				$quick_links = Settings::handle_quick_links_backward_compatibility( get_option( Tasty_Recipes::QUICK_LINKS_OPTION, array( 'jump', 'print' ) ) );
 				break;
 		}
 
@@ -612,6 +612,8 @@ class Shortcodes {
 			$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( __DIR__ ) . '/assets/js/video-toggle.js' );
 		}
 
+		$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( __DIR__ ) . '/assets/js/ratings.js' );
+
 		self::prepare_js( $template_vars['recipe_scripts'] );
 
 		self::add_author_info( $template_vars );
@@ -878,7 +880,7 @@ EOT;
 			'links' => 'jump,print',
 		);
 		if ( ! empty( $atts['links'] ) ) {
-			$atts['links'] = implode( '|', Admin::handle_quick_links_backward_compatibility( $atts['links'] ) );
+			$atts['links'] = implode( '|', Settings::handle_quick_links_backward_compatibility( $atts['links'] ) );
 		}
 		$atts = array_merge( $defaults, (array) $atts );
 

@@ -2,7 +2,7 @@
 **Contributors:** [wptasty](https://profiles.wordpress.org/wptasty/)
 **Tags:** food blogging, recipes
 **Requires at least:** 5.6
-**Tested up to:** 6.5.3
+**Tested up to:** 6.6.1
 **Requires PHP:** 5.6
 **Stable tag:** 1.0
 **License:** GPLv2 or later

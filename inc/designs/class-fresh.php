@@ -17,6 +17,8 @@ class Fresh extends Abstract_Template {
 
 	/**
 	 * Sets the variables.
+	 *
+	 * @return void
 	 */
 	public function set_vars() {
 		parent::set_vars();

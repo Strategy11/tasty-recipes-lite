@@ -10,7 +10,7 @@ namespace Tasty_Recipes;
 use Tasty\Framework\Utils\Url;
 use Tasty_Recipes\Settings;
 use Tasty\Framework\Admin\License\Updater;
-
+use Tasty_Recipes\Settings;
 use Tasty_Recipes;
 
 /**
@@ -83,7 +83,7 @@ class Admin {
 	 *
 	 * @var string
 	 */
-	const SETTINGS_GROUP_CARD = 'deprecated';
+	const SETTINGS_GROUP_CARD = '';
 
 	/**
 	 * Section used for card settings.
@@ -92,7 +92,7 @@ class Admin {
 	 *
 	 * @var string
 	 */
-	const SETTINGS_SECTION_CARD_DESIGN = 'deprecated';
+	const SETTINGS_SECTION_CARD_DESIGN = '';
 
 	/**
 	 * Available template options.
@@ -111,6 +111,39 @@ class Admin {
 	 * @var string
 	 */
 	private static $editor_id = 'tasty-recipes-settings';
+
+	/**
+	 * Registers hooks.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
+	 */
+	public static function load_hooks() {
+		if ( ! is_admin() ) {
+			return;
+		}
+
+		add_action( 'admin_init', array( __CLASS__, 'action_admin_init' ) );
+		// phpcs:ignore WordPressVIPMinimum.Hooks.RestrictedHooks.http_request_args
+		add_action( 'http_request_args', array( __CLASS__, 'filter_http_request_args' ), 10, 2 );
+		add_filter( 'manage_posts_columns', array( __CLASS__, 'action_manage_posts_columns' ) );
+		add_filter( 'manage_pages_columns', array( __CLASS__, 'action_manage_posts_columns' ) );
+		add_action( 'manage_posts_custom_column', array( __CLASS__, 'action_manage_posts_custom_column' ), 10, 2 );
+		add_action( 'manage_pages_custom_column', array( __CLASS__, 'action_manage_posts_custom_column' ), 10, 2 );
+		add_action( 'quick_edit_custom_box', array( __CLASS__, 'action_quick_edit_custom_box' ) );
+		add_filter( 'hidden_columns', array( __CLASS__, 'filter_hidden_columns' ) );
+
+		add_action( 'tasty_framework_admin_footer_after', array( __CLASS__, 'add_lite_upgrade_modal' ) );
+		add_filter( 'plugin_action_links_' . plugin_basename( TASTY_RECIPES_LITE_FILE ), array( __CLASS__, 'filter_plugin_action_links' ) );
+
+		if ( ! wp_doing_ajax() ) {
+			return;
+		}
+
+		add_action( 'wp_ajax_tasty_recipes_get_count', array( __CLASS__, 'handle_wp_ajax_get_count' ) );
+		add_action( 'wp_ajax_tasty_recipes_convert', array( __CLASS__, 'handle_wp_ajax_convert' ) );
+	}
 
 	/**
 	 * Registers the updater object.
@@ -166,7 +199,8 @@ class Admin {
 	 *
 	 * @return void
 	 */
-	public static function action_admin_menu() { // phpcs:ignore SlevomatCodingStandard
+	public static function action_admin_menu() {
+		_deprecated_function( __METHOD__, 'x.x', 'Settings::register_settings' );
 		Settings::register_settings();
 	}
 
@@ -189,7 +223,7 @@ class Admin {
 	 * @return array
 	 */
 	public static function add_menu_item( $menu_items ) {
-		__deprecated_function( __METHOD__, 'x.x', 'Settings::add_menu_item' );
+		_deprecated_function( __METHOD__, 'x.x', 'Settings::add_menu_item' );
 		return Settings::add_menu_item( $menu_items );
 	}
 
@@ -563,7 +597,6 @@ class Admin {
 	 * Check if Cook Mode can be enabled in this site or not.
 	 *
 	 * @deprecated x.x
-	 *
 	 * @since 3.8
 	 *
 	 * @return bool
