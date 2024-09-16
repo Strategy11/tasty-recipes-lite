@@ -5,6 +5,8 @@
  * @package Tasty_Recipes
  */
 
+use Tasty_Recipes\Utils;
+
 $print_view_options = tasty_recipes_get_print_view_options();
 ?>
 <?php
@@ -13,24 +15,25 @@ $ext           = is_feed() ? '.png' : '.svg';
 $other_details = '';
 
 if ( '.svg' === $ext ) {
-	echo str_replace( array( "\n", "\t" ), '', \Tasty_Recipes\Utils::get_contents( __DIR__ . '/images/icon-sprite.svg' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo str_replace( array( "\n", "\t" ), '', Utils::get_contents( __DIR__ . '/images/icon-sprite.svg' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 }
 ?>
 <?php if ( ! empty( $recipe_image ) && isset( $print_view_options['images'] ) ) { ?>
 	<div class="tasty-recipes-image">
-		<?php \Tasty_Recipes\Utils::kses( $recipe_image, true ); ?>
+		<?php Utils::kses( $recipe_image, true ); ?>
 	</div>
 <?php } ?>
 
 <header class="tasty-recipes-entry-header">
 	<h2 class="tasty-recipes-title" data-tasty-recipes-customization="h2-color.color h2-transform.text-transform"><?php \Tasty_Recipes\Utils::kses( $recipe_title, true ); ?></h2>
+	<?php do_action( 'tasty_recipes_card_after_title', $vars ); ?>
 	<?php if ( ! empty( $recipe_rating_icons ) || ! empty( $recipe_rating_label ) ) { ?>
 		<div class="tasty-recipes-rating">
 			<?php if ( ! empty( $recipe_rating_icons ) ) { ?>
 				<p><?php echo $recipe_rating_icons; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
 			<?php } ?>
 			<?php if ( ! empty( $recipe_rating_label ) ) { ?>
-				<p><?php \Tasty_Recipes\Utils::kses( $recipe_rating_label, true ); ?></p>
+				<p><?php Utils::kses( $recipe_rating_label, true ); ?></p>
 			<?php } ?>
 		</div>
 	<?php } ?>
@@ -53,7 +56,7 @@ if ( '.svg' === $ext ) {
 	<?php if ( ! empty( $recipe_description ) && isset( $print_view_options['description'] ) ) : ?>
 	<div class="tasty-recipes-description">
 		<div class="tasty-recipes-description-body">
-			<?php \Tasty_Recipes\Utils::kses( $recipe_description, true ); ?>
+			<?php Utils::kses( $recipe_description, true ); ?>
 		</div>
 	</div>
 	<?php endif; ?>
@@ -102,7 +105,7 @@ if ( '.svg' === $ext ) {
 								}
 							}
 							?>
-							<?php echo esc_html( $detail['label'] ); ?>:</span> <?php \Tasty_Recipes\Utils::kses( $detail['value'], true ); ?>
+							<?php echo esc_html( $detail['label'] ); ?>:</span> <?php Utils::kses( $detail['value'], true ); ?>
 						</li>
 							<?php
 					else :
@@ -136,20 +139,14 @@ if ( '.svg' === $ext ) {
 						<?php echo $copy_ingredients; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 					<?php endif; ?>
 				</div>
-				<div class="tasty-recipes-units-scale-container">
-					<?php if ( ! empty( $recipe_convertable ) ) : ?>
-						<span class="tasty-recipes-convert-container">
-							<span class="tasty-recipes-convert-label"><?php esc_html_e( 'Units', 'tasty-recipes' ); ?></span>
-							<?php \Tasty_Recipes\Utils::kses( $recipe_convertable, true ); ?>
-						</span>
-					<?php endif; ?>
-					<?php if ( ! empty( $recipe_scalable ) ) : ?>
-						<span class="tasty-recipes-scale-container">
-							<span class="tasty-recipes-scale-label"><?php esc_html_e( 'Scale', 'tasty-recipes' ); ?></span>
-							<?php \Tasty_Recipes\Utils::kses( $recipe_scalable, true ); ?>
-						</span>
-					<?php endif; ?>
-				</div>
+				<?php
+				/**
+				 * Add more information before the ingredient list.
+				 *
+				 * @var array $vars Array of variables to pass to the action.
+				 */
+				do_action( 'tasty_recipes_card_before_ingredients', $vars );
+				?>
 			</div>
 			<div data-tasty-recipes-customization="body-color.color">
 				<?php echo $recipe_ingredients; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
@@ -201,7 +198,7 @@ if ( '.svg' === $ext ) {
 		?>
 		<div class="tasty-recipes-equipment">
 			<h3 data-tasty-recipes-customization="h3-color.color h3-transform.text-transform"><?php esc_html_e( 'Equipment', 'tasty-recipes' ); ?></h3>
-			<?php \Tasty_Recipes\Utils::kses( $recipe_equipment, true ); ?>
+			<?php Utils::kses( $recipe_equipment, true ); ?>
 		</div>
 	<?php endif; ?>
 
@@ -209,19 +206,19 @@ if ( '.svg' === $ext ) {
 		<div class="tasty-recipes-notes" data-tasty-recipes-customization="secondary-color.background-color">
 			<h3 data-tasty-recipes-customization="h3-color.color h3-transform.text-transform"><?php esc_html_e( 'Notes', 'tasty-recipes' ); ?></h3>
 			<div class="tasty-recipes-notes-body" data-tasty-recipes-customization="body-color.color">
-				<?php \Tasty_Recipes\Utils::kses( $recipe_notes, true ); ?>
+				<?php Utils::kses( $recipe_notes, true ); ?>
 			</div>
 		</div>
 	<?php endif; ?>
 	<?php if ( $other_details ) : ?>
 		<div class="tasty-recipes-other-details" data-tasty-recipes-customization="secondary-color.background-color">
 			<ul>
-				<?php \Tasty_Recipes\Utils::kses( $other_details, true ); ?>
+				<?php Utils::kses( $other_details, true ); ?>
 			</ul>
 		</div>
 	<?php endif; ?>
 
-	<?php do_action( 'tasty_recipes_card_before_nutrition' ); ?>
+	<?php do_action( 'tasty_recipes_card_before_nutrition', $vars ); ?>
 
 	<?php if ( ! empty( $recipe_nutrifox_embed ) && isset( $print_view_options['nutrition'] ) ) : ?>
 		<div class="tasty-recipes-nutrifox">
@@ -234,7 +231,7 @@ if ( '.svg' === $ext ) {
 			<h3 data-tasty-recipes-customization="h3-color.color h3-transform.text-transform"><?php esc_html_e( 'Nutrition', 'tasty-recipes' ); ?></h3>
 			<ul>
 				<?php foreach ( $recipe_nutrition as $nutrition ) : ?>
-					<li><strong class="tasty-recipes-label" data-tasty-recipes-customization="body-color.color"><?php echo esc_html( $nutrition['label'] ); ?>:</strong> <?php \Tasty_Recipes\Utils::kses( $nutrition['value'], true ); ?></li>
+					<li><strong class="tasty-recipes-label" data-tasty-recipes-customization="body-color.color"><?php echo esc_html( $nutrition['label'] ); ?>:</strong> <?php Utils::kses( $nutrition['value'], true ); ?></li>
 				<?php endforeach; ?>
 			</ul>
 		</div>
@@ -242,7 +239,7 @@ if ( '.svg' === $ext ) {
 
 	<?php if ( ! empty( $recipe_keywords ) ) : ?>
 		<div class="tasty-recipes-keywords" data-tasty-recipes-customization="secondary-color.background-color">
-			<p data-tasty-recipes-customization="detail-value-color.color"><span class="tasty-recipes-label" data-tasty-recipes-customization="detail-label-color.color"><?php esc_html_e( 'Keywords', 'tasty-recipes' ); ?>:</span> <?php \Tasty_Recipes\Utils::kses( $recipe_keywords, true ); ?></p>
+			<p data-tasty-recipes-customization="detail-value-color.color"><span class="tasty-recipes-label" data-tasty-recipes-customization="detail-label-color.color"><?php esc_html_e( 'Keywords', 'tasty-recipes' ); ?>:</span> <?php Utils::kses( $recipe_keywords, true ); ?></p>
 		</div>
 	<?php endif; ?>
 
@@ -250,17 +247,16 @@ if ( '.svg' === $ext ) {
 
 <footer class="tasty-recipes-entry-footer" data-tasty-recipes-customization="primary-color.background">
 	<div class="tasty-recipes-footer-content">
-		<?php if ( ! empty( $footer_social_platform ) ) : ?>
-			<?php if ( '.svg' === $ext ) : ?>
-				<svg viewBox="0 0 24 24" class="<?php echo esc_attr( 'svg-' . $footer_social_platform ); ?>" aria-hidden="true" data-tasty-recipes-customization="footer-icon-color.color"><use xlink:href="#tasty-recipes-icon-<?php echo esc_attr( $footer_social_platform ); ?>"></use></svg>
-			<?php else : ?>
-				<img class="<?php echo esc_attr( 'svg-' . $footer_social_platform ); ?>" data-pin-nopin="true" src="<?php echo esc_url( plugins_url( 'images/icon-' . $footer_social_platform . '.png', __FILE__ ) ); ?>">
-			<?php endif; ?>
-		<?php endif; ?>
-		<div class="tasty-recipes-footer-copy">
-			<h3 data-tasty-recipes-customization="footer-heading-color.color h3-transform.text-transform footer-heading.innerText"><?php echo esc_html( $footer_heading ); ?></h3>
-			<div data-tasty-recipes-customization="footer-description-color.color footer-description.innerHTML"><?php echo wp_kses_post( $footer_description ); ?></div>
-		</div>
+		<?php
+		/**
+		 * Add content inside the footer of the recipe card.
+		 *
+		 * @since x.x
+		 *
+		 * @var array $vars Array of variables to pass to the action.
+		 */
+		do_action( 'tasty_recipes_card_footer', $vars );
+		?>
 	</div>
 </footer>
 

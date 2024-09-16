@@ -421,7 +421,7 @@ class Utils {
 	 */
 	public static function get_contents( $path, $use_path = '' ) {
 		if ( $use_path ) {
-			$path = dirname( TASTY_RECIPES_PLUGIN_FILE ) . '/' . $path;
+			$path = dirname( TASTY_RECIPES_LITE_FILE ) . '/' . $path;
 		}
 
 		if ( ! file_exists( $path ) ) {

@@ -30,6 +30,7 @@ $print_view_options = tasty_recipes_get_print_view_options();
 		<?php endif; ?>
 	</div>
 </div>
+<?php do_action( 'tasty_recipes_card_after_title', $vars ); ?>
 <?php if ( ! empty( $recipe_rating_icons ) || ! empty( $recipe_rating_label ) ) : ?>
 	<div class="tasty-recipes-rating" data-tasty-recipes-customization="body-color.color">
 		<?php if ( ! empty( $recipe_rating_icons ) ) : ?>
@@ -70,20 +71,7 @@ $print_view_options = tasty_recipes_get_print_view_options();
 					<?php echo $copy_ingredients; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				<?php endif; ?>
 			</div>
-			<div class="tasty-recipes-units-scale-container">
-				<?php if ( ! empty( $recipe_convertable ) ) : ?>
-					<span class="tasty-recipes-convert-container">
-						<span class="tasty-recipes-convert-label"><?php esc_html_e( 'Units', 'tasty-recipes' ); ?></span>
-						<?php \Tasty_Recipes\Utils::kses( $recipe_convertable, true ); ?>
-					</span>
-				<?php endif; ?>
-				<?php if ( ! empty( $recipe_scalable ) ) : ?>
-					<span class="tasty-recipes-scale-container">
-						<span class="tasty-recipes-scale-label"><?php esc_html_e( 'Scale', 'tasty-recipes' ); ?></span>
-						<?php \Tasty_Recipes\Utils::kses( $recipe_scalable, true ); ?>
-					</span>
-				<?php endif; ?>
-			</div>
+			<?php do_action( 'tasty_recipes_card_before_ingredients', $vars ); ?>
 		</div>
 		<div class="tasty-recipes-ingredients-body" data-tasty-recipes-customization="body-color.color">
 			<?php echo $recipe_ingredients; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
@@ -143,7 +131,7 @@ if ( ! empty( $recipe_equipment ) ) :
 	</div>
 <?php endif; ?>
 
-<?php do_action( 'tasty_recipes_card_before_nutrition' ); ?>
+<?php do_action( 'tasty_recipes_card_before_nutrition', $vars ); ?>
 
 <?php if ( ! empty( $recipe_nutrifox_embed ) && isset( $print_view_options['nutrition'] ) ) : ?>
 	<div class="tasty-recipes-nutrifox">
@@ -169,8 +157,16 @@ if ( ! empty( $recipe_equipment ) ) :
 <?php endif; ?>
 
 <footer class="tasty-recipes-entry-footer">
-	<h3 data-tasty-recipes-customization="footer-heading-color.color h3-transform.text-transform footer-heading.innerText"><?php echo esc_html( $footer_heading ); ?></h3>
-	<div data-tasty-recipes-customization="footer-description-color.color footer-description.innerHTML"><?php \Tasty_Recipes\Utils::kses( $footer_description, true ); ?></div>
+	<?php
+	/**
+	 * Add content inside the footer of the recipe card.
+	 *
+	 * @since x.x
+	 *
+	 * @var array $vars Array of variables to pass to the action.
+	 */
+	do_action( 'tasty_recipes_card_footer', $vars );
+	?>
 </footer>
 
 <?php if ( tasty_recipes_is_print() && get_post() ) : ?>

@@ -342,42 +342,6 @@ EOT;
 	}
 
 	/**
-	 * Expected behavior for default footer_description.
-	 */
-	public function test_get_customization_settings_footer_description() {
-		// Defaults to 'Share a photo and tag us'.
-		$settings = Tasty_Recipes::get_customization_settings();
-		$this->assertEquals(
-			'<p>Share a photo and tag us — we can\'t wait to see what you\'ve made!</p>',
-			$settings['footer_description']
-		);
-		// Only Instagram handle.
-		update_option(
-			Tasty_Recipes::INSTAGRAM_HANDLE_OPTION,
-			'pinchofyum'
-		);
-		$settings = Tasty_Recipes::get_customization_settings();
-		$this->assertEquals(
-			'<p>Tag <a href="https://www.instagram.com/pinchofyum" target="_blank" rel="noreferrer noopener">@pinchofyum</a> on Instagram</p>',
-			$settings['footer_description']
-		);
-		// Instagram handle and hashtag.
-		update_option(
-			Tasty_Recipes::INSTAGRAM_HANDLE_OPTION,
-			'pinchofyum'
-		);
-		update_option(
-			Tasty_Recipes::INSTAGRAM_HASHTAG_OPTION,
-			'tastyrecipes'
-		);
-		$settings = Tasty_Recipes::get_customization_settings();
-		$this->assertEquals(
-			'<p>Tag <a href="https://www.instagram.com/pinchofyum" target="_blank" rel="noreferrer noopener">@pinchofyum</a> on Instagram and hashtag it <a href="https://www.instagram.com/explore/tags/tastyrecipes" target="_blank" rel="noreferrer noopener">#tastyrecipes</a></p>',
-			$settings['footer_description']
-		);
-	}
-
-	/**
 	 * Ensure data is fetched from Nutrifox when the recipe is initially created.
 	 */
 	public function test_create_recipe_generate_nutrifox_conversion() {

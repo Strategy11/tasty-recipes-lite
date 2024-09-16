@@ -7,7 +7,9 @@
 
 use Tasty_Recipes\Admin;
 use Tasty_Recipes\Utils;
+use Tasty_Recipes\Designs\Template;
 use Tasty\Framework\Utils\Common;
+use Tasty\Framework\Utils\Url;
 
 ?>
 
@@ -18,7 +20,7 @@ use Tasty\Framework\Utils\Common;
 
 	<?php if ( 'design' === $active_tab ) : ?>
 		<?php
-		if ( file_exists( get_stylesheet_directory() . '/tasty-recipes.php' ) ) {
+		if ( Template::has_custom_template() ) {
 			?>
 			<div class="tasty-recipes-custom-template-notice tasty-tab-content"><p><?php esc_html_e( 'Looks like you\'re using a custom recipe card template. To enable design customization options, you\'ll need to remove the custom tasty-recipes.php file from your theme folder.', 'tasty-recipes' ); ?></p></div>
 			<?php
@@ -26,22 +28,24 @@ use Tasty\Framework\Utils\Common;
 			$recipe_card_preview_url_base = add_query_arg(
 				array(
 					'action' => 'tasty_recipes_preview_recipe_card',
-					'nonce'  => wp_create_nonce( \Tasty_Recipes\Admin::NONCE_KEY ),
+					'nonce'  => wp_create_nonce( Admin::NONCE_KEY ),
 				),
 				admin_url( 'admin-ajax.php' )
 			);
 			?>
 			<form method="POST" action="<?php echo esc_url( admin_url( 'options.php' ) ); ?>" class="tasty-recipes-design-settings-app tasty-tab-content">
 				<?php
-				settings_fields( Tasty_Recipes\Admin::SETTINGS_SECTION_CARD_DESIGN );
+				settings_fields( Tasty_Recipes\Settings::SETTINGS_SECTION_CARD_DESIGN );
 				$initial_options = array(
 					'template'      => get_option( Tasty_Recipes::TEMPLATE_OPTION, '' ),
 					'customization' => Tasty_Recipes::get_customization_settings(),
+					'upgrade_url'   => Url::get_upgrade_url( 'Tasty Recipes', [ 'utm_content' => 'template' ] ),
+					'locked'        => Template::get_locked_templates(),
 				);
 				?>
 				<tasty-recipes-design-settings
 					recipe-card-preview-url-base="<?php echo esc_url( $recipe_card_preview_url_base ); ?>"
-					:template-options="<?php echo esc_attr( wp_json_encode( Admin::TEMPLATE_OPTIONS ) ); ?>"
+					:template-options="<?php echo esc_attr( wp_json_encode( Template::get_all_templates() ) ); ?>"
 					:initial-options="<?php echo esc_attr( wp_json_encode( $initial_options ) ); ?>"></tasty-recipes-design-settings>
 			</form>
 			<?php
@@ -149,8 +153,8 @@ use Tasty\Framework\Utils\Common;
 	<div class="tasty-recipes-settings tasty-settings tasty-tab-content">
 		<form method="POST" action="<?php echo esc_url( admin_url( 'options.php' ) ); ?>">
 		<?php
-			settings_fields( Tasty_Recipes\Admin::SETTINGS_GROUP_CARD );
-			do_settings_sections( Tasty_Recipes\Admin::PAGE_SLUG );
+			settings_fields( Tasty_Recipes\Settings::SETTINGS_GROUP_CARD );
+			do_settings_sections( Tasty_Recipes\Settings::PAGE_SLUG );
 		?>
 		<?php submit_button(); ?>
 		</form>

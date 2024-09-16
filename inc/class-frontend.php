@@ -86,8 +86,8 @@ class Frontend {
 			return;
 		}
 
-		$instacart_filemtime = filemtime( plugin_dir_path( TASTY_RECIPES_PLUGIN_FILE ) . '/assets/js/instacart.js' );
-		wp_enqueue_script( 'tasty-recipes-instacart', plugins_url( 'assets/js/instacart.js', TASTY_RECIPES_PLUGIN_FILE ), array(), $instacart_filemtime, true );
+		$instacart_filemtime = filemtime( plugin_dir_path( TASTY_RECIPES_LITE_FILE ) . '/assets/js/instacart.js' );
+		wp_enqueue_script( 'tasty-recipes-instacart', plugins_url( 'assets/js/instacart.js', TASTY_RECIPES_LITE_FILE ), array(), $instacart_filemtime, true );
 	}
 
 	/**

@@ -1,24 +1,23 @@
 <?php
 /**
- * Plugin Name:     Tasty Recipes
+ * Plugin Name:     Tasty Recipes Lite
  * Plugin URI:      https://www.wptasty.com/tasty-recipes
  * Description:     Tasty Recipes is the easiest way to publish recipes on your WordPress blog.
  * Author:          WP Tasty
  * Author URI:      https://www.wptasty.com
  * Text Domain:     tasty-recipes
  * Domain Path:     /languages
- * Version: 3.13
+ * Version: 1.0
  *
  * @package         Tasty_Recipes
  */
 
 use Tasty_Recipes\MetaBox;
 use Tasty_Recipes\Frontend;
-use Tasty_Recipes\Utils;
 use Tasty_Recipes\Integrations;
 
-define( 'TASTY_RECIPES_PLUGIN_VERSION', '3.13' );
-define( 'TASTY_RECIPES_PLUGIN_FILE', __FILE__ );
+define( 'TASTY_RECIPES_LITE_VERSION', '1.0' );
+define( 'TASTY_RECIPES_LITE_FILE', __FILE__ );
 
 if ( ! defined( 'TASTY_RECIPES_NUTRIFOX_DOMAIN' ) ) {
 	define( 'TASTY_RECIPES_NUTRIFOX_DOMAIN', 'nutrifox.com' );
@@ -210,35 +209,54 @@ class Tasty_Recipes {
 
 		load_plugin_textdomain( 'tasty-recipes', false, basename( __DIR__ ) . '/languages' );
 
-		/**
-		 * Register the class autoloader.
-		 */
 		spl_autoload_register(
 			function ( $class_name ) {
-				$class_name = ltrim( $class_name, '\\' );
-				if ( 0 !== stripos( $class_name, 'Tasty_Recipes\\' ) ) {
-					return;
-				}
-
-				$parts = explode( '\\', $class_name );
-				array_shift( $parts ); // Don't need "Tasty_Recipes".
-				$last    = array_pop( $parts ); // File should be 'class-[...].php'.
-				$last    = 'class-' . $last . '.php';
-				$parts[] = $last;
-				$file    = __DIR__ . '/inc/' . str_replace( '_', '-', strtolower( implode( '/', $parts ) ) );
-				if ( file_exists( $file ) ) {
-					// phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
-					require $file;
-				}
-
-					// Might be a trait.
-				$file = str_replace( '/class-', '/trait-', $file );
-				if ( file_exists( $file ) ) {
-					// phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
-					require $file;
-				}
+				self::register_autoloader( $class_name, __DIR__ );
 			}
 		);
+	}
+
+	/**
+	 * Register the class autoloader.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $class_name The class name to load.
+	 * @param string $base The base directory to search in.
+	 *
+	 * @return void
+	 */
+	public static function register_autoloader( $class_name, $base = __DIR__ ) {
+		$class_name = ltrim( $class_name, '\\' );
+		if ( 0 !== stripos( $class_name, 'Tasty_Recipes' ) ) {
+			return;
+		}
+
+		$lite_class  = stripos( $class_name, 'Pro\\' ) === false;
+		$lite_plugin = stripos( $base, 'lite' ) !== false || stripos( $base, 'recipe' ) === false;
+		if ( $lite_class !== $lite_plugin ) {
+			// Don't load Pro classes in Lite.
+			return;
+		}
+
+		$parts = explode( '\\', $class_name );
+		array_shift( $parts ); // Don't need "Tasty_Recipes".
+		$last    = array_pop( $parts ); // File should be 'class-[...].php'.
+		$last    = 'class-' . $last . '.php';
+		$parts[] = $last;
+		$file    = $base . '/inc/' . str_replace( '_', '-', strtolower( implode( '/', $parts ) ) );
+		if ( file_exists( $file ) ) {
+			// phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
+			require $file;
+			return;
+		}
+
+		// Might be a trait.
+		$file = str_replace( '/class-', '/trait-', $file );
+		if ( file_exists( $file ) ) {
+			// phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
+			require $file;
+		}
 	}
 
 	/**
@@ -271,23 +289,12 @@ class Tasty_Recipes {
 
 		add_filter( 'tasty_recipes_customization_settings', array( 'Tasty_Recipes\Ratings', 'apply_default_rating_stars_color' ) );
 
-		if ( is_admin() || Utils::is_rest_api_request() ) {
-			add_action( 'tasty_recipes_card_after_ingredients', array( 'Tasty_Recipes\Admin', 'print_mock_instacart_html' ) );
-		} else {
+		if ( ! is_admin() && ! Tasty_Recipes\Utils::is_rest_api_request() ) {
 			Frontend::get_instance();
 		}
 
 		// Admin.
-		add_action( 'admin_init', array( 'Tasty_Recipes\Admin', 'action_admin_init' ) );
-		// phpcs:ignore WordPressVIPMinimum.Hooks.RestrictedHooks.http_request_args
-		add_action( 'http_request_args', array( 'Tasty_Recipes\Admin', 'filter_http_request_args' ), 10, 2 );
-		add_action( 'admin_menu', array( 'Tasty_Recipes\Admin', 'action_admin_menu' ) );
-		add_filter( 'manage_posts_columns', array( 'Tasty_Recipes\Admin', 'action_manage_posts_columns' ) );
-		add_filter( 'manage_pages_columns', array( 'Tasty_Recipes\Admin', 'action_manage_posts_columns' ) );
-		add_action( 'manage_posts_custom_column', array( 'Tasty_Recipes\Admin', 'action_manage_posts_custom_column' ), 10, 2 );
-		add_action( 'manage_pages_custom_column', array( 'Tasty_Recipes\Admin', 'action_manage_posts_custom_column' ), 10, 2 );
-		add_action( 'quick_edit_custom_box', array( 'Tasty_Recipes\Admin', 'action_quick_edit_custom_box' ) );
-		add_filter( 'hidden_columns', array( 'Tasty_Recipes\Admin', 'filter_hidden_columns' ) );
+		Tasty_Recipes\Admin::load_hooks();
 		add_action( 'admin_enqueue_scripts', array( 'Tasty_Recipes\Assets', 'action_admin_enqueue_scripts' ) );
 		add_action( 'wp_enqueue_editor', array( 'Tasty_Recipes\Assets', 'action_wp_enqueue_editor' ) );
 		add_action( 'enqueue_block_editor_assets', array( 'Tasty_Recipes\Assets', 'action_enqueue_block_editor_assets' ) );
@@ -298,9 +305,7 @@ class Tasty_Recipes {
 
 		add_action( 'wp_ajax_tasty_recipes_save_rating', array( 'Tasty_Recipes\Ratings', 'save_rating' ) );
 		add_action( 'wp_ajax_nopriv_tasty_recipes_save_rating', array( 'Tasty_Recipes\Ratings', 'save_rating' ) );
-		add_action( 'wp_ajax_tasty_recipes_preview_recipe_card', array( 'Tasty_Recipes\Admin', 'handle_wp_ajax_preview_recipe_card' ) );
-		add_action( 'wp_ajax_tasty_recipes_get_count', array( 'Tasty_Recipes\Admin', 'handle_wp_ajax_get_count' ) );
-		add_action( 'wp_ajax_tasty_recipes_convert', array( 'Tasty_Recipes\Admin', 'handle_wp_ajax_convert' ) );
+		add_action( 'wp_ajax_tasty_recipes_preview_recipe_card', array( 'Tasty_Recipes\Designs\Template', 'handle_wp_ajax_preview_recipe_card' ) );
 		add_action( 'wp_ajax_tasty_recipes_ignore_convert', array( 'Tasty_Recipes\Editor', 'handle_wp_ajax_ignore_convert' ) );
 		add_action( 'wp_ajax_tasty_recipes_convert_recipe', array( 'Tasty_Recipes\Editor', 'handle_wp_ajax_convert_recipe' ) );
 		add_action( 'wp_ajax_tasty_recipes_ignore_type_convert', array( 'Tasty_Recipes\Editor', 'handle_wp_ajax_ignore_type_convert' ) );
@@ -358,7 +363,6 @@ class Tasty_Recipes {
 		add_action( 'tasty_recipes_card_after_ingredients', array( 'Tasty_Recipes\Shortcodes', 'print_cook_mode' ) );
 
 		// Plugin-specific filters.
-		add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( 'Tasty_Recipes\Admin', 'filter_plugin_action_links' ) );
 		add_filter( 'teeny_mce_buttons', array( 'Tasty_Recipes\Admin', 'filter_teeny_mce_buttons' ), 10, 2 );
 		add_filter( 'teeny_mce_buttons', array( 'Tasty_Recipes\Assets', 'filter_teeny_mce_buttons' ), 10, 2 );
 		add_filter( 'teeny_mce_before_init', array( 'Tasty_Recipes\Assets', 'filter_teeny_mce_before_init' ), 10, 2 );
@@ -373,11 +377,7 @@ class Tasty_Recipes {
 		add_filter( 'comment_form_field_comment', array( 'Tasty_Recipes\Ratings', 'filter_comment_form_field_comment' ) );
 		add_filter( 'comment_text', array( 'Tasty_Recipes\Ratings', 'filter_comment_text' ), 10, 2 );
 
-		add_filter( 'tasty_recipes_admin_settings_field_args', array( 'Tasty_Recipes\Admin', 'filter_quick_links_backward_compatibility' ) );
-
-		if ( is_admin() ) {
-			add_filter( 'tasty_framework_admin_menu_items', array( 'Tasty_Recipes\Admin', 'add_menu_item' ) );
-		}
+		Tasty_Recipes\Settings::load_hooks();
 
 		// Integrations.
 		if ( defined( 'WP_CLI' ) && WP_CLI ) {
@@ -672,23 +672,6 @@ class Tasty_Recipes {
 	 * @return array
 	 */
 	public static function get_customization_settings() {
-		$default_description = '<p>' . esc_html__( "Share a photo and tag us — we can't wait to see what you've made!", 'tasty-recipes' ) . '</p>';
-		$instagram_handle    = get_option( self::INSTAGRAM_HANDLE_OPTION );
-		if ( $instagram_handle ) {
-			$default_description = '<p>' . esc_html__( 'Tag', 'tasty-recipes' ) .
-				' <a href="' . esc_url( 'https://www.instagram.com/' . $instagram_handle ) . '" target="_blank" rel="noreferrer noopener">' .
-				'@' . esc_html( $instagram_handle ) .
-				'</a> ' . esc_html__( 'on Instagram', 'tasty-recipes' );
-			$instagram_hashtag   = get_option( self::INSTAGRAM_HASHTAG_OPTION );
-			if ( $instagram_hashtag ) {
-				$default_description .= ' ' . esc_html__( 'and hashtag it', 'tasty-recipes' ) .
-					' <a href="' . esc_url( 'https://www.instagram.com/explore/tags/' . $instagram_hashtag ) . '" target="_blank" rel="noreferrer noopener">' .
-					'#' . esc_html( $instagram_hashtag ) .
-					'</a>';
-			}
-			$default_description .= '</p>';
-		}
-
 		$settings = array_merge(
 			array(
 				'primary_color'            => '',
@@ -709,13 +692,12 @@ class Tasty_Recipes {
 				'footer_icon_color'        => '',
 				'footer_heading'           => esc_html__( 'Did you make this recipe?', 'tasty-recipes' ),
 				'footer_heading_color'     => '',
-				'footer_description'       => $default_description,
+				'footer_description'       => __( 'Tag @wptasty on Instagram and hashtag it #tastyrecipes', 'tasty-recipes' ),
 				'footer_description_color' => '',
 			),
 			get_option( self::CUSTOMIZATION_OPTION, array() )
 		);
 
-		$settings['footer_description'] = htmlspecialchars_decode( html_entity_decode( $settings['footer_description'], ENT_QUOTES ), ENT_QUOTES );
 		return $settings;
 	}
 
@@ -835,7 +817,7 @@ class Tasty_Recipes {
 require_once implode(
 	DIRECTORY_SEPARATOR,
 	array(
-		dirname( TASTY_RECIPES_PLUGIN_FILE ),
+		dirname( TASTY_RECIPES_LITE_FILE ),
 		'inc',
 		'libs',
 		'tasty-framework',

@@ -6,6 +6,7 @@
  */
 
 use Tasty_Recipes\Admin;
+use Tasty_Recipes\Settings;
 
 /**
  * Test case for the Tasty_Recipes\Admin controller class.
@@ -43,7 +44,7 @@ class Test_Admin extends Tasty_Recipes_Testcase {
 				'h3_transform'    => 'uppercase',
 				'body_color'      => '#efefef',
 			),
-			Admin::sanitize_customization_option(
+			Settings::sanitize_customization_option(
 				array(
 					'primary_color'   => 'abc123',
 					'secondary_color' => '#FFF',
@@ -111,7 +112,7 @@ class Test_Admin extends Tasty_Recipes_Testcase {
 		);
 
 		foreach ( $data as $item ) {
-			$this->assertSame( $item['expected'], Admin::handle_quick_links_backward_compatibility( $item['input'] ) );
+			$this->assertSame( $item['expected'], Settings::handle_quick_links_backward_compatibility( $item['input'] ) );
 		}
 	}
 

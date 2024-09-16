@@ -34,6 +34,10 @@ module.exports = function( grunt ) {
 				to: 'Version: <%= compress.version %>'
 			},
 			{
+				from: /define\( \'TASTY_RECIPES_LITE_VERSION\', \'(\d+\.)(\d+\.)?(\*|\d+)?([\da-z-A-Z-]+(?:\.[\da-z-A-Z-]+)*)?\'/g,
+				to: 'define( \'TASTY_RECIPES_LITE_VERSION\', \'<%= compress.version %>\''
+			},
+			{
 				from: /define\( \'TASTY_RECIPES_PLUGIN_VERSION\', \'(\d+\.)(\d+\.)?(\*|\d+)?([\da-z-A-Z-]+(?:\.[\da-z-A-Z-]+)*)?\'/g,
 				to: 'define( \'TASTY_RECIPES_PLUGIN_VERSION\', \'<%= compress.version %>\''
 			}
