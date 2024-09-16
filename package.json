@@ -10,7 +10,7 @@
     "@wordpress/eslint-plugin": "^17",
     "autoprefixer": "^10.4",
     "babel-core": "^7.0.0-bridge.0",
-    "babel-loader": "^9.1",
+    "babel-loader": "^9.2",
     "babel-plugin-transform-react-jsx": "^6.24",
     "css-loader": "^6",
     "cross-env": "^7.0.3",
