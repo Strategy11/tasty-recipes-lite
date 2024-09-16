@@ -115,4 +115,5 @@ class Test_Admin extends Tasty_Recipes_Testcase {
 			$this->assertSame( $item['expected'], Admin::handle_quick_links_backward_compatibility( $item['input'] ) );
 		}
 	}
+
 }
