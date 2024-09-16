@@ -93,4 +93,5 @@ class Test_Editor extends Tasty_Recipes_Testcase {
 		$this->assertEquals( 'Do not ask again for ZipList (or Zip Recipes) recipes', $messages[0]['actions'][1]['label'] );
 		$this->assertEquals( 'Learn more', $messages[1]['actions'][0]['label'] );
 	}
+
 }
