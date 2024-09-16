@@ -68,23 +68,29 @@ class Tasty_Recipes {
 	/**
 	 * Option name for the Instacart affiliate ID.
 	 *
+	 * @deprecated x.x
+	 *
 	 * @var string
 	 */
-	const INSTACART_AFFILIATE_ID_OPTION = 'tasty_recipes_instacart_affiliate_id';
+	const INSTACART_AFFILIATE_ID_OPTION = '';
 
 	/**
 	 * Option name for the Instagram handle.
 	 *
+	 * @deprecated x.x
+	 *
 	 * @var string
 	 */
-	const INSTAGRAM_HANDLE_OPTION = 'tasty_recipes_instagram_handle';
+	const INSTAGRAM_HANDLE_OPTION = '';
 
 	/**
 	 * Option name for the Instagram tag.
 	 *
+	 * @deprecated x.x
+	 *
 	 * @var string
 	 */
-	const INSTAGRAM_HASHTAG_OPTION = 'tasty_recipes_instagram_tag';
+	const INSTAGRAM_HASHTAG_OPTION = '';
 
 	/**
 	 * Option name for the license key.
@@ -165,9 +171,11 @@ class Tasty_Recipes {
 	/**
 	 * Option name for the cook mode helper.
 	 *
+	 * @deprecated x.x
+	 *
 	 * @var string
 	 */
-	const COOK_MODE_HELPER_OPTION = 'tasty_recipes_cook_mode_helper';
+	const COOK_MODE_HELPER_OPTION = '';
 
 	/**
 	 * Option name for the disable scaling option.
