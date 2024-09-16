@@ -409,8 +409,9 @@ class Shortcodes {
 			// phpcs:ignore
 			// 'recipe_convertable' => false, // phpcs:ignore
 			// 'recipe_ingredients' => $recipe_json['ingredients'], // phpcs:ignore
-			// 'recipe_scalable'    => false, // phpcs:ignore
-			// 'copy_ingredients'   => false, // phpcs:ignore
+			'recipe_scalable'    => false,
+			// phpcs:ignore
+			// 'copy_ingredients'   => false,
 			'footer_heading'     => '',
 			'footer_description' => '',
 			'template'           => self::$custom_template,
@@ -476,34 +477,6 @@ class Shortcodes {
 		}
 
 		$ingredients = self::process_ingredients_annotate_with_spans( $ingredients );
-		if ( ! get_option( Tasty_Recipes::DISABLE_SCALING_OPTION )
-			&& empty( $atts['disable_scaling'] )
-			&& ! is_feed() && false !== stripos( $ingredients, 'data-amount' ) ) {
-			$scalable_amounts = array(
-				1 => __( '1x', 'tasty-recipes' ),
-				2 => __( '2x', 'tasty-recipes' ),
-				3 => __( '3x', 'tasty-recipes' ),
-			);
-			/**
-			 * Amounts presented as scaling options.
-			 *
-			 * @var array $scalable_amounts Amounts used in scaling options.
-			 */
-			$scalable_amounts = apply_filters( 'tasty_recipes_scalable_amounts', $scalable_amounts );
-			// Always need to have 1x.
-			$scalable_amounts[1] = __( '1x', 'tasty-recipes' );
-			$recipe_scalable     = '';
-			foreach ( $scalable_amounts as $number => $label ) {
-				$number  = (float) $number;
-				$classes = 'tasty-recipes-scale-button';
-				if ( (float) 1 === $number ) {
-					$classes .= ' tasty-recipes-scale-button-active';
-				}
-				$recipe_scalable .= '<button class="' . esc_attr( $classes ) . '" data-amount="' . esc_attr( $number ) . '" type="button">' . esc_html( $label ) . '</button>';
-			}
-		} else {
-			$recipe_scalable = false;
-		}
 
 		if ( get_option( Tasty_Recipes::INGREDIENT_CHECKBOXES_OPTION )
 			&& ! is_feed() && ! tasty_recipes_is_print() ) {
@@ -527,13 +500,6 @@ class Shortcodes {
 		} else {
 			$copy_ingredients = false;
 		}
-
-		/**
-		 * Allow ingredient scaling to be disabled.
-		 *
-		 * @param mixed $recipe_scalable Existing scalable data.
-		 */
-		$recipe_scalable = apply_filters( 'tasty_recipes_scalable', $recipe_scalable );
 
 		$recipe_author_name = '';
 		if ( ! empty( $recipe_json['author_name'] ) ) {
@@ -559,7 +525,6 @@ class Shortcodes {
 			'recipe_ingredients'            => apply_filters( 'tasty_recipes_the_content', self::do_caption_shortcode( $ingredients ), 'ingredients' ),
 			'recipe_instructions_has_video' => false,
 			'recipe_convertable'            => $recipe_convertable,
-			'recipe_scalable'               => $recipe_scalable,
 			'recipe_instructions'           => Distribution_Metadata::apply_instruction_step_numbers(
 				apply_filters( 'tasty_recipes_the_content', self::do_caption_shortcode( $recipe_json['instructions'] ), 'instructions' )
 			),
@@ -723,16 +688,8 @@ class Shortcodes {
 		$template_vars['recipe_scripts'] .= PHP_EOL . self::get_common_recipe_scripts();
 		$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( __DIR__ ) . '/assets/js/smooth-scroll.js' );
 
-		if ( $recipe_convertable || $recipe_scalable ) {
-			$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( __DIR__ ) . '/assets/js/frac.js' );
-		}
-
 		if ( $recipe_convertable ) {
 			$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( __DIR__ ) . '/assets/js/convert-buttons.js' );
-		}
-
-		if ( $recipe_scalable ) {
-			$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( __DIR__ ) . '/assets/js/scale-buttons.js' );
 		}
 
 		if ( $copy_ingredients ) {
@@ -849,7 +806,7 @@ class Shortcodes {
 	}
 
 	/**
-	 * Add cooking attributes to the recipe template like yeild, diet, etc.
+	 * Add cooking attributes to the recipe template like yield, diet, etc.
 	 *
 	 * @param array $template_vars Template variables.
 	 *
@@ -863,13 +820,6 @@ class Shortcodes {
 				continue;
 			}
 			$value = $recipe_json[ $attribute ];
-			if ( 'yield' === $attribute && $template_vars['recipe_scalable'] ) {
-				$old_value = $value;
-				$value     = Unit_Amount_Parser::annotate_string_with_spans( $value );
-				if ( $value !== $old_value ) {
-					$value .= ' <span class="tasty-recipes-yield-scale"><span data-amount="1">1</span>x</span>';
-				}
-			}
 
 			// Use the display/localized version of the Diet.
 			if ( 'diet' === $attribute ) {
@@ -897,6 +847,12 @@ class Shortcodes {
 				continue;
 			}
 
+			/**
+			 * Filter the HTML for the cooking attribute.
+			 *
+			 * @since x.x
+			 */
+			$value = apply_filters( 'tasty_recipes_cooking_html', $value, $attribute, $template_vars );
 			$value = '<span data-tasty-recipes-customization="detail-value-color.color" ' .
 				'class="' . esc_attr( 'tasty-recipes-' . str_replace( '_', '-', $attribute ) ) . '">'
 				. $value .
