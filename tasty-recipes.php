@@ -360,7 +360,6 @@ class Tasty_Recipes {
 		add_filter( 'tasty_recipes_the_content', array( 'Tasty_Recipes\Shortcodes', 'add_inside_ingredients' ), 10, 2 );
 		add_filter( 'tasty_recipes_recipe_card_output', array( 'Tasty_Recipes\Shortcodes', 'inside_ingredients_handler' ), 10, 3 );
 		add_action( 'tasty_recipes_card_after_ingredients', array( 'Tasty_Recipes\Shortcodes', 'run_after_ingredients' ) );
-		add_action( 'tasty_recipes_card_after_ingredients', array( 'Tasty_Recipes\Shortcodes', 'print_cook_mode' ) );
 
 		// Plugin-specific filters.
 		add_filter( 'teeny_mce_buttons', array( 'Tasty_Recipes\Admin', 'filter_teeny_mce_buttons' ), 10, 2 );

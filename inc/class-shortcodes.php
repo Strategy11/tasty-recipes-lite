@@ -1482,28 +1482,6 @@ EOT;
 	}
 
 	/**
-	 * Print cook mode html.
-	 *
-	 * @since 3.8
-	 *
-	 * @return void
-	 */
-	public static function print_cook_mode() {
-		if ( ! Admin::is_cook_mode_enabled() ) {
-			return;
-		}
-
-		Tasty_Recipes::echo_template_part(
-			'parts/cookmode',
-			array(
-				'recipe_unique_id'            => uniqid( 'tasty_recipes_' ),
-				'recipe_show_cook_mode_label' => __( 'Cook Mode', 'tasty-recipes' ),
-				'recipe_show_cook_mode_help'  => Admin::get_cook_mode_helper(),
-			)
-		);
-	}
-
-	/**
 	 * Get common recipe scripts, like JS vars needed for other scripts.
 	 *
 	 * @return string
@@ -1518,5 +1496,17 @@ EOT;
 		);
 
 		return 'window.trCommon=' . wp_json_encode( $vars ) . ';';
+	}
+
+	/**
+	 * Print cook mode html.
+	 *
+	 * @since 3.8
+	 * @deprecated x.x
+	 *
+	 * @return void
+	 */
+	public static function print_cook_mode() {
+		_deprecated_function( __METHOD__, 'x.x' );
 	}
 }

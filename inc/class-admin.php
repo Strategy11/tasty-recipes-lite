@@ -610,45 +610,6 @@ class Admin {
 	}
 
 	/**
-	 * Check if Cook Mode can be enabled in this site or not.
-	 *
-	 * @deprecated x.x
-	 * @since 3.8
-	 *
-	 * @return bool
-	 */
-	public static function can_enable_cook_mode() {
-		/**
-		 * Filters the capability of enabling cook mode be enabled in this site.
-		 *
-		 * @param bool $can_enable True to enable, false otherwise.
-		 */
-		return (bool) apply_filters( 'tasty_recipes_enable_cook_mode', is_ssl() );
-	}
-
-	/**
-	 * Is Cook Mode enabled or not.
-	 *
-	 * @since 3.8
-	 *
-	 * @return bool
-	 */
-	public static function is_cook_mode_enabled() {
-		return (bool) get_option( Tasty_Recipes::COOK_MODE_OPTION, self::can_enable_cook_mode() );
-	}
-
-	/**
-	 * Get Cook Mode helper message.
-	 *
-	 * @since 3.8
-	 *
-	 * @return string
-	 */
-	public static function get_cook_mode_helper() {
-		return get_option( Tasty_Recipes::COOK_MODE_HELPER_OPTION, __( 'Prevent your screen from going dark', 'tasty-recipes' ) );
-	}
-
-	/**
 	 * Validate the current user capability and exit with json error in case of permission denied.
 	 *
 	 * @since 3.8
@@ -743,5 +704,44 @@ class Admin {
 	public static function can_show_instacart_button() {
 		_deprecated_function( __METHOD__, 'x.x' );
 		return false;
+	}
+
+	/**
+	 * Check if Cook Mode can be enabled in this site or not.
+	 *
+	 * @since 3.8
+	 * @deprecated x.x
+	 *
+	 * @return bool
+	 */
+	public static function can_enable_cook_mode() {
+		_deprecated_function( __METHOD__, 'x.x' );
+		return false;
+	}
+
+	/**
+	 * Is Cook Mode enabled or not.
+	 *
+	 * @since 3.8
+	 * @deprecated x.x
+	 *
+	 * @return bool
+	 */
+	public static function is_cook_mode_enabled() {
+		_deprecated_function( __METHOD__, 'x.x' );
+		return false;
+	}
+
+	/**
+	 * Get Cook Mode helper message.
+	 *
+	 * @since 3.8
+	 * @deprecated x.x
+	 *
+	 * @return string
+	 */
+	public static function get_cook_mode_helper() {
+		_deprecated_function( __METHOD__, 'x.x' );
+		return '';
 	}
 }
