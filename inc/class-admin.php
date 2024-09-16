@@ -733,6 +733,8 @@ class Admin {
 	}
 
 	/**
+	 * Check if the Instacart button can be shown.
+	 *
 	 * @since 3.8
 	 * @deprecated x.x
 	 *

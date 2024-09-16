@@ -111,6 +111,7 @@ class Frontend {
 	 * Print instacart HTML.
 	 *
 	 * @since 3.8
+	 * @deprecated x.x
 	 *
 	 * @return void
 	 */
@@ -122,6 +123,7 @@ class Frontend {
 	 * Insert Instacart widget script.
 	 *
 	 * @since 3.8
+	 * @deprecated x.x
 	 *
 	 * @return void
 	 */
