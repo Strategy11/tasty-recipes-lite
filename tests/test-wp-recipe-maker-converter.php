@@ -116,7 +116,7 @@ EOT;
 		}
 		if ( version_compare( $wp_major, '5.4', '>' ) ) {
 			$img_string = '<img width="200" height="300" src="http://pinchofyum.com/wp-content/uploads/2017/08/Cashew-Coffee-1-3-200x300.jpg" class="attachment-medium size-medium" alt="" loading="lazy" srcset="http://pinchofyum.com/wp-content/uploads/2017/08/Cashew-Coffee-1-3-200x300.jpg 200w, http://pinchofyum.com/wp-content/uploads/2017/08/Cashew-Coffee-1-3-768x1152.jpg 768w, http://pinchofyum.com/wp-content/uploads/2017/08/Cashew-Coffee-1-3-683x1024.jpg 683w, http://pinchofyum.com/wp-content/uploads/2017/08/Cashew-Coffee-1-3.jpg 1200w" sizes="(max-width: 200px) 100vw, 200px" />';
-			if ( version_compare( $wp_major, '6.1', '>' ) ) {
+			if ( version_compare( $wp_major, '6.7', '>' ) ) {
 				$img_string = str_replace( 'sizes="(max-width', 'sizes="auto, (max-width', $img_string );
 			}
 		}

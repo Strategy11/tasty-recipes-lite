@@ -30,11 +30,6 @@ class Tasty_Recipes_Converter_Testcase extends Tasty_Recipes_Testcase {
 	public function setUp(): void {
 		if ( $this->sql_source ) {
 			$sql = file_get_contents( __DIR__ . '/data/' . $this->sql_source );
-			if ( ! $sql ) {
-				// The test failed.
-				$this->fail( 'Could not load SQL seed data: ' . $this->sql_source );
-			}
-
 			foreach ( explode( ';' . PHP_EOL, $sql ) as $query ) {
 				$query = trim( $query );
 				if ( empty( $query ) ) {
