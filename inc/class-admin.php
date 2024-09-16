@@ -612,7 +612,6 @@ class Admin {
 	/**
 	 * Validate the current user capability and exit with json error in case of permission denied.
 	 *
-	 * @deprecated x.x
 	 * @since 3.8
 	 *
 	 * @return void
