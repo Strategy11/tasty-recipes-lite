@@ -701,7 +701,7 @@ class Shortcodes {
 	}
 
 	/**
-	 * Add cooking attributes to the recipe template like yeild, diet, etc.
+	 * Add cooking attributes to the recipe template like yield, diet, etc.
 	 *
 	 * @param array $template_vars Template variables.
 	 *
