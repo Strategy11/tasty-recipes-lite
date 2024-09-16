@@ -402,6 +402,26 @@ class Shortcodes {
 		}
 		$ret .= '>' . PHP_EOL;
 
+		$template_vars = array(
+			'recipe'             => $recipe,
+			'recipe_styles'      => '',
+			'recipe_scripts'     => '',
+			// phpcs:ignore
+			// 'recipe_convertable' => false, // phpcs:ignore
+			// 'recipe_ingredients' => $recipe_json['ingredients'], // phpcs:ignore
+			// 'recipe_scalable'    => false, // phpcs:ignore
+			// 'copy_ingredients'   => false, // phpcs:ignore
+			'footer_heading'     => '',
+			'footer_description' => '',
+			'template'           => self::$custom_template,
+		);
+		/**
+		 * The template vars before they are prepared.
+		 *
+		 * @since x.x
+		 */
+		$template_vars = apply_filters( 'tasty_recipes_pre_template_vars', $template_vars, compact( 'atts' ) );
+
 		$recipe_convertable = false;
 
 		$orig_ingredients = $recipe_json['ingredients'];
@@ -527,12 +547,7 @@ class Shortcodes {
 			}
 		}
 
-		$settings = Tasty_Recipes::get_customization_settings();
-
-		$template_vars = array(
-			'recipe'                        => $recipe,
-			'recipe_styles'                 => '',
-			'recipe_scripts'                => '',
+		$add_template_vars = array(
 			'recipe_json'                   => $recipe_json,
 			'recipe_title'                  => $recipe_json['title_rendered'],
 			'recipe_image'                  => ! empty( $recipe_json['image_sizes'][ $image_size ] ) ? $recipe_json['image_sizes'][ $image_size ]['html'] : '',
@@ -558,13 +573,9 @@ class Shortcodes {
 			'copy_ingredients'              => $copy_ingredients,
 			'first_button'                  => self::get_card_button( $recipe, 'first' ),
 			'second_button'                 => self::get_card_button( $recipe, 'second' ),
-			'instagram_handle'              => get_option( Tasty_Recipes::INSTAGRAM_HANDLE_OPTION ),
-			'instagram_hashtag'             => get_option( Tasty_Recipes::INSTAGRAM_HASHTAG_OPTION ),
-			'footer_social_platform'        => $settings['footer_social_platform'],
-			'footer_heading'                => $settings['footer_heading'],
-			'footer_description'            => $settings['footer_description'],
-			'template'                      => self::$custom_template,
 		);
+
+		$template_vars = array_merge( $add_template_vars, $template_vars );
 
 		/**
 		 * Enable responsive iframes by default, but permit disabling on a site.
@@ -755,6 +766,8 @@ class Shortcodes {
 
 		self::add_author_info( $template_vars );
 		self::add_cooking_attrs( $template_vars );
+
+		$settings = Tasty_Recipes::get_customization_settings();
 
 		/**
 		 * Filters the Nutrifox display style: 'card' or 'label'.

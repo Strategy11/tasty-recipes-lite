@@ -578,46 +578,46 @@ class Settings {
 		$original  = stripslashes_deep( (array) $original );
 		$sanitized = array();
 		$allowed   = array(
-			'primary_color'            => array( __CLASS__, 'sanitize_color' ),
-			'secondary_color'          => array( __CLASS__, 'sanitize_color' ),
-			'icon_color'               => array( __CLASS__, 'sanitize_color' ),
-			'button_color'             => array( __CLASS__, 'sanitize_color' ),
-			'button_text_color'        => array( __CLASS__, 'sanitize_color' ),
-			'detail_label_color'       => array( __CLASS__, 'sanitize_color' ),
-			'detail_value_color'       => array( __CLASS__, 'sanitize_color' ),
-			'h2_color'                 => array( __CLASS__, 'sanitize_color' ),
-			'h2_transform'             => array(
+			'primary_color'          => array( __CLASS__, 'sanitize_color' ),
+			'secondary_color'        => array( __CLASS__, 'sanitize_color' ),
+			'icon_color'             => array( __CLASS__, 'sanitize_color' ),
+			'button_color'           => array( __CLASS__, 'sanitize_color' ),
+			'button_text_color'      => array( __CLASS__, 'sanitize_color' ),
+			'detail_label_color'     => array( __CLASS__, 'sanitize_color' ),
+			'detail_value_color'     => array( __CLASS__, 'sanitize_color' ),
+			'h2_color'               => array( __CLASS__, 'sanitize_color' ),
+			'h2_transform'           => array(
 				'uppercase',
 				'initial',
 				'lowercase',
 			),
-			'h3_color'                 => array( __CLASS__, 'sanitize_color' ),
-			'h3_transform'             => array(
+			'h3_color'               => array( __CLASS__, 'sanitize_color' ),
+			'h3_transform'           => array(
 				'uppercase',
 				'initial',
 				'lowercase',
 			),
-			'body_color'               => array( __CLASS__, 'sanitize_color' ),
-			'star_ratings_style'       => array(
+			'body_color'             => array( __CLASS__, 'sanitize_color' ),
+			'star_ratings_style'     => array(
 				'solid',
 				'outline',
 			),
-			'star_color'               => array( __CLASS__, 'sanitize_color' ),
-			'nutrifox_display_style'   => array(
+			'star_color'             => array( __CLASS__, 'sanitize_color' ),
+			'nutrifox_display_style' => array(
 				'label',
 				'card',
 			),
-			'footer_social_platform'   => array(
-				'instagram',
-				'pinterest',
-				'facebook',
-			),
-			'footer_icon_color'        => array( __CLASS__, 'sanitize_color' ),
-			'footer_heading'           => 'sanitize_text_field',
-			'footer_heading_color'     => array( __CLASS__, 'sanitize_color' ),
-			'footer_description'       => 'wp_filter_post_kses',
-			'footer_description_color' => array( __CLASS__, 'sanitize_color' ),
 		);
+
+		/**
+		 * Filter the allowed settings.
+		 *
+		 * @since x.x
+		 *
+		 * @param array $allowed Array of allowed settings and how to sanitize them.
+		 */
+		$allowed = apply_filters( 'tasty_recipes_allowed_customization_settings', $allowed );
+
 		foreach ( $original as $key => $value ) {
 			if ( ! isset( $allowed[ $key ] ) ) {
 				continue;
