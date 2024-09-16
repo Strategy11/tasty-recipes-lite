@@ -91,7 +91,7 @@ class Template {
 
 		$templates = self::get_all_templates();
 
-		if ( ! $template || empty( $templates ) && ! isset( $templates[ $template ] ) ) {
+		if ( ! $template || empty( $templates ) || ! isset( $templates[ $template ] ) ) {
 			return Default_Template::instance();
 		}
 
@@ -181,13 +181,11 @@ class Template {
 		$styles .= Utils::get_contents( dirname( TASTY_RECIPES_LITE_FILE ) . '/assets/dist/ratings.css' );
 		$styles .= Utils::get_contents( dirname( TASTY_RECIPES_LITE_FILE ) . '/assets/dist/recipe-card-preview.css' );
 
-		$template = 'recipe/tasty-recipes';
-		if ( $custom_design || $custom_design === '' ) {
-			$template_object = self::get_object_by_name( $custom_design );
-			$custom_path     = $template_object->get_template_path();
-			if ( file_exists( $custom_path ) ) {
-				$template = $custom_path;
-			}
+		$template        = 'recipe/tasty-recipes';
+		$template_object = self::get_object_by_name( $custom_design );
+		$custom_path     = $template_object->get_template_path();
+		if ( file_exists( $custom_path ) ) {
+			$template = $custom_path;
 		}
 
 		$stylesheet = get_option( 'stylesheet' );
@@ -397,7 +395,7 @@ EOT;
 			'</head><body>';
 		$ret           .= '<div class="' . esc_attr( implode( ' ', $wrapper_classes ) ) . '"';
 		$customizations = Shortcodes::get_card_container_customizations( $custom_design );
-		if ( $customizations && ( ! $template_object || ! $template_object->is_pro() ) ) {
+		if ( $customizations && ! $template_object->is_pro() ) {
 			$ret .= ' data-tasty-recipes-customization="' . esc_attr( $customizations ) . '"';
 		}
 		$ret .= '>' . PHP_EOL;
