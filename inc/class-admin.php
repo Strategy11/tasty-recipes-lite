@@ -677,4 +677,29 @@ class Admin {
 	public static function show_ssl_error() {
 		_deprecated_function( __METHOD__, 'x.x' );
 	}
+
+	/**
+	 * Print instacart image in admin instead of real iframe.
+	 *
+	 * @since 3.8
+	 * @deprecated x.x
+	 *
+	 * @return void
+	 */
+	public static function print_mock_instacart_html() {
+		_deprecated_function( __METHOD__, 'x.x' );
+	}
+
+	/**
+	 * Check if the Instacart button can be shown.
+	 *
+	 * @since 3.8
+	 * @deprecated x.x
+	 *
+	 * @return bool
+	 */
+	public static function can_show_instacart_button() {
+		_deprecated_function( __METHOD__, 'x.x' );
+		return false;
+	}
 }

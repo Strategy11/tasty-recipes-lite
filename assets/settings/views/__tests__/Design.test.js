@@ -23,7 +23,7 @@ const initialOptions = {
 			"<p>Share a photo and tag us — we can't wait to see what you've made!</p>",
 		footer_description_color: "",
 	},
-	locked: ['bold'],
+	locked: ['bold', 'fresh'],
 	upgrade_url: "https://www.wptasty.com/tasty-recipes",
 };
 const recipeCardPreviewUrlBase =
