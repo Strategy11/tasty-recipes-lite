@@ -406,15 +406,17 @@ class Shortcodes {
 			'recipe'             => $recipe,
 			'recipe_styles'      => '',
 			'recipe_scripts'     => '',
-			'recipe_convertable' => false,
-			'recipe_ingredients' => $recipe_json['ingredients'],
-			'recipe_scalable'    => false,
-			'copy_ingredients'   => false,
+			//'recipe_convertable' => false,
+			//'recipe_ingredients' => $recipe_json['ingredients'],
+			//'recipe_scalable'    => false,
+			//'copy_ingredients'   => false,
 			'footer_heading'     => '',
 			'footer_description' => '',
 			'template'           => self::$custom_template,
 		);
 		/**
+		 * The template vars before they are prepared.
+		 *
 		 * @since x.x
 		 */
 		$template_vars = apply_filters( 'tasty_recipes_pre_template_vars', $template_vars, compact( 'atts' ) );
@@ -570,7 +572,6 @@ class Shortcodes {
 			'copy_ingredients'              => $copy_ingredients,
 			'first_button'                  => self::get_card_button( $recipe, 'first' ),
 			'second_button'                 => self::get_card_button( $recipe, 'second' ),
-			'template'                      => self::$custom_template,
 		);
 
 		$template_vars = array_merge( $add_template_vars, $template_vars );

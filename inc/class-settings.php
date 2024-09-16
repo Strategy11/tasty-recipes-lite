@@ -578,32 +578,32 @@ class Settings {
 		$original  = stripslashes_deep( (array) $original );
 		$sanitized = array();
 		$allowed   = array(
-			'primary_color'            => array( __CLASS__, 'sanitize_color' ),
-			'secondary_color'          => array( __CLASS__, 'sanitize_color' ),
-			'icon_color'               => array( __CLASS__, 'sanitize_color' ),
-			'button_color'             => array( __CLASS__, 'sanitize_color' ),
-			'button_text_color'        => array( __CLASS__, 'sanitize_color' ),
-			'detail_label_color'       => array( __CLASS__, 'sanitize_color' ),
-			'detail_value_color'       => array( __CLASS__, 'sanitize_color' ),
-			'h2_color'                 => array( __CLASS__, 'sanitize_color' ),
-			'h2_transform'             => array(
+			'primary_color'          => array( __CLASS__, 'sanitize_color' ),
+			'secondary_color'        => array( __CLASS__, 'sanitize_color' ),
+			'icon_color'             => array( __CLASS__, 'sanitize_color' ),
+			'button_color'           => array( __CLASS__, 'sanitize_color' ),
+			'button_text_color'      => array( __CLASS__, 'sanitize_color' ),
+			'detail_label_color'     => array( __CLASS__, 'sanitize_color' ),
+			'detail_value_color'     => array( __CLASS__, 'sanitize_color' ),
+			'h2_color'               => array( __CLASS__, 'sanitize_color' ),
+			'h2_transform'           => array(
 				'uppercase',
 				'initial',
 				'lowercase',
 			),
-			'h3_color'                 => array( __CLASS__, 'sanitize_color' ),
-			'h3_transform'             => array(
+			'h3_color'               => array( __CLASS__, 'sanitize_color' ),
+			'h3_transform'           => array(
 				'uppercase',
 				'initial',
 				'lowercase',
 			),
-			'body_color'               => array( __CLASS__, 'sanitize_color' ),
-			'star_ratings_style'       => array(
+			'body_color'             => array( __CLASS__, 'sanitize_color' ),
+			'star_ratings_style'     => array(
 				'solid',
 				'outline',
 			),
-			'star_color'               => array( __CLASS__, 'sanitize_color' ),
-			'nutrifox_display_style'   => array(
+			'star_color'             => array( __CLASS__, 'sanitize_color' ),
+			'nutrifox_display_style' => array(
 				'label',
 				'card',
 			),
