@@ -331,7 +331,7 @@ EOT;
 		// With a query string.
 		add_filter(
 			'post_link',
-			function ( $link ) {
+			function( $link ) {
 				return add_query_arg( 'lang', 'de', $link );
 			}
 		);
@@ -395,4 +395,5 @@ EOT;
 		update_option( Tasty_Recipes::UNIT_CONVERSION_OPTION, false );
 		$this->reset_api_tracking_vars();
 	}
+
 }
