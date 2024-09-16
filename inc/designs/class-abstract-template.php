@@ -11,6 +11,11 @@ use Tasty_Recipes;
 
 /**
  * Design template abstract class.
+ *
+ * @method string get_id() Get template unique ID.
+ * @method string get_template_name() Get template name.
+ * @method string get_image_size() Get the image size for the template.
+ * @method string get_customized(string $key = '') Get customized options.
  */
 abstract class Abstract_Template {
 
@@ -52,6 +57,8 @@ abstract class Abstract_Template {
 
 	/**
 	 * Sets the variables.
+	 *
+	 * @return void
 	 */
 	public function set_vars() {
 		$this->template_name = str_replace( '_', ' ', substr( strrchr( get_class( $this ), '\\' ), 1 ) );
@@ -64,7 +71,7 @@ abstract class Abstract_Template {
 	 * @param string $name      Method name.
 	 * @param array  $arguments Method arguments.
 	 *
-	 * @return mixed
+	 * @return string|null
 	 */
 	public function __call( $name, $arguments ) {
 		// Intercept only methods starting with 'get_'.
@@ -72,9 +79,9 @@ abstract class Abstract_Template {
 			return null;
 		}
 
-		// Check if method is private.
+		// Check if method is protected.
 		$reflection = new \ReflectionMethod( $this, $name );
-		if ( $reflection->isPrivate() ) {
+		if ( $reflection->isProtected() ) {
 			$this->set_vars();
 			return call_user_func_array( [ $this, $name ], $arguments );
 		}
@@ -85,7 +92,7 @@ abstract class Abstract_Template {
 	/**
 	 * If current template is pro or lite.
 	 *
-	 * @return false
+	 * @return bool
 	 */
 	public function is_pro() {
 		$this->set_vars();
@@ -97,7 +104,7 @@ abstract class Abstract_Template {
 	 *
 	 * @return string
 	 */
-	private function get_id() {
+	protected function get_id() {
 		return $this->id;
 	}
 
@@ -106,7 +113,7 @@ abstract class Abstract_Template {
 	 *
 	 * @return string
 	 */
-	private function get_template_name() {
+	protected function get_template_name() {
 		return $this->template_name;
 	}
 
@@ -115,7 +122,7 @@ abstract class Abstract_Template {
 	 *
 	 * @return string
 	 */
-	private function get_image_size() {
+	protected function get_image_size() {
 		return $this->get_customized( 'image_size' );
 	}
 
@@ -126,7 +133,7 @@ abstract class Abstract_Template {
 	 *
 	 * @return string
 	 */
-	private function get_customized( $key = '' ) {
+	protected function get_customized( $key = '' ) {
 		return $this->customized[ $key ];
 	}
 
@@ -190,6 +197,8 @@ abstract class Abstract_Template {
 
 	/**
 	 * Get current template style or template file path.
+	 *
+	 * @param string $file File name.
 	 *
 	 * @return string
 	 */

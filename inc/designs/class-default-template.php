@@ -17,6 +17,8 @@ class Default_Template extends Abstract_Template {
 
 	/**
 	 * Sets the variables.
+	 *
+	 * @return void
 	 */
 	public function set_vars() {
 		$this->id            = '';

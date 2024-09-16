@@ -109,13 +109,18 @@ EOT;
 <li>1 cup for serving</li>
 </ul>
 EOT;
-		$wp_major             = substr( $GLOBALS['wp_version'], 0, 3 );
-		$img_string           = '<img width="200" height="300" src="http://pinchofyum.com/wp-content/uploads/2017/08/Cashew-Coffee-1-3-200x300.jpg" class="attachment-medium size-medium" alt="" />';
-		if ( '4.6' === $wp_major ) {
-			$img_string = '<img width="200" height="300" src="http://pinchofyum.com/wp-content/uploads/2017/08/Cashew-Coffee-1-3-200x300.jpg" class="attachment-medium size-medium" alt="Cashew-Coffee-1-3" />';
-		}
+		$wp_major   = substr( $GLOBALS['wp_version'], 0, 3 );
+		$img_string = '<img width="200" height="300" src="http://pinchofyum.com/wp-content/uploads/2017/08/Cashew-Coffee-1-3-200x300.jpg" class="attachment-medium size-medium" alt="" />';
 		if ( version_compare( $wp_major, '5.4', '>' ) ) {
-			$img_string = '<img width="200" height="300" src="http://pinchofyum.com/wp-content/uploads/2017/08/Cashew-Coffee-1-3-200x300.jpg" class="attachment-medium size-medium" alt="" loading="lazy" srcset="http://pinchofyum.com/wp-content/uploads/2017/08/Cashew-Coffee-1-3-200x300.jpg 200w, http://pinchofyum.com/wp-content/uploads/2017/08/Cashew-Coffee-1-3-768x1152.jpg 768w, http://pinchofyum.com/wp-content/uploads/2017/08/Cashew-Coffee-1-3-683x1024.jpg 683w, http://pinchofyum.com/wp-content/uploads/2017/08/Cashew-Coffee-1-3.jpg 1200w" sizes="(max-width: 200px) 100vw, 200px" />';
+			$img_string = str_replace(
+				'alt=""',
+				'alt="" loading="lazy" srcset="http://pinchofyum.com/wp-content/uploads/2017/08/Cashew-Coffee-1-3-200x300.jpg 200w, http://pinchofyum.com/wp-content/uploads/2017/08/Cashew-Coffee-1-3-768x1152.jpg 768w, http://pinchofyum.com/wp-content/uploads/2017/08/Cashew-Coffee-1-3-683x1024.jpg 683w, http://pinchofyum.com/wp-content/uploads/2017/08/Cashew-Coffee-1-3.jpg 1200w" sizes="(max-width: 200px) 100vw, 200px"',
+				$img_string
+			);
+
+			if ( version_compare( $wp_major, '6.7', '>=' ) ) {
+				$img_string = str_replace( 'sizes="(max-width', 'sizes="auto, (max-width', $img_string );
+			}
 		}
 		$recipe_1_instructions = <<<EOT
 <ol>
@@ -260,7 +265,7 @@ EOT;
 					'instructions'                => $recipe_1_instructions,
 					'notes'                       => $recipe_1_notes,
 					'average_rating'              => '',
-					'total_reviews'               => '0',
+					'total_reviews'               => 0,
 					'prep_time'                   => '10 minutes',
 					'cook_time'                   => '5 minutes',
 					'total_time'                  => '15 minutes',
@@ -305,7 +310,7 @@ EOT;
 					'instructions'                => '',
 					'notes'                       => '',
 					'average_rating'              => '',
-					'total_reviews'               => '0',
+					'total_reviews'               => 0,
 					'prep_time'                   => '2 hours 5 minutes',
 					'cook_time'                   => '',
 					'total_time'                  => '2 hours 5 minutes',
@@ -350,7 +355,7 @@ EOT;
 					'instructions'                => $recipe_3_instructions,
 					'notes'                       => '<p>*Quick-soak method for raw cashews or pepitas: In a medium saucepan, add nuts or seeds along with enough water to cover. Bring to boil, then maintain a low boil for 15 minutes. Drain and rinse, and proceed with the recipe.</p>',
 					'average_rating'              => '',
-					'total_reviews'               => '0',
+					'total_reviews'               => 0,
 					'prep_time'                   => '30 minutes',
 					'cook_time'                   => '30 minutes',
 					'total_time'                  => '55 minutes',
@@ -395,7 +400,7 @@ EOT;
 					'instructions'                => $recipe_4_instructions,
 					'notes'                       => '',
 					'average_rating'              => '5',
-					'total_reviews'               => '2',
+					'total_reviews'               => 2,
 					'prep_time'                   => '',
 					'cook_time'                   => '',
 					'total_time'                  => '',
@@ -440,7 +445,7 @@ EOT;
 					'instructions'                => $recipe_1_instructions,
 					'notes'                       => $recipe_1_notes,
 					'average_rating'              => '',
-					'total_reviews'               => '0',
+					'total_reviews'               => 0,
 					'prep_time'                   => '10 minutes',
 					'cook_time'                   => '5 minutes',
 					'total_time'                  => '15 minutes',
@@ -485,7 +490,7 @@ EOT;
 					'instructions'                => $recipe_1_instructions,
 					'notes'                       => $recipe_1_notes,
 					'average_rating'              => '',
-					'total_reviews'               => '0',
+					'total_reviews'               => 0,
 					'prep_time'                   => '10 minutes',
 					'cook_time'                   => '5 minutes',
 					'total_time'                  => '15 minutes',
@@ -522,4 +527,5 @@ EOT;
 			),
 		);
 	}
+
 }

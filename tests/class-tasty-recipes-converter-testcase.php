@@ -107,4 +107,5 @@ class Tasty_Recipes_Converter_Testcase extends Tasty_Recipes_Testcase {
 		unset( $expected['image_sizes'], $recipe_json['image_sizes'], $recipe_json['image_id'] );
 		$this->assertEquals( $expected, $recipe_json );
 	}
+
 }

@@ -240,7 +240,7 @@ class Admin {
 	 * @return array
 	 */
 	public static function add_menu_item( $menu_items ) {
-		__deprecated_function( __METHOD__, 'x.x', 'Settings::add_menu_item' );
+		_deprecated_function( __METHOD__, 'x.x', 'Settings::add_menu_item' );
 		return Settings::add_menu_item( $menu_items );
 	}
 
@@ -367,7 +367,6 @@ class Admin {
 	 */
 	public static function handle_wp_ajax_preview_recipe_card() {
 		_deprecated_function( __METHOD__, 'x.x', 'Templates::handle_wp_ajax_preview_recipe_card' );
-		Templates::handle_wp_ajax_preview_recipe_card();
 	}
 
 	/**
@@ -641,6 +640,7 @@ class Admin {
 	}
 
 	/**
+	 * Check if the Instacart button can be shown.
 	 *
 	 * @since 3.8
 	 *
