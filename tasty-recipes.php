@@ -233,7 +233,7 @@ class Tasty_Recipes {
 		}
 
 		$lite_class  = stripos( $class_name, 'Pro\\' ) === false;
-		$lite_plugin = stripos( $base, 'recipes-lite' ) !== false;
+		$lite_plugin = stripos( $base, 'lite' ) !== false || stripos( $base, 'recipe' ) === false;
 		if ( $lite_class !== $lite_plugin ) {
 			// Don't load Pro classes in Lite.
 			return;
