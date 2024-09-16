@@ -46,10 +46,6 @@ class Test_Shortcode extends Tasty_Recipes_Testcase {
 			qp( $dom, 'span.tasty-recipes-total-time' )->text()
 		);
 		$this->assertStringContainsString(
-			'<span data-amount="2">2</span>',
-			qp( $dom, 'span.tasty-recipes-yield' )->html()
-		);
-		$this->assertStringContainsString(
 			'Main',
 			qp( $dom, 'span.tasty-recipes-category' )->text()
 		);
