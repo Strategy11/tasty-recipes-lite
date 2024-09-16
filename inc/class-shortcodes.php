@@ -1257,4 +1257,16 @@ EOT;
 
 		return 'window.trCommon=' . wp_json_encode( $vars ) . ';';
 	}
+
+	/**
+	 * Print cook mode html.
+	 *
+	 * @since 3.8
+	 * @deprecated x.x
+	 *
+	 * @return void
+	 */
+	public static function print_cook_mode() {
+		_deprecated_function( __METHOD__, 'x.x' );
+	}
 }

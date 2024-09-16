@@ -36,8 +36,7 @@ body:not(.tasty-recipes-print-view) {
 }
 
 body.tasty-recipes-print-view{
-	.tasty-recipes-buttons,
-	.tasty-recipes-cook-mode{
+	.tasty-recipes-buttons {
 		display: none;
 	}
 }
