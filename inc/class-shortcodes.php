@@ -406,6 +406,7 @@ class Shortcodes {
 			'recipe'             => $recipe,
 			'recipe_styles'      => '',
 			'recipe_scripts'     => '',
+			// phpcs:ignore
 			// 'recipe_convertable' => false, // phpcs:ignore
 			// 'recipe_ingredients' => $recipe_json['ingredients'], // phpcs:ignore
 			// 'recipe_scalable'    => false, // phpcs:ignore
