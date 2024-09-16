@@ -406,10 +406,10 @@ class Shortcodes {
 			'recipe'             => $recipe,
 			'recipe_styles'      => '',
 			'recipe_scripts'     => '',
-			//'recipe_convertable' => false,
-			//'recipe_ingredients' => $recipe_json['ingredients'],
-			//'recipe_scalable'    => false,
-			//'copy_ingredients'   => false,
+			// 'recipe_convertable' => false, // phpcs:ignore
+			// 'recipe_ingredients' => $recipe_json['ingredients'], // phpcs:ignore
+			// 'recipe_scalable'    => false, // phpcs:ignore
+			// 'copy_ingredients'   => false, // phpcs:ignore
 			'footer_heading'     => '',
 			'footer_description' => '',
 			'template'           => self::$custom_template,
