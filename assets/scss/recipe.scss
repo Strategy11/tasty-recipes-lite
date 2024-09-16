@@ -111,20 +111,6 @@ body.tasty-recipes-print-view{
 	display: none;
 }
 
-.tasty-recipes-yield-scale {
-	border: 1px solid #979599;
-	border-radius: 2px;
-	color: #979599;
-	margin-left: 3px;
-	padding: 0 4px;
-	font-size: 0.7rem;
-}
-
-.tasty-recipes-units-scale-container {
-	display: flex;
-	flex-wrap: wrap;
-}
-
 .tasty-recipes-convert-container {
 	padding: 0 1em 1em 0;
 	.tasty-recipes-convert-label {
@@ -144,36 +130,6 @@ body.tasty-recipes-print-view{
 		text-align: center;
 		letter-spacing: 0;
 		&.tasty-recipes-convert-button-active {
-			color: #fff;
-			background-color: #000;
-			border-color: #000;
-		}
-		&:focus {
-			outline: none;
-		}
-	}
-}
-
-.tasty-recipes-scale-container {
-	display: flex;
-	padding: 0 0 1em 0;
-	.tasty-recipes-scale-label {
-		text-transform: uppercase;
-		font-size: 0.6rem;
-		color: #979599;
-		align-self: center;
-	}
-	button {
-		background: transparent;
-		border: 1px solid #353547;
-		border-radius: 2px;
-		color: #353547;
-		margin-left: 5px;
-		padding: 2px 4px;
-		min-width: 34px;
-		letter-spacing: 0;
-		cursor: pointer;
-		&.tasty-recipes-scale-button-active {
 			color: #fff;
 			background-color: #000;
 			border-color: #000;

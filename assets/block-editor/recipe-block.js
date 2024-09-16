@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 const {
-	InspectorAdvancedControls,
+	InspectorControls,
 	BlockControls
 } = wp.blockEditor;
 
@@ -150,7 +150,7 @@ const edit = props => {
 					attributes={props.attributes}
 				/>
 			</div>
-			<InspectorAdvancedControls>
+			<InspectorControls>
 				<PanelBody
 					title={__("Recipe options", "tasty-recipes")}
 					initialOpen={true}
@@ -188,20 +188,8 @@ const edit = props => {
 							});
 						}}
 					/>
-					<CheckboxControl
-						label={__(
-							"Disable scaling for this recipe",
-							"tasty-recipes"
-						)}
-						checked={props.attributes.disable_scaling}
-						onChange={() => {
-							props.setAttributes({
-								disable_scaling: !props.attributes.disable_scaling
-							});
-						}}
-					/>
 				</PanelBody>
-			</InspectorAdvancedControls>
+			</InspectorControls>
 		</Fragment>
 	);
 };
@@ -234,10 +222,6 @@ const blockRegistration = {
 			default: false
 		},
 		disable_unit_conversion: {
-			type: "boolean",
-			default: false,
-		},
-		disable_scaling: {
 			type: "boolean",
 			default: false,
 		},
