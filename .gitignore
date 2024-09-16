@@ -7,7 +7,6 @@ mix-manifest.json
 assets/dist/
 node_modules/
 .idea/
-*.sql
 *.zip
 
 /vendor/
