@@ -410,7 +410,8 @@ class Shortcodes {
 			// 'recipe_convertable' => false, // phpcs:ignore
 			// 'recipe_ingredients' => $recipe_json['ingredients'], // phpcs:ignore
 			'recipe_scalable'    => false,
-			// 'copy_ingredients'   => false, // phpcs:ignore
+			// phpcs:ignore
+			// 'copy_ingredients'   => false,
 			'footer_heading'     => '',
 			'footer_description' => '',
 			'template'           => self::$custom_template,
