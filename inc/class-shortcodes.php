@@ -409,8 +409,7 @@ class Shortcodes {
 			'recipe_convertable' => false,
 			'recipe_ingredients' => $recipe_json['ingredients'],
 			'recipe_scalable'    => false,
-			// phpcs:ignore
-			// 'copy_ingredients'   => false,
+			'copy_ingredients'   => false,
 			'footer_heading'     => '',
 			'footer_description' => '',
 			'template'           => self::$custom_template,
@@ -427,19 +426,6 @@ class Shortcodes {
 		// Strip out this <span> so Tasty Links can apply to ingredient names.
 		if ( false !== stripos( $ingredients, '<span class="nutrifox-name">' ) ) {
 			$ingredients = preg_replace( '#<span class="nutrifox-name">(.+)</span>#U', '$1', $ingredients );
-		}
-
-		/** Build the button to copy ingredients to clipboard if `copy to clipboard` is turned on. */
-		if ( ! is_feed() && get_option( Tasty_Recipes::COPY_TO_CLIPBOARD_OPTION ) ) {
-			$copy_ingredients = '<button ' .
-				'aria-label="' . esc_attr__( 'Copy ingredients to clipboard', 'tasty-recipes' ) . '" ' .
-				'class="tasty-recipes-copy-button" ' .
-				'data-text="' . esc_attr__( 'Copy ingredients', 'tasty-recipes' ) . '" ' .
-				'data-success="' . esc_attr__( 'Copied!', 'tasty-recipes' ) . '">' .
-				Utils::get_contents( dirname( __DIR__ ) . '/assets/images/icons/icon-copy-to-clipboard.svg' ) .
-				'</button>';
-		} else {
-			$copy_ingredients = false;
 		}
 
 		$template_vars['recipe_ingredients'] = apply_filters(
@@ -480,7 +466,6 @@ class Shortcodes {
 			'recipe_video_embed'            => '',
 			'recipe_nutrition'              => array(),
 			'recipe_hidden_nutrition'       => array(),
-			'copy_ingredients'              => $copy_ingredients,
 			'first_button'                  => self::get_card_button( $recipe, 'first' ),
 			'second_button'                 => self::get_card_button( $recipe, 'second' ),
 		);
@@ -632,10 +617,6 @@ class Shortcodes {
 
 		$template_vars['recipe_scripts'] .= PHP_EOL . self::get_common_recipe_scripts();
 		$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( __DIR__ ) . '/assets/js/smooth-scroll.js' );
-
-		if ( $copy_ingredients ) {
-			$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( __DIR__ ) . '/assets/js/copy-ingredients.js' );
-		}
 
 		if ( $template_vars['recipe_instructions_has_video'] ) {
 			$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( __DIR__ ) . '/assets/js/video-toggle.js' );
