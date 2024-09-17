@@ -150,9 +150,11 @@ class Tasty_Recipes {
 	/**
 	 * Option name for the automatic unit conversion option.
 	 *
+	 * @deprecated x.x
+	 *
 	 * @var string
 	 */
-	const AUTOMATIC_UNIT_CONVERSION_OPTION = 'tasty_recipes_automatic_unit_conversion';
+	const AUTOMATIC_UNIT_CONVERSION_OPTION = '';
 
 	/**
 	 * Option name for the ingredient checkboxes option.
@@ -278,7 +280,6 @@ class Tasty_Recipes {
 		add_action( 'init', array( 'Tasty_Recipes\Content_Model', 'action_init_register_cron_events' ) );
 		add_action( 'tasty_recipes_process_thumbnails', array( 'Tasty_Recipes\Content_Model', 'action_tasty_recipes_process_thumbnails' ) );
 		add_action( 'tasty_recipes_enrich_youtube_embeds', array( 'Tasty_Recipes\Content_Model', 'action_tasty_recipes_enrich_youtube_embeds' ) );
-		add_action( 'tasty_recipes_apply_unit_conversion', array( 'Tasty_Recipes\Content_model', 'action_tasty_recipes_apply_unit_conversion' ) );
 		add_action( 'init', array( 'Tasty_Recipes\Content_Model', 'action_init_register_post_types' ) );
 		add_action( 'init', array( 'Tasty_Recipes\Content_Model', 'action_init_register_rewrite_rules' ) );
 		add_action( 'init', array( 'Tasty_Recipes\Content_Model', 'action_init_register_oembed_providers' ) );
@@ -374,7 +375,6 @@ class Tasty_Recipes {
 		add_filter( 'teeny_mce_buttons', array( 'Tasty_Recipes\Assets', 'filter_teeny_mce_buttons' ), 10, 2 );
 		add_filter( 'teeny_mce_before_init', array( 'Tasty_Recipes\Assets', 'filter_teeny_mce_before_init' ), 10, 2 );
 		add_filter( 'update_post_metadata', array( 'Tasty_Recipes\Content_Model', 'filter_update_post_metadata_nutrifox_id' ), 10, 4 );
-		add_filter( 'update_post_metadata', array( 'Tasty_Recipes\Content_Model', 'filter_update_post_metadata_ingredients' ), 10, 4 );
 		add_filter( 'update_post_metadata', array( 'Tasty_Recipes\Content_Model', 'filter_update_post_metadata_video_url' ), 10, 4 );
 		add_filter( 'update_post_metadata', array( 'Tasty_Recipes\Content_Model', 'filter_update_post_metadata_thumbnail_id' ), 10, 4 );
 		add_filter( 'template_include', array( 'Tasty_Recipes\Content_Model', 'filter_template_include' ), 1000 );

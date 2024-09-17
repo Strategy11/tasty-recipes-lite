@@ -406,9 +406,8 @@ class Shortcodes {
 			'recipe'             => $recipe,
 			'recipe_styles'      => '',
 			'recipe_scripts'     => '',
-			// phpcs:ignore
-			// 'recipe_convertable' => false, // phpcs:ignore
-			// 'recipe_ingredients' => $recipe_json['ingredients'], // phpcs:ignore
+			'recipe_convertable' => false,
+			'recipe_ingredients' => $recipe_json['ingredients'],
 			'recipe_scalable'    => false,
 			// phpcs:ignore
 			// 'copy_ingredients'   => false,
@@ -423,60 +422,7 @@ class Shortcodes {
 		 */
 		$template_vars = apply_filters( 'tasty_recipes_pre_template_vars', $template_vars, compact( 'atts' ) );
 
-		$recipe_convertable = false;
-
-		$orig_ingredients = $recipe_json['ingredients'];
-		$ingredients      = $orig_ingredients;
-		$nutrifox_convert = get_post_meta( $recipe->get_id(), 'nutrifox_conversion_response', true );
-		if ( get_option( Tasty_Recipes::UNIT_CONVERSION_OPTION )
-			&& ! empty( $nutrifox_convert['processed'] )
-			&& empty( $atts['disable_unit_conversion'] ) ) {
-			$ingredients = $nutrifox_convert['processed'];
-			if ( false !== stripos( $ingredients, 'data-nf-original' ) ) {
-				$first_type   = 'usc';
-				$first_label  = __( 'US', 'tasty-recipes' );
-				$second_type  = 'metric';
-				$second_label = __( 'M', 'tasty-recipes' );
-				$first_active = '';
-				if ( false !== stripos( $ingredients, 'data-nf-original="usc"' )
-					&& false === stripos( $ingredients, 'data-nf-original="metric"' ) ) {
-					$first_active = ' tasty-recipes-convert-button-active';
-				} elseif ( false !== stripos( $ingredients, 'data-nf-original="metric"' )
-					&& false === stripos( $ingredients, 'data-nf-original="usc"' ) ) {
-					$first_active = ' tasty-recipes-convert-button-active';
-					$first_type   = 'metric';
-					$first_label  = __( 'M', 'tasty-recipes' );
-					$second_type  = 'usc';
-					$second_label = __( 'US', 'tasty-recipes' );
-				}
-				$recipe_convertable  = '<button class="tasty-recipes-convert-button' . esc_attr( $first_active ) . '" ' .
-					'data-unit-type="' . esc_attr( $first_type ) . '" type="button">' .
-					$first_label .
-					'</button>';
-				$recipe_convertable .= '<button class="tasty-recipes-convert-button" data-unit-type="' . esc_attr( $second_type ) . '" type="button">' .
-					$second_label . '</button>';
-			}
-		}
-
-		$error = get_post_meta( $recipe->get_id(), 'nutrifox_conversion_error', true );
-		if ( get_option( Tasty_Recipes::UNIT_CONVERSION_OPTION )
-			&& empty( $atts['disable_unit_conversion'] )
-			&& $error && self::is_error_message_showable() ) {
-			$message_text = sprintf(
-				'Ingredient units were not converted: %s. Try saving the recipe again, or contact Tasty Recipes support if the error persists.',
-				$error->get_error_message()
-			);
-			if ( false !== stripos( $error->get_error_message(), '(HTTP code 401)' ) ) {
-				$message_text = 'Ingredient unit conversion requires a valid Tasty Recipes license key. ' .
-					'Enter a valid license key, or contact Tasty Recipes support if you are seeing this message in error.';
-			}
-			$error_message = '<div style="border:4px solid #dc3232;padding:5px 12px;margin-top:15px;margin-bottom:15px;">' .
-				esc_html( $message_text ) .
-				'</div>' . PHP_EOL;
-			$ingredients   = $error_message . $ingredients;
-		}
-
-		$ingredients = self::process_ingredients_annotate_with_spans( $ingredients );
+		$ingredients = $template_vars['recipe_ingredients'];
 
 		if ( get_option( Tasty_Recipes::INGREDIENT_CHECKBOXES_OPTION )
 			&& ! is_feed() && ! tasty_recipes_is_print() ) {
@@ -501,6 +447,12 @@ class Shortcodes {
 			$copy_ingredients = false;
 		}
 
+		$template_vars['recipe_ingredients'] = apply_filters(
+			'tasty_recipes_the_content',
+			self::do_caption_shortcode( $template_vars['recipe_ingredients'] ),
+			'ingredients'
+		);
+
 		$recipe_author_name = '';
 		if ( ! empty( $recipe_json['author_name'] ) ) {
 			$link = ! empty( $atts['author_link'] ) ? $atts['author_link'] : get_option( Tasty_Recipes::DEFAULT_AUTHOR_LINK_OPTION, '' );
@@ -522,9 +474,7 @@ class Shortcodes {
 			'recipe_author_name'            => $recipe_author_name,
 			'recipe_details'                => array(),
 			'recipe_description'            => self::do_caption_shortcode( $recipe_json['description_rendered'] ),
-			'recipe_ingredients'            => apply_filters( 'tasty_recipes_the_content', self::do_caption_shortcode( $ingredients ), 'ingredients' ),
 			'recipe_instructions_has_video' => false,
-			'recipe_convertable'            => $recipe_convertable,
 			'recipe_instructions'           => Distribution_Metadata::apply_instruction_step_numbers(
 				apply_filters( 'tasty_recipes_the_content', self::do_caption_shortcode( $recipe_json['instructions'] ), 'instructions' )
 			),
@@ -687,10 +637,6 @@ class Shortcodes {
 
 		$template_vars['recipe_scripts'] .= PHP_EOL . self::get_common_recipe_scripts();
 		$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( __DIR__ ) . '/assets/js/smooth-scroll.js' );
-
-		if ( $recipe_convertable ) {
-			$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( __DIR__ ) . '/assets/js/convert-buttons.js' );
-		}
 
 		if ( $copy_ingredients ) {
 			$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( __DIR__ ) . '/assets/js/copy-ingredients.js' );
@@ -1178,53 +1124,6 @@ EOT;
 	}
 
 	/**
-	 * Process ingredients to annotate <li> with structured data.
-	 *
-	 * @param string $ingredients Existing ingredients string.
-	 *
-	 * @return string
-	 */
-	public static function process_ingredients_annotate_with_spans( $ingredients ) {
-		// Prioritize list items.
-		$ingredients = preg_replace_callback(
-			'#(<li[^\>]*>)(.*)(<\/li>)#U',
-			function ( $m ) {
-				if ( Unit_Amount_Parser::string_has_non_numeric_amount( $m[2] ) ) {
-					$m[1] = str_replace( '<li', '<li data-has-non-numeric-amount', $m[1] );
-				}
-				return $m[1] . Unit_Amount_Parser::annotate_string_with_spans( $m[2] ) . $m[3];
-			},
-			$ingredients,
-			-1,
-			$count
-		);
-		if ( $count ) {
-			return $ingredients;
-		}
-		// Fall back when there weren't list items.
-		$bits = explode( PHP_EOL, $ingredients );
-		foreach ( $bits as $i => $bit ) {
-			if ( Distribution_Metadata::get_heading( $bit ) ) {
-				continue;
-			}
-			$start = '';
-			$end   = '';
-			// String starts with some HTML element.
-			if ( preg_match( '#^(<p[^>]*>)(.+)(</p>)$#', $bit, $matches ) ) {
-				$start = $matches[1];
-				$end   = $matches[3];
-				$bit   = $matches[2];
-			}
-			if ( Unit_Amount_Parser::string_has_non_numeric_amount( $bit ) ) {
-				$bits[ $i ] = $start . '<span data-has-non-numeric-amount>' . $bit . '</span>' . $end;
-				continue;
-			}
-			$bits[ $i ] = $start . Unit_Amount_Parser::annotate_string_with_spans( $bit ) . $end;
-		}
-		return implode( PHP_EOL, $bits );
-	}
-
-	/**
 	 * Process ingredients to annotate <li> with checkboxes.
 	 *
 	 * @param string $ingredients Existing ingredients string.
@@ -1477,5 +1376,19 @@ EOT;
 	 */
 	public static function print_cook_mode() {
 		_deprecated_function( __METHOD__, 'x.x' );
+	}
+
+	/**
+	 * Process ingredients to annotate <li> with structured data.
+	 *
+	 * @deprecated x.x
+	 *
+	 * @param string $ingredients Existing ingredients string.
+	 *
+	 * @return string
+	 */
+	public static function process_ingredients_annotate_with_spans( $ingredients ) {
+		_deprecated_function( __METHOD__, 'x.x' );
+		return $ingredients;
 	}
 }

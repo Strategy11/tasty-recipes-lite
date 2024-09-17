@@ -29,9 +29,6 @@ class Content_Model {
 	 * @return void
 	 */
 	public static function action_init_register_cron_events() {
-		if ( ! wp_next_scheduled( 'tasty_recipes_apply_unit_conversion' ) ) {
-			wp_schedule_event( time(), 'twicedaily', 'tasty_recipes_apply_unit_conversion' );
-		}
 		if ( ! wp_next_scheduled( 'tasty_recipes_process_thumbnails' ) ) {
 			wp_schedule_event( time(), 'twicedaily', 'tasty_recipes_process_thumbnails' );
 		}
@@ -152,91 +149,6 @@ class Content_Model {
 	}
 
 	/**
-	 * Fetches Nutrifox conversion data when the ingredients are updated.
-	 *
-	 * @param mixed  $check      Existing check value.
-	 * @param int    $object_id  ID for the post being updated.
-	 * @param string $meta_key   Post meta key.
-	 * @param string $meta_value New meta value.
-	 *
-	 * @return mixed
-	 */
-	public static function filter_update_post_metadata_ingredients( $check, $object_id, $meta_key, $meta_value ) {
-		if ( 'tasty_recipe' !== get_post_type( $object_id ) || 'ingredients' !== $meta_key ) {
-			return $check;
-		}
-		if ( empty( $meta_value ) ) {
-			delete_post_meta( $object_id, 'nutrifox_conversion_response' );
-			delete_post_meta( $object_id, 'nutrifox_conversion_error' );
-			return $check;
-		}
-		// If it's disabled, don't want to display outdated data when re-enabled.
-		if ( ! get_option( Tasty_Recipes::UNIT_CONVERSION_OPTION ) ) {
-			delete_post_meta( $object_id, 'nutrifox_conversion_error' );
-			delete_post_meta( $object_id, 'nutrifox_conversion_response' );
-			return $check;
-		}
-		$existing_value = get_post_meta( $object_id, $meta_key, true );
-		if ( $existing_value !== $meta_value || ! get_post_meta( $object_id, 'nutrifox_conversion_response', true ) ) {
-			self::generate_nutrifox_conversion( $object_id, $meta_value );
-		}
-		return $check;
-	}
-
-	/**
-	 * Generates the Nutrifox conversion data.
-	 *
-	 * @param int    $post_id     ID for the post (recipe).
-	 * @param string $ingredients Ingredients for the recipe.
-	 *
-	 * @return bool
-	 */
-	public static function generate_nutrifox_conversion( $post_id, $ingredients ) {
-		$response      = wp_remote_post(
-			sprintf( '%s/api/tasty-recipes/conversion-enrichment', Tasty_Recipes::nutrifox_url() ),
-			array(
-				'headers' => array(
-					'Content-Type'                => 'application/json',
-					'X-Tasty-Recipes-License-Key' => get_option( Tasty_Recipes::LICENSE_KEY_OPTION ),
-					'X-Tasty-Recipes-Url'         => home_url(),
-					'X-Tasty-Recipes-Recipe-Id'   => $post_id,
-				),
-				'body'    => wp_json_encode(
-					array(
-						'ingredients' => $ingredients,
-					)
-				),
-				'timeout' => 20,
-			)
-		);
-		$response_code = wp_remote_retrieve_response_code( $response );
-		if ( ! is_wp_error( $response ) ) {
-			$body          = wp_remote_retrieve_body( $response );
-			$response_data = json_decode( $body, true );
-
-			if ( 200 === $response_code ) {
-				update_post_meta( $post_id, 'nutrifox_conversion_response', $response_data );
-				delete_post_meta( $post_id, 'nutrifox_conversion_error' );
-				return true;
-			}
-
-			$response = new \WP_Error(
-				'nutrifox-api',
-				sprintf(
-					// translators: %1$d Nutrifox HTTP error code, %2$s error message.
-					__( 'Nutrifox conversion API request failed (HTTP code %1$d %2$s)', 'tasty-recipes' ),
-					$response_code,
-					$response_data ? $response_data : ''
-				)
-			);
-		}
-
-		update_post_meta( $post_id, 'nutrifox_conversion_error', $response );
-		delete_post_meta( $post_id, 'nutrifox_conversion_response' );
-		return false;
-	}
-
-	/**
 	 * Fetches and stores oEmbed data when the recipe video URL is updated.
 	 *
 	 * @param mixed  $check      Existing check value.
@@ -344,32 +256,6 @@ class Content_Model {
 		}
 		self::generate_attachment_image_sizes( (int) $meta_value );
 		return $check;
-	}
-
-	/**
-	 * Cron callback to apply unit conversion to recipes without it.
-	 *
-	 * @return void
-	 */
-	public static function action_tasty_recipes_apply_unit_conversion() {
-		global $wpdb;
-		if ( ! get_option( Tasty_Recipes::UNIT_CONVERSION_OPTION )
-			|| ! get_option( Tasty_Recipes::AUTOMATIC_UNIT_CONVERSION_OPTION ) ) {
-			return;
-		}
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
-		$recipe_ids = $wpdb->get_col(
-			"SELECT p.id FROM {$wpdb->postmeta} as pm
-			LEFT JOIN {$wpdb->posts} as p ON p.ID = pm.post_id
-			WHERE pm.meta_key='ingredients' AND p.post_type='tasty_recipe'"
-		);
-		foreach ( $recipe_ids as $recipe_id ) {
-			if ( get_post_meta( $recipe_id, 'nutrifox_conversion_response', true )
-				|| get_post_meta( $recipe_id, 'nutrifox_conversion_error', true ) ) {
-				continue;
-			}
-			self::generate_nutrifox_conversion( $recipe_id, get_post_meta( $recipe_id, 'ingredients', true ) );
-		}
 	}
 
 	/**
@@ -624,5 +510,42 @@ class Content_Model {
 		 * @param string $query_var
 		 */
 		return apply_filters( 'tasty_recipes_print_query_var', self::PRINT_QUERY_VAR );
+	}
+
+	/**
+	 * Fetches Nutrifox conversion data when the ingredients are updated.
+	 *
+	 * @deprecated x.x
+	 *
+	 * @param mixed $check Existing check value.
+	 *
+	 * @return mixed
+	 */
+	public static function filter_update_post_metadata_ingredients( $check ) {
+		_deprecated_function( __METHOD__, 'x.x', 'Tasty_Recipes_Pro\Content_Model::filter_update_post_metadata_ingredients' );
+		return $check;
+	}
+
+	/**
+	 * Generates the Nutrifox conversion data.
+	 *
+	 * @deprecated x.x
+	 *
+	 * @return bool
+	 */
+	public static function generate_nutrifox_conversion() {
+		_deprecated_function( __METHOD__, 'x.x', 'Tasty_Recipes_Pro\Content_Model::generate_nutrifox_conversion' );
+		return false;
+	}
+
+	/**
+	 * Cron callback to apply unit conversion to recipes without it.
+	 *
+	 * @deprecated x.x
+	 *
+	 * @return void
+	 */
+	public static function action_tasty_recipes_apply_unit_conversion() {
+		_deprecated_function( __METHOD__, 'x.x' );
 	}
 }

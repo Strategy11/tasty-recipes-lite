@@ -28,5 +28,4 @@ parameters:
 		- '#Access to an undefined property#'
 		- '#might not be defined.#'
 		- '#Use more strict comparison#'
-		- '#esc_attr expects string, float given#'
 		- '#no value type specified in iterable type array#'

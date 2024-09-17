@@ -176,18 +176,6 @@ const edit = props => {
 							});
 						}}
 					/>
-					<CheckboxControl
-						label={__(
-							"Disable unit conversion for this recipe",
-							"tasty-recipes"
-						)}
-						checked={props.attributes.disable_unit_conversion}
-						onChange={() => {
-							props.setAttributes({
-								disable_unit_conversion: !props.attributes.disable_unit_conversion
-							});
-						}}
-					/>
 				</PanelBody>
 			</InspectorControls>
 		</Fragment>
@@ -220,10 +208,6 @@ const blockRegistration = {
 		disableJSON: {
 			type: "boolean",
 			default: false
-		},
-		disable_unit_conversion: {
-			type: "boolean",
-			default: false,
 		},
 	},
 	edit,

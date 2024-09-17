@@ -168,40 +168,7 @@ use Tasty\Framework\Utils\Url;
 					<th scope="row">License Key</th>
 					<td><input class="regular-text" type="text" readonly value="<?php echo esc_attr( get_option( Tasty_Recipes::LICENSE_KEY_OPTION ) ); ?>"></td>
 				</tr>
-				<?php
-				if ( get_option( Tasty_Recipes::UNIT_CONVERSION_OPTION ) ) :
-					$ingredients = <<<EOT
-1 cup flour
-1 stick butter
-EOT;
-					$response    = wp_remote_post(
-						sprintf( '%s/api/tasty-recipes/conversion-enrichment', Tasty_Recipes::nutrifox_url() ),
-						array(
-							'headers' => array(
-								'Content-Type'        => 'application/json',
-								'X-Tasty-Recipes-License-Key' => get_option( Tasty_Recipes::LICENSE_KEY_OPTION ),
-								'X-Tasty-Recipes-Url' => home_url(),
-								'X-Tasty-Recipes-Recipe-Id' => 0,
-							),
-							'body'    => wp_json_encode(
-								array(
-									'ingredients' => $ingredients,
-								)
-							),
-							'timeout' => 20,
-						)
-					);
-					if ( is_wp_error( $response ) ) {
-						$response_body = $response->get_error_message();
-					} else {
-						$response_body = wp_remote_retrieve_body( $response );
-					}
-					?>
-				<tr>
-					<th scope="row">Nutrifox Unit Conversion API</th>
-					<td><pre style="white-space:pre-wrap;"><?php echo esc_html( $response_body ); ?></pre></td>
-				</tr>
-				<?php endif; ?>
+				<?php do_action( 'tasty_recipes_debug_settings' ); ?>
 			</tbody>
 		</table>
 	</div>
