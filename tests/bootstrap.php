@@ -79,55 +79,6 @@ function _nutrifox_api_request( $pre, $r, $url ) {
 tests_add_filter( 'pre_http_request', '_nutrifox_api_request', 10, 3 );
 
 /**
- * Filter API requests to WP Tasty.
- *
- * @param mixed  $pre Existing filter value.
- * @param array  $r   Request arguments.
- * @param string $url Request URL.
- *
- * @return mixed
- */
-function _wptasty_api_request( $pre, $r, $url ) {
-	if ( 'www.wptasty.com' !== parse_url( $url, PHP_URL_HOST ) ) {
-		return $pre;
-	}
-	if ( ! empty( $r['body'] )
-		&& ! empty( $r['body']['edd_action'] )
-		&& 'check_license' === $r['body']['edd_action'] ) {
-		return array(
-			'response' => array(
-				'code' => 200,
-			),
-			'body'     => file_get_contents( __DIR__ . '/data/wptasty-check-license.json' ),
-		);
-	}
-
-	if ( false !== stripos( $url, '/tasty-recipes-api/youtube-metadata' ) ) {
-		$query = parse_url( $url, PHP_URL_QUERY );
-		parse_str( $query, $args );
-		if ( ! empty( $args['id'] ) ) {
-			$file_path = __DIR__ . '/data/wptasty-youtube-' . $args['id'] . '.json';
-			if ( file_exists( $file_path ) ) {
-				return array(
-					'response' => array(
-						'code' => 200,
-					),
-					'body'     => file_get_contents( $file_path ),
-				);
-			}
-		}
-	}
-
-	return array(
-		'response' => array(
-			'code' => 404,
-		),
-		'body'     => '',
-	);
-}
-tests_add_filter( 'pre_http_request', '_wptasty_api_request', 10, 3 );
-
-/**
  * Filter oEmbed API requests.
  *
  * @param mixed  $pre Existing filter value.
