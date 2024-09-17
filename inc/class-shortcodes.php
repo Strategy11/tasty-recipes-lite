@@ -415,18 +415,9 @@ class Shortcodes {
 		$ingredients = $template_vars['recipe_ingredients'];
 
 		// Strip out this <span> so Tasty Links can apply to ingredient names.
-		if ( false !== stripos( $template_vars['recipe_ingredients'], '<span class="nutrifox-name">' ) ) {
-			$template_vars['recipe_ingredients'] = preg_replace(
-				'#<span class="nutrifox-name">(.+)</span>#U',
-				'$1',
-				$template_vars['recipe_ingredients']
-			);
+		if ( false !== stripos( $ingredients, '<span class="nutrifox-name">' ) ) {
+			$ingredients = preg_replace( '#<span class="nutrifox-name">(.+)</span>#U', '$1', $ingredients );
 		}
-		$template_vars['recipe_ingredients'] = apply_filters(
-			'tasty_recipes_the_content',
-			self::do_caption_shortcode( $template_vars['recipe_ingredients'] ),
-			'ingredients'
-		);
 
 		$template_vars['recipe_ingredients'] = apply_filters(
 			'tasty_recipes_the_content',
