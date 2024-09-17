@@ -412,6 +412,8 @@ class Shortcodes {
 		 */
 		$template_vars = apply_filters( 'tasty_recipes_pre_template_vars', $template_vars, compact( 'atts' ) );
 
+		$ingredients = $template_vars['recipe_ingredients'];
+
 		// Strip out this <span> so Tasty Links can apply to ingredient names.
 		if ( false !== stripos( $template_vars['recipe_ingredients'], '<span class="nutrifox-name">' ) ) {
 			$template_vars['recipe_ingredients'] = preg_replace(
@@ -1068,20 +1070,6 @@ EOT;
 	}
 
 	/**
-	 * Process ingredients to annotate <li> with structured data.
-	 *
-	 * @deprecated x.x
-	 *
-	 * @param string $ingredients Existing ingredients string.
-	 *
-	 * @return string
-	 */
-	public static function process_ingredients_annotate_with_spans( $ingredients ) {
-		_deprecated_function( __METHOD__, 'x.x' );
-		return $ingredients;
-	}
-
-	/**
 	 * Do the caption shortcode when applying content filters.
 	 *
 	 * @param string $content Content to render.
@@ -1286,6 +1274,20 @@ EOT;
 	 * @return string
 	 */
 	public static function process_ingredients_annotate_with_spans( $ingredients ) {
+		_deprecated_function( __METHOD__, 'x.x' );
+		return $ingredients;
+	}
+
+	/**
+	 * Process ingredients to annotate <li> with checkboxes.
+	 *
+	 * @deprecated x.x
+	 *
+	 * @param string $ingredients Existing ingredients string.
+	 *
+	 * @return string
+	 */
+	public static function process_ingredients_for_checkboxes( $ingredients ) {
 		_deprecated_function( __METHOD__, 'x.x' );
 		return $ingredients;
 	}
