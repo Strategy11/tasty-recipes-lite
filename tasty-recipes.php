@@ -150,9 +150,11 @@ class Tasty_Recipes {
 	/**
 	 * Option name for the automatic unit conversion option.
 	 *
+	 * @deprecated x.x
+	 *
 	 * @var string
 	 */
-	const AUTOMATIC_UNIT_CONVERSION_OPTION = 'tasty_recipes_automatic_unit_conversion';
+	const AUTOMATIC_UNIT_CONVERSION_OPTION = '';
 
 	/**
 	 * Option name for the ingredient checkboxes option.

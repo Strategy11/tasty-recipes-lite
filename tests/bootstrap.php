@@ -58,17 +58,6 @@ function _nutrifox_api_request( $pre, $r, $url ) {
 	if ( 'nutrifox.com' !== parse_url( $url, PHP_URL_HOST ) ) {
 		return $pre;
 	}
-	if ( preg_match( '#api/tasty-recipes/conversion-enrichment#', $url ) ) {
-		$file_path = __DIR__ . '/data/nutrifox-conversion-enrichment.json';
-		if ( file_exists( $file_path ) ) {
-			return array(
-				'response' => array(
-					'code' => 200,
-				),
-				'body'     => file_get_contents( $file_path ),
-			);
-		}
-	}
 	if ( preg_match( '#api/recipes/([\d]+)#', $url, $matches ) ) {
 		$file_path = __DIR__ . '/data/nutrifox-' . $matches[1] . '.json';
 		if ( file_exists( $file_path ) ) {

@@ -69,16 +69,16 @@ class Block_Editor {
 			self::RECIPE_BLOCK_TYPE,
 			array(
 				'attributes'      => array(
-					'className'               => array(
+					'className'   => array(
 						'type' => 'string',
 					),
-					'id'                      => array(
+					'id'          => array(
 						'type' => 'number',
 					),
-					'lastUpdated'             => array(
+					'lastUpdated' => array(
 						'type' => 'number',
 					),
-					'author_link'             => array(
+					'author_link' => array(
 						'type' => 'string',
 					),
 				),

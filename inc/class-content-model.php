@@ -408,14 +408,11 @@ class Content_Model {
 	 *
 	 * @deprecated x.x
 	 *
-	 * @param mixed  $check      Existing check value.
-	 * @param int    $object_id  ID for the post being updated.
-	 * @param string $meta_key   Post meta key.
-	 * @param string $meta_value New meta value.
+	 * @param mixed $check Existing check value.
 	 *
 	 * @return mixed
 	 */
-	public static function filter_update_post_metadata_ingredients( $check, $object_id, $meta_key, $meta_value ) {
+	public static function filter_update_post_metadata_ingredients( $check ) {
 		_deprecated_function( __METHOD__, 'x.x', 'Tasty_Recipes_Pro\Content_Model::filter_update_post_metadata_ingredients' );
 		return $check;
 	}
@@ -423,12 +420,11 @@ class Content_Model {
 	/**
 	 * Generates the Nutrifox conversion data.
 	 *
-	 * @param int    $post_id     ID for the post (recipe).
-	 * @param string $ingredients Ingredients for the recipe.
+	 * @deprecated x.x
 	 *
 	 * @return bool
 	 */
-	public static function generate_nutrifox_conversion( $post_id, $ingredients ) {
+	public static function generate_nutrifox_conversion() {
 		_deprecated_function( __METHOD__, 'x.x', 'Tasty_Recipes_Pro\Content_Model::generate_nutrifox_conversion' );
 		return false;
 	}
@@ -441,46 +437,6 @@ class Content_Model {
 	 * @return void
 	 */
 	public static function action_tasty_recipes_apply_unit_conversion() {
-		_deprecated_function( __METHOD__, 'x.x', 'Tasty_Recipes_Pro\Content_Model::action_tasty_recipes_apply_unit_conversion' );
-	}
-
-	/**
-	 * Cron callback to enrich YouTube responses with additional metadata.
-	 *
-	 * @return void
-	 */
-	public static function action_tasty_recipes_enrich_youtube_embeds() {
-		_deprecated_function( __METHOD__, 'x.x', 'Tasty_Recipes_Pro\Content_Model::action_tasty_recipes_enrich_youtube_embeds' );
-	}
-
-	/**
-	 * Enriches the YouTube oEmbed response with additional metadata.
-	 *
-	 * @deprecated x.x
-	 *
-	 * @param int    $post_id   ID for the post (recipe).
-	 * @param string $video_url URL assigned to the recipe.
-	 * @param string $meta_key  Meta key with the stored video URL response.
-	 *
-	 * @return bool
-	 */
-	public static function enrich_youtube_oembed() {
-		_deprecated_function( __METHOD__, 'x.x', 'Tasty_Recipes_Pro\Content_Model::enrich_youtube_oembed' );
-		return false;
-	}
-
-	/**
-	 * Applies the enrichment to the response data.
-	 *
-	 * @deprecated x.x
-	 *
-	 * @param string $video_url     URL assigned to the recipe.
-	 * @param object $response_data Existing oEmbed response data.
-	 *
-	 * @return mixed
-	 */
-	public static function apply_youtube_enrichment_to_response_data( $video_url, $response_data ) {
-		_deprecated_function( __METHOD__, 'x.x', 'Tasty_Recipes_Pro\Content_Model::apply_youtube_enrichment_to_response_data' );
-		return $response_data;
+		_deprecated_function( __METHOD__, 'x.x' );
 	}
 }

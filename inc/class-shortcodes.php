@@ -426,6 +426,12 @@ class Shortcodes {
 			'ingredients'
 		);
 
+		$template_vars['recipe_ingredients'] = apply_filters(
+			'tasty_recipes_the_content',
+			self::do_caption_shortcode( $template_vars['recipe_ingredients'] ),
+			'ingredients'
+		);
+
 		$recipe_author_name = '';
 		if ( ! empty( $recipe_json['author_name'] ) ) {
 			$link = ! empty( $atts['author_link'] ) ? $atts['author_link'] : get_option( Tasty_Recipes::DEFAULT_AUTHOR_LINK_OPTION, '' );
@@ -1268,5 +1274,19 @@ EOT;
 	 */
 	public static function print_cook_mode() {
 		_deprecated_function( __METHOD__, 'x.x' );
+	}
+
+	/**
+	 * Process ingredients to annotate <li> with structured data.
+	 *
+	 * @deprecated x.x
+	 *
+	 * @param string $ingredients Existing ingredients string.
+	 *
+	 * @return string
+	 */
+	public static function process_ingredients_annotate_with_spans( $ingredients ) {
+		_deprecated_function( __METHOD__, 'x.x' );
+		return $ingredients;
 	}
 }
