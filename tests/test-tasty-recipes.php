@@ -227,32 +227,6 @@ EOT;
 	}
 
 	/**
-	 * Ensures expected behavior of cron applying unit conversion to a recipe.
-	 */
-	public function test_cron_apply_unit_conversion() {
-		$recipe = $this->create_mock_recipe();
-		// No API request expected yet.
-		update_option( Tasty_Recipes::UNIT_CONVERSION_OPTION, true );
-		do_action( 'tasty_recipes_apply_unit_conversion' );
-		$this->assertNotAPIRequest( 'nutrifox.com' );
-		$this->assertEmpty( get_post_meta( $recipe->get_id(), 'nutrifox_conversion_response', true ) );
-		$this->assertEmpty( get_post_meta( $recipe->get_id(), 'nutrifox_conversion_error', true ) );
-		// Run unit conversion cron.
-		update_option( Tasty_Recipes::UNIT_CONVERSION_OPTION, true );
-		update_option( Tasty_Recipes::AUTOMATIC_UNIT_CONVERSION_OPTION, 1 );
-		do_action( 'tasty_recipes_apply_unit_conversion' );
-		$this->assertExpectedAPIRequest( 'nutrifox.com' );
-		$this->assertNotEmpty( get_post_meta( $recipe->get_id(), 'nutrifox_conversion_response', true ) );
-		$this->assertEmpty( get_post_meta( $recipe->get_id(), 'nutrifox_conversion_error', true ) );
-		// No API request on the second run.
-		$this->reset_api_tracking_vars();
-		do_action( 'tasty_recipes_apply_unit_conversion' );
-		$this->assertNotAPIRequest( 'nutrifox.com' );
-		$this->assertNotEmpty( get_post_meta( $recipe->get_id(), 'nutrifox_conversion_response', true ) );
-		$this->assertEmpty( get_post_meta( $recipe->get_id(), 'nutrifox_conversion_error', true ) );
-	}
-
-	/**
 	 * Ensures expected behavior of cron enriching a recipe's YouTube description.
 	 */
 	public function test_cron_enrich_recipe_youtube() {
@@ -340,60 +314,4 @@ EOT;
 			tasty_recipes_get_print_url( $this->post_id, $recipe->get_id() )
 		);
 	}
-
-	/**
-	 * Ensure data is fetched from Nutrifox when the recipe is initially created.
-	 */
-	public function test_create_recipe_generate_nutrifox_conversion() {
-		$ingredients = <<<EOT
-For The Red Beans:
-
-1 1/2cups diced onions
-1 tablespoon vegetable oil
-1/2 teaspoon red pepper flakes or 1 fresh chile, minced
-1/2 teaspoon dried thyme
-Salt
-1/4 teaspoon allspice
-One 28-ounce can of diced tomatoes
-One 28-ounce can of red kidney beans, drained
-Chopped scallions and/or cilantro
-
-For The Coconut Rice:
-1 1/2 cups white rice
-1/2 teaspoon turmeric
-1/2 teaspoon salt
-1 teaspoon vegetable oil
-1 1/2 cups water
-3/4 cup coconut milk
-EOT;
-		update_option( Tasty_Recipes::UNIT_CONVERSION_OPTION, true );
-		$recipe = Recipe::create();
-		$this->assertNotAPIRequest( 'nutrifox.com' );
-		$recipe->set_ingredients( $ingredients );
-		$this->assertExpectedAPIRequest( 'nutrifox.com' );
-		$this->assertNotEmpty( get_post_meta( $recipe->get_id(), 'nutrifox_conversion_response', true ) );
-		$this->assertEmpty( get_post_meta( $recipe->get_id(), 'nutrifox_conversion_error', true ) );
-	}
-
-	/**
-	 * Ensure data is fetched from Nutrifox when ingredients are updated, but only when they're updated.
-	 */
-	public function test_update_ingredients_generate_nutrifox_conversion() {
-		update_option( Tasty_Recipes::UNIT_CONVERSION_OPTION, true );
-		$recipe = $this->create_mock_recipe();
-		// Expect the API request the first time.
-		$this->assertExpectedAPIRequest( 'nutrifox.com' );
-		$this->assertNotEmpty( get_post_meta( $recipe->get_id(), 'nutrifox_conversion_response', true ) );
-		$this->assertEmpty( get_post_meta( $recipe->get_id(), 'nutrifox_conversion_error', true ) );
-		// Same ingredients shouldn't trigger a new API request but data should still be there.
-		$this->reset_api_tracking_vars();
-		$recipe->set_ingredients( $recipe->get_ingredients() );
-		$this->assertNotAPIRequest( 'nutrifox.com' );
-		$this->assertNotEmpty( get_post_meta( $recipe->get_id(), 'nutrifox_conversion_response', true ) );
-		$this->assertEmpty( get_post_meta( $recipe->get_id(), 'nutrifox_conversion_error', true ) );
-		// If disabled, updating should delete the post meta to avoid out of date.
-		update_option( Tasty_Recipes::UNIT_CONVERSION_OPTION, false );
-		$this->reset_api_tracking_vars();
-	}
-
 }
