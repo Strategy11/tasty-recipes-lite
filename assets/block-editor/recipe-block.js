@@ -8,7 +8,6 @@ const {
 
 const {
 	TextControl,
-	CheckboxControl,
 	PanelBody,
 	ToolbarGroup,
 	ToolbarButton
@@ -155,18 +154,6 @@ const edit = props => {
 					title={__("Recipe options", "tasty-recipes")}
 					initialOpen={true}
 				>
-					<CheckboxControl
-						label={__(
-							"This is a non-food recipe (craft, cleaning product, etc)",
-							"tasty-recipes"
-						)}
-						checked={props.attributes.disableJSON}
-						onChange={() => {
-							props.setAttributes({
-								disableJSON: !props.attributes.disableJSON
-							});
-						}}
-					/>
 					<TextControl
 						label={__("Override Author Link", "tasty-recipes")}
 						value={props.attributes.author_link}
@@ -204,10 +191,6 @@ const blockRegistration = {
 		author_link: {
 			type: "string",
 			default: ""
-		},
-		disableJSON: {
-			type: "boolean",
-			default: false
 		},
 	},
 	edit,
