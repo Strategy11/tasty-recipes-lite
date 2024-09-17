@@ -475,6 +475,9 @@ class Shortcodes {
 			'recipe_details'                => array(),
 			'recipe_description'            => self::do_caption_shortcode( $recipe_json['description_rendered'] ),
 			'recipe_instructions_has_video' => false,
+			'recipe_instructions'           => Distribution_Metadata::apply_instruction_step_numbers(
+				apply_filters( 'tasty_recipes_the_content', self::do_caption_shortcode( $recipe_json['instructions'] ), 'instructions' )
+			),
 			'recipe_keywords'               => '',
 			'recipe_notes'                  => $recipe_json['notes_rendered'],
 			'recipe_nutrifox_id'            => $recipe_json['nutrifox_id'],
