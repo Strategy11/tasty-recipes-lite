@@ -31,11 +31,9 @@ class Unit_Amount_Parser {
 	 *
 	 * @deprecated x.x
 	 *
-	 * @param string $value Existing ingredient string.
-	 *
 	 * @return bool
 	 */
-	public static function string_has_non_numeric_amount( $value ) {
+	public static function string_has_non_numeric_amount() {
 		_deprecated_function( __METHOD__, 'x.x' );
 		return false;
 	}

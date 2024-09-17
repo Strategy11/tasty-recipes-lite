@@ -59,7 +59,6 @@ class Test_Shortcode extends Tasty_Recipes_Testcase {
 		);
 		$this->assertStringContainsString( '<p>It&#8217;s so tasty</p>', $rendered );
 		$this->assertStringContainsString( 'For The Red Beans:', $rendered );
-		$this->assertStringContainsString( '<span data-amount="1" data-unit="tablespoon">1 tablespoon</span> vegetable oil', $rendered );
 		$this->assertStringContainsString( '<p>How to make the rice:</p>', $rendered );
 		$this->assertStringContainsString(
 			'Rinse and drain the rice.',

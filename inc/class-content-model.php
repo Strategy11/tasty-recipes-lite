@@ -517,14 +517,11 @@ class Content_Model {
 	 *
 	 * @deprecated x.x
 	 *
-	 * @param mixed  $check      Existing check value.
-	 * @param int    $object_id  ID for the post being updated.
-	 * @param string $meta_key   Post meta key.
-	 * @param string $meta_value New meta value.
+	 * @param mixed $check Existing check value.
 	 *
 	 * @return mixed
 	 */
-	public static function filter_update_post_metadata_ingredients( $check, $object_id, $meta_key, $meta_value ) {
+	public static function filter_update_post_metadata_ingredients( $check ) {
 		_deprecated_function( __METHOD__, 'x.x', 'Tasty_Recipes_Pro\Content_Model::filter_update_post_metadata_ingredients' );
 		return $check;
 	}
@@ -534,12 +531,9 @@ class Content_Model {
 	 *
 	 * @deprecated x.x
 	 *
-	 * @param int    $post_id     ID for the post (recipe).
-	 * @param string $ingredients Ingredients for the recipe.
-	 *
 	 * @return bool
 	 */
-	public static function generate_nutrifox_conversion( $post_id, $ingredients ) {
+	public static function generate_nutrifox_conversion() {
 		_deprecated_function( __METHOD__, 'x.x', 'Tasty_Recipes_Pro\Content_Model::generate_nutrifox_conversion' );
 		return false;
 	}
