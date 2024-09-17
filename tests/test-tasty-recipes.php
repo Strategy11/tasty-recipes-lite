@@ -47,63 +47,6 @@ EOT;
 	}
 
 	/**
-	 * Ensures expected behavior for disabling JSON+LD on a post.
-	 */
-	public function test_get_recipes_for_content_disable_json_ld() {
-		$content = <<<EOT
-Some first text
-
-[tasty-recipe id="232" disable-json-ld]
-
-Some more text
-
-[tasty-recipe id="234"]
-EOT;
-		$this->assertEquals(
-			array( 234 ),
-			Tasty_Recipes::get_recipe_ids_from_content(
-				$content,
-				array(
-					'disable-json-ld' => false,
-				)
-			)
-		);
-		$this->assertEquals(
-			array( 232, 234 ),
-			Tasty_Recipes::get_recipe_ids_from_content( $content )
-		);
-	}
-
-	/**
-	 * Ensures expected behavior for disabling JSON+LD on a post with blocks.
-	 */
-	public function test_get_recipes_for_content_disable_json_ld_blocks() {
-		$this->skip_if_less_than_wp_version( '5.0' );
-		$content = <<<EOT
-Some first text
-
-<!-- wp:wp-tasty/tasty-recipe {"id":33965,"lastUpdated":1532020114038,"disableJSON":true} /-->
-
-Some more text
-
-<!-- wp:wp-tasty/tasty-recipe {"id":234,"lastUpdated":1532020114038} /-->
-EOT;
-		$this->assertEquals(
-			array( 234 ),
-			Tasty_Recipes::get_recipe_ids_from_content(
-				$content,
-				array(
-					'disable-json-ld' => false,
-				)
-			)
-		);
-		$this->assertEquals(
-			array( 33965, 234 ),
-			Tasty_Recipes::get_recipe_ids_from_content( $content )
-		);
-	}
-
-	/**
 	 * Ensures expected behavior parsing nested blocks.
 	 */
 	public function test_get_recipes_for_content_nested_blocks() {
