@@ -831,12 +831,22 @@ class Distribution_Metadata {
 				return false;
 			}
 			$response_data = $wp_oembed->fetch( $provider, $video_url );
+			if ( ! $response_data ) {
+				/**
+				 * @since x.x
+				 */
+				$response_data = apply_filters(
+					'tasty_recipes_video_schema_response',
+					false,
+					compact( 'response_data', 'video_url', 'post' )
+				);
+			}
+
 			if ( false === $response_data ) {
 				update_post_meta( $post->ID, $cache_key, '{{unknown}}' );
 				update_post_meta( $post->ID, $ttl_key, time() + ( 1 * DAY_IN_SECONDS ) );
 				return false;
 			}
-			$response_data = Content_Model::apply_youtube_enrichment_to_response_data( $video_url, $response_data );
 			update_post_meta( $post->ID, $cache_key, $response_data );
 			$cache = $response_data;
 			update_post_meta( $post->ID, $ttl_key, time() + ( 7 * DAY_IN_SECONDS ) );

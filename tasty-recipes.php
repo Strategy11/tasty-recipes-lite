@@ -279,7 +279,6 @@ class Tasty_Recipes {
 		add_action( 'init', array( 'Tasty_Recipes\Block_Editor', 'action_init_register' ) );
 		add_action( 'init', array( 'Tasty_Recipes\Content_Model', 'action_init_register_cron_events' ) );
 		add_action( 'tasty_recipes_process_thumbnails', array( 'Tasty_Recipes\Content_Model', 'action_tasty_recipes_process_thumbnails' ) );
-		add_action( 'tasty_recipes_enrich_youtube_embeds', array( 'Tasty_Recipes\Content_Model', 'action_tasty_recipes_enrich_youtube_embeds' ) );
 		add_action( 'init', array( 'Tasty_Recipes\Content_Model', 'action_init_register_post_types' ) );
 		add_action( 'init', array( 'Tasty_Recipes\Content_Model', 'action_init_register_rewrite_rules' ) );
 		add_action( 'init', array( 'Tasty_Recipes\Content_Model', 'action_init_register_oembed_providers' ) );
