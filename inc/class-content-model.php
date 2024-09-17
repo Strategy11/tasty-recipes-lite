@@ -238,6 +238,15 @@ class Content_Model {
 			if ( false !== $response_data ) {
 				update_post_meta( $object_id, 'video_url_response', $response_data );
 				delete_post_meta( $object_id, 'video_url_error' );
+
+				/**
+				 * Enrich the video data with additional metadata.
+				 *
+				 * @since x.x
+				 *
+				 * @param int    $object_id  ID for the post being updated.
+				 * @param object $meta_value Existing oEmbed response data.
+				 */
 				do_action( 'tasty_recipes_enrich_video', $object_id, $meta_value );
 			} else {
 				delete_post_meta( $object_id, 'video_url_response' );
@@ -438,5 +447,43 @@ class Content_Model {
 	 */
 	public static function action_tasty_recipes_apply_unit_conversion() {
 		_deprecated_function( __METHOD__, 'x.x' );
+	}
+
+	/**
+	 * Cron callback to enrich YouTube responses with additional metadata.
+	 *
+	 * @deprecated x.x
+	 *
+	 * @return void
+	 */
+	public static function action_tasty_recipes_enrich_youtube_embeds() {
+		_deprecated_function( __METHOD__, 'x.x', 'Tasty_Recipes_Pro\Content_Model::action_tasty_recipes_enrich_youtube_embeds' );
+	}
+
+	/**
+	 * Enriches the YouTube oEmbed response with additional metadata.
+	 *
+	 * @deprecated x.x
+	 *
+	 * @return bool
+	 */
+	public static function enrich_youtube_oembed() {
+		_deprecated_function( __METHOD__, 'x.x', 'Tasty_Recipes_Pro\Content_Model::enrich_youtube_oembed' );
+		return false;
+	}
+
+	/**
+	 * Applies the enrichment to the response data.
+	 *
+	 * @deprecated x.x
+	 *
+	 * @param string $video_url     URL assigned to the recipe.
+	 * @param object $response_data Existing oEmbed response data.
+	 *
+	 * @return mixed
+	 */
+	public static function apply_youtube_enrichment_to_response_data( $video_url, $response_data ) {
+		_deprecated_function( __METHOD__, 'x.x', 'Tasty_Recipes_Pro\Content_Model::apply_youtube_enrichment_to_response_data' );
+		return $response_data;
 	}
 }

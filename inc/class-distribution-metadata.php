@@ -808,6 +808,8 @@ class Distribution_Metadata {
 			$response_data = $wp_oembed->fetch( $provider, $video_url );
 			if ( ! $response_data ) {
 				/**
+				 * Add extra data to the video schema response.
+				 *
 				 * @since x.x
 				 */
 				$response_data = apply_filters(
