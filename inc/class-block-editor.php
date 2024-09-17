@@ -81,9 +81,6 @@ class Block_Editor {
 					'author_link' => array(
 						'type' => 'string',
 					),
-					'disableJSON' => array(
-						'type' => 'boolean',
-					),
 				),
 				'editor_script'   => 'tasty-recipes-block-editor',
 				'editor_style'    => array( 'tasty-framework-global-css', 'tasty-recipes-main' ),

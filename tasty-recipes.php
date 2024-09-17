@@ -15,6 +15,7 @@
 use Tasty_Recipes\MetaBox;
 use Tasty_Recipes\Frontend;
 use Tasty_Recipes\Integrations;
+use Tasty_Recipes\Block_Editor;
 
 define( 'TASTY_RECIPES_LITE_VERSION', '1.0' );
 define( 'TASTY_RECIPES_LITE_FILE', __FILE__ );
@@ -465,7 +466,7 @@ class Tasty_Recipes {
 		if ( false !== stripos( $post->post_content, '[' . Tasty_Recipes\Shortcodes::RECIPE_SHORTCODE ) ) {
 			return true;
 		}
-		if ( false !== stripos( $post->post_content, '<!-- wp:' . Tasty_Recipes\Block_Editor::RECIPE_BLOCK_TYPE . ' ' ) ) {
+		if ( false !== stripos( $post->post_content, '<!-- wp:' . Block_Editor::RECIPE_BLOCK_TYPE . ' ' ) ) {
 			return true;
 		}
 		return false;
@@ -560,26 +561,19 @@ class Tasty_Recipes {
 	 *
 	 * @return void
 	 */
-	public static function recursively_search_blocks( $blocks, $options, &$recipes ) { // phpcs:ignore SlevomatCodingStandard
-		foreach ( $blocks as $block ) {
-			if ( is_object( $block ) && ! empty( $block->blockName )
-				&& Tasty_Recipes\Block_Editor::RECIPE_BLOCK_TYPE === $block->blockName ) {
-				$disable_json = isset( $block->attrs->disableJSON ) ? (bool) $block->attrs->disableJSON : false;
-				if ( false === $options['disable-json-ld'] && $disable_json ) {
-					continue;
-				}
-				if ( ! empty( $block->attrs->id ) ) {
-					if ( ! empty( $options['full-result'] ) ) {
-						$recipes[] = (array) $block->attrs;
-					} else {
-						$recipes[] = (int) $block->attrs->id;
-					}
-				}
-			}
-			if ( is_array( $block ) && ! empty( $block['blockName'] )
-				&& Tasty_Recipes\Block_Editor::RECIPE_BLOCK_TYPE === $block['blockName'] ) {
-				$disable_json = isset( $block['attrs']['disableJSON'] ) ? (bool) $block['attrs']['disableJSON'] : false;
-				if ( false === $options['disable-json-ld'] && $disable_json ) {
+	public static function recursively_search_blocks( $blocks, $options, &$recipes ) {
+		foreach ( $blocks as $untyped_block ) {
+			$block = (array) $untyped_block;
+			if ( ! empty( $block['blockName'] ) && Block_Editor::RECIPE_BLOCK_TYPE === $block['blockName'] ) {
+				/**
+				 * Filter to disable the use of custom schema for a block.
+				 *
+				 * @since x.x
+				 *
+				 * @param bool $disable_json Whether to disable the custom schema.
+				 */
+				$disable_json = apply_filters( 'tasty_recipes_use_custom_schema', false, compact( 'block', 'options' ) );
+				if ( $disable_json ) {
 					continue;
 				}
 				if ( ! empty( $block['attrs']['id'] ) ) {
