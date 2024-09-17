@@ -148,27 +148,8 @@ body.tasty-recipes-print-view{
 		align-items: center;
 		justify-content: space-between;
 	}
-	.tasty-recipes-ingredients-clipboard-container {
-		display: inline-flex;
-		align-items: baseline;
-	}
 	h3 {
 		margin: 0 10px 10px 0;
-	}
-}
-
-.tasty-recipes-ingredients-clipboard-container {
-	& .tasty-recipes-copy-button {
-		position: relative;
-		width: 24px;
-		height: 24px;
-		padding: 0;
-		background: transparent;
-		border: none;
-		color: #353547;
-		&:hover {
-			opacity: 0.5;
-		}
 	}
 }
 

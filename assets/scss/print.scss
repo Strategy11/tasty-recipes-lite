@@ -30,7 +30,6 @@
 	.tasty-recipes-print-button,
 	.tasty-recipes-jump-target,
 	.tasty-recipes-equipment,
-	.tasty-recipes-ingredients-clipboard-container button,
 	.tasty-recipes-entry-footer,
 	.tasty-recipes-keywords {
 		display: none;
@@ -111,10 +110,6 @@
 
 .tasty-recipes-title {
 	font-size: 140% !important;
-}
-
-.tasty-recipes-ingredients-clipboard-container {
-	background-color: transparent !important;
 }
 
 span[data-tasty-recipes-customization],
