@@ -271,68 +271,6 @@ EOT;
 	}
 
 	/**
-	 * Ensures expected behavior of process_ingredients_for_checkboxes().
-	 */
-	public function test_process_ingredients_for_checkboxes_list() {
-		$original = <<<EOT
-<h4>For the Pork:</h4>
-<ul>
-<li>1 tablespoon oil</li>
-<li>1 shallot</li>
-<li>1 clove garlic</li>
-</ul>
-EOT;
-		$expected = <<<EOT
-<h4>For the Pork:</h4>
-<ul>
-<li data-tr-ingredient-checkbox=""><span class="tr-ingredient-checkbox-container"><input type="checkbox" name="ingredient_checkbox_[A-Za-z0-9]+" id="ingredient_checkbox_[A-Za-z0-9]+" aria-label="1 tablespoon oil"><label for="ingredient_checkbox_[A-Za-z0-9]+"></label></span>1 tablespoon oil</li>
-<li data-tr-ingredient-checkbox=""><span class="tr-ingredient-checkbox-container"><input type="checkbox" name="ingredient_checkbox_[A-Za-z0-9]+" id="ingredient_checkbox_[A-Za-z0-9]+" aria-label="1 shallot"><label for="ingredient_checkbox_[A-Za-z0-9]+"></label></span>1 shallot</li>
-<li data-tr-ingredient-checkbox=""><span class="tr-ingredient-checkbox-container"><input type="checkbox" name="ingredient_checkbox_[A-Za-z0-9]+" id="ingredient_checkbox_[A-Za-z0-9]+" aria-label="1 clove garlic"><label for="ingredient_checkbox_[A-Za-z0-9]+"></label></span>1 clove garlic</li>
-</ul>
-EOT;
-		$actual   = Shortcodes::process_ingredients_for_checkboxes( $original );
-		$this->assertMatchesRegularExpression( '~' . $expected . '~i', $actual );
-	}
-
-	/**
-	 * Ensures expected behavior of process_ingredients_for_checkboxes().
-	 */
-	public function test_process_ingredients_for_checkboxes_paragraphs() {
-		$original = <<<EOT
-<p>1 apple</p>
-<p>1 orange</p>
-<h2>This is a heading</h2>
-<p>1/2 banana</p>
-<p>2 mangoes</p>
-EOT;
-		$expected = <<<EOT
-<p data-tr-ingredient-checkbox=""><span class="tr-ingredient-checkbox-container"><input type="checkbox" name="ingredient_checkbox_[A-Za-z0-9]+" id="ingredient_checkbox_[A-Za-z0-9]+" aria-label="1 apple"><label for="ingredient_checkbox_[A-Za-z0-9]+"></label></span>1 apple</p>
-<p data-tr-ingredient-checkbox=""><span class="tr-ingredient-checkbox-container"><input type="checkbox" name="ingredient_checkbox_[A-Za-z0-9]+" id="ingredient_checkbox_[A-Za-z0-9]+" aria-label="1 orange"><label for="ingredient_checkbox_[A-Za-z0-9]+"></label></span>1 orange</p>
-<h2>This is a heading</h2>
-<p data-tr-ingredient-checkbox=""><span class="tr-ingredient-checkbox-container"><input type="checkbox" name="ingredient_checkbox_[A-Za-z0-9]+" id="ingredient_checkbox_[A-Za-z0-9]+" aria-label="1/2 banana"><label for="ingredient_checkbox_[A-Za-z0-9]+"></label></span>1/2 banana</p>
-<p data-tr-ingredient-checkbox=""><span class="tr-ingredient-checkbox-container"><input type="checkbox" name="ingredient_checkbox_[A-Za-z0-9]+" id="ingredient_checkbox_[A-Za-z0-9]+" aria-label="2 mangoes"><label for="ingredient_checkbox_[A-Za-z0-9]+"></label></span>2 mangoes</p>
-EOT;
-		$actual   = Shortcodes::process_ingredients_for_checkboxes( $original );
-		$this->assertMatchesRegularExpression( '~' . $expected . '~i', $actual );
-	}
-
-	/**
-	 * Ensures expected behavior of process_ingredients_for_checkboxes().
-	 */
-	public function test_process_ingredients_for_checkboxes_paragraphs_two() {
-		$original = <<<EOT
-<p><span data-amount="0.5" data-unit="cup">1/2 cup</span> (<span data-amount="100" data-unit="g">100 g</span>) granulated sugar</p>
-<p><span data-amount="0.25" data-unit="cup">1/4 cup</span> (<span data-amount="60">60</span> ml) water</p>
-EOT;
-		$expected = <<<EOT
-<p data-tr-ingredient-checkbox=""><span class="tr-ingredient-checkbox-container"><input type="checkbox" name="ingredient_checkbox_[A-Za-z0-9]+" id="ingredient_checkbox_[A-Za-z0-9]+" aria-label="1/2 cup \(100 g\) granulated sugar"><label for="ingredient_checkbox_[A-Za-z0-9]+"></label></span><span data-amount="0.5" data-unit="cup">1\/2 cup</span> \(<span data-amount="100" data-unit="g">100 g</span>\) granulated sugar</p>
-<p data-tr-ingredient-checkbox=""><span class="tr-ingredient-checkbox-container"><input type="checkbox" name="ingredient_checkbox_[A-Za-z0-9]+" id="ingredient_checkbox_[A-Za-z0-9]+" aria-label="1/4 cup \(60 ml\) water"><label for="ingredient_checkbox_[A-Za-z0-9]+"></label></span><span data-amount="0.25" data-unit="cup">1\/4 cup</span> \(<span data-amount="60">60</span> ml\) water</p>
-EOT;
-		$actual   = Shortcodes::process_ingredients_for_checkboxes( $original );
-		$this->assertMatchesRegularExpression( '~' . $expected . '~i', $actual );
-	}
-
-	/**
 	 * Ensures Jump to Recipe link is rendered.
 	 */
 	public function test_render_jump_to_recipe() {

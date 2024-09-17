@@ -273,22 +273,6 @@ button[name="tasty-recipes-video-toggle"][aria-checked="true"] :first-child {
 	position: absolute;
 }
 
-.tasty-recipes-entry-content
-	.tasty-recipes-ingredients
-	ul
-	li
-	.tr-ingredient-checkbox-container
-	label {
-	display: inline-flex;
-}
-
-.tasty-recipes-entry-content
-	.tasty-recipes-ingredients
-	ul
-	li[data-tr-ingredient-checkbox]:before {
-	display: none;
-}
-
 .tasty-recipes-entry-content .tasty-recipes-ingredients ol,
 .tasty-recipes-entry-content .tasty-recipes-instructions ol,
 .tasty-recipes-entry-header .tasty-recipes-description-body ol {
