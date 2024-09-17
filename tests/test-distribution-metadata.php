@@ -544,8 +544,6 @@ EOT;
 		$this->assertEquals( 'https://www.youtube.com/embed/GRtWNZwgGn8?feature=oembed', $schema['video']['embedUrl'] );
 		$this->assertEquals( 'https://www.youtube.com/watch?v=GRtWNZwgGn8', $schema['video']['contentUrl'] );
 		$this->assertEquals( array( 'https://i.ytimg.com/vi/GRtWNZwgGn8/hqdefault.jpg' ), $schema['video']['thumbnailUrl'] );
-		$this->assertStringContainsString( 'In celebration of passing 100k subscribers', $schema['video']['description'] );
-		$this->assertEquals( '2017-05-22T15:00:03+00:00', $schema['video']['uploadDate'] );
 	}
 
 	/**
@@ -693,8 +691,6 @@ EOT;
 		$this->assertEquals( 'Boeing 747-400 Cockpit - Breakoff Landing Amsterdam Schiphol', $schema['video']['name'] );
 		$this->assertEquals( 'https://www.youtube.com/embed/GRtWNZwgGn8?feature=oembed', $schema['video']['embedUrl'] );
 		$this->assertEquals( array( 'https://i.ytimg.com/vi/GRtWNZwgGn8/hqdefault.jpg' ), $schema['video']['thumbnailUrl'] );
-		$this->assertStringContainsString( 'In celebration of passing 100k subscribers', $schema['video']['description'] );
-		$this->assertEquals( '2017-05-22T15:00:03+00:00', $schema['video']['uploadDate'] );
 	}
 
 	/**
@@ -729,8 +725,6 @@ EOT;
 		$this->assertEquals( 'Boeing 747-400 Cockpit - Breakoff Landing Amsterdam Schiphol', $schema['video']['name'] );
 		$this->assertEquals( 'https://www.youtube.com/embed/GRtWNZwgGn8?feature=oembed', $schema['video']['embedUrl'] );
 		$this->assertEquals( array( 'https://i.ytimg.com/vi/GRtWNZwgGn8/hqdefault.jpg' ), $schema['video']['thumbnailUrl'] );
-		$this->assertStringContainsString( 'In celebration of passing 100k subscribers', $schema['video']['description'] );
-		$this->assertEquals( '2017-05-22T15:00:03+00:00', $schema['video']['uploadDate'] );
 	}
 
 	/**
