@@ -311,12 +311,7 @@ class Recipe {
 		}
 		$post = get_post( $id );
 		if ( $post && self::$post_type === $post->post_type ) {
-			// If the Pro class exists, instantiate that instead.
-			if ( class_exists( 'Tasty_Recipes_Pro\Objects\Recipe' ) ) {
-				return new \Tasty_Recipes_Pro\Objects\Recipe( $post );
-			} else {
-				return new Recipe( $post );
-			}
+			return new Recipe( $post );
 		}
 		return false;
 	}
