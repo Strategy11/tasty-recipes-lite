@@ -201,60 +201,72 @@ class Recipe {
 				'label'        => __( 'Serving Size', 'tasty-recipes' ),
 				'property'     => 'servingSize',
 				'nutrifox_key' => 'serving_size',
+				'is_pro'       => true,
 			),
 			'calories'        => array(
 				'label'        => __( 'Calories', 'tasty-recipes' ),
 				'property'     => 'calories',
 				'nutrifox_key' => 'ENERC_KCAL',
+				'is_pro'       => true,
 			),
 			'sugar'           => array(
 				'label'        => __( 'Sugar', 'tasty-recipes' ),
 				'property'     => 'sugarContent',
 				'nutrifox_key' => 'SUGAR',
+				'is_pro'       => true,
 			),
 			'sodium'          => array(
 				'label'        => __( 'Sodium', 'tasty-recipes' ),
 				'property'     => 'sodiumContent',
 				'nutrifox_key' => 'NA',
+				'is_pro'       => true,
 			),
 			'fat'             => array(
 				'label'        => __( 'Fat', 'tasty-recipes' ),
 				'property'     => 'fatContent',
 				'nutrifox_key' => 'FAT',
+				'is_pro'       => true,
 			),
 			'saturated_fat'   => array(
 				'label'        => __( 'Saturated Fat', 'tasty-recipes' ),
 				'property'     => 'saturatedFatContent',
 				'nutrifox_key' => 'FASAT',
+				'is_pro'       => true,
 			),
 			'unsaturated_fat' => array(
 				'label'    => __( 'Unsaturated Fat', 'tasty-recipes' ),
 				'property' => 'unsaturatedFatContent',
+				'is_pro'   => true,
 			),
 			'trans_fat'       => array(
 				'label'        => __( 'Trans Fat', 'tasty-recipes' ),
 				'property'     => 'transFatContent',
 				'nutrifox_key' => 'FATRN',
+				'is_pro'       => true,
 			),
 			'carbohydrates'   => array(
 				'label'        => __( 'Carbohydrates', 'tasty-recipes' ),
 				'property'     => 'carbohydrateContent',
 				'nutrifox_key' => 'CHOCDF',
+				'is_pro'       => true,
 			),
 			'fiber'           => array(
 				'label'        => __( 'Fiber', 'tasty-recipes' ),
 				'property'     => 'fiberContent',
 				'nutrifox_key' => 'FIBTG',
+				'is_pro'       => true,
 			),
 			'protein'         => array(
 				'label'        => __( 'Protein', 'tasty-recipes' ),
 				'property'     => 'proteinContent',
 				'nutrifox_key' => 'PROCNT',
+				'is_pro'       => true,
 			),
 			'cholesterol'     => array(
 				'label'        => __( 'Cholesterol', 'tasty-recipes' ),
 				'property'     => 'cholesterolContent',
 				'nutrifox_key' => 'CHOLE',
+				'is_pro'       => true,
 			),
 		);
 		/**
@@ -299,7 +311,12 @@ class Recipe {
 		}
 		$post = get_post( $id );
 		if ( $post && self::$post_type === $post->post_type ) {
-			return new Recipe( $post );
+			// If the Pro class exists, instantiate that instead.
+			if ( class_exists( 'Tasty_Recipes_Pro\Objects\Recipe' ) ) {
+				return new \Tasty_Recipes_Pro\Objects\Recipe( $post );
+			} else {
+				return new Recipe( $post );
+			}
 		}
 		return false;
 	}

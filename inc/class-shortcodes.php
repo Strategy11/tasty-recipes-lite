@@ -801,35 +801,18 @@ class Shortcodes {
 
 		$nutrifox = $recipe->get_nutrifox_response();
 		foreach ( Recipe::get_nutrition_attributes() as $attribute => $meta ) {
-			// '0' is a valid value.
-			if ( '' === $recipe_json[ $attribute ] ) {
-				// See if the data exists in Nutrifox now.
-				if ( $nutrifox
-					&& isset( $meta['nutrifox_key'] )
-					&& ( ! isset( $nutrifox['nutrients'][ $meta['nutrifox_key'] ]['visible'] )
-						|| true === $nutrifox['nutrients'][ $meta['nutrifox_key'] ]['visible'] ) ) {
-					$nutrifox_value = $recipe->get_formatted_nutrifox_value( $attribute );
-					$template_vars['recipe_hidden_nutrition'][ $attribute ] = array(
-						'value' => '<span data-tasty-recipes-customization="detail-value-color.color" ' .
-							'class="' . esc_attr( 'tasty-recipes-' . str_replace( '_', '-', $attribute ) ) . '">' .
-							esc_html( $nutrifox_value ) . '</span>',
-					);
-					if ( 'card' === $nutrifox_display_style ) {
-						$template_vars['recipe_nutrition'][ $attribute ] = array(
-							'label' => $meta['label'],
-							'value' => '<span data-tasty-recipes-customization="body-color.color" ' .
-								'class="' . esc_attr( 'tasty-recipes-' . str_replace( '_', '-', $attribute ) ) . '">' .
-								esc_html( $nutrifox_value ) . '</span>',
-						);
-					}
-				}
-				continue;
+			// See if the data exists in Nutrifox now.
+			if ( $nutrifox
+				&& isset( $meta['nutrifox_key'] )
+				&& ( ! isset( $nutrifox['nutrients'][ $meta['nutrifox_key'] ]['visible'] )
+					|| true === $nutrifox['nutrients'][ $meta['nutrifox_key'] ]['visible'] ) ) {
+				$nutrifox_value = $recipe->get_formatted_nutrifox_value( $attribute );
+				$template_vars['recipe_hidden_nutrition'][ $attribute ] = array(
+					'value' => '<span data-tasty-recipes-customization="detail-value-color.color" ' .
+						'class="' . esc_attr( 'tasty-recipes-' . str_replace( '_', '-', $attribute ) ) . '">' .
+						esc_html( $nutrifox_value ) . '</span>',
+				);
 			}
-			$template_vars['recipe_nutrition'][ $attribute ] = array(
-				'label' => $meta['label'],
-				'value' => '<span data-tasty-recipes-customization="body-color.color" class="' . esc_attr( 'tasty-recipes-' . str_replace( '_', '-', $attribute ) ) . '">' .
-					$recipe_json[ $attribute ] . '</span>',
-			);
 		}
 	}
 
