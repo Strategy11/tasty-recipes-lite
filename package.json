@@ -51,7 +51,7 @@
     "zip": "bin/compile.sh"
   },
   "dependencies": {
-    "vue": "^2.7",
+    "vue": "^3.5",
     "vue-color": "^2.8"
   },
   "jest": {
