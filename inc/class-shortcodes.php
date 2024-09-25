@@ -797,8 +797,6 @@ class Shortcodes {
 	 * @return void
 	 */
 	private static function add_nutrition_attrs( $recipe, $nutrifox_display_style, &$template_vars ) {
-		$recipe_json = $template_vars['recipe_json'];
-
 		$nutrifox = $recipe->get_nutrifox_response();
 		foreach ( Recipe::get_nutrition_attributes() as $attribute => $meta ) {
 			// See if the data exists in Nutrifox now.

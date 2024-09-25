@@ -28,95 +28,97 @@ class Test_Distribution_Metadata extends Tasty_Recipes_Testcase {
 		$size_16x9 = $recipe->get_image_size( array( 320, 180 ) );
 		$size_full = $recipe->get_image_size( 'full' );
 		$permalink = get_permalink( get_queried_object_id() );
-		$this->assertEquals(
-			array(
-				'@context'           => 'https://schema.org/',
-				'@type'              => 'Recipe',
-				'name'               => 'West Indian Beans & Coconut Rice',
-				'author'             => array(
-					'@type' => 'Person',
-					'name'  => 'Moosewood Restaurant Simple Suppers',
-					'url'   => 'https://pinchofyum.com',
-				),
-				'keywords'           => 'apples, pie',
-				'image'              => array(
-					$size_1x1['url'],
-					$size_4x3['url'],
-					$size_16x9['url'],
-					$size_full['url'],
-				),
-				'description'        => "It's so tasty",
-				'recipeIngredient'   => array(
-					'1 1/2cups diced onions',
-					'1 tablespoon vegetable oil',
-					'1/2 teaspoon red pepper flakes or 1 fresh chile, minced',
-					'1/2 teaspoon dried thyme',
-					'Salt',
-					'1/4 teaspoon allspice',
-					'One 28-ounce can of diced tomatoes',
-					'One 28-ounce can of red kidney beans, drained',
-					'Chopped scallions and/or cilantro',
-					'1 1/2 cups white rice',
-					'1/2 teaspoon turmeric',
-					'1/2 teaspoon salt',
-					'1 teaspoon vegetable oil',
-					'1 1/2 cups water',
-					'3/4 cup coconut milk',
-				),
-				'recipeInstructions' => array(
-					array(
-						'@type'           => 'HowToSection',
-						'name'            => 'How to make the rice',
-						'itemListElement' => array(
-							array(
-								'@type' => 'HowToStep',
-								'text'  => 'Rinse and drain the rice. In a saucepan on medium-high heat, sauté the rice, turmeric, and salt in the oil for a minute or two, stirring constantly. Add the water and coconut milk, bring to a boil, cover, and reduce the heat to low. Simmer until the rice is tender and the liquid absorbed, 15 to 20 minutes.',
-								'url'   => $permalink . '#instruction-step-1',
-							),
-						),
-					),
-					array(
-						'@type'           => 'HowToSection',
-						'name'            => 'How to make the beans',
-						'itemListElement' => array(
-							array(
-								'@type' => 'HowToStep',
-								'text'  => 'While the rice is cooking, in a saucepan on medium heat, sauté the onions in the oil for 3 or 4 minutes. Add the red pepper flakes, sprinkle lightly with salt, cover, and cook, stirring occasionally, until the onions are soft, 5 to 8 minutes. Add the thyme, allspice, tomatoes, and beans, cover, and simmer for 10 to 15 minutes, stirring occasionally.',
-								'url'   => $permalink . '#instruction-step-2',
-							),
+		$expected = array(
+			'@context'           => 'https://schema.org/',
+			'@type'              => 'Recipe',
+			'name'               => 'West Indian Beans & Coconut Rice',
+			'author'             => array(
+				'@type' => 'Person',
+				'name'  => 'Moosewood Restaurant Simple Suppers',
+				'url'   => 'https://pinchofyum.com',
+			),
+			'keywords'           => 'apples, pie',
+			'image'              => array(
+				$size_1x1['url'],
+				$size_4x3['url'],
+				$size_16x9['url'],
+				$size_full['url'],
+			),
+			'description'        => "It's so tasty",
+			'recipeIngredient'   => array(
+				'1 1/2cups diced onions',
+				'1 tablespoon vegetable oil',
+				'1/2 teaspoon red pepper flakes or 1 fresh chile, minced',
+				'1/2 teaspoon dried thyme',
+				'Salt',
+				'1/4 teaspoon allspice',
+				'One 28-ounce can of diced tomatoes',
+				'One 28-ounce can of red kidney beans, drained',
+				'Chopped scallions and/or cilantro',
+				'1 1/2 cups white rice',
+				'1/2 teaspoon turmeric',
+				'1/2 teaspoon salt',
+				'1 teaspoon vegetable oil',
+				'1 1/2 cups water',
+				'3/4 cup coconut milk',
+			),
+			'recipeInstructions' => array(
+				array(
+					'@type'           => 'HowToSection',
+					'name'            => 'How to make the rice',
+					'itemListElement' => array(
+						array(
+							'@type' => 'HowToStep',
+							'text'  => 'Rinse and drain the rice. In a saucepan on medium-high heat, sauté the rice, turmeric, and salt in the oil for a minute or two, stirring constantly. Add the water and coconut milk, bring to a boil, cover, and reduce the heat to low. Simmer until the rice is tender and the liquid absorbed, 15 to 20 minutes.',
+							'url'   => $permalink . '#instruction-step-1',
 						),
 					),
 				),
-				'recipeYield'        => array(
-					2,
-					'2 servings',
-				),
-				'recipeCategory'     => 'Main',
-				'recipeCuisine'      => 'Caribbean',
-				'suitableForDiet'    => 'LowFatDiet',
-				'cookingMethod'      => 'Cooking',
-				'url'                => get_permalink( $this->post_id ),
-				'prepTime'           => 'PT15M',
-				'cookTime'           => 'PT1H20M',
-				'totalTime'          => 'PT1H35M',
-				'nutrition'          => array(
-					'@type'                 => 'nutritionInformation',
-					'calories'              => '581 calories',
-					'servingSize'           => '2 cups',
-					'sugarContent'          => '0 g',
-					'sodiumContent'         => '1863 mg',
-					'fatContent'            => '10 g',
-					'saturatedFatContent'   => '2 g',
-					'unsaturatedFatContent' => '0 g',
-					'transFatContent'       => '1 g',
-					'carbohydrateContent'   => '102 g',
-					'fiberContent'          => '12 g',
-					'proteinContent'        => '18 g',
-					'cholesterolContent'    => '120 mg',
+				array(
+					'@type'           => 'HowToSection',
+					'name'            => 'How to make the beans',
+					'itemListElement' => array(
+						array(
+							'@type' => 'HowToStep',
+							'text'  => 'While the rice is cooking, in a saucepan on medium heat, sauté the onions in the oil for 3 or 4 minutes. Add the red pepper flakes, sprinkle lightly with salt, cover, and cook, stirring occasionally, until the onions are soft, 5 to 8 minutes. Add the thyme, allspice, tomatoes, and beans, cover, and simmer for 10 to 15 minutes, stirring occasionally.',
+							'url'   => $permalink . '#instruction-step-2',
+						),
+					),
 				),
 			),
-			$schema
+			'recipeYield'        => array(
+				2,
+				'2 servings',
+			),
+			'recipeCategory'     => 'Main',
+			'recipeCuisine'      => 'Caribbean',
+			'suitableForDiet'    => 'LowFatDiet',
+			'cookingMethod'      => 'Cooking',
+			'url'                => get_permalink( $this->post_id ),
+			'prepTime'           => 'PT15M',
+			'cookTime'           => 'PT1H20M',
+			'totalTime'          => 'PT1H35M',
+			'nutrition'          => array(
+				'@type'                 => 'nutritionInformation',
+				'calories'              => '581 calories',
+				'servingSize'           => '2 cups',
+				'sugarContent'          => '0 g',
+				'sodiumContent'         => '1863 mg',
+				'fatContent'            => '10 g',
+				'saturatedFatContent'   => '2 g',
+				'unsaturatedFatContent' => '0 g',
+				'transFatContent'       => '1 g',
+				'carbohydrateContent'   => '102 g',
+				'fiberContent'          => '12 g',
+				'proteinContent'        => '18 g',
+				'cholesterolContent'    => '120 mg',
+			),
 		);
+		if ( ! isset( $schema['nutrition'] ) ) {
+			// Remove nutrition if not set because it isn't available in lite.
+			unset( $expected['nutrition'] );
+		}
+		$this->assertEquals( $expected, $schema );
 	}
 
 	/**
