@@ -798,19 +798,41 @@ class Shortcodes {
 	 */
 	private static function add_nutrition_attrs( $recipe, $nutrifox_display_style, &$template_vars ) {
 		$nutrifox = $recipe->get_nutrifox_response();
+		if ( ! $nutrifox ) {
+			return;
+		}
+
 		foreach ( Recipe::get_nutrition_attributes() as $attribute => $meta ) {
 			// See if the data exists in Nutrifox now.
-			if ( $nutrifox
-				&& isset( $meta['nutrifox_key'] )
-				&& ( ! isset( $nutrifox['nutrients'][ $meta['nutrifox_key'] ]['visible'] )
-					|| true === $nutrifox['nutrients'][ $meta['nutrifox_key'] ]['visible'] ) ) {
-				$nutrifox_value = $recipe->get_formatted_nutrifox_value( $attribute );
-				$template_vars['recipe_hidden_nutrition'][ $attribute ] = array(
-					'value' => '<span data-tasty-recipes-customization="detail-value-color.color" ' .
-						'class="' . esc_attr( 'tasty-recipes-' . str_replace( '_', '-', $attribute ) ) . '">' .
-						esc_html( $nutrifox_value ) . '</span>',
+			$exists = isset( $meta['nutrifox_key'] ) &&
+				(
+					! isset( $nutrifox['nutrients'][ $meta['nutrifox_key'] ]['visible'] )
+					|| true === $nutrifox['nutrients'][ $meta['nutrifox_key'] ]['visible']
 				);
+
+			if ( ! $exists ) {
+				continue;
 			}
+
+			$class_name     = 'tasty-recipes-' . str_replace( '_', '-', $attribute );
+			$nutrifox_value = $recipe->get_formatted_nutrifox_value( $attribute );
+			$template_vars['recipe_hidden_nutrition'][ $attribute ] = array(
+				'value' => '<span data-tasty-recipes-customization="detail-value-color.color" ' .
+					'class="' . esc_attr( $class_name ) . '">' .
+					esc_html( $nutrifox_value ) . '</span>',
+			);
+
+			if ( 'card' !== $nutrifox_display_style ) {
+				continue;
+			}
+
+			// Show the plain text nutrition values.
+			$template_vars['recipe_nutrition'][ $attribute ] = array(
+				'label' => $meta['label'],
+				'value' => '<span data-tasty-recipes-customization="body-color.color" ' .
+					'class="' . esc_attr( $class_name ) . '">' .
+					esc_html( $nutrifox_value ) . '</span>',
+			);
 		}
 	}
 

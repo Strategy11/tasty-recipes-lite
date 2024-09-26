@@ -30,9 +30,6 @@ function _manually_load_plugin() {
 		$option['company_or_person_user_id'] = 1;
 		update_option( 'wpseo_titles', $option );
 	}
-
-	// Pretend like we have a valid license.
-	update_option( Tasty_Recipes::LICENSE_KEY_OPTION, 'abc123' );
 }
 tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
 
