@@ -257,6 +257,10 @@ class Recipe {
 				'nutrifox_key' => 'CHOLE',
 			),
 		);
+		foreach ( $attributes as $key => $attribute ) {
+			$attributes[ $key ]['is_pro'] = true;
+		}
+
 		/**
 		 * Allows the nutrition attributes to be modified.
 		 *

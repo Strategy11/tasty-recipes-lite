@@ -69,7 +69,6 @@ class Test_Shortcode extends Tasty_Recipes_Testcase {
 			qp( $dom, 'h3' )->eq( 2 )->text()
 		);
 		$this->assertStringContainsString( '<p>Make sure to eat it all!</p>', $rendered );
-		$this->assertStringContainsString( '<span data-tasty-recipes-customization="body-color.color" class="tasty-recipes-serving-size">2 cups</span>', $rendered );
 	}
 
 	/**

@@ -6,7 +6,7 @@
 			v-for="(field, name) in fields"
 			:class="'tasty-recipes-recipe-' + name + '-container'"
 			:key="name"
-			v-show="showField(name)">
+			v-show="showField(field)">
 			<span>
 				<label :for="'tasty-recipes-recipe-' + name" v-if="showLabels">{{ field.label }} <span v-if="field.tooltip" class="tasty-tooltip-icon" :data-tasty-tooltip=field.tooltip></span><a v-if="'prep_time' === name" class="tasty-recipes-add-additional-time button secondary-button" type="button" @click.prevent="isAdditionalTimeOpen = !isAdditionalTimeOpen" :title="!isAdditionalTimeOpen ? extraLabels.add_button_title : extraLabels.remove_button_title ">{{ ! isAdditionalTimeOpen ? extraLabels.add_button_text : extraLabels.remove_button_text }}</a></label>
 				<select v-if="field.options" :id="'tasty-recipes-recipe-' + name" :name="name" v-model="fieldValues[field.object_key || name]" class="inline-field">
@@ -63,8 +63,8 @@ export default {
 		}
 	},
 	methods: {
-		showField() {
-			if ('nutrition' === this.group && this.fieldValues.nutrifox_id) {
+		showField(field) {
+			if (field.is_pro || ('nutrition' === this.group && this.fieldValues.nutrifox_id)) {
 				return false;
 			}
 			return true;

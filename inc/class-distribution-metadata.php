@@ -478,15 +478,6 @@ class Distribution_Metadata {
 				}
 				$nutrition[ $meta['property'] ] = $value;
 			}
-		} else {
-			// TODO: Move me to Pro.
-			foreach ( Recipe::get_nutrition_attributes() as $name => $meta ) {
-				// '0' is a valid value.
-				if ( '' === $recipe_json[ $name ] ) {
-					continue;
-				}
-				$nutrition[ $meta['property'] ] = $recipe_json[ $name ];
-			}
 		}
 
 		if ( empty( $nutrition ) ) {

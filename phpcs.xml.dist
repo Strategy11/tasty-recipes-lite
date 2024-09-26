@@ -114,8 +114,6 @@
 			<property name="maxLinesLength" value="1510" />
 		</properties>
 		<exclude-pattern>inc/class-distribution-metadata.php</exclude-pattern>
-		<exclude-pattern>inc/class-admin.php</exclude-pattern>
-		<exclude-pattern>inc/class-shortcodes.php</exclude-pattern>
 	</rule>
 
 	<!-- Set rules for Cognitive Complexity -->
