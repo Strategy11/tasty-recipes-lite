@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-PLUGIN_NAME="tasty-recipes"
+PLUGIN_NAME="tasty-recipes-lite"
 if [ -z "$1" ]
 then
   ZIP_FILE_NAME="$PLUGIN_NAME"
@@ -13,7 +13,7 @@ cd "$( dirname "$0" )"/../ && pwd
 rm -f "$ZIP_FILE_NAME.zip"
 
 echo "Copy plugin to temp"
-mkdir -p "$PLUGIN_NAME-tmp/tasty-recipes/"
+mkdir -p "$PLUGIN_NAME-tmp/$PLUGIN_NAME/"
 rsync -av . "$PLUGIN_NAME-tmp/$PLUGIN_NAME/" --exclude "$PLUGIN_NAME-tmp" --exclude tests --exclude .git --exclude .github --exclude composer.lock --quiet
 
 echo "Move working directory to temp one"

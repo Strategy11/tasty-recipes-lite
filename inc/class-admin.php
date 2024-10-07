@@ -241,7 +241,7 @@ class Admin {
 	 * @return array
 	 */
 	public static function action_manage_posts_columns( $columns ) {
-		$columns['tasty_recipe'] = esc_html__( 'Tasty Recipe', 'tasty-recipes' );
+		$columns['tasty_recipe'] = esc_html__( 'Tasty Recipe', 'tasty-recipes-lite' );
 		return $columns;
 	}
 
@@ -260,7 +260,7 @@ class Admin {
 				if ( ! empty( $recipe_ids ) ) {
 					$recipe_id = array_shift( $recipe_ids );
 					echo '<button class="button tasty-recipes-edit-button" data-recipe-id="' . esc_attr( $recipe_id ) . '">' .
-						esc_html__( 'Edit Tasty Recipe', 'tasty-recipes' ) .
+						esc_html__( 'Edit Tasty Recipe', 'tasty-recipes-lite' ) .
 						'</button>';
 				}
 				break;
@@ -277,7 +277,7 @@ class Admin {
 	public static function action_quick_edit_custom_box( $column_name ) {
 		switch ( $column_name ) {
 			case 'tasty_recipe':
-				echo '<button class="button tasty-recipes-edit-button" data-recipe-id="">' . esc_html__( 'Edit Tasty Recipe', 'tasty-recipes' ) . '</button>';
+				echo '<button class="button tasty-recipes-edit-button" data-recipe-id="">' . esc_html__( 'Edit Tasty Recipe', 'tasty-recipes-lite' ) . '</button>';
 				break;
 		}
 	}
@@ -329,9 +329,9 @@ class Admin {
 	 */
 	public static function filter_plugin_action_links( $links ) {
 		$links['tr_settings']        = '<a href="' . esc_url( add_query_arg( 'tab', 'settings', menu_page_url( Settings::PAGE_SLUG, false ) ) ) . '">' .
-			esc_html__( 'Settings', 'tasty-recipes' ) .
+			esc_html__( 'Settings', 'tasty-recipes-lite' ) .
 			'</a>';
-		$links['tr_license_manager'] = '<a href="' . esc_url( Url::get_main_admin_url() ) . '">' . esc_html__( 'License manager', 'tasty-recipes' ) . '</a>';
+		$links['tr_license_manager'] = '<a href="' . esc_url( Url::get_main_admin_url() ) . '">' . esc_html__( 'License manager', 'tasty-recipes-lite' ) . '</a>';
 		return $links;
 	}
 
@@ -366,7 +366,7 @@ class Admin {
 	public static function handle_wp_ajax_get_count() {
 		$nonce = Utils::get_param( 'nonce', 'sanitize_key' );
 		if ( empty( $nonce ) || ! current_user_can( self::CAPABILITY ) || ! wp_verify_nonce( $nonce, self::NONCE_KEY ) ) {
-			Utils::send_json_error( __( 'Sorry, you don\'t have permission to do this.', 'tasty-recipes' ) );
+			Utils::send_json_error( __( 'Sorry, you don\'t have permission to do this.', 'tasty-recipes-lite' ) );
 		}
 
 		$class      = false;
@@ -376,7 +376,7 @@ class Admin {
 		if ( ! empty( $get_type ) && isset( $converters[ $get_type ] ) ) {
 			$class = $converters[ $get_type ]['class'];
 		} else {
-			Utils::send_json_error( __( 'Couldn\'t count recipes. Please contact support for assistance.', 'tasty-recipes' ) );
+			Utils::send_json_error( __( 'Couldn\'t count recipes. Please contact support for assistance.', 'tasty-recipes-lite' ) );
 		}
 
 		wp_send_json_success(
@@ -394,7 +394,7 @@ class Admin {
 	public static function handle_wp_ajax_convert() {
 		$nonce = Utils::get_param( 'nonce', 'sanitize_key' );
 		if ( empty( $nonce ) || ! current_user_can( self::CAPABILITY ) || ! wp_verify_nonce( $nonce, self::NONCE_KEY ) ) {
-			Utils::send_json_error( __( 'Sorry, you don\'t have permission to do this.', 'tasty-recipes' ) );
+			Utils::send_json_error( __( 'Sorry, you don\'t have permission to do this.', 'tasty-recipes-lite' ) );
 		}
 
 		$class      = false;
@@ -405,7 +405,7 @@ class Admin {
 			$class = $converters[ $get_type ]['class'];
 		} else {
 			Utils::send_json_error(
-				__( 'Couldn\'t convert recipes. Please contact support for assistance.', 'tasty-recipes' )
+				__( 'Couldn\'t convert recipes. Please contact support for assistance.', 'tasty-recipes-lite' )
 			);
 		}
 
@@ -424,7 +424,7 @@ class Admin {
 				Utils::send_json_error(
 					sprintf(
 						/* translators: %1$s: post title, %2$d: post ID */
-						__( 'Couldn\'t convert recipe in \'%1$s\' (post %2$d). Please contact support for assistance.', 'tasty-recipes' ),
+						__( 'Couldn\'t convert recipe in \'%1$s\' (post %2$d). Please contact support for assistance.', 'tasty-recipes-lite' ),
 						get_the_title( $post_id ),
 						$post_id
 					)
@@ -610,7 +610,7 @@ class Admin {
 			return;
 		}
 
-		Utils::send_json_error( __( 'You don\'t have permission to do this.', 'tasty-recipes' ) );
+		Utils::send_json_error( __( 'You don\'t have permission to do this.', 'tasty-recipes-lite' ) );
 	}
 
 	/**

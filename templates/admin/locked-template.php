@@ -12,7 +12,7 @@ if ( empty( $template_object ) ) {
 }
 
 /* translators: %s: template name */
-$preview_template = sprintf( __( 'Preview %s template', 'tasty-recipes' ), $template_object->get_template_name() );
+$preview_template = sprintf( __( 'Preview %s template', 'tasty-recipes-lite' ), $template_object->get_template_name() );
 $image            = plugins_url(
 	'assets/images/templates/' . $template_object->get_id() . '.png',
 	TASTY_RECIPES_LITE_FILE

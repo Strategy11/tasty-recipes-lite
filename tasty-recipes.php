@@ -5,11 +5,20 @@
  * Description:     Tasty Recipes is the easiest way to publish recipes on your WordPress blog.
  * Author:          WP Tasty
  * Author URI:      https://www.wptasty.com
- * Text Domain:     tasty-recipes
+ * License:         GPLv2 or later
+ * License URI:     http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * Text Domain:     tasty-recipes-lite
  * Domain Path:     /languages
  * Version: 1.0
  *
  * @package         Tasty_Recipes
+ *
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU
+ * General Public License version 2, as published by the Free Software Foundation. You may NOT assume
+ * that you can use any other version of the GPL.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
 use Tasty_Recipes\MetaBox;
@@ -689,9 +698,9 @@ class Tasty_Recipes {
 				'nutrifox_display_style'   => 'label',
 				'footer_social_platform'   => 'instagram',
 				'footer_icon_color'        => '',
-				'footer_heading'           => esc_html__( 'Did you make this recipe?', 'tasty-recipes' ),
+				'footer_heading'           => esc_html__( 'Did you make this recipe?', 'tasty-recipes-lite' ),
 				'footer_heading_color'     => '',
-				'footer_description'       => __( 'Tag @wptasty on Instagram and hashtag it #tastyrecipes', 'tasty-recipes' ),
+				'footer_description'       => __( 'Tag @wptasty on Instagram and hashtag it #tastyrecipes', 'tasty-recipes-lite' ),
 				'footer_description_color' => '',
 			),
 			(array) get_option( self::CUSTOMIZATION_OPTION, array() )

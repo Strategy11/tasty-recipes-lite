@@ -56,7 +56,7 @@ const edit = props => {
 			<ToolbarButton
 				className="components-edit-tasty-recipe-button"
 				icon="edit"
-				label={ __( 'Create Tasty Recipe', 'tasty-recipes' ) }
+				label={ __( 'Create Tasty Recipe', 'tasty-recipes-lite' ) }
 				onClick={ defaultOnClickHandler }
 			>
 			</ToolbarButton>
@@ -124,7 +124,7 @@ const edit = props => {
 			<ToolbarButton
 				className="components-edit-tasty-recipe-button"
 				icon="edit"
-				label={ __( 'Edit Tasty Recipe', 'tasty-recipes' ) }
+				label={ __( 'Edit Tasty Recipe', 'tasty-recipes-lite' ) }
 				onClick={ existingOnClickHandler }
 			>
 			</ToolbarButton>
