@@ -694,7 +694,7 @@ class Tasty_Recipes {
 				'footer_description'       => __( 'Tag @wptasty on Instagram and hashtag it #tastyrecipes', 'tasty-recipes' ),
 				'footer_description_color' => '',
 			),
-			get_option( self::CUSTOMIZATION_OPTION, array() )
+			(array) get_option( self::CUSTOMIZATION_OPTION, array() )
 		);
 
 		return $settings;

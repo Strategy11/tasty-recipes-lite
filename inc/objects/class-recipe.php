@@ -1,4 +1,6 @@
 <?php
+// phpcs:ignoreFile SlevomatCodingStandard.Files.FileLength.FileTooLong
+// TODO: Separate code in multiple files.
 /**
  * Model for the Recipe object.
  *
@@ -814,7 +816,13 @@ class Recipe {
 	 * @return string
 	 */
 	public function get_additional_time_value() {
-		return $this->get_meta( 'additional_time_value' );
+		$value = $this->get_meta( 'additional_time_value' );
+
+		if ( is_array( $value ) ) {
+			return reset( $value );
+		}
+
+		return $value;
 	}
 
 	/**
