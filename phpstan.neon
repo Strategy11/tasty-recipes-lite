@@ -29,3 +29,4 @@ parameters:
 		- '#might not be defined.#'
 		- '#Use more strict comparison#'
 		- '#no value type specified in iterable type array#'
+		- '#Call to function is_callable#'

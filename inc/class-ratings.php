@@ -160,8 +160,6 @@ class Ratings {
 	 * @return void
 	 */
 	public static function action_admin_head() {
-		add_action( 'add_meta_boxes', array( __CLASS__, 'add_rating_in_admin' ) );
-
 		$current_screen = get_current_screen()->id;
 		if ( ! in_array( $current_screen, array( 'edit-comments', 'comment' ), true ) ) {
 			return;
@@ -173,69 +171,6 @@ class Ratings {
 		}
 
 		echo $styles; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	}
-
-	/**
-	 * Add rating meta box in admin comment form.
-	 *
-	 * @since 3.12
-	 *
-	 * @return void
-	 */
-	public static function add_rating_in_admin() {
-		add_meta_box(
-			'tasty-recipes-comment-rating',
-			__( 'Tasty Recipes', 'tasty-recipes' ),
-			array( __CLASS__, 'render_rating_meta_box' ),
-			'comment',
-			'normal'
-		);
-	}
-
-	/**
-	 * Show star rating options in admin comment form.
-	 *
-	 * @since 3.12
-	 *
-	 * @param object $comment Comment object.
-	 *
-	 * @return void
-	 */
-	public static function render_rating_meta_box( $comment ) {
-		$rating = get_comment_meta( $comment->comment_ID, self::COMMENT_META_KEY, true );
-
-		echo '<script>' .
-			'const tastyRecipesRating = ' . (int) $rating . ';' .
-			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-			Utils::get_contents( dirname( __DIR__ ) . '/assets/js/ratings.js' ) .
-			'</script>';
-		echo '<style>.tasty-recipes-ratings-buttons{--tr-star-size:18px;}</style>';
-		?>
-		<p class="tasty-recipes-comment-form">
-			<label for="tasty-recipes-rating">
-				<?php esc_html_e( 'Recipe rating', 'tasty-recipes' ); ?>
-			</label>
-			<br>
-			<?php echo self::get_rating_stars_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-		</p>
-		<?php
-	}
-
-	/**
-	 * Update rating in admin comment.
-	 *
-	 * @since 3.12
-	 *
-	 * @param int $comment_id Comment ID.
-	 *
-	 * @return void
-	 */
-	public static function update_rating_in_admin( $comment_id ) {
-		$rating = Utils::post_param( 'tasty-recipes-rating', 'absint' );
-		if ( $rating ) {
-			update_comment_meta( $comment_id, self::COMMENT_META_KEY, $rating );
-			self::action_modify_comment_update_recipe_ratings( $comment_id );
-		}
 	}
 
 	/**
@@ -468,27 +403,6 @@ class Ratings {
 	}
 
 	/**
-	 * Filters the comment query to exclude empty comments.
-	 * Triggered from the recipe card, so we already know there is
-	 * a recipe on the page.
-	 *
-	 * @since 3.12
-	 *
-	 * @param array  $clauses The current comment query clauses.
-	 * @param object $query   Comment query object.
-	 *
-	 * @return array
-	 */
-	public static function exclude_empty_comments( $clauses, $query ) {
-		if ( empty( $query->query_vars['post_id'] ) ) {
-			return $clauses;
-		}
-
-		$clauses['where'] .= ' AND comment_content<>""';
-		return $clauses;
-	}
-
-	/**
 	 * Get the HTML for a rendered rating.
 	 *
 	 * @param float|int $rating        Rating value.
@@ -664,13 +578,11 @@ class Ratings {
 	 * @return int
 	 */
 	public static function get_minimum_rating_without_comment( $comment_data = array() ) {
-		/**
-		 * Control minimum rating number where comment is not mandatory.
-		 *
-		 * @param int   $min_rating   Rating minimum integer value, default is 4.
-		 * @param array $comment_data Array of comment data.
-		 */
-		return (int) apply_filters( 'tasty_recipes_min_rating_without_comment', 6, $comment_data );
+		if ( is_callable( 'Tasty_Recipes_Pro\Ratings::get_minimum_rating_without_comment' ) ) {
+			return \Tasty_Recipes_Pro\Ratings::get_minimum_rating_without_comment( $comment_data );
+		}
+
+		return 6;
 	}
 
 	/**
@@ -872,25 +784,13 @@ class Ratings {
 	 */
 	private static function rating_message( $message_id, $rating ) {
 		$messages = array(
-			'create-low-rating'          => array(
-				'message' => self::comment_required_message( $rating ),
-				'button'  => self::leave_comment_message(),
-			),
 			'create-high-rating'         => array(
 				'message' => __( 'Thank you for rating!', 'tasty-recipes' ),
 				'button'  => self::leave_comment_message(),
 			),
-			'update-low-rating-comment'  => array(
-				'message' => self::comment_required_to_update_message( $rating ),
-				'button'  => __( 'Update comment', 'tasty-recipes' ),
-			),
 			'update-high-rating-comment' => array(
 				'message' => self::rating_updated_message( $rating ),
 				'button'  => __( 'Update comment', 'tasty-recipes' ),
-			),
-			'update-low-rating'          => array(
-				'message' => self::comment_required_to_update_message( $rating ),
-				'button'  => self::leave_comment_message(),
 			),
 			'update-high-rating'         => array(
 				'message' => self::rating_updated_message( $rating ),
@@ -898,8 +798,22 @@ class Ratings {
 			),
 		);
 
+		/**
+		 * Filter the rating messages.
+		 *
+		 * @since x.x
+		 *
+		 * @param array $messages Array of messages.
+		 *
+		 * @return array
+		 */
+		$messages = apply_filters( 'tasty_recipes_rating_messages', $messages );
+
 		if ( ! isset( $messages[ $message_id ] ) ) {
-			return '';
+			$messages[ $message_id ] = array(
+				'message' => self::comment_required_message( $rating ),
+				'button'  => self::leave_comment_message(),
+			);
 		}
 
 		return sprintf(
@@ -918,32 +832,15 @@ class Ratings {
 	 *
 	 * @return string
 	 */
-	private static function comment_required_message( $rating ) {
+	protected static function comment_required_message( $rating ) {
+		$min_rating = self::get_minimum_rating_without_comment();
+		if ( $min_rating > 5 ) {
+			return __( 'To leave a rating, please share your feedback.', 'tasty-recipes' );
+		}
+
 		return sprintf(
 			// translators: %1$d star rating.
 			__( 'To leave a %1$d-star rating, please share your feedback.', 'tasty-recipes' ),
-			$rating
-		);
-	}
-
-	/**
-	 * Get message when comment is required to edit.
-	 *
-	 * @since 3.12
-	 *
-	 * @param int $rating The selected rating.
-	 *
-	 * @return string
-	 */
-	private static function comment_required_to_update_message( $rating ) {
-		return sprintf(
-			// translators: %1$d star rating.
-			_n(
-				'To change your rating to %1$d star, please share your feedback.',
-				'To change your rating to %1$d stars, please share your feedback.',
-				$rating,
-				'tasty-recipes'
-			),
 			$rating
 		);
 	}
@@ -1033,5 +930,58 @@ class Ratings {
 			'<span class="average">' . $average_rating . '</span>',
 			'<span class="count">' . (int) $total_reviews . '</span>'
 		);
+	}
+
+	/**
+	 * Add rating meta box in admin comment form.
+	 *
+	 * @since 3.12
+	 * @deprecated x.x
+	 *
+	 * @return void
+	 */
+	public static function add_rating_in_admin() {
+		_deprecated_function( __METHOD__, 'x.x' );
+	}
+
+	/**
+	 * Show star rating options in admin comment form.
+	 *
+	 * @since 3.12
+	 * @deprecated x.x
+	 *
+	 * @return void
+	 */
+	public static function render_rating_meta_box() {
+		_deprecated_function( __METHOD__, 'x.x' );
+	}
+
+	/**
+	 * Update rating in admin comment.
+	 *
+	 * @since 3.12
+	 * @deprecated x.x
+	 *
+	 * @return void
+	 */
+	public static function update_rating_in_admin() {
+		_deprecated_function( __METHOD__, 'x.x' );
+	}
+
+	/**
+	 * Filters the comment query to exclude empty comments.
+	 * Triggered from the recipe card, so we already know there is
+	 * a recipe on the page.
+	 *
+	 * @since 3.12
+	 * @deprecated x.x
+	 *
+	 * @param array $clauses The current comment query clauses.
+	 *
+	 * @return array
+	 */
+	public static function exclude_empty_comments( $clauses ) {
+		_deprecated_function( __METHOD__, 'x.x' );
+		return $clauses;
 	}
 }

@@ -294,7 +294,6 @@ class Tasty_Recipes {
 		}
 		add_action( 'rest_insert_comment', array( 'Tasty_Recipes\Ratings', 'action_rest_insert_comment' ), 10, 2 );
 		add_action( 'admin_head', array( 'Tasty_Recipes\Ratings', 'action_admin_head' ) );
-		add_action( 'edit_comment', array( 'Tasty_Recipes\Ratings', 'update_rating_in_admin' ) );
 
 		add_filter( 'tasty_recipes_customization_settings', array( 'Tasty_Recipes\Ratings', 'apply_default_rating_stars_color' ) );
 

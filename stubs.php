@@ -93,6 +93,13 @@ namespace Yoast\WP\SEO\Generators\Schema {
 	}
 }
 
+namespace Tasty_Recipes_Pro {
+	class Ratings {
+		public static function get_minimum_rating_without_comment( $comment_data = array() ) {
+		}
+	}
+}
+
 namespace Tasty\Framework\Admin\License{
 	class Updater {
 		public function __construct( $_api_url, $_plugin_file, $_api_data = null ) {
