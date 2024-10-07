@@ -8,13 +8,16 @@
 .git
 .gitignore
 .gitlab-ci.yml
+.idea
 .svglintrc.js
 .travis.yml
 .DS_Store
+.wordpress-org
 Thumbs.db
 assets/block-editor
 assets/recipe-editor
 assets/scss
+assets/settings
 behat.yml
 bitbucket-pipelines.yml
 bin
