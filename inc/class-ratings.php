@@ -160,8 +160,6 @@ class Ratings {
 	 * @return void
 	 */
 	public static function action_admin_head() {
-		add_action( 'add_meta_boxes', array( __CLASS__, 'add_rating_in_admin' ) );
-
 		$current_screen = get_current_screen()->id;
 		if ( ! in_array( $current_screen, array( 'edit-comments', 'comment' ), true ) ) {
 			return;
@@ -183,13 +181,7 @@ class Ratings {
 	 * @return void
 	 */
 	public static function add_rating_in_admin() {
-		add_meta_box(
-			'tasty-recipes-comment-rating',
-			__( 'Tasty Recipes', 'tasty-recipes' ),
-			array( __CLASS__, 'render_rating_meta_box' ),
-			'comment',
-			'normal'
-		);
+		_deprecated_function( __METHOD__, 'x.x' );
 	}
 
 	/**
@@ -202,23 +194,7 @@ class Ratings {
 	 * @return void
 	 */
 	public static function render_rating_meta_box( $comment ) {
-		$rating = get_comment_meta( $comment->comment_ID, self::COMMENT_META_KEY, true );
-
-		echo '<script>' .
-			'const tastyRecipesRating = ' . (int) $rating . ';' .
-			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-			Utils::get_contents( dirname( __DIR__ ) . '/assets/js/ratings.js' ) .
-			'</script>';
-		echo '<style>.tasty-recipes-ratings-buttons{--tr-star-size:18px;}</style>';
-		?>
-		<p class="tasty-recipes-comment-form">
-			<label for="tasty-recipes-rating">
-				<?php esc_html_e( 'Recipe rating', 'tasty-recipes' ); ?>
-			</label>
-			<br>
-			<?php echo self::get_rating_stars_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-		</p>
-		<?php
+		_deprecated_function( __METHOD__, 'x.x' );
 	}
 
 	/**
@@ -231,11 +207,7 @@ class Ratings {
 	 * @return void
 	 */
 	public static function update_rating_in_admin( $comment_id ) {
-		$rating = Utils::post_param( 'tasty-recipes-rating', 'absint' );
-		if ( $rating ) {
-			update_comment_meta( $comment_id, self::COMMENT_META_KEY, $rating );
-			self::action_modify_comment_update_recipe_ratings( $comment_id );
-		}
+		_deprecated_function( __METHOD__, 'x.x' );
 	}
 
 	/**
