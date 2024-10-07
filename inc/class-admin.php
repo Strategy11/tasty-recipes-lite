@@ -8,7 +8,6 @@
 namespace Tasty_Recipes;
 
 use Tasty\Framework\Utils\Url;
-use Tasty\Framework\Admin\License\Updater;
 use Tasty_Recipes\Settings;
 use Tasty_Recipes;
 
@@ -168,16 +167,6 @@ class Admin {
 	 * @return void
 	 */
 	public static function action_admin_init() {
-		new Updater(
-			self::STORE_URL,
-			TASTY_RECIPES_LITE_FILE,
-			array(
-				'version'   => TASTY_RECIPES_LITE_VERSION,
-				'license'   => get_option( Tasty_Recipes::LICENSE_KEY_OPTION ),
-				'item_name' => self::ITEM_NAME,
-				'author'    => self::ITEM_AUTHOR,
-			)
-		);
 		if ( get_option( Tasty_Recipes::PLUGIN_ACTIVATION_OPTION, false ) ) {
 			delete_option( Tasty_Recipes::PLUGIN_ACTIVATION_OPTION );
 			if ( empty( Utils::get_param( 'activate-multi' ) ) ) {
