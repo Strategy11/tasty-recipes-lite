@@ -865,13 +865,38 @@ class Ratings {
 		$messages = apply_filters( 'tasty_recipes_rating_messages', $messages );
 
 		if ( ! isset( $messages[ $message_id ] ) ) {
-			return '';
+			$messages[ $message_id ] = array(
+				'message' => self::comment_required_message( $rating ),
+				'button'  => self::leave_comment_message(),
+			);
 		}
 
 		return sprintf(
 			'%1$s<a href="#respond" class="tasty-recipes-scrollto">%2$s</a>',
 			esc_html( $messages[ $message_id ]['message'] ),
 			esc_html( $messages[ $message_id ]['button'] )
+		);
+	}
+
+	/**
+	 * Get message when comment is required to create new rating.
+	 *
+	 * @since 3.12
+	 *
+	 * @param int $rating The selected rating.
+	 *
+	 * @return string
+	 */
+	protected static function comment_required_message( $rating ) {
+		$min_rating = self::get_minimum_rating_without_comment();
+		if ( $min_rating > 5 ) {
+			return __( 'To leave a rating, please share your feedback.', 'tasty-recipes' );
+		}
+
+		return sprintf(
+			// translators: %1$d star rating.
+			__( 'To leave a %1$d-star rating, please share your feedback.', 'tasty-recipes' ),
+			$rating
 		);
 	}
 
