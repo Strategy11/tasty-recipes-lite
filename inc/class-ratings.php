@@ -976,7 +976,7 @@ class Ratings {
 	 * @since 3.12
 	 * @deprecated x.x
 	 *
-	 * @param array  $clauses The current comment query clauses.
+	 * @param array $clauses The current comment query clauses.
 	 *
 	 * @return array
 	 */
