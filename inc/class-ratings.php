@@ -174,43 +174,6 @@ class Ratings {
 	}
 
 	/**
-	 * Add rating meta box in admin comment form.
-	 *
-	 * @since 3.12
-	 *
-	 * @return void
-	 */
-	public static function add_rating_in_admin() {
-		_deprecated_function( __METHOD__, 'x.x' );
-	}
-
-	/**
-	 * Show star rating options in admin comment form.
-	 *
-	 * @since 3.12
-	 *
-	 * @param object $comment Comment object.
-	 *
-	 * @return void
-	 */
-	public static function render_rating_meta_box( $comment ) {
-		_deprecated_function( __METHOD__, 'x.x' );
-	}
-
-	/**
-	 * Update rating in admin comment.
-	 *
-	 * @since 3.12
-	 *
-	 * @param int $comment_id Comment ID.
-	 *
-	 * @return void
-	 */
-	public static function update_rating_in_admin( $comment_id ) {
-		_deprecated_function( __METHOD__, 'x.x' );
-	}
-
-	/**
 	 * Recalculate total reviews and average rating for the embedded recipe
 	 * when a comment changes in some way.
 	 *
@@ -437,24 +400,6 @@ class Ratings {
 
 		$rating = PHP_EOL . '<p class="tasty-recipes-ratings">' . self::get_rendered_rating( $rating ) . '</p>';
 		return $comment_text . $rating;
-	}
-
-	/**
-	 * Filters the comment query to exclude empty comments.
-	 * Triggered from the recipe card, so we already know there is
-	 * a recipe on the page.
-	 *
-	 * @since 3.12
-	 * @deprecated x.x
-	 *
-	 * @param array  $clauses The current comment query clauses.
-	 * @param object $query   Comment query object.
-	 *
-	 * @return array
-	 */
-	public static function exclude_empty_comments( $clauses, $query ) {
-		_deprecated_function( __METHOD__, 'x.x' );
-		return $clauses;
 	}
 
 	/**
@@ -985,5 +930,58 @@ class Ratings {
 			'<span class="average">' . $average_rating . '</span>',
 			'<span class="count">' . (int) $total_reviews . '</span>'
 		);
+	}
+
+	/**
+	 * Add rating meta box in admin comment form.
+	 *
+	 * @since 3.12
+	 * @deprecated x.x
+	 *
+	 * @return void
+	 */
+	public static function add_rating_in_admin() {
+		_deprecated_function( __METHOD__, 'x.x' );
+	}
+
+	/**
+	 * Show star rating options in admin comment form.
+	 *
+	 * @since 3.12
+	 * @deprecated x.x
+	 *
+	 * @return void
+	 */
+	public static function render_rating_meta_box() {
+		_deprecated_function( __METHOD__, 'x.x' );
+	}
+
+	/**
+	 * Update rating in admin comment.
+	 *
+	 * @since 3.12
+	 * @deprecated x.x
+	 *
+	 * @return void
+	 */
+	public static function update_rating_in_admin() {
+		_deprecated_function( __METHOD__, 'x.x' );
+	}
+
+	/**
+	 * Filters the comment query to exclude empty comments.
+	 * Triggered from the recipe card, so we already know there is
+	 * a recipe on the page.
+	 *
+	 * @since 3.12
+	 * @deprecated x.x
+	 *
+	 * @param array  $clauses The current comment query clauses.
+	 *
+	 * @return array
+	 */
+	public static function exclude_empty_comments( $clauses ) {
+		_deprecated_function( __METHOD__, 'x.x' );
+		return $clauses;
 	}
 }
