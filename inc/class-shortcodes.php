@@ -417,7 +417,7 @@ class Shortcodes {
 		/**
 		 * The template vars before they are prepared.
 		 *
-		 * @since x.x
+		 * @since 1.0
 		 */
 		$template_vars = apply_filters( 'tasty_recipes_pre_template_vars', $template_vars, compact( 'atts' ) );
 
@@ -770,7 +770,7 @@ class Shortcodes {
 			/**
 			 * Filter the HTML for the cooking attribute.
 			 *
-			 * @since x.x
+			 * @since 1.0
 			 */
 			$value = apply_filters( 'tasty_recipes_cooking_html', $value, $attribute, $template_vars );
 			$value = '<span data-tasty-recipes-customization="detail-value-color.color" ' .
@@ -1078,7 +1078,7 @@ EOT;
 		/**
 		 * Filters the styles to be injected into the recipe card.
 		 *
-		 * @since x.x
+		 * @since 1.0
 		 *
 		 * @param array $css_files Existing styles.
 		 */
@@ -1093,7 +1093,7 @@ EOT;
 		/**
 		 * Filters the styles to be injected into the recipe card.
 		 *
-		 * @since x.x
+		 * @since 1.0
 		 *
 		 * @param string $styles Existing styles.
 		 */
@@ -1275,7 +1275,7 @@ EOT;
 		/**
 		 * Filters the common recipe scripts.
 		 *
-		 * @since x.x
+		 * @since 1.0
 		 *
 		 * @param array $vars Existing variables.
 		 */
@@ -1288,39 +1288,39 @@ EOT;
 	 * Print cook mode html.
 	 *
 	 * @since 3.8
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @return void
 	 */
 	public static function print_cook_mode() {
-		_deprecated_function( __METHOD__, 'x.x' );
+		_deprecated_function( __METHOD__, '1.0' );
 	}
 
 	/**
 	 * Process ingredients to annotate <li> with structured data.
 	 *
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @param string $ingredients Existing ingredients string.
 	 *
 	 * @return string
 	 */
 	public static function process_ingredients_annotate_with_spans( $ingredients ) {
-		_deprecated_function( __METHOD__, 'x.x' );
+		_deprecated_function( __METHOD__, '1.0' );
 		return $ingredients;
 	}
 
 	/**
 	 * Process ingredients to annotate <li> with checkboxes.
 	 *
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @param string $ingredients Existing ingredients string.
 	 *
 	 * @return string
 	 */
 	public static function process_ingredients_for_checkboxes( $ingredients ) {
-		_deprecated_function( __METHOD__, 'x.x' );
+		_deprecated_function( __METHOD__, '1.0' );
 		return $ingredients;
 	}
 }

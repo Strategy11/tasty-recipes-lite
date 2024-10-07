@@ -69,7 +69,7 @@ class Tasty_Recipes {
 	/**
 	 * Option name for the Instacart affiliate ID.
 	 *
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @var string
 	 */
@@ -78,7 +78,7 @@ class Tasty_Recipes {
 	/**
 	 * Option name for the Instagram handle.
 	 *
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @var string
 	 */
@@ -87,7 +87,7 @@ class Tasty_Recipes {
 	/**
 	 * Option name for the Instagram tag.
 	 *
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @var string
 	 */
@@ -151,7 +151,7 @@ class Tasty_Recipes {
 	/**
 	 * Option name for the automatic unit conversion option.
 	 *
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @var string
 	 */
@@ -174,7 +174,7 @@ class Tasty_Recipes {
 	/**
 	 * Option name for the cook mode helper.
 	 *
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @var string
 	 */
@@ -230,7 +230,7 @@ class Tasty_Recipes {
 	/**
 	 * Register the class autoloader.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @param string $class_name The class name to load.
 	 * @param string $base The base directory to search in.
@@ -567,7 +567,7 @@ class Tasty_Recipes {
 				/**
 				 * Filter to disable the use of custom schema for a block.
 				 *
-				 * @since x.x
+				 * @since 1.0
 				 *
 				 * @param bool $disable_json Whether to disable the custom schema.
 				 */

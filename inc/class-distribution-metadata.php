@@ -214,7 +214,7 @@ class Distribution_Metadata {
 		/**
 		 * Permit modification of the Google Schema data generated for a recipe.
 		 *
-		 * @since x.x
+		 * @since 1.0
 		 */
 		$schema = apply_filters( 'tasty_recipes_enriched_google_schema', $schema, compact( 'recipe', 'post' ) );
 
@@ -826,7 +826,7 @@ class Distribution_Metadata {
 				/**
 				 * Add extra data to the video schema response.
 				 *
-				 * @since x.x
+				 * @since 1.0
 				 */
 				$response_data = apply_filters(
 					'tasty_recipes_video_schema_response',

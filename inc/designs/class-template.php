@@ -112,7 +112,7 @@ class Template {
 	/**
 	 * Check if a template is locked.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @param string $template Template ID.
 	 *
@@ -369,7 +369,7 @@ EOT;
 		/**
 		 * Filter the template vars for the recipe card preview.
 		 *
-		 * @since x.x
+		 * @since 1.0
 		 *
 		 * @param array $template_vars Array of template vars.
 		 */

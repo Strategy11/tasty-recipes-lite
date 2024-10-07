@@ -801,7 +801,7 @@ class Ratings {
 		/**
 		 * Filter the rating messages.
 		 *
-		 * @since x.x
+		 * @since 1.0
 		 *
 		 * @param array $messages Array of messages.
 		 *
@@ -936,36 +936,36 @@ class Ratings {
 	 * Add rating meta box in admin comment form.
 	 *
 	 * @since 3.12
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @return void
 	 */
 	public static function add_rating_in_admin() {
-		_deprecated_function( __METHOD__, 'x.x' );
+		_deprecated_function( __METHOD__, '1.0' );
 	}
 
 	/**
 	 * Show star rating options in admin comment form.
 	 *
 	 * @since 3.12
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @return void
 	 */
 	public static function render_rating_meta_box() {
-		_deprecated_function( __METHOD__, 'x.x' );
+		_deprecated_function( __METHOD__, '1.0' );
 	}
 
 	/**
 	 * Update rating in admin comment.
 	 *
 	 * @since 3.12
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @return void
 	 */
 	public static function update_rating_in_admin() {
-		_deprecated_function( __METHOD__, 'x.x' );
+		_deprecated_function( __METHOD__, '1.0' );
 	}
 
 	/**
@@ -974,14 +974,14 @@ class Ratings {
 	 * a recipe on the page.
 	 *
 	 * @since 3.12
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @param array $clauses The current comment query clauses.
 	 *
 	 * @return array
 	 */
 	public static function exclude_empty_comments( $clauses ) {
-		_deprecated_function( __METHOD__, 'x.x' );
+		_deprecated_function( __METHOD__, '1.0' );
 		return $clauses;
 	}
 }

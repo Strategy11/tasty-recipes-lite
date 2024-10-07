@@ -94,7 +94,7 @@ class Settings {
 		/**
 		 * Filter the design settings to be registered.
 		 *
-		 * @since x.x
+		 * @since 1.0
 		 *
 		 * @param array $settings Array of settings to be registered.
 		 */
@@ -128,7 +128,7 @@ class Settings {
 		/**
 		 * Filter the settings to be registered.
 		 *
-		 * @since x.x
+		 * @since 1.0
 		 *
 		 * @param array $settings Array of settings to be registered.
 		 */
@@ -225,7 +225,7 @@ class Settings {
 		/**
 		 * Filter the settings array.
 		 *
-		 * @since x.x
+		 * @since 1.0
 		 */
 		$settings = apply_filters( 'tasty_recipes_settings', $settings );
 
@@ -612,7 +612,7 @@ class Settings {
 		/**
 		 * Filter the allowed settings.
 		 *
-		 * @since x.x
+		 * @since 1.0
 		 *
 		 * @param array $allowed Array of allowed settings and how to sanitize them.
 		 */
@@ -760,7 +760,7 @@ class Settings {
 	/**
 	 * Add container around the field for modal handling.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @param array  $args       Field args.
 	 * @param string $option_key Option key.

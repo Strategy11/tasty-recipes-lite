@@ -111,23 +111,23 @@ class Frontend {
 	 * Print instacart HTML.
 	 *
 	 * @since 3.8
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @return void
 	 */
 	public function print_instacart_html() {
-		_deprecated_function( __METHOD__, 'x.x' );
+		_deprecated_function( __METHOD__, '1.0' );
 	}
 
 	/**
 	 * Insert Instacart widget script.
 	 *
 	 * @since 3.8
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @return void
 	 */
 	public function insert_instacart_script() {
-		_deprecated_function( __METHOD__, 'x.x' );
+		_deprecated_function( __METHOD__, '1.0' );
 	}
 }

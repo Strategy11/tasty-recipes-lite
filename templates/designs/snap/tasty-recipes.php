@@ -251,7 +251,7 @@ if ( '.svg' === $ext ) {
 		/**
 		 * Add content inside the footer of the recipe card.
 		 *
-		 * @since x.x
+		 * @since 1.0
 		 *
 		 * @var array $vars Array of variables to pass to the action.
 		 */

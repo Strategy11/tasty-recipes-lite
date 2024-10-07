@@ -68,7 +68,7 @@ class Admin {
 	/**
 	 * Slug for the settings page.
 	 *
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @var string
 	 */
@@ -77,7 +77,7 @@ class Admin {
 	/**
 	 * Group used for authentication settings.
 	 *
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @var string
 	 */
@@ -86,7 +86,7 @@ class Admin {
 	/**
 	 * Section used for authentication settings.
 	 *
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @var string
 	 */
@@ -95,7 +95,7 @@ class Admin {
 	/**
 	 * Group used for card settings.
 	 *
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @var string
 	 */
@@ -104,7 +104,7 @@ class Admin {
 	/**
 	 * Section used for card settings.
 	 *
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @var string
 	 */
@@ -113,7 +113,7 @@ class Admin {
 	/**
 	 * Available template options.
 	 *
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @var array
 	 */
@@ -131,7 +131,7 @@ class Admin {
 	/**
 	 * Registers hooks.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @return void
 	 */
@@ -206,7 +206,7 @@ class Admin {
 	 * @return void
 	 */
 	public static function action_admin_menu() {
-		_deprecated_function( __METHOD__, 'x.x', 'Settings::register_settings' );
+		_deprecated_function( __METHOD__, '1.0', 'Settings::register_settings' );
 		Settings::register_settings();
 	}
 
@@ -229,7 +229,7 @@ class Admin {
 	 * @return array
 	 */
 	public static function add_menu_item( $menu_items ) {
-		_deprecated_function( __METHOD__, 'x.x', 'Settings::add_menu_item' );
+		_deprecated_function( __METHOD__, '1.0', 'Settings::add_menu_item' );
 		return Settings::add_menu_item( $menu_items );
 	}
 
@@ -355,7 +355,7 @@ class Admin {
 	 * @return void
 	 */
 	public static function handle_wp_ajax_preview_recipe_card() {
-		_deprecated_function( __METHOD__, 'x.x', 'Templates::handle_wp_ajax_preview_recipe_card' );
+		_deprecated_function( __METHOD__, '1.0', 'Templates::handle_wp_ajax_preview_recipe_card' );
 	}
 
 	/**
@@ -458,7 +458,7 @@ class Admin {
 	 * @return void
 	 */
 	public static function handle_settings_page() {
-		_deprecated_function( __METHOD__, 'x.x', 'Settings::handle_settings_page' );
+		_deprecated_function( __METHOD__, '1.0', 'Settings::handle_settings_page' );
 		Settings::handle_settings_page();
 	}
 
@@ -480,108 +480,108 @@ class Admin {
 	/**
 	 * Prints the recipe editor modal template, but only once.
 	 *
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @return void
 	 */
 	public static function action_admin_footer_render_template() {
-		_deprecated_function( __METHOD__, 'x.x', 'Settings::action_admin_footer_render_template' );
+		_deprecated_function( __METHOD__, '1.0', 'Settings::action_admin_footer_render_template' );
 		Settings::action_admin_footer_render_template();
 	}
 
 	/**
 	 * Render an input field.
 	 *
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @param array $args Configuration arguments used by the input field.
 	 *
 	 * @return void
 	 */
 	public static function render_input_field( $args ) {
-		_deprecated_function( __METHOD__, 'x.x', 'Settings::render_input_field' );
+		_deprecated_function( __METHOD__, '1.0', 'Settings::render_input_field' );
 		Settings::render_input_field( $args );
 	}
 
 	/**
 	 * Sanitize quick links option field.
 	 *
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @param array $item Array of items being selected.
 	 *
 	 * @return array
 	 */
 	public static function sanitize_quick_links( $item ) {
-		_deprecated_function( __METHOD__, 'x.x', 'Settings::sanitize_quick_links' );
+		_deprecated_function( __METHOD__, '1.0', 'Settings::sanitize_quick_links' );
 		return Settings::sanitize_quick_links( $item );
 	}
 
 	/**
 	 * Sanitizes the card buttons option.
 	 *
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @param array $original Original card button option value.
 	 *
 	 * @return array
 	 */
 	public static function sanitize_card_buttons( $original ) {
-		_deprecated_function( __METHOD__, 'x.x', 'Settings::sanitize_card_buttons' );
+		_deprecated_function( __METHOD__, '1.0', 'Settings::sanitize_card_buttons' );
 		return Settings::sanitize_card_buttons( $original );
 	}
 
 	/**
 	 * Sanitizes the customization option to make sure there are only expected values.
 	 *
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @param array $original Original customization option value.
 	 *
 	 * @return array
 	 */
 	public static function sanitize_customization_option( $original ) {
-		_deprecated_function( __METHOD__, 'x.x', 'Settings::sanitize_customization_option' );
+		_deprecated_function( __METHOD__, '1.0', 'Settings::sanitize_customization_option' );
 		return Settings::sanitize_customization_option( $original );
 	}
 
 	/**
 	 * Render a select field.
 	 *
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @param array $args Configuration arguments used by the select field.
 	 *
 	 * @return void
 	 */
 	public static function render_select_field( $args ) {
-		_deprecated_function( __METHOD__, 'x.x', 'Settings::render_select_field' );
+		_deprecated_function( __METHOD__, '1.0', 'Settings::render_select_field' );
 		Settings::render_select_field( $args );
 	}
 
 	/**
 	 * Renders multiselect checkbox field.
 	 *
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @param array $args Field args.
 	 *
 	 * @return void
 	 */
 	public static function render_multiselect_checkboxes_field( $args ) {
-		_deprecated_function( __METHOD__, 'x.x', 'Settings::render_multiselect_checkboxes_field' );
+		_deprecated_function( __METHOD__, '1.0', 'Settings::render_multiselect_checkboxes_field' );
 		Settings::render_multiselect_checkboxes_field( $args );
 	}
 
 	/**
 	 * Renders the card buttons field.
 	 *
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @return void
 	 */
 	public static function render_card_buttons_field() {
-		_deprecated_function( __METHOD__, 'x.x', 'Settings::render_card_buttons_field' );
+		_deprecated_function( __METHOD__, '1.0', 'Settings::render_card_buttons_field' );
 		Settings::render_card_buttons_field();
 	}
 
@@ -633,28 +633,28 @@ class Admin {
 	 * Filter quick links admin field to handle the removed item "both"
 	 * and cast the string option to an array.
 	 *
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @param array $args Admin field args.
 	 *
 	 * @return array
 	 */
 	public static function filter_quick_links_backward_compatibility( $args ) {
-		_deprecated_function( __METHOD__, 'x.x', 'Settings::filter_quick_links_backward_compatibility' );
+		_deprecated_function( __METHOD__, '1.0', 'Settings::filter_quick_links_backward_compatibility' );
 		return Settings::filter_quick_links_backward_compatibility( $args );
 	}
 
 	/**
 	 * Handle the removed item "both" and cast the string option to an array.
 	 *
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @param mixed $option_value Option value to be handled.
 	 *
 	 * @return array|string[]
 	 */
 	public static function handle_quick_links_backward_compatibility( $option_value ) {
-		_deprecated_function( __METHOD__, 'x.x', 'Settings::handle_quick_links_backward_compatibility' );
+		_deprecated_function( __METHOD__, '1.0', 'Settings::handle_quick_links_backward_compatibility' );
 		return Settings::handle_quick_links_backward_compatibility( $option_value );
 	}
 
@@ -662,36 +662,36 @@ class Admin {
 	 * Show SSL certificate error message.
 	 *
 	 * @since 3.8
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @return void
 	 */
 	public static function show_ssl_error() {
-		_deprecated_function( __METHOD__, 'x.x' );
+		_deprecated_function( __METHOD__, '1.0' );
 	}
 
 	/**
 	 * Print instacart image in admin instead of real iframe.
 	 *
 	 * @since 3.8
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @return void
 	 */
 	public static function print_mock_instacart_html() {
-		_deprecated_function( __METHOD__, 'x.x' );
+		_deprecated_function( __METHOD__, '1.0' );
 	}
 
 	/**
 	 * Check if the Instacart button can be shown.
 	 *
 	 * @since 3.8
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @return bool
 	 */
 	public static function can_show_instacart_button() {
-		_deprecated_function( __METHOD__, 'x.x' );
+		_deprecated_function( __METHOD__, '1.0' );
 		return false;
 	}
 
@@ -699,12 +699,12 @@ class Admin {
 	 * Check if Cook Mode can be enabled in this site or not.
 	 *
 	 * @since 3.8
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @return bool
 	 */
 	public static function can_enable_cook_mode() {
-		_deprecated_function( __METHOD__, 'x.x' );
+		_deprecated_function( __METHOD__, '1.0' );
 		return false;
 	}
 
@@ -712,12 +712,12 @@ class Admin {
 	 * Is Cook Mode enabled or not.
 	 *
 	 * @since 3.8
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @return bool
 	 */
 	public static function is_cook_mode_enabled() {
-		_deprecated_function( __METHOD__, 'x.x' );
+		_deprecated_function( __METHOD__, '1.0' );
 		return false;
 	}
 
@@ -725,12 +725,12 @@ class Admin {
 	 * Get Cook Mode helper message.
 	 *
 	 * @since 3.8
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @return string
 	 */
 	public static function get_cook_mode_helper() {
-		_deprecated_function( __METHOD__, 'x.x' );
+		_deprecated_function( __METHOD__, '1.0' );
 		return '';
 	}
 }
