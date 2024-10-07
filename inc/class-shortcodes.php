@@ -631,8 +631,6 @@ class Shortcodes {
 		$template_vars['recipe_rating_label'] = '<span data-tasty-recipes-customization="detail-label-color.color" class="rating-label">';
 
 		if ( $total_reviews ) {
-			add_filter( 'comments_clauses', array( 'Tasty_Recipes\Ratings', 'exclude_empty_comments' ), 10, 2 );
-
 			$average_rating                        = $recipe->get_average_rating();
 			$template_vars['recipe_rating_label'] .= Ratings::get_rating_label( $total_reviews, $average_rating );
 		} else {
@@ -1269,11 +1267,19 @@ EOT;
 	private static function get_common_recipe_scripts() {
 		global $post;
 		$vars = array(
-			'minRating'   => Ratings::get_minimum_rating_without_comment(),
 			'ajaxurl'     => esc_url_raw( admin_url( 'admin-ajax.php' ) ),
 			'ratingNonce' => is_user_logged_in() ? wp_create_nonce( 'tasty-recipes-save-rating' ) : '',
 			'postId'      => $post ? $post->ID : 0,
 		);
+
+		/**
+		 * Filters the common recipe scripts.
+		 *
+		 * @since x.x
+		 *
+		 * @param array $vars Existing variables.
+		 */
+		$vars = apply_filters( 'tasty_recipes_common_js_vars', $vars );
 
 		return 'window.trCommon=' . wp_json_encode( $vars ) . ';';
 	}

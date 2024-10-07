@@ -379,5 +379,5 @@ window.TastyRecipes.ratings = {
 		window.addEventListener( 'load', callback );
 	}
 })(() => {
-	window.TastyRecipes.ratings.init( window.trCommon ? window.trCommon.minRating : 4 );
+	window.TastyRecipes.ratings.init( window.trCommon ? window.trCommon.minRating : 6 );
 });

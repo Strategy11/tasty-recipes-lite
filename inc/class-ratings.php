@@ -445,6 +445,7 @@ class Ratings {
 	 * a recipe on the page.
 	 *
 	 * @since 3.12
+	 * @deprecated x.x
 	 *
 	 * @param array  $clauses The current comment query clauses.
 	 * @param object $query   Comment query object.
@@ -452,11 +453,7 @@ class Ratings {
 	 * @return array
 	 */
 	public static function exclude_empty_comments( $clauses, $query ) {
-		if ( empty( $query->query_vars['post_id'] ) ) {
-			return $clauses;
-		}
-
-		$clauses['where'] .= ' AND comment_content<>""';
+		_deprecated_function( __METHOD__, 'x.x' );
 		return $clauses;
 	}
 
@@ -636,13 +633,11 @@ class Ratings {
 	 * @return int
 	 */
 	public static function get_minimum_rating_without_comment( $comment_data = array() ) {
-		/**
-		 * Control minimum rating number where comment is not mandatory.
-		 *
-		 * @param int   $min_rating   Rating minimum integer value, default is 4.
-		 * @param array $comment_data Array of comment data.
-		 */
-		return (int) apply_filters( 'tasty_recipes_min_rating_without_comment', 6, $comment_data );
+		if ( is_callable( 'Tasty_Recipes_Pro\Ratings::get_minimum_rating_without_comment' ) ) {
+			return \Tasty_Recipes_Pro\Ratings::get_minimum_rating_without_comment( $comment_data );
+		}
+
+		return 6;
 	}
 
 	/**
@@ -844,31 +839,30 @@ class Ratings {
 	 */
 	private static function rating_message( $message_id, $rating ) {
 		$messages = array(
-			'create-low-rating'          => array(
-				'message' => self::comment_required_message( $rating ),
-				'button'  => self::leave_comment_message(),
-			),
 			'create-high-rating'         => array(
 				'message' => __( 'Thank you for rating!', 'tasty-recipes' ),
 				'button'  => self::leave_comment_message(),
 			),
-			'update-low-rating-comment'  => array(
-				'message' => self::comment_required_to_update_message( $rating ),
-				'button'  => __( 'Update comment', 'tasty-recipes' ),
-			),
 			'update-high-rating-comment' => array(
 				'message' => self::rating_updated_message( $rating ),
 				'button'  => __( 'Update comment', 'tasty-recipes' ),
-			),
-			'update-low-rating'          => array(
-				'message' => self::comment_required_to_update_message( $rating ),
-				'button'  => self::leave_comment_message(),
 			),
 			'update-high-rating'         => array(
 				'message' => self::rating_updated_message( $rating ),
 				'button'  => self::leave_comment_message(),
 			),
 		);
+
+		/**
+		 * Filter the rating messages.
+		 *
+		 * @since x.x
+		 *
+		 * @param array $messages Array of messages.
+		 *
+		 * @return array
+		 */
+		$messages = apply_filters( 'tasty_recipes_rating_messages', $messages );
 
 		if ( ! isset( $messages[ $message_id ] ) ) {
 			return '';
@@ -878,45 +872,6 @@ class Ratings {
 			'%1$s<a href="#respond" class="tasty-recipes-scrollto">%2$s</a>',
 			esc_html( $messages[ $message_id ]['message'] ),
 			esc_html( $messages[ $message_id ]['button'] )
-		);
-	}
-
-	/**
-	 * Get message when comment is required to create new rating.
-	 *
-	 * @since 3.12
-	 *
-	 * @param int $rating The selected rating.
-	 *
-	 * @return string
-	 */
-	private static function comment_required_message( $rating ) {
-		return sprintf(
-			// translators: %1$d star rating.
-			__( 'To leave a %1$d-star rating, please share your feedback.', 'tasty-recipes' ),
-			$rating
-		);
-	}
-
-	/**
-	 * Get message when comment is required to edit.
-	 *
-	 * @since 3.12
-	 *
-	 * @param int $rating The selected rating.
-	 *
-	 * @return string
-	 */
-	private static function comment_required_to_update_message( $rating ) {
-		return sprintf(
-			// translators: %1$d star rating.
-			_n(
-				'To change your rating to %1$d star, please share your feedback.',
-				'To change your rating to %1$d stars, please share your feedback.',
-				$rating,
-				'tasty-recipes'
-			),
-			$rating
 		);
 	}
 
