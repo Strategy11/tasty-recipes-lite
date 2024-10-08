@@ -112,7 +112,7 @@ class Recipe {
 				'sanitize_callback' => 'sanitize_text_field',
 				'tooltip'           => __(
 					'Keywords help Google find your recipes. Include keywords that are not also a category or cuisine ie summer, Halloween, quick, nutmeg crust.',
-					'tasty-recipes'
+					'tasty-recipes-lite'
 				),
 			),
 			'nutrifox_id'                 => array(

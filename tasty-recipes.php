@@ -227,7 +227,7 @@ class Tasty_Recipes {
 
 		require_once __DIR__ . '/functions.php';
 
-		load_plugin_textdomain( 'tasty-recipes', false, basename( __DIR__ ) . '/languages' );
+		load_plugin_textdomain( 'tasty-recipes-lite', false, basename( __DIR__ ) . '/languages' );
 
 		spl_autoload_register(
 			function ( $class_name ) {
