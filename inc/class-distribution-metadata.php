@@ -1032,8 +1032,6 @@ class Distribution_Metadata {
 		/**
 		 * Filters the comments array.
 		 *
-		 * @since 2.1.0 pro
-		 *
 		 * @param array $comments Array of comments supplied to the comments template.
 		 * @param int   $post_ID  Post ID.
 		 */
