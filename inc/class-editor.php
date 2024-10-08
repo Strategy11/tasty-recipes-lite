@@ -414,7 +414,7 @@ class Editor {
 	/**
 	 * Validate the inputs before conversion and return the post to convert.
 	 *
-	 * @return WP_Post|null
+	 * @return WP_Post
 	 */
 	private static function get_current_post_for_conversion_ajax() {
 		$nonce   = Utils::get_param( 'nonce' );

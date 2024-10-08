@@ -293,7 +293,7 @@ abstract class Converter {
 		$output   = $item;
 		$link_ptr = '#\[(.*?)\| *(.*?)( (.*?))?\]#';
 		preg_match_all( $link_ptr, $item, $matches );
-		if ( isset( $matches[0] ) ) {
+		if ( ! empty( $matches[0] ) ) {
 			$orig         = $matches[0];
 			$substitution = preg_replace( $link_ptr, '<a href="$2"$3>$1</a>', str_replace( '"', '', $orig ) );
 			$output       = str_replace( $orig, $substitution, $item );

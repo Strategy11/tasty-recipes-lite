@@ -3,7 +3,7 @@
  * Plugin Name:     Tasty Recipes Lite
  * Plugin URI:      https://www.wptasty.com/tasty-recipes
  * Description:     Tasty Recipes is the easiest way to publish recipes on your WordPress blog.
- * Author:          WP Tasty
+ * Author:          WP Tasty Recipes Team
  * Author URI:      https://www.wptasty.com
  * License:         GPLv2 or later
  * License URI:     http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
