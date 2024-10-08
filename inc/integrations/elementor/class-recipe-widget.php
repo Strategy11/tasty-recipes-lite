@@ -59,7 +59,7 @@ class Recipe_Widget extends \Elementor\Widget_Base {
 		$this->start_controls_section(
 			'content_section',
 			array(
-				'label' => __( 'Content', 'tasty-recipes' ),
+				'label' => __( 'Content', 'tasty-recipes-lite' ),
 				'tab'   => \Elementor\Controls_Manager::TAB_CONTENT,
 			)
 		);
@@ -84,7 +84,7 @@ class Recipe_Widget extends \Elementor\Widget_Base {
 		if ( ! empty( $settings['recipe_id'] ) ) {
 			echo do_shortcode( '[' . Shortcodes::RECIPE_SHORTCODE . ' id="' . (int) $settings['recipe_id'] . '"]' );
 		} else {
-			echo '<p>' . esc_html__( 'No Tasty Recipe created yet. Click \'Edit Recipe\' in the widget controls to create one.', 'tasty-recipes' ) . '</p>';
+			echo '<p>' . esc_html__( 'No Tasty Recipe created yet. Click \'Edit Recipe\' in the widget controls to create one.', 'tasty-recipes-lite' ) . '</p>';
 		}
 	}
 

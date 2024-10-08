@@ -62,10 +62,10 @@ function tasty_recipes_get_print_url( $post_id, $recipe_id ) {
  */
 function tasty_recipes_get_print_view_options() {
 	$options = array(
-		'images'      => esc_html__( 'Images', 'tasty-recipes' ),
-		'description' => esc_html__( 'Description', 'tasty-recipes' ),
-		'notes'       => esc_html__( 'Notes', 'tasty-recipes' ),
-		'nutrition'   => esc_html__( 'Nutrition', 'tasty-recipes' ),
+		'images'      => esc_html__( 'Images', 'tasty-recipes-lite' ),
+		'description' => esc_html__( 'Description', 'tasty-recipes-lite' ),
+		'notes'       => esc_html__( 'Notes', 'tasty-recipes-lite' ),
+		'nutrition'   => esc_html__( 'Nutrition', 'tasty-recipes-lite' ),
 	);
 
 	if ( tasty_recipes_is_print() ) {

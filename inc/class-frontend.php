@@ -94,7 +94,7 @@ class Frontend {
 			$recipe_rating_icons  = Ratings::get_rendered_rating( $average_rating );
 			$rating_link_class    = 'tasty-recipes-has-ratings';
 		} else {
-			$recipe_rating_label = esc_html__( 'Leave a Review', 'tasty-recipes' );
+			$recipe_rating_label = esc_html__( 'Leave a Review', 'tasty-recipes-lite' );
 			$recipe_rating_icons = '';
 			if ( 'buttons' === get_option( Tasty_Recipes::QUICK_LINKS_STYLE ) ) {
 				$rating_link_class = 'button';
@@ -111,23 +111,23 @@ class Frontend {
 	 * Print instacart HTML.
 	 *
 	 * @since 3.8
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @return void
 	 */
 	public function print_instacart_html() {
-		_deprecated_function( __METHOD__, 'x.x' );
+		_deprecated_function( __METHOD__, '1.0' );
 	}
 
 	/**
 	 * Insert Instacart widget script.
 	 *
 	 * @since 3.8
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @return void
 	 */
 	public function insert_instacart_script() {
-		_deprecated_function( __METHOD__, 'x.x' );
+		_deprecated_function( __METHOD__, '1.0' );
 	}
 }

@@ -56,7 +56,7 @@ const edit = props => {
 			<ToolbarButton
 				className="components-edit-tasty-recipe-button"
 				icon="edit"
-				label={ __( 'Create Tasty Recipe', 'tasty-recipes' ) }
+				label={ __( 'Create Tasty Recipe', 'tasty-recipes-lite' ) }
 				onClick={ defaultOnClickHandler }
 			>
 			</ToolbarButton>
@@ -96,8 +96,8 @@ const edit = props => {
 				>
 					<p>
 						{__(
-							"No Tasty Recipe created yet. Click here to start one.",
-							"tasty-recipes"
+							'No Tasty Recipe created yet. Click here to start one.',
+							'tasty-recipes-lite'
 						)}
 					</p>
 				</div>
@@ -124,7 +124,7 @@ const edit = props => {
 			<ToolbarButton
 				className="components-edit-tasty-recipe-button"
 				icon="edit"
-				label={ __( 'Edit Tasty Recipe', 'tasty-recipes' ) }
+				label={ __( 'Edit Tasty Recipe', 'tasty-recipes-lite' ) }
 				onClick={ existingOnClickHandler }
 			>
 			</ToolbarButton>
@@ -151,11 +151,11 @@ const edit = props => {
 			</div>
 			<InspectorControls>
 				<PanelBody
-					title={__("Recipe options", "tasty-recipes")}
+					title={__('Recipe options', 'tasty-recipes-lite')}
 					initialOpen={true}
 				>
 					<TextControl
-						label={__("Override Author Link", "tasty-recipes")}
+						label={__('Override Author Link', 'tasty-recipes-lite')}
 						value={props.attributes.author_link}
 						onChange={value => {
 							props.setAttributes({

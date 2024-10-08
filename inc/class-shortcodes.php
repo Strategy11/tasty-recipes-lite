@@ -379,7 +379,9 @@ class Shortcodes {
 			if ( tasty_recipes_is_print() ) {
 				$before_recipe .= ' onclick="window.print();event.preventDefault();"';
 			}
-			$before_recipe .= ' href="' . esc_url( tasty_recipes_get_print_url( $current_post->ID, $recipe->get_id() ) ) . '">' . esc_html__( 'Print', 'tasty-recipes' ) . '</a>';
+			$before_recipe .= ' href="' . esc_url( tasty_recipes_get_print_url( $current_post->ID, $recipe->get_id() ) ) . '">' .
+				esc_html__( 'Print', 'tasty-recipes-lite' ) .
+				'</a>';
 		}
 
 		/**
@@ -417,7 +419,7 @@ class Shortcodes {
 		/**
 		 * The template vars before they are prepared.
 		 *
-		 * @since x.x
+		 * @since 1.0
 		 */
 		$template_vars = apply_filters( 'tasty_recipes_pre_template_vars', $template_vars, compact( 'atts' ) );
 
@@ -634,7 +636,7 @@ class Shortcodes {
 			$average_rating                        = $recipe->get_average_rating();
 			$template_vars['recipe_rating_label'] .= Ratings::get_rating_label( $total_reviews, $average_rating );
 		} else {
-			$template_vars['recipe_rating_label'] .= Ratings::is_enabled() ? __( 'No reviews', 'tasty-recipes' ) : '';
+			$template_vars['recipe_rating_label'] .= Ratings::is_enabled() ? __( 'No reviews', 'tasty-recipes-lite' ) : '';
 			$average_rating                        = 0;
 		}
 
@@ -718,7 +720,7 @@ class Shortcodes {
 	private static function add_author_info( &$template_vars ) {
 		if ( ! empty( $template_vars['recipe_author_name'] ) ) {
 			$template_vars['recipe_details']['author'] = array(
-				'label' => __( 'Author', 'tasty-recipes' ),
+				'label' => __( 'Author', 'tasty-recipes-lite' ),
 				'value' => $template_vars['recipe_author_name'],
 				'class' => 'author',
 			);
@@ -770,7 +772,7 @@ class Shortcodes {
 			/**
 			 * Filter the HTML for the cooking attribute.
 			 *
-			 * @since x.x
+			 * @since 1.0
 			 */
 			$value = apply_filters( 'tasty_recipes_cooking_html', $value, $attribute, $template_vars );
 			$value = '<span data-tasty-recipes-customization="detail-value-color.color" ' .
@@ -880,7 +882,7 @@ EOT;
 		}
 
 		$ret .= '<div class="tasty-recipes-plug">';
-		$ret .= esc_html__( 'Recipe Card powered by', 'tasty-recipes' );
+		$ret .= esc_html__( 'Recipe Card powered by', 'tasty-recipes-lite' );
 		$ret .= '<a href="' .
 			esc_url( sprintf( 'https://shareasale.com/r.cfm?b=973044&u=%s&m=69860&urllink=&afftrack=trattr', $shareasale ) ) .
 			'" target="_blank" rel="nofollow">';
@@ -956,13 +958,13 @@ EOT;
 		if ( in_array( 'jump', $should_prepend_jump_to, true ) ) {
 			$links['jump'] = '<a class="tasty-recipes-jump-link tasty-recipes-scrollto' . esc_attr( $btn_class ) . '" ' .
 				'href="#tasty-recipes-' . esc_attr( $recipe_id ) . '-jump-target">' .
-				esc_html__( 'Jump to Recipe', 'tasty-recipes' ) .
+				esc_html__( 'Jump to Recipe', 'tasty-recipes-lite' ) .
 				'</a>';
 		}
 		if ( in_array( 'print', $should_prepend_jump_to, true ) ) {
 			$links['print'] = '<a class="tasty-recipes-print-link' . esc_attr( $btn_class ) . '" ' .
 				'href="' . esc_url( tasty_recipes_get_print_url( $post->ID, $recipe_id ) ) . '"' . $open_new . '>' .
-				esc_html__( 'Print Recipe', 'tasty-recipes' ) .
+				esc_html__( 'Print Recipe', 'tasty-recipes-lite' ) .
 				'</a>';
 		}
 
@@ -1078,7 +1080,7 @@ EOT;
 		/**
 		 * Filters the styles to be injected into the recipe card.
 		 *
-		 * @since x.x
+		 * @since 1.0
 		 *
 		 * @param array $css_files Existing styles.
 		 */
@@ -1093,7 +1095,7 @@ EOT;
 		/**
 		 * Filters the styles to be injected into the recipe card.
 		 *
-		 * @since x.x
+		 * @since 1.0
 		 *
 		 * @param string $styles Existing styles.
 		 */
@@ -1275,7 +1277,7 @@ EOT;
 		/**
 		 * Filters the common recipe scripts.
 		 *
-		 * @since x.x
+		 * @since 1.0
 		 *
 		 * @param array $vars Existing variables.
 		 */
@@ -1288,39 +1290,39 @@ EOT;
 	 * Print cook mode html.
 	 *
 	 * @since 3.8
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @return void
 	 */
 	public static function print_cook_mode() {
-		_deprecated_function( __METHOD__, 'x.x' );
+		_deprecated_function( __METHOD__, '1.0' );
 	}
 
 	/**
 	 * Process ingredients to annotate <li> with structured data.
 	 *
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @param string $ingredients Existing ingredients string.
 	 *
 	 * @return string
 	 */
 	public static function process_ingredients_annotate_with_spans( $ingredients ) {
-		_deprecated_function( __METHOD__, 'x.x' );
+		_deprecated_function( __METHOD__, '1.0' );
 		return $ingredients;
 	}
 
 	/**
 	 * Process ingredients to annotate <li> with checkboxes.
 	 *
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @param string $ingredients Existing ingredients string.
 	 *
 	 * @return string
 	 */
 	public static function process_ingredients_for_checkboxes( $ingredients ) {
-		_deprecated_function( __METHOD__, 'x.x' );
+		_deprecated_function( __METHOD__, '1.0' );
 		return $ingredients;
 	}
 }

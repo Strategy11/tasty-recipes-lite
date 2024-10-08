@@ -112,7 +112,7 @@ class Template {
 	/**
 	 * Check if a template is locked.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @param string $template Template ID.
 	 *
@@ -154,7 +154,7 @@ class Template {
 		global $editor_styles;
 		$nonce = Utils::request_param( 'nonce', 'sanitize_key' );
 		if ( empty( $nonce ) || ! current_user_can( Admin::CAPABILITY ) || ! wp_verify_nonce( $nonce, Admin::NONCE_KEY ) ) {
-			wp_die( esc_html__( "Sorry, you don't have permission to do this.", 'tasty-recipes' ) );
+			wp_die( esc_html__( "Sorry, you don't have permission to do this.", 'tasty-recipes-lite' ) );
 		}
 		header( 'Content-Type: text/html' );
 		$wrapper_classes = array(
@@ -369,7 +369,7 @@ EOT;
 		/**
 		 * Filter the template vars for the recipe card preview.
 		 *
-		 * @since x.x
+		 * @since 1.0
 		 *
 		 * @param array $template_vars Array of template vars.
 		 */

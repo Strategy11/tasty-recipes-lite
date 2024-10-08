@@ -81,7 +81,7 @@ class Recipe_Control extends \Elementor\Base_Data_Control {
 		<div class="elementor-control-field">
 			<div class="elementor-control-input-wrapper">
 				<button type="button" class="elementor-button elementor-button-default" data-event="tasty-recipes:edit-recipe">
-					<?php esc_html_e( 'Edit Recipe', 'tasty-recipes' ); ?>
+					<?php esc_html_e( 'Edit Recipe', 'tasty-recipes-lite' ); ?>
 				</button>
 				<input id="<?php echo esc_attr( $control_uid ); ?>" data-setting="{{ data.name }}" type="hidden">
 			</div>

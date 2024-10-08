@@ -3,13 +3,22 @@
  * Plugin Name:     Tasty Recipes Lite
  * Plugin URI:      https://www.wptasty.com/tasty-recipes
  * Description:     Tasty Recipes is the easiest way to publish recipes on your WordPress blog.
- * Author:          WP Tasty
+ * Author:          WP Tasty Recipes Team
  * Author URI:      https://www.wptasty.com
- * Text Domain:     tasty-recipes
+ * License:         GPLv2 or later
+ * License URI:     http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * Text Domain:     tasty-recipes-lite
  * Domain Path:     /languages
  * Version: 1.0
  *
  * @package         Tasty_Recipes
+ *
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU
+ * General Public License version 2, as published by the Free Software Foundation. You may NOT assume
+ * that you can use any other version of the GPL.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
 use Tasty_Recipes\MetaBox;
@@ -69,7 +78,7 @@ class Tasty_Recipes {
 	/**
 	 * Option name for the Instacart affiliate ID.
 	 *
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @var string
 	 */
@@ -78,7 +87,7 @@ class Tasty_Recipes {
 	/**
 	 * Option name for the Instagram handle.
 	 *
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @var string
 	 */
@@ -87,7 +96,7 @@ class Tasty_Recipes {
 	/**
 	 * Option name for the Instagram tag.
 	 *
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @var string
 	 */
@@ -151,7 +160,7 @@ class Tasty_Recipes {
 	/**
 	 * Option name for the automatic unit conversion option.
 	 *
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @var string
 	 */
@@ -174,7 +183,7 @@ class Tasty_Recipes {
 	/**
 	 * Option name for the cook mode helper.
 	 *
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @var string
 	 */
@@ -218,7 +227,7 @@ class Tasty_Recipes {
 
 		require_once __DIR__ . '/functions.php';
 
-		load_plugin_textdomain( 'tasty-recipes', false, basename( __DIR__ ) . '/languages' );
+		load_plugin_textdomain( 'tasty-recipes-lite', false, basename( __DIR__ ) . '/languages' );
 
 		spl_autoload_register(
 			function ( $class_name ) {
@@ -230,7 +239,7 @@ class Tasty_Recipes {
 	/**
 	 * Register the class autoloader.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @param string $class_name The class name to load.
 	 * @param string $base The base directory to search in.
@@ -567,7 +576,7 @@ class Tasty_Recipes {
 				/**
 				 * Filter to disable the use of custom schema for a block.
 				 *
-				 * @since x.x
+				 * @since 1.0
 				 *
 				 * @param bool $disable_json Whether to disable the custom schema.
 				 */
@@ -689,9 +698,9 @@ class Tasty_Recipes {
 				'nutrifox_display_style'   => 'label',
 				'footer_social_platform'   => 'instagram',
 				'footer_icon_color'        => '',
-				'footer_heading'           => esc_html__( 'Did you make this recipe?', 'tasty-recipes' ),
+				'footer_heading'           => esc_html__( 'Did you make this recipe?', 'tasty-recipes-lite' ),
 				'footer_heading_color'     => '',
-				'footer_description'       => __( 'Tag @wptasty on Instagram and hashtag it #tastyrecipes', 'tasty-recipes' ),
+				'footer_description'       => __( 'Tag @wptasty on Instagram and hashtag it #tastyrecipes', 'tasty-recipes-lite' ),
 				'footer_description_color' => '',
 			),
 			(array) get_option( self::CUSTOMIZATION_OPTION, array() )

@@ -15,26 +15,26 @@ class Unit_Amount_Parser {
 	/**
 	 * Annotates a string with its units and amounts.
 	 *
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @param string $ingr Existing ingredient string.
 	 *
 	 * @return string
 	 */
 	public static function annotate_string_with_spans( $ingr ) {
-		_deprecated_function( __METHOD__, 'x.x' );
+		_deprecated_function( __METHOD__, '1.0' );
 		return $ingr;
 	}
 
 	/**
 	 * Whether or not a string has a non-numeric amount.
 	 *
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @return bool
 	 */
 	public static function string_has_non_numeric_amount() {
-		_deprecated_function( __METHOD__, 'x.x' );
+		_deprecated_function( __METHOD__, '1.0' );
 		return false;
 	}
 }

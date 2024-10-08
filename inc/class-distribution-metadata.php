@@ -214,7 +214,7 @@ class Distribution_Metadata {
 		/**
 		 * Permit modification of the Google Schema data generated for a recipe.
 		 *
-		 * @since x.x
+		 * @since 1.0
 		 */
 		$schema = apply_filters( 'tasty_recipes_enriched_google_schema', $schema, compact( 'recipe', 'post' ) );
 
@@ -826,7 +826,7 @@ class Distribution_Metadata {
 				/**
 				 * Add extra data to the video schema response.
 				 *
-				 * @since x.x
+				 * @since 1.0
 				 */
 				$response_data = apply_filters(
 					'tasty_recipes_video_schema_response',
@@ -986,7 +986,6 @@ class Distribution_Metadata {
 		/**
 		 * Filters the arguments used to query comments in comments_template().
 		 *
-		 * @since 4.5.0
 		 * @see WP_Comment_Query::__construct()
 		 *
 		 * @param array $comment_args {
@@ -1032,8 +1031,6 @@ class Distribution_Metadata {
 
 		/**
 		 * Filters the comments array.
-		 *
-		 * @since 2.1.0
 		 *
 		 * @param array $comments Array of comments supplied to the comments template.
 		 * @param int   $post_ID  Post ID.
@@ -1491,17 +1488,17 @@ class Distribution_Metadata {
 			'tasty_recipes_human_time_formats',
 			array(
 				// translators: Individual hour.
-				'individual_hour'              => __( '%s hour', 'tasty-recipes' ),
+				'individual_hour'              => __( '%s hour', 'tasty-recipes-lite' ),
 				// translators: Multiple hours.
-				'multiple_hours'               => __( '%s hours', 'tasty-recipes' ),
+				'multiple_hours'               => __( '%s hours', 'tasty-recipes-lite' ),
 				// translators: Multiple hours and minutes.
-				'multiple_hours_with_minutes'  => __( '%1$s hours %2$s minutes', 'tasty-recipes' ),
+				'multiple_hours_with_minutes'  => __( '%1$s hours %2$s minutes', 'tasty-recipes-lite' ),
 				// translators: Individual hour but multiple minutes.
-				'individual_hour_with_minutes' => __( '%1$s hour %2$s minutes', 'tasty-recipes' ),
+				'individual_hour_with_minutes' => __( '%1$s hour %2$s minutes', 'tasty-recipes-lite' ),
 				// translators: Individual minute.
-				'individual_minute'            => __( '%s minute', 'tasty-recipes' ),
+				'individual_minute'            => __( '%s minute', 'tasty-recipes-lite' ),
 				// translators: Multiple minutes.
-				'multiple_minutes'             => __( '%s minutes', 'tasty-recipes' ),
+				'multiple_minutes'             => __( '%s minutes', 'tasty-recipes-lite' ),
 			)
 		);
 	}

@@ -2,7 +2,7 @@
     "extends": [
         "plugin:@wordpress/eslint-plugin/recommended",
         "plugin:vue/essential",
-        "plugin:jest/all",
+        "plugin:jest/all"
     ],
     "globals": {
         "lodash": true,
@@ -10,7 +10,7 @@
         "Vue": true,
         "require": true,
         "tinyMCE": true,
-        "tinyMCEPreInit": true,
+        "tinyMCEPreInit": true
     },
     "rules": {
         "jest/require-hook": 0,
@@ -22,7 +22,7 @@
         "@wordpress/i18n-text-domain": [
             "error",
             {
-                "allowedTextDomain": [ "tasty-recipes" ],
+                "allowedTextDomain": [ "tasty-recipes-lite" ]
             }
         ],
         "@wordpress/no-global-event-listener": 0,
