@@ -63,7 +63,7 @@ class Block_Editor {
 			true
 		);
 		if ( function_exists( 'wp_set_script_translations' ) ) {
-			wp_set_script_translations( 'tasty-recipes-block-editor', 'tasty-recipes-free' );
+			wp_set_script_translations( 'tasty-recipes-block-editor', 'tasty-recipes-lite' );
 		}
 		register_block_type(
 			self::RECIPE_BLOCK_TYPE,

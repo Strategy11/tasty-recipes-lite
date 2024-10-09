@@ -150,8 +150,8 @@ class Assets {
 			'tastyRecipesEditor',
 			array(
 				'i18n'              => array(
-					'frameTitle'  => esc_html__( 'Media Library', 'tasty-recipes-free' ),
-					'frameButton' => esc_html__( 'Select Image', 'tasty-recipes-free' ),
+					'frameTitle'  => esc_html__( 'Media Library', 'tasty-recipes-lite' ),
+					'frameButton' => esc_html__( 'Select Image', 'tasty-recipes-lite' ),
 				),
 				'currentPostId'     => 0,
 				'defaultAuthorName' => $default_author_name,
@@ -206,8 +206,8 @@ class Assets {
 			'tastyRecipesEditor',
 			array(
 				'i18n'                => array(
-					'frameTitle'  => esc_html__( 'Media Library', 'tasty-recipes-free' ),
-					'frameButton' => esc_html__( 'Select Image', 'tasty-recipes-free' ),
+					'frameTitle'  => esc_html__( 'Media Library', 'tasty-recipes-lite' ),
+					'frameButton' => esc_html__( 'Select Image', 'tasty-recipes-lite' ),
 				),
 				'currentPostId'       => self::get_current_post_id(),
 				'defaultAuthorName'   => wp_get_current_user() ? wp_get_current_user()->display_name : '',
@@ -308,17 +308,17 @@ class Assets {
 				'pluginURL'              => plugins_url( '', __DIR__ ),
 				'after_video_url_markup' => $after_video_url_markup,
 				'labels'                 => array(
-					'select_image'      => esc_html__( 'Select Image', 'tasty-recipes-free' ),
-					'details_heading'   => esc_html__( 'Details', 'tasty-recipes-free' ),
-					'video_url_heading' => esc_html__( 'Video URL', 'tasty-recipes-free' ),
-					'nutrition_heading' => esc_html__( 'Nutrition', 'tasty-recipes-free' ),
+					'select_image'      => esc_html__( 'Select Image', 'tasty-recipes-lite' ),
+					'details_heading'   => esc_html__( 'Details', 'tasty-recipes-lite' ),
+					'video_url_heading' => esc_html__( 'Video URL', 'tasty-recipes-lite' ),
+					'nutrition_heading' => esc_html__( 'Nutrition', 'tasty-recipes-lite' ),
 					'additional_time'   => array(
-						'add_button_text'     => esc_html__( '+ Time', 'tasty-recipes-free' ),
-						'remove_button_text'  => esc_html__( '- Time', 'tasty-recipes-free' ),
-						'add_button_title'    => esc_html__( 'Add an additional time field', 'tasty-recipes-free' ),
-						'remove_button_title' => esc_html__( 'Remove additional time field', 'tasty-recipes-free' ),
-						'label_placeholder'   => esc_html__( 'Additional Time Label', 'tasty-recipes-free' ),
-						'value_placeholder'   => esc_html__( 'Additional Time Value', 'tasty-recipes-free' ),
+						'add_button_text'     => esc_html__( '+ Time', 'tasty-recipes-lite' ),
+						'remove_button_text'  => esc_html__( '- Time', 'tasty-recipes-lite' ),
+						'add_button_title'    => esc_html__( 'Add an additional time field', 'tasty-recipes-lite' ),
+						'remove_button_title' => esc_html__( 'Remove additional time field', 'tasty-recipes-lite' ),
+						'label_placeholder'   => esc_html__( 'Additional Time Label', 'tasty-recipes-lite' ),
+						'value_placeholder'   => esc_html__( 'Additional Time Value', 'tasty-recipes-lite' ),
 					),
 				),
 				'attributes'             => array(
@@ -327,12 +327,12 @@ class Assets {
 					'nutrition' => $nutrition_attributes,
 				),
 				'video_settings'         => array(
-					'label'    => esc_html__( 'Video Settings: ', 'tasty-recipes-free' ),
+					'label'    => esc_html__( 'Video Settings: ', 'tasty-recipes-lite' ),
 					'settings' => array(
-						'autoplay'      => esc_html__( 'Autoplay', 'tasty-recipes-free' ),
-						'mute'          => esc_html__( 'Mute', 'tasty-recipes-free' ),
-						'loop'          => esc_html__( 'Loop', 'tasty-recipes-free' ),
-						'hide-controls' => esc_html__( 'Hide Controls', 'tasty-recipes-free' ),
+						'autoplay'      => esc_html__( 'Autoplay', 'tasty-recipes-lite' ),
+						'mute'          => esc_html__( 'Mute', 'tasty-recipes-lite' ),
+						'loop'          => esc_html__( 'Loop', 'tasty-recipes-lite' ),
+						'hide-controls' => esc_html__( 'Hide Controls', 'tasty-recipes-lite' ),
 					),
 				),
 			)
@@ -356,8 +356,8 @@ class Assets {
 			'tastyRecipesEditorModalData',
 			array(
 				'i18n'              => array(
-					'frameTitle'  => esc_html__( 'Media Library', 'tasty-recipes-free' ),
-					'frameButton' => esc_html__( 'Select Image', 'tasty-recipes-free' ),
+					'frameTitle'  => esc_html__( 'Media Library', 'tasty-recipes-lite' ),
+					'frameButton' => esc_html__( 'Select Image', 'tasty-recipes-lite' ),
 				),
 				'currentPostId'     => self::get_current_post_id(),
 				'defaultAuthorName' => $default_author_name,

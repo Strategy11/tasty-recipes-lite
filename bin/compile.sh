@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-PLUGIN_NAME="tasty-recipes-free"
+PLUGIN_NAME="tasty-recipes-lite"
 if [ -z "$1" ]
 then
   ZIP_FILE_NAME="$PLUGIN_NAME"

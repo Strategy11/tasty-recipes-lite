@@ -62,72 +62,72 @@ class Recipe {
 	public static function get_general_attributes() {
 		return array(
 			'id'                          => array(
-				'label' => __( 'ID', 'tasty-recipes-free' ),
+				'label' => __( 'ID', 'tasty-recipes-lite' ),
 			),
 			'title'                       => array(
-				'label'             => __( 'Title', 'tasty-recipes-free' ),
+				'label'             => __( 'Title', 'tasty-recipes-lite' ),
 				'sanitize_callback' => 'wp_filter_post_kses',
 			),
 			'author_name'                 => array(
-				'label'             => __( 'Author Name', 'tasty-recipes-free' ),
+				'label'             => __( 'Author Name', 'tasty-recipes-lite' ),
 				'sanitize_callback' => 'wp_filter_post_kses',
 			),
 			'image_id'                    => array(
-				'label' => __( 'Image ID', 'tasty-recipes-free' ),
+				'label' => __( 'Image ID', 'tasty-recipes-lite' ),
 			),
 			'description'                 => array(
-				'label'             => __( 'Description', 'tasty-recipes-free' ),
+				'label'             => __( 'Description', 'tasty-recipes-lite' ),
 				'sanitize_callback' => 'wp_filter_post_kses',
 			),
 			'description_video_settings'  => array(
-				'label'             => __( 'Description Video Settings', 'tasty-recipes-free' ),
+				'label'             => __( 'Description Video Settings', 'tasty-recipes-lite' ),
 				'sanitize_callback' => 'sanitize_text_field',
 			),
 			'ingredients'                 => array(
-				'label'             => __( 'Ingredients', 'tasty-recipes-free' ),
+				'label'             => __( 'Ingredients', 'tasty-recipes-lite' ),
 				'sanitize_callback' => 'wp_filter_post_kses',
 			),
 			'ingredients_video_settings'  => array(
-				'label'             => __( 'Ingredients Video Settings', 'tasty-recipes-free' ),
+				'label'             => __( 'Ingredients Video Settings', 'tasty-recipes-lite' ),
 				'sanitize_callback' => 'sanitize_text_field',
 			),
 			'instructions'                => array(
-				'label'             => __( 'Instructions', 'tasty-recipes-free' ),
+				'label'             => __( 'Instructions', 'tasty-recipes-lite' ),
 				'sanitize_callback' => 'wp_filter_post_kses',
 			),
 			'instructions_video_settings' => array(
-				'label'             => __( 'Instructions Video Settings', 'tasty-recipes-free' ),
+				'label'             => __( 'Instructions Video Settings', 'tasty-recipes-lite' ),
 				'sanitize_callback' => 'sanitize_text_field',
 			),
 			'notes'                       => array(
-				'label'             => __( 'Notes', 'tasty-recipes-free' ),
+				'label'             => __( 'Notes', 'tasty-recipes-lite' ),
 				'sanitize_callback' => 'wp_filter_post_kses',
 			),
 			'notes_video_settings'        => array(
-				'label'             => __( 'Notes Video Settings', 'tasty-recipes-free' ),
+				'label'             => __( 'Notes Video Settings', 'tasty-recipes-lite' ),
 				'sanitize_callback' => 'sanitize_text_field',
 			),
 			'keywords'                    => array(
-				'label'             => __( 'Keywords', 'tasty-recipes-free' ),
+				'label'             => __( 'Keywords', 'tasty-recipes-lite' ),
 				'sanitize_callback' => 'sanitize_text_field',
 				'tooltip'           => __(
 					'Keywords help Google find your recipes. Include keywords that are not also a category or cuisine ie summer, Halloween, quick, nutmeg crust.',
-					'tasty-recipes-free'
+					'tasty-recipes-lite'
 				),
 			),
 			'nutrifox_id'                 => array(
-				'label'             => __( 'Nutrifox ID', 'tasty-recipes-free' ),
+				'label'             => __( 'Nutrifox ID', 'tasty-recipes-lite' ),
 				'sanitize_callback' => 'intval',
 			),
 			'video_url'                   => array(
-				'label'             => __( 'Video URL or Shortcode', 'tasty-recipes-free' ),
+				'label'             => __( 'Video URL or Shortcode', 'tasty-recipes-lite' ),
 				'sanitize_callback' => 'sanitize_text_field',
 			),
 			'average_rating'              => array(
-				'label' => __( 'Average Rating', 'tasty-recipes-free' ),
+				'label' => __( 'Average Rating', 'tasty-recipes-lite' ),
 			),
 			'total_reviews'               => array(
-				'label' => __( 'Total Reviews', 'tasty-recipes-free' ),
+				'label' => __( 'Total Reviews', 'tasty-recipes-lite' ),
 			),
 		);
 	}
@@ -140,53 +140,53 @@ class Recipe {
 	public static function get_cooking_attributes() {
 		return array(
 			'prep_time'             => array(
-				'label'    => __( 'Prep Time', 'tasty-recipes-free' ),
+				'label'    => __( 'Prep Time', 'tasty-recipes-lite' ),
 				'property' => 'prepTime',
 			),
 			'additional_time_label' => array(),
 			'additional_time_value' => array(),
 			'cook_time'             => array(
-				'label'    => __( 'Cook Time', 'tasty-recipes-free' ),
+				'label'    => __( 'Cook Time', 'tasty-recipes-lite' ),
 				'property' => 'cookTime',
 			),
 			'total_time'            => array(
-				'label'       => __( 'Total Time', 'tasty-recipes-free' ),
+				'label'       => __( 'Total Time', 'tasty-recipes-lite' ),
 				'property'    => 'totalTime',
 				'object_key'  => 'total_time_raw',
-				'placeholder' => __( 'Default to prep + cook.', 'tasty-recipes-free' ),
+				'placeholder' => __( 'Default to prep + cook.', 'tasty-recipes-lite' ),
 			),
 			'yield'                 => array(
-				'label'    => __( 'Yield', 'tasty-recipes-free' ),
+				'label'    => __( 'Yield', 'tasty-recipes-lite' ),
 				'property' => 'recipeYield',
 			),
 			'category'              => array(
-				'label'    => __( 'Category', 'tasty-recipes-free' ),
+				'label'    => __( 'Category', 'tasty-recipes-lite' ),
 				'property' => 'recipeCategory',
 			),
 			'method'                => array(
-				'label'    => __( 'Method', 'tasty-recipes-free' ),
+				'label'    => __( 'Method', 'tasty-recipes-lite' ),
 				'property' => 'cookingMethod',
 			),
 			'cuisine'               => array(
-				'label'    => __( 'Cuisine', 'tasty-recipes-free' ),
+				'label'    => __( 'Cuisine', 'tasty-recipes-lite' ),
 				'property' => 'recipeCuisine',
 			),
 			'diet'                  => array(
-				'label'    => __( 'Diet', 'tasty-recipes-free' ),
+				'label'    => __( 'Diet', 'tasty-recipes-lite' ),
 				'property' => 'suitableForDiet',
 				'options'  => array(
-					''            => __( 'N/A', 'tasty-recipes-free' ),
-					'Diabetic'    => __( 'Diabetic', 'tasty-recipes-free' ),
-					'Gluten Free' => __( 'Gluten Free', 'tasty-recipes-free' ),
-					'Halal'       => __( 'Halal', 'tasty-recipes-free' ),
-					'Hindu'       => __( 'Hindu', 'tasty-recipes-free' ),
-					'Kosher'      => __( 'Kosher', 'tasty-recipes-free' ),
-					'Low Calorie' => __( 'Low Calorie', 'tasty-recipes-free' ),
-					'Low Fat'     => __( 'Low Fat', 'tasty-recipes-free' ),
-					'Low Lactose' => __( 'Low Lactose', 'tasty-recipes-free' ),
-					'Low Salt'    => __( 'Low Salt', 'tasty-recipes-free' ),
-					'Vegan'       => __( 'Vegan', 'tasty-recipes-free' ),
-					'Vegetarian'  => __( 'Vegetarian', 'tasty-recipes-free' ),
+					''            => __( 'N/A', 'tasty-recipes-lite' ),
+					'Diabetic'    => __( 'Diabetic', 'tasty-recipes-lite' ),
+					'Gluten Free' => __( 'Gluten Free', 'tasty-recipes-lite' ),
+					'Halal'       => __( 'Halal', 'tasty-recipes-lite' ),
+					'Hindu'       => __( 'Hindu', 'tasty-recipes-lite' ),
+					'Kosher'      => __( 'Kosher', 'tasty-recipes-lite' ),
+					'Low Calorie' => __( 'Low Calorie', 'tasty-recipes-lite' ),
+					'Low Fat'     => __( 'Low Fat', 'tasty-recipes-lite' ),
+					'Low Lactose' => __( 'Low Lactose', 'tasty-recipes-lite' ),
+					'Low Salt'    => __( 'Low Salt', 'tasty-recipes-lite' ),
+					'Vegan'       => __( 'Vegan', 'tasty-recipes-lite' ),
+					'Vegetarian'  => __( 'Vegetarian', 'tasty-recipes-lite' ),
 				),
 			),
 		);
@@ -200,61 +200,61 @@ class Recipe {
 	public static function get_nutrition_attributes() {
 		$attributes = array(
 			'serving_size'    => array(
-				'label'        => __( 'Serving Size', 'tasty-recipes-free' ),
+				'label'        => __( 'Serving Size', 'tasty-recipes-lite' ),
 				'property'     => 'servingSize',
 				'nutrifox_key' => 'serving_size',
 			),
 			'calories'        => array(
-				'label'        => __( 'Calories', 'tasty-recipes-free' ),
+				'label'        => __( 'Calories', 'tasty-recipes-lite' ),
 				'property'     => 'calories',
 				'nutrifox_key' => 'ENERC_KCAL',
 			),
 			'sugar'           => array(
-				'label'        => __( 'Sugar', 'tasty-recipes-free' ),
+				'label'        => __( 'Sugar', 'tasty-recipes-lite' ),
 				'property'     => 'sugarContent',
 				'nutrifox_key' => 'SUGAR',
 			),
 			'sodium'          => array(
-				'label'        => __( 'Sodium', 'tasty-recipes-free' ),
+				'label'        => __( 'Sodium', 'tasty-recipes-lite' ),
 				'property'     => 'sodiumContent',
 				'nutrifox_key' => 'NA',
 			),
 			'fat'             => array(
-				'label'        => __( 'Fat', 'tasty-recipes-free' ),
+				'label'        => __( 'Fat', 'tasty-recipes-lite' ),
 				'property'     => 'fatContent',
 				'nutrifox_key' => 'FAT',
 			),
 			'saturated_fat'   => array(
-				'label'        => __( 'Saturated Fat', 'tasty-recipes-free' ),
+				'label'        => __( 'Saturated Fat', 'tasty-recipes-lite' ),
 				'property'     => 'saturatedFatContent',
 				'nutrifox_key' => 'FASAT',
 			),
 			'unsaturated_fat' => array(
-				'label'    => __( 'Unsaturated Fat', 'tasty-recipes-free' ),
+				'label'    => __( 'Unsaturated Fat', 'tasty-recipes-lite' ),
 				'property' => 'unsaturatedFatContent',
 			),
 			'trans_fat'       => array(
-				'label'        => __( 'Trans Fat', 'tasty-recipes-free' ),
+				'label'        => __( 'Trans Fat', 'tasty-recipes-lite' ),
 				'property'     => 'transFatContent',
 				'nutrifox_key' => 'FATRN',
 			),
 			'carbohydrates'   => array(
-				'label'        => __( 'Carbohydrates', 'tasty-recipes-free' ),
+				'label'        => __( 'Carbohydrates', 'tasty-recipes-lite' ),
 				'property'     => 'carbohydrateContent',
 				'nutrifox_key' => 'CHOCDF',
 			),
 			'fiber'           => array(
-				'label'        => __( 'Fiber', 'tasty-recipes-free' ),
+				'label'        => __( 'Fiber', 'tasty-recipes-lite' ),
 				'property'     => 'fiberContent',
 				'nutrifox_key' => 'FIBTG',
 			),
 			'protein'         => array(
-				'label'        => __( 'Protein', 'tasty-recipes-free' ),
+				'label'        => __( 'Protein', 'tasty-recipes-lite' ),
 				'property'     => 'proteinContent',
 				'nutrifox_key' => 'PROCNT',
 			),
 			'cholesterol'     => array(
-				'label'        => __( 'Cholesterol', 'tasty-recipes-free' ),
+				'label'        => __( 'Cholesterol', 'tasty-recipes-lite' ),
 				'property'     => 'cholesterolContent',
 				'nutrifox_key' => 'CHOLE',
 			),

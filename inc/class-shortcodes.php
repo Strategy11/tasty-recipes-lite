@@ -380,7 +380,7 @@ class Shortcodes {
 				$before_recipe .= ' onclick="window.print();event.preventDefault();"';
 			}
 			$before_recipe .= ' href="' . esc_url( tasty_recipes_get_print_url( $current_post->ID, $recipe->get_id() ) ) . '">' .
-				esc_html__( 'Print', 'tasty-recipes-free' ) .
+				esc_html__( 'Print', 'tasty-recipes-lite' ) .
 				'</a>';
 		}
 
@@ -636,7 +636,7 @@ class Shortcodes {
 			$average_rating                        = $recipe->get_average_rating();
 			$template_vars['recipe_rating_label'] .= Ratings::get_rating_label( $total_reviews, $average_rating );
 		} else {
-			$template_vars['recipe_rating_label'] .= Ratings::is_enabled() ? __( 'No reviews', 'tasty-recipes-free' ) : '';
+			$template_vars['recipe_rating_label'] .= Ratings::is_enabled() ? __( 'No reviews', 'tasty-recipes-lite' ) : '';
 			$average_rating                        = 0;
 		}
 
@@ -720,7 +720,7 @@ class Shortcodes {
 	private static function add_author_info( &$template_vars ) {
 		if ( ! empty( $template_vars['recipe_author_name'] ) ) {
 			$template_vars['recipe_details']['author'] = array(
-				'label' => __( 'Author', 'tasty-recipes-free' ),
+				'label' => __( 'Author', 'tasty-recipes-lite' ),
 				'value' => $template_vars['recipe_author_name'],
 				'class' => 'author',
 			);
@@ -882,7 +882,7 @@ EOT;
 		}
 
 		$ret .= '<div class="tasty-recipes-plug">';
-		$ret .= esc_html__( 'Recipe Card powered by', 'tasty-recipes-free' );
+		$ret .= esc_html__( 'Recipe Card powered by', 'tasty-recipes-lite' );
 		$ret .= '<a href="' .
 			esc_url( sprintf( 'https://shareasale.com/r.cfm?b=973044&u=%s&m=69860&urllink=&afftrack=trattr', $shareasale ) ) .
 			'" target="_blank" rel="nofollow">';
@@ -958,13 +958,13 @@ EOT;
 		if ( in_array( 'jump', $should_prepend_jump_to, true ) ) {
 			$links['jump'] = '<a class="tasty-recipes-jump-link tasty-recipes-scrollto' . esc_attr( $btn_class ) . '" ' .
 				'href="#tasty-recipes-' . esc_attr( $recipe_id ) . '-jump-target">' .
-				esc_html__( 'Jump to Recipe', 'tasty-recipes-free' ) .
+				esc_html__( 'Jump to Recipe', 'tasty-recipes-lite' ) .
 				'</a>';
 		}
 		if ( in_array( 'print', $should_prepend_jump_to, true ) ) {
 			$links['print'] = '<a class="tasty-recipes-print-link' . esc_attr( $btn_class ) . '" ' .
 				'href="' . esc_url( tasty_recipes_get_print_url( $post->ID, $recipe_id ) ) . '"' . $open_new . '>' .
-				esc_html__( 'Print Recipe', 'tasty-recipes-free' ) .
+				esc_html__( 'Print Recipe', 'tasty-recipes-lite' ) .
 				'</a>';
 		}
 

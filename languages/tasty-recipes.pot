@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Tasty Recipes Lite 1.0\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/tasty-recipes-free\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/tasty-recipes-lite\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -12,7 +12,7 @@ msgstr ""
 "POT-Creation-Date: 2024-10-07T20:39:34+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.6.0\n"
-"X-Domain: tasty-recipes-free\n"
+"X-Domain: tasty-recipes-lite\n"
 
 #. Plugin Name of the plugin
 msgid "Tasty Recipes Lite"

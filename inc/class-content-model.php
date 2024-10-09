@@ -48,19 +48,19 @@ class Content_Model {
 			'supports'     => array(),
 		);
 		$args['labels'] = array(
-			'name'               => __( 'Recipes', 'tasty-recipes-free' ),
-			'singular_name'      => __( 'Recipe', 'tasty-recipes-free' ),
-			'all_items'          => __( 'All Recipes', 'tasty-recipes-free' ),
-			'new_item'           => __( 'New Recipe', 'tasty-recipes-free' ),
-			'add_new'            => __( 'Add New', 'tasty-recipes-free' ),
-			'add_new_item'       => __( 'Add New Recipe', 'tasty-recipes-free' ),
-			'edit_item'          => __( 'Edit Recipe', 'tasty-recipes-free' ),
-			'view_item'          => __( 'View Recipes', 'tasty-recipes-free' ),
-			'search_items'       => __( 'Search Recipes', 'tasty-recipes-free' ),
-			'not_found'          => __( 'No recipes found', 'tasty-recipes-free' ),
-			'not_found_in_trash' => __( 'No recipes found in trash', 'tasty-recipes-free' ),
-			'parent_item_colon'  => __( 'Parent recipe', 'tasty-recipes-free' ),
-			'menu_name'          => __( 'Recipes', 'tasty-recipes-free' ),
+			'name'               => __( 'Recipes', 'tasty-recipes-lite' ),
+			'singular_name'      => __( 'Recipe', 'tasty-recipes-lite' ),
+			'all_items'          => __( 'All Recipes', 'tasty-recipes-lite' ),
+			'new_item'           => __( 'New Recipe', 'tasty-recipes-lite' ),
+			'add_new'            => __( 'Add New', 'tasty-recipes-lite' ),
+			'add_new_item'       => __( 'Add New Recipe', 'tasty-recipes-lite' ),
+			'edit_item'          => __( 'Edit Recipe', 'tasty-recipes-lite' ),
+			'view_item'          => __( 'View Recipes', 'tasty-recipes-lite' ),
+			'search_items'       => __( 'Search Recipes', 'tasty-recipes-lite' ),
+			'not_found'          => __( 'No recipes found', 'tasty-recipes-lite' ),
+			'not_found_in_trash' => __( 'No recipes found in trash', 'tasty-recipes-lite' ),
+			'parent_item_colon'  => __( 'Parent recipe', 'tasty-recipes-lite' ),
+			'menu_name'          => __( 'Recipes', 'tasty-recipes-lite' ),
 		);
 		register_post_type( 'tasty_recipe', $args );
 	}
@@ -136,7 +136,7 @@ class Content_Model {
 		} else {
 			if ( ! is_wp_error( $response ) ) {
 				// translators: Nutrifox HTTP error code.
-				$response = new \WP_Error( 'nutrifox-api', sprintf( __( 'Nutrifox API request failed (HTTP code %d)', 'tasty-recipes-free' ), $response_code ) );
+				$response = new \WP_Error( 'nutrifox-api', sprintf( __( 'Nutrifox API request failed (HTTP code %d)', 'tasty-recipes-lite' ), $response_code ) );
 			}
 			update_post_meta( $object_id, 'nutrifox_error', $response );
 			delete_post_meta( $object_id, 'nutrifox_response' );
@@ -171,7 +171,7 @@ class Content_Model {
 			$adthrive_beginning = 'adthrive-in-post-video-player ';
 			if ( 0 !== stripos( $shortcode, $adthrive_beginning ) ) {
 				delete_post_meta( $object_id, 'video_url_response' );
-				update_post_meta( $object_id, 'video_url_error', new \WP_Error( 'video-url', __( 'Unknown shortcode in video URL.', 'tasty-recipes-free' ) ) );
+				update_post_meta( $object_id, 'video_url_error', new \WP_Error( 'video-url', __( 'Unknown shortcode in video URL.', 'tasty-recipes-lite' ) ) );
 				return $check;
 			}
 			$shortcode_inner = substr( $shortcode, strlen( $adthrive_beginning ) );
@@ -190,7 +190,7 @@ class Content_Model {
 			$atts            = shortcode_parse_atts( $shortcode_inner );
 			if ( empty( $atts['video_id'] ) ) {
 				delete_post_meta( $object_id, 'video_url_response' );
-				update_post_meta( $object_id, 'video_url_error', new \WP_Error( 'video-url', __( 'Shortcode is missing video id.', 'tasty-recipes-free' ) ) );
+				update_post_meta( $object_id, 'video_url_error', new \WP_Error( 'video-url', __( 'Shortcode is missing video id.', 'tasty-recipes-lite' ) ) );
 				return $check;
 			}
 			$response_data = Tasty_Recipes::get_template_part(
@@ -216,7 +216,7 @@ class Content_Model {
 			$provider  = $wp_oembed->get_provider( $meta_value );
 			if ( ! $provider ) {
 				delete_post_meta( $object_id, 'video_url_response' );
-				update_post_meta( $object_id, 'video_url_error', new \WP_Error( 'video-url', __( 'Unknown provider for URL.', 'tasty-recipes-free' ) ) );
+				update_post_meta( $object_id, 'video_url_error', new \WP_Error( 'video-url', __( 'Unknown provider for URL.', 'tasty-recipes-lite' ) ) );
 			}
 
 			$response_data = $wp_oembed->fetch( $provider, $meta_value );
@@ -235,7 +235,7 @@ class Content_Model {
 				do_action( 'tasty_recipes_enrich_video', $object_id, $meta_value );
 			} else {
 				delete_post_meta( $object_id, 'video_url_response' );
-				update_post_meta( $object_id, 'video_url_error', new \WP_Error( 'video-url', __( 'Invalid response from provider.', 'tasty-recipes-free' ) ) );
+				update_post_meta( $object_id, 'video_url_error', new \WP_Error( 'video-url', __( 'Invalid response from provider.', 'tasty-recipes-lite' ) ) );
 			}
 		}
 		return $check;
