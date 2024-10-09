@@ -1488,17 +1488,17 @@ class Distribution_Metadata {
 			'tasty_recipes_human_time_formats',
 			array(
 				// translators: Individual hour.
-				'individual_hour'              => __( '%s hour', 'tasty-recipes-lite' ),
+				'individual_hour'              => __( '%s hour', 'tasty-recipes-free' ),
 				// translators: Multiple hours.
-				'multiple_hours'               => __( '%s hours', 'tasty-recipes-lite' ),
+				'multiple_hours'               => __( '%s hours', 'tasty-recipes-free' ),
 				// translators: Multiple hours and minutes.
-				'multiple_hours_with_minutes'  => __( '%1$s hours %2$s minutes', 'tasty-recipes-lite' ),
+				'multiple_hours_with_minutes'  => __( '%1$s hours %2$s minutes', 'tasty-recipes-free' ),
 				// translators: Individual hour but multiple minutes.
-				'individual_hour_with_minutes' => __( '%1$s hour %2$s minutes', 'tasty-recipes-lite' ),
+				'individual_hour_with_minutes' => __( '%1$s hour %2$s minutes', 'tasty-recipes-free' ),
 				// translators: Individual minute.
-				'individual_minute'            => __( '%s minute', 'tasty-recipes-lite' ),
+				'individual_minute'            => __( '%s minute', 'tasty-recipes-free' ),
 				// translators: Multiple minutes.
-				'multiple_minutes'             => __( '%s minutes', 'tasty-recipes-lite' ),
+				'multiple_minutes'             => __( '%s minutes', 'tasty-recipes-free' ),
 			)
 		);
 	}

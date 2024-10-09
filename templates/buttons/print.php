@@ -22,5 +22,5 @@ if ( $current_post ) {
 	<?php else : ?>
 		<img class="svg-print" data-pin-nopin="true" src="<?php echo esc_url( plugins_url( 'images/icon-print.png', __FILE__ ) ); ?>">
 	<?php endif; ?>
-	<?php esc_html_e( 'Print Recipe', 'tasty-recipes-lite' ); ?>
+	<?php esc_html_e( 'Print Recipe', 'tasty-recipes-free' ); ?>
 </a>

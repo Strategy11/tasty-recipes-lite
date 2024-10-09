@@ -61,7 +61,7 @@
 		<exclude name="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound" />
 		<properties>
 			<property name="text_domain" type="array">
-				<element value="tasty-recipes-lite"/>
+				<element value="tasty-recipes-free"/>
 			</property>
 		</properties>
 	</rule>

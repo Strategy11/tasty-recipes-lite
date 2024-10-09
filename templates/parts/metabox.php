@@ -8,7 +8,7 @@
 ?>
 <div id='tasty_recipes_ignored_converters'>
 	<p class="howto">
-		<?php esc_html_e( 'Conversion options for the following products will not be shown:', 'tasty-recipes-lite' ); ?>
+		<?php esc_html_e( 'Conversion options for the following products will not be shown:', 'tasty-recipes-free' ); ?>
 	</p>
 <?php
 foreach ( $dismissed_converters as $converter_key => $converter ) {

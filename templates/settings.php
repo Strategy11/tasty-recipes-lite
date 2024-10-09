@@ -22,7 +22,7 @@ use Tasty\Framework\Utils\Url;
 		<?php
 		if ( Template::has_custom_template() ) {
 			?>
-			<div class="tasty-recipes-custom-template-notice tasty-tab-content"><p><?php esc_html_e( 'Looks like you\'re using a custom recipe card template. To enable design customization options, you\'ll need to remove the custom tasty-recipes.php file from your theme folder.', 'tasty-recipes-lite' ); ?></p></div>
+			<div class="tasty-recipes-custom-template-notice tasty-tab-content"><p><?php esc_html_e( 'Looks like you\'re using a custom recipe card template. To enable design customization options, you\'ll need to remove the custom tasty-recipes.php file from your theme folder.', 'tasty-recipes-free' ); ?></p></div>
 			<?php
 		} else {
 			$recipe_card_preview_url_base = add_query_arg(
@@ -67,34 +67,34 @@ use Tasty\Framework\Utils\Url;
 			</div>
 			<div class="tasty-recipes-converter-column tasty-recipes-converter-panel">
 				<div class="tasty-recipes-converter-welcome">
-					<h3><?php esc_html_e( 'Convert Existing Recipes', 'tasty-recipes-lite' ); ?></h3>
+					<h3><?php esc_html_e( 'Convert Existing Recipes', 'tasty-recipes-free' ); ?></h3>
 					<p>
 					<?php
 					printf(
 						// translators: %1$s opening anchor tag to the conversion page, %2$s closing tag.
-						esc_html__( 'Just in case, we recommend backing up your database before converting your recipes in bulk to Tasty Recipes. %1$sLearn more about backing up your database%2$s.', 'tasty-recipes-lite' ),
+						esc_html__( 'Just in case, we recommend backing up your database before converting your recipes in bulk to Tasty Recipes. %1$sLearn more about backing up your database%2$s.', 'tasty-recipes-free' ),
 						'<a href="https://www.wptasty.com/convert-all" target="_blank" rel="noopener">',
 						'</a>'
 					);
 					?>
 					</p>
-					<p><?php esc_html_e( 'Select an option from the left to start converting recipes.', 'tasty-recipes-lite' ); ?></p>
+					<p><?php esc_html_e( 'Select an option from the left to start converting recipes.', 'tasty-recipes-free' ); ?></p>
 				</div>
 				<div class="tasty-recipes-converter-control"></div>
 			</div>
 		</div>
 		<script type="text/html" id="tmpl-tasty-recipes-convert">
-			<button type="button" class="tasty-recipes-converter-close"><span class="tasty-recipes-converter-icon"><span class="screen-reader-text"><?php esc_html_e( 'Close Converter', 'tasty-recipes-lite' ); ?></span></span></button>
+			<button type="button" class="tasty-recipes-converter-close"><span class="tasty-recipes-converter-icon"><span class="screen-reader-text"><?php esc_html_e( 'Close Converter', 'tasty-recipes-free' ); ?></span></span></button>
 
 			<h3>
 				<?php
 				// translators: Source of the conversion.
-				echo esc_html( sprintf( __( 'Convert recipes from %s', 'tasty-recipes-lite' ), '{{ data.label }}' ) );
+				echo esc_html( sprintf( __( 'Convert recipes from %s', 'tasty-recipes-free' ), '{{ data.label }}' ) );
 				?>
 			</h3>
 
 			<# if ( data.loading ) { #>
-				<p><?php esc_html_e( 'Determining whether there are any recipes to convert.', 'tasty-recipes-lite' ); ?></p>
+				<p><?php esc_html_e( 'Determining whether there are any recipes to convert.', 'tasty-recipes-free' ); ?></p>
 			<# } #>
 			<# if ( data.converting ) {
 				if ( data.converted < data.count ) {
@@ -102,7 +102,7 @@ use Tasty\Framework\Utils\Url;
 					<p>
 					<?php
 					// translators: Source of the conversion.
-					echo esc_html( sprintf( __( 'Converting recipes from %s. Leave this window open until the conversion is complete.', 'tasty-recipes-lite' ), '{{ data.label }}' ) );
+					echo esc_html( sprintf( __( 'Converting recipes from %s. Leave this window open until the conversion is complete.', 'tasty-recipes-free' ), '{{ data.label }}' ) );
 					?>
 					</p>
 					<progress value="{{ data.converted }}" max="{{ data.count }}">
@@ -110,7 +110,7 @@ use Tasty\Framework\Utils\Url;
 					<p>
 					<?php
 					// translators: Source of the conversion.
-					echo esc_html( sprintf( __( '%s conversion complete. You may now close this converter.', 'tasty-recipes-lite' ), '{{ data.label }}' ) );
+					echo esc_html( sprintf( __( '%s conversion complete. You may now close this converter.', 'tasty-recipes-free' ), '{{ data.label }}' ) );
 					?>
 					</p>
 				<# } #>
@@ -125,23 +125,23 @@ use Tasty\Framework\Utils\Url;
 					<p>
 					<?php
 					// translators: Singular number of recipes, source.
-					printf( esc_html__( '%1$s recipe was found to convert from %2$s.', 'tasty-recipes-lite' ), '{{ data.count }}', '{{ data.label }}' );
+					printf( esc_html__( '%1$s recipe was found to convert from %2$s.', 'tasty-recipes-free' ), '{{ data.count }}', '{{ data.label }}' );
 					?>
 					</p>
 					<# } else { #>
 					<p>
 					<?php
 					// translators: Plural number of recipes, source.
-					printf( esc_html__( '%1$s recipes were found to convert from %2$s.', 'tasty-recipes-lite' ), '{{ data.count }}', '{{ data.label }}' );
+					printf( esc_html__( '%1$s recipes were found to convert from %2$s.', 'tasty-recipes-free' ), '{{ data.count }}', '{{ data.label }}' );
 					?>
 					</p>
 					<# } #>
-					<button class="tasty-button start-conversion"><?php esc_html_e( 'Start Conversion', 'tasty-recipes-lite' ); ?></button>
+					<button class="tasty-button start-conversion"><?php esc_html_e( 'Start Conversion', 'tasty-recipes-free' ); ?></button>
 				<# } else { #>
 					<p>
 					<?php
 					// translators: Source of the conversion.
-					printf( esc_html__( 'No %s recipes were found to convert.', 'tasty-recipes-lite' ), '{{ data.label }}' );
+					printf( esc_html__( 'No %s recipes were found to convert.', 'tasty-recipes-free' ), '{{ data.label }}' );
 					?>
 					</p>
 				<# } #>
