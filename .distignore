@@ -26,6 +26,7 @@ bin
 composer.json
 composer.lock
 dependencies.yml
+inc/libs/tasty-framework/inc/Admin/License/EDDUpdater.php
 Gruntfile.js
 jest.setup.js
 mix-manifest.json

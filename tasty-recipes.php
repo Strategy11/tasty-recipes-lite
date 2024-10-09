@@ -1,13 +1,13 @@
 <?php
 /**
- * Plugin Name:     Tasty Recipes Lite
+ * Plugin Name:     Tasty Recipes Free
  * Plugin URI:      https://www.wptasty.com/tasty-recipes
  * Description:     Tasty Recipes is the easiest way to publish recipes on your WordPress blog.
  * Author:          WP Tasty Recipes Team
  * Author URI:      https://www.wptasty.com
  * License:         GPLv2 or later
  * License URI:     http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- * Text Domain:     tasty-recipes-lite
+ * Text Domain:     tasty-recipes-free
  * Domain Path:     /languages
  * Version: 1.0
  *
@@ -227,7 +227,7 @@ class Tasty_Recipes {
 
 		require_once __DIR__ . '/functions.php';
 
-		load_plugin_textdomain( 'tasty-recipes-lite', false, basename( __DIR__ ) . '/languages' );
+		load_plugin_textdomain( 'tasty-recipes-free', false, basename( __DIR__ ) . '/languages' );
 
 		spl_autoload_register(
 			function ( $class_name ) {
@@ -698,9 +698,9 @@ class Tasty_Recipes {
 				'nutrifox_display_style'   => 'label',
 				'footer_social_platform'   => 'instagram',
 				'footer_icon_color'        => '',
-				'footer_heading'           => esc_html__( 'Did you make this recipe?', 'tasty-recipes-lite' ),
+				'footer_heading'           => esc_html__( 'Did you make this recipe?', 'tasty-recipes-free' ),
 				'footer_heading_color'     => '',
-				'footer_description'       => __( 'Tag @wptasty on Instagram and hashtag it #tastyrecipes', 'tasty-recipes-lite' ),
+				'footer_description'       => __( 'Tag @wptasty on Instagram and hashtag it #tastyrecipes', 'tasty-recipes-free' ),
 				'footer_description_color' => '',
 			),
 			(array) get_option( self::CUSTOMIZATION_OPTION, array() )
