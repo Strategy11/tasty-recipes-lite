@@ -852,20 +852,40 @@ class Shortcodes {
 			return;
 		}
 
-		$nutrifox_id            = (int) $recipe_json['nutrifox_id'];
+		$nutrifox_id = (int) $recipe_json['nutrifox_id'];
+
+		$template_vars['recipe_nutrifox_embed'] = self::nutrifox_iframe( $nutrifox_id );
+	}
+
+	/**
+	 * Get the Nutrifox iframe.
+	 *
+	 * @since x.x
+	 *
+	 * @param int $nutrifox_id Nutrifox ID.
+	 *
+	 * @return string
+	 */
+	public static function nutrifox_iframe( $nutrifox_id ) {
 		$nutrifox_iframe_url    = sprintf(
 			'%s/embed/label/%d',
 			Tasty_Recipes::nutrifox_url(),
 			$nutrifox_id
 		);
-		$nutrifox_resize_script = Utils::get_contents( dirname( __DIR__ ) . '/assets/js/nutrifox-resize.js' );
+		$nutrifox_resize_script = Utils::get_contents( dirname( TASTY_RECIPES_LITE_FILE ) . '/assets/js/nutrifox-resize.js' );
 
-		$template_vars['recipe_nutrifox_embed'] = <<<EOT
-<script data-cfasync="false">
-{$nutrifox_resize_script}
-</script>
-<iframe title="nutritional information" id="nutrifox-label-{$nutrifox_id}" src="{$nutrifox_iframe_url}" style="width:100%;border-width:0;"></iframe>
-EOT;
+		$embed = wp_get_inline_script_tag(
+			$nutrifox_resize_script,
+			array( 'data-cfasync' => 'false' )
+		);
+		$embed .= '<iframe ' .
+			'title="nutritional information" ' .
+			'id="nutrifox-label-' . esc_attr( $nutrifox_id ) . '" ' .
+			'src="' . esc_url( $nutrifox_iframe_url ) . '" ' .
+			'style="width:100%;border-width:0;"' .
+			'></iframe>';
+
+		return $embed;
 	}
 
 	/**
@@ -906,7 +926,7 @@ EOT;
 			return;
 		}
 
-		$scripts = PHP_EOL . '<script>' . $scripts . '</script>';
+		$scripts = PHP_EOL . wp_get_inline_script_tag( $scripts );
 	}
 
 	/**

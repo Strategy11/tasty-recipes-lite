@@ -102,11 +102,12 @@ class Distribution_Metadata {
 		}
 
 		foreach ( $schemas as $schema ) {
-			?>
-<script type="application/ld+json">
-			<?php echo wp_json_encode( $schema, JSON_PRETTY_PRINT ) . PHP_EOL; ?>
-</script>
-			<?php
+			echo wp_get_inline_script_tag(
+				wp_json_encode( $schema, JSON_PRETTY_PRINT ),
+				array(
+					'type' => 'application/ld+json',
+				)
+			);
 		}
 	}
 

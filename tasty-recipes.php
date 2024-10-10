@@ -316,7 +316,6 @@ class Tasty_Recipes {
 		add_action( 'wp_enqueue_editor', array( 'Tasty_Recipes\Assets', 'action_wp_enqueue_editor' ) );
 		add_action( 'enqueue_block_editor_assets', array( 'Tasty_Recipes\Assets', 'action_enqueue_block_editor_assets' ) );
 		add_action( 'admin_notices', array( 'Tasty_Recipes\Editor', 'action_admin_notices' ) );
-		add_action( 'after_wp_tiny_mce', array( 'Tasty_Recipes\Editor', 'action_after_wp_tiny_mce' ) );
 		add_action( 'update_option_' . self::LICENSE_KEY_OPTION, array( 'Tasty_Recipes\Admin', 'action_update_option_clear_transient' ) );
 		add_action( 'media_buttons', array( 'Tasty_Recipes\Editor', 'action_media_buttons' ) );
 

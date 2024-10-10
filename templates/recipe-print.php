@@ -28,9 +28,6 @@
 <body <?php body_class(); ?>>
 	<?php
 	Tasty_Recipes::echo_template_part( 'recipe-print-controls' );
-	?>
-	<script><?php echo \Tasty_Recipes\Utils::get_contents( dirname( __DIR__ ) . '/assets/dist/recipe-print-controls.build.js' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></script>
-	<?php
 	$recipe_id = get_query_var( Tasty_Recipes\Content_Model::get_print_query_var() );
 	/**
 	 * Fires before a recipe has been rendered for print.

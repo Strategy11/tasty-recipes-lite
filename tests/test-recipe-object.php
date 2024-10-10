@@ -220,5 +220,4 @@ class Test_Recipe_Object extends Tasty_Recipes_Testcase {
 		$recipe->set_total_time( '40 minutes' );
 		$this->assertEquals( '40 minutes', $recipe->get_total_time() );
 	}
-
 }

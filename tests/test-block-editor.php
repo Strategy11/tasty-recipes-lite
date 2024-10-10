@@ -21,5 +21,4 @@ class Test_Block_Editor extends Tasty_Recipes_Testcase {
 		$block  = Block_Editor::get_block_for_recipe( $recipe );
 		$this->assertEquals( array( $recipe->get_id() ), Tasty_Recipes::get_recipe_ids_from_content( $block ) );
 	}
-
 }
