@@ -375,21 +375,42 @@ class Assets {
 	 */
 	public static function action_wp_print_styles() {
 		$recipe_id = (int) get_query_var( Content_Model::get_print_query_var() );
-		if ( is_singular() && $recipe_id ) {
-			$recipe_ids = Tasty_Recipes::get_recipe_ids_for_post( get_queried_object_id() );
-			if ( in_array( $recipe_id, $recipe_ids, true ) ) {
-				// phpcs:ignore WordPressVIPMinimum.UserExperience.AdminBarRemoval.RemovalDetected
-				show_admin_bar( false );
-				remove_action( 'wp_head', '_admin_bar_bump_cb' );
-				$time = filemtime( dirname( __DIR__ ) . '/assets/dist/print.css' );
-				wp_enqueue_style(
-					'tasty-recipes-print',
-					plugins_url( 'assets/dist/print.css', __DIR__ ),
-					array(),
-					(string) $time
-				);
-			}
+		if ( ! is_singular() || ! $recipe_id ) {
+			return;
 		}
+
+		$recipe_ids = Tasty_Recipes::get_recipe_ids_for_post( get_queried_object_id() );
+		if ( ! in_array( $recipe_id, $recipe_ids, true ) ) {
+			return;
+		}
+
+		// phpcs:ignore WordPressVIPMinimum.UserExperience.AdminBarRemoval.RemovalDetected
+		show_admin_bar( false );
+		remove_action( 'wp_head', '_admin_bar_bump_cb' );
+		$time = filemtime( dirname( __DIR__ ) . '/assets/dist/print.css' );
+		wp_enqueue_style(
+			'tasty-recipes-print',
+			plugins_url( 'assets/dist/print.css', __DIR__ ),
+			array(),
+			(string) $time
+		);
+
+		wp_enqueue_script(
+			'tasty-recipes-print-controls',
+			plugins_url( 'assets/dist/recipe-print-controls.build.js', TASTY_RECIPES_LITE_FILE ),
+			array(),
+			TASTY_RECIPES_LITE_VERSION,
+			true
+		);
+
+		// This must be echoed inside the print view.
+		wp_register_style(
+			'tasty-recipes-print-controls',
+			plugins_url( 'assets/dist/recipe-print-controls.css' ),
+			array(),
+			TASTY_RECIPES_LITE_VERSION
+		);
+		wp_style_add_data( 'tasty-recipes-print-controls', 'path', dirname( __DIR__ ) . '/assets/dist/recipe-print-controls.css' );
 	}
 
 	/**

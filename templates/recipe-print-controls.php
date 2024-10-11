@@ -9,7 +9,11 @@ $show_options = apply_filters( 'tasty_recipes_show_print_options', true );
 ?>
 
 <script type="text/html" id="tmpl-tasty-recipes-print-controls">
-	<style><?php echo \Tasty_Recipes\Utils::get_contents( dirname( __DIR__ ) . '/assets/dist/recipe-print-controls.css' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></style>
+	<?php
+	wp_enqueue_style( 'tasty-recipes-print-controls' );
+	wp_maybe_inline_styles();
+	wp_print_styles( 'tasty-recipes-print-controls' );
+	?>
 	<form id="tr-control-form" method="POST" class="<?php echo esc_attr( $show_options ? 'tasty-recipes-show-controls' : '' ); ?>">
 		<fieldset class="tasty-recipes-print-buttons">
 			<button id="tasty-recipes-print" type="button"><svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">

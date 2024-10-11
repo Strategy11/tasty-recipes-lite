@@ -24,3 +24,12 @@ mix.js('assets/recipe-editor/index.js', 'assets/dist/recipe-editor.build.js').vu
 mix.js('assets/settings/index.js', 'assets/dist/settings.build.js').vue({version: 2});
 mix.js('assets/settings/recipe-card-preview.js', 'assets/dist/settings-recipe-card-preview.build.js');
 mix.js('assets/js/recipe-print-controls.js', 'assets/dist/recipe-print-controls.build.js');
+
+mix.combine(
+	[
+		'assets/js/smooth-scroll.js',
+		'assets/js/ratings.js',
+		'assets/js/video-toggle.js'
+	],
+	'assets/dist/recipe.js'
+);

@@ -364,7 +364,7 @@ EOT;
 
 		self::enqueue_editor_styles();
 
-		$template_vars['recipe_styles'] .= '<style>' . $styles . PHP_EOL . '</style>' . PHP_EOL;
+		wp_add_inline_style( 'tasty-recipes-main', $styles );
 
 		$ret            = '<!DOCTYPE html><html><head>' .
 			self::load_enqueued_assets() .

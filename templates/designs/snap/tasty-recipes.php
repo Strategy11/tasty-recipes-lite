@@ -265,5 +265,3 @@ if ( '.svg' === $ext ) {
 	<p><strong class="tasty-recipes-label"><?php esc_html_e( 'Find it online', 'tasty-recipes-lite' ); ?></strong>: <a href="<?php echo esc_url( get_permalink( get_the_ID() ) ); ?>"><?php echo esc_url( get_permalink( get_the_ID() ) ); ?></a></p>
 </div>
 <?php endif; ?>
-
-<?php echo $recipe_scripts; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>

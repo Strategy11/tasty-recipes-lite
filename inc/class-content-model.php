@@ -362,14 +362,6 @@ class Content_Model {
 		if ( is_singular() && $recipe_id ) {
 			$recipe_ids = Tasty_Recipes::get_recipe_ids_for_post( get_queried_object_id() );
 			if ( in_array( $recipe_id, $recipe_ids, true ) ) {
-				wp_enqueue_script(
-					'tasty-recipes-print-controls',
-					plugins_url( 'assets/dist/recipe-print-controls.build.js', TASTY_RECIPES_LITE_FILE ),
-					array(),
-					TASTY_RECIPES_LITE_VERSION,
-					true
-				);
-
 				$template = Tasty_Recipes::get_template_path( 'recipe-print' );
 			}
 		}
