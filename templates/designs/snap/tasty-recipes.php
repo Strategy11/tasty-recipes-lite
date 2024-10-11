@@ -8,9 +8,7 @@
 use Tasty_Recipes\Utils;
 
 $print_view_options = tasty_recipes_get_print_view_options();
-?>
-<?php
-echo $recipe_styles; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+
 $ext           = is_feed() ? '.png' : '.svg';
 $other_details = '';
 

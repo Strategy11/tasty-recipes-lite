@@ -629,10 +629,8 @@ class Shortcodes {
 		}
 
 		if ( $responsive_styles ) {
-			$template_vars['recipe_styles'] .= '<style>' . $responsive_styles . '</style>';
+			$template_vars['recipe_styles'] .= $responsive_styles;
 		}
-
-		Assets::maybe_add_tinymce_style( $template_vars );
 
 		$total_reviews = $recipe->get_total_reviews();
 
@@ -675,7 +673,7 @@ class Shortcodes {
 		 */
 		$template_vars = apply_filters( 'tasty_recipes_recipe_template_vars', $template_vars, $recipe, compact( 'atts' ) );
 
-		self::prepare_js( $template_vars['recipe_scripts'] );
+		self::prepare_assets( $template_vars );
 		self::$js_loaded = true;
 
 		$ret .= Tasty_Recipes::get_template_part( self::$template['php'], $template_vars );
@@ -941,27 +939,51 @@ class Shortcodes {
 	}
 
 	/**
-	 * Remove tabs and comments before echoing the javascript.
+	 * Register the js and css for inline rendering.
 	 *
 	 * @since 3.9
 	 *
-	 * @param string $scripts All the scripts to echo.
+	 * @param array $template_vars Template variables.
 	 *
 	 * @return void
 	 */
-	private static function prepare_js( &$scripts ) {
+	private static function prepare_assets( &$template_vars ) {
 		if ( self::$js_loaded ) {
 			return;
 		}
 
+		self::load_registered_styles( $template_vars['recipe_styles'] );
+		$template_vars['recipe_styles'] = '';
+
 		self::get_common_recipe_scripts();
-		$scripts = Utils::minify_js( $scripts );
+		$scripts = Utils::minify_js( $template_vars['recipe_scripts'] );
 		if ( empty( $scripts ) ) {
 			return;
 		}
 
 		wp_add_inline_script( 'tasty-recipes', $scripts );
-		$scripts = '';
+
+		// Clear so templates that echo won't add duplication.
+		$template_vars['recipe_scripts'] = '';
+	}
+
+	/**
+	 * Load late registered styles.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $css CSS to load.
+	 *
+	 * @return void
+	 */
+	private static function load_registered_styles( $css ) {
+		if ( empty( $css ) ) {
+			return;
+		}
+
+		wp_register_style( 'tasty-recipes-footer', false, array(), TASTY_RECIPES_LITE_VERSION );
+		wp_enqueue_style( 'tasty-recipes-footer' );
+		wp_add_inline_style( 'tasty-recipes-footer', $css );
 	}
 
 	/**

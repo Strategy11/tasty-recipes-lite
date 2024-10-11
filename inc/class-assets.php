@@ -410,6 +410,7 @@ class Assets {
 			array(),
 			TASTY_RECIPES_LITE_VERSION
 		);
+		// Loads the CSS contents inline.
 		wp_style_add_data( 'tasty-recipes-print-controls', 'path', dirname( __DIR__ ) . '/assets/dist/recipe-print-controls.css' );
 	}
 
@@ -541,44 +542,6 @@ class Assets {
 		return 'body{ ' . $css . ' }' . PHP_EOL;
 	}
 
-	/**
-	 * Maybe add the TinyMCE style.
-	 *
-	 * @since 3.13
-	 *
-	 * @param array $template_vars Recipe template vars.
-	 *
-	 * @return void
-	 */
-	public static function maybe_add_tinymce_style( &$template_vars ) {
-		// Load the assets for the admin area.
-		self::action_wp_head();
-
-		if ( ! wp_doing_ajax() || Utils::get_post_value( 'action' ) !== 'tasty_recipes_parse_shortcode' ) {
-			return;
-		}
-
-		if ( empty( $template_vars['recipe_styles'] ) ) {
-			$template_vars['recipe_styles'] = '';
-		}
-		$template_vars['recipe_styles'] .= self::get_css();
-	}
-
-	/**
-	 * Add some styles to the recipe.
-	 *
-	 * @deprecated 3.12.3
-	 *
-	 * @param array $template_vars Recipe template vars.
-	 *
-	 * @return array
-	 */
-	public static function add_recipe_styles( $template_vars = array() ) {
-		_deprecated_function( __METHOD__, '3.12.3', 'Assets::add_inline_style' );
-		$template_vars['recipe_styles'] .= '<style>' . self::get_css_vars() . '</style>' . PHP_EOL;
-
-		return $template_vars;
-	}
 
 	/**
 	 * Enqueues the main Tasty Recipes stylesheet and loads in the head.
@@ -607,12 +570,21 @@ class Assets {
 		}
 
 		wp_add_inline_style( 'tasty-recipes-main', Utils::minify_css( self::get_css_vars() . $styles ) );
-
 		self::$css_loaded = true;
+	}
 
-		if ( Utils::is_rest_api_request() && strpos( Utils::server_param( 'REQUEST_URI' ), 'block-renderer/wp-tasty/tasty-recipe' ) ) {
-			add_filter( 'render_block', array( __CLASS__, 'add_css_to_block' ), 10, 2 );
-		}
+	/**
+	 * Maybe add the TinyMCE style.
+	 *
+	 * @since 3.13
+	 * @deprecated x.x
+	 *
+	 * @param array $template_vars Recipe template vars.
+	 *
+	 * @return void
+	 */
+	public static function maybe_add_tinymce_style( $template_vars = array() ) {
+		_deprecated_function( __METHOD__, 'x.x' );
 	}
 
 	/**
@@ -621,35 +593,30 @@ class Assets {
 	 * added.
 	 *
 	 * @since 3.12.4
+	 * @deprecated x.x
 	 *
 	 * @param string $block_content Block content.
-	 * @param array  $block         Block data.
 	 *
 	 * @return string
 	 */
-	public static function add_css_to_block( $block_content, $block ) {
-		if ( $block['blockName'] !== 'wp-tasty/tasty-recipe' ) {
-			return $block_content;
-		}
-
-		$block_content .= self::get_css();
+	public static function add_css_to_block( $block_content ) {
+		_deprecated_function( __METHOD__, 'x.x' );
 		return $block_content;
 	}
 
 	/**
-	 * Get the CSS for the recipe in the editor.
+	 * Add some styles to the recipe.
 	 *
-	 * @since 3.13
+	 * @deprecated 3.12.3
 	 *
-	 * @return string
+	 * @param array $template_vars Recipe template vars.
+	 *
+	 * @return array
 	 */
-	private static function get_css() {
-		global $wp_styles;
-		$css = '<style>';
-		foreach ( $wp_styles->get_data( 'tasty-recipes-main', 'after' ) as $inline_style ) {
-			$css .= $inline_style;
-		}
-		$css .= '</style>';
-		return $css;
+	public static function add_recipe_styles( $template_vars = array() ) {
+		_deprecated_function( __METHOD__, '3.12.3', 'Assets::add_inline_style' );
+		$template_vars['recipe_styles'] .= self::get_css_vars();
+
+		return $template_vars;
 	}
 }

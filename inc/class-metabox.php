@@ -80,7 +80,7 @@ class MetaBox {
 	}
 
 	/**
-	 * Initialize metabox.
+	 * Initialize metabox and css in classic editor.
 	 *
 	 * @since 3.8
 	 *

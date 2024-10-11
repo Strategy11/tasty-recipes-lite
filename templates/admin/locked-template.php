@@ -5,8 +5,6 @@
  * @package Tasty_Recipes
  */
 
-echo $recipe_styles; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-
 if ( empty( $template_object ) ) {
 	return;
 }
