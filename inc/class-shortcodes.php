@@ -65,6 +65,15 @@ class Shortcodes {
 	private static $custom_template = '';
 
 	/**
+	 * Only load inline JS once.
+	 *
+	 * @since x.x
+	 *
+	 * @var bool
+	 */
+	private static $js_loaded = false;
+
+	/**
 	 * Registers shortcodes with their callbacks.
 	 *
 	 * @return void
@@ -80,6 +89,14 @@ class Shortcodes {
 			plugins_url( '/assets/dist/recipe.css', __DIR__ ),
 			array(),
 			TASTY_RECIPES_LITE_VERSION
+		);
+
+		wp_register_script(
+			'tasty-recipes',
+			plugins_url( '/assets/dist/recipe.js', __DIR__ ),
+			array(),
+			TASTY_RECIPES_LITE_VERSION,
+			true
 		);
 	}
 
@@ -612,21 +629,8 @@ class Shortcodes {
 		}
 
 		if ( $responsive_styles ) {
-			$template_vars['recipe_styles'] .= '<style>' . $responsive_styles . '</style>';
+			$template_vars['recipe_styles'] .= $responsive_styles;
 		}
-
-		Assets::maybe_add_tinymce_style( $template_vars );
-
-		$template_vars['recipe_scripts'] .= PHP_EOL . self::get_common_recipe_scripts();
-		$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( __DIR__ ) . '/assets/js/smooth-scroll.js' );
-
-		if ( $template_vars['recipe_instructions_has_video'] ) {
-			$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( __DIR__ ) . '/assets/js/video-toggle.js' );
-		}
-
-		$template_vars['recipe_scripts'] .= PHP_EOL . Utils::get_contents( dirname( __DIR__ ) . '/assets/js/ratings.js' );
-
-		self::prepare_js( $template_vars['recipe_scripts'] );
 
 		$total_reviews = $recipe->get_total_reviews();
 
@@ -668,8 +672,12 @@ class Shortcodes {
 		 * @param object $recipe        Recipe object.
 		 */
 		$template_vars = apply_filters( 'tasty_recipes_recipe_template_vars', $template_vars, $recipe, compact( 'atts' ) );
-		$ret          .= Tasty_Recipes::get_template_part( self::$template['php'], $template_vars );
-		$ret          .= '</div>';
+
+		self::prepare_assets( $template_vars );
+		self::$js_loaded = true;
+
+		$ret .= Tasty_Recipes::get_template_part( self::$template['php'], $template_vars );
+		$ret .= '</div>';
 
 		self::add_powered_by( $shareasale, $ret );
 
@@ -852,20 +860,59 @@ class Shortcodes {
 			return;
 		}
 
-		$nutrifox_id            = (int) $recipe_json['nutrifox_id'];
-		$nutrifox_iframe_url    = sprintf(
+		$nutrifox_id = (int) $recipe_json['nutrifox_id'];
+
+		$template_vars['recipe_nutrifox_embed'] = self::nutrifox_iframe( $nutrifox_id );
+	}
+
+	/**
+	 * Get the Nutrifox iframe.
+	 *
+	 * @since x.x
+	 *
+	 * @param int $nutrifox_id Nutrifox ID.
+	 *
+	 * @return string
+	 */
+	public static function nutrifox_iframe( $nutrifox_id ) {
+		if ( ! self::$js_loaded ) {
+			$nutrifox_resize_script = Utils::get_contents( 'assets/js/nutrifox-resize.js', 'path' );
+			wp_add_inline_script( 'tasty-recipes', $nutrifox_resize_script );
+			add_filter( 'wp_inline_script_attributes', array( __CLASS__, 'set_nutrifox_js_attributes' ), 10, 2 );
+		}
+
+		$nutrifox_iframe_url = sprintf(
 			'%s/embed/label/%d',
 			Tasty_Recipes::nutrifox_url(),
 			$nutrifox_id
 		);
-		$nutrifox_resize_script = Utils::get_contents( dirname( __DIR__ ) . '/assets/js/nutrifox-resize.js' );
 
-		$template_vars['recipe_nutrifox_embed'] = <<<EOT
-<script data-cfasync="false">
-{$nutrifox_resize_script}
-</script>
-<iframe title="nutritional information" id="nutrifox-label-{$nutrifox_id}" src="{$nutrifox_iframe_url}" style="width:100%;border-width:0;"></iframe>
-EOT;
+		$embed = '<iframe ' .
+			'title="nutritional information" ' .
+			'id="nutrifox-label-' . absint( $nutrifox_id ) . '" ' .
+			'src="' . esc_url( $nutrifox_iframe_url ) . '" ' .
+			'style="width:100%;border-width:0;"' .
+			'></iframe>';
+
+		return $embed;
+	}
+
+	/**
+	 * Set the Nutrifox javascript attributes.
+	 *
+	 * @since x.x
+	 *
+	 * @param array  $attributes Existing attributes.
+	 * @param string $data       Javascript to show.
+	 *
+	 * @return array
+	 */
+	public static function set_nutrifox_js_attributes( $attributes, $data ) {
+		if ( strpos( $data, '/nutrifox.' ) ) {
+			$attributes['data-cfasync'] = 'false';
+		}
+
+		return $attributes;
 	}
 
 	/**
@@ -892,21 +939,51 @@ EOT;
 	}
 
 	/**
-	 * Remove tabs and comments before echoing the javascript.
+	 * Register the js and css for inline rendering.
 	 *
 	 * @since 3.9
 	 *
-	 * @param string $scripts All the scripts to echo.
+	 * @param array $template_vars Template variables.
 	 *
 	 * @return void
 	 */
-	private static function prepare_js( &$scripts ) {
-		$scripts = Utils::minify_js( $scripts );
+	private static function prepare_assets( &$template_vars ) {
+		if ( self::$js_loaded ) {
+			return;
+		}
+
+		self::load_registered_styles( $template_vars['recipe_styles'] );
+		$template_vars['recipe_styles'] = '';
+
+		self::get_common_recipe_scripts();
+		$scripts = Utils::minify_js( $template_vars['recipe_scripts'] );
 		if ( empty( $scripts ) ) {
 			return;
 		}
 
-		$scripts = PHP_EOL . '<script>' . $scripts . '</script>';
+		wp_add_inline_script( 'tasty-recipes', $scripts );
+
+		// Clear so templates that echo won't add duplication.
+		$template_vars['recipe_scripts'] = '';
+	}
+
+	/**
+	 * Load late registered styles.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $css CSS to load.
+	 *
+	 * @return void
+	 */
+	private static function load_registered_styles( $css ) {
+		if ( empty( $css ) ) {
+			return;
+		}
+
+		wp_register_style( 'tasty-recipes-footer', false, array(), TASTY_RECIPES_LITE_VERSION );
+		wp_enqueue_style( 'tasty-recipes-footer' );
+		wp_add_inline_style( 'tasty-recipes-footer', $css );
 	}
 
 	/**
@@ -1264,10 +1341,15 @@ EOT;
 	/**
 	 * Get common recipe scripts, like JS vars needed for other scripts.
 	 *
-	 * @return string
+	 * @return void
 	 */
 	private static function get_common_recipe_scripts() {
 		global $post;
+
+		if ( self::$js_loaded ) {
+			return;
+		}
+
 		$vars = array(
 			'ajaxurl'     => esc_url_raw( admin_url( 'admin-ajax.php' ) ),
 			'ratingNonce' => is_user_logged_in() ? wp_create_nonce( 'tasty-recipes-save-rating' ) : '',
@@ -1283,7 +1365,8 @@ EOT;
 		 */
 		$vars = apply_filters( 'tasty_recipes_common_js_vars', $vars );
 
-		return 'window.trCommon=' . wp_json_encode( $vars ) . ';';
+		wp_enqueue_script( 'tasty-recipes' );
+		wp_add_inline_script( 'tasty-recipes', 'window.trCommon=' . wp_json_encode( $vars ) . ';', 'before' );
 	}
 
 	/**

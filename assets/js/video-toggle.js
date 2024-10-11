@@ -4,7 +4,7 @@
 		return;
 	}
 	buttons.forEach(function(button){
-		button.addEventListener('click', function() {
+		button.addEventListener('click', function(event) {
 			var container = event.target.closest('.tasty-recipes-instructions');
 			/* Backwards compat for our other template. */
 			if ( ! container ) {

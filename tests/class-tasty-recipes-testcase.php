@@ -591,5 +591,4 @@ EOT;
 		remove_action( 'tasty_recipes_imported_image', array( $this, 'action_tasty_recipes_imported_image' ) );
 		parent::tearDown();
 	}
-
 }

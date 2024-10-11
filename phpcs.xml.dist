@@ -77,6 +77,12 @@
 
 	<rule ref="WordPress.Security.EscapeOutput.UnsafePrintingFunction"/>
 
+	<rule ref="WordPress.Security.EscapeOutput">
+		<properties>
+			<property name="customAutoEscapedFunctions" type="array" value="wp_get_inline_script_tag"/>
+		</properties>
+	</rule>
+
 	<rule ref="WordPressVIPMinimum">
 		<exclude name="WordPressVIPMinimum.Performance.RemoteRequestTimeout.timeout_timeout" />
 	</rule>

@@ -63,13 +63,6 @@ class Ratings {
 	const RATING_COMMENT_HASH_META_KEY = 'tasty-recipes-comment-hash';
 
 	/**
-	 * Whether the CSS has been loaded.
-	 *
-	 * @var bool
-	 */
-	private static $css_loaded = false;
-
-	/**
 	 * Whether or not ratings are enabled. Optionally pass a comment status to
 	 * check if comments are open for the current post.
 	 *
@@ -96,67 +89,6 @@ class Ratings {
 	/**
 	 * Renders ratings CSS in <head> when enabled.
 	 *
-	 * @deprecated 3.11.1
-	 *
-	 * @return void
-	 */
-	public static function action_wp_head() {
-		_deprecated_function( __METHOD__, '3.11.1' );
-	}
-
-	/**
-	 * Get rating needed styles.
-	 *
-	 * @since 3.11.1
-	 *
-	 * @return string
-	 */
-	public static function get_styles() {
-		$styles = self::get_style_content();
-		if ( ! $styles ) {
-			return '';
-		}
-		return '<style>' . $styles . '</style>' . PHP_EOL;
-	}
-
-	/**
-	 * Add ratings CSS inline on the page.
-	 *
-	 * @since 3.12.3
-	 *
-	 * @return void
-	 */
-	public static function add_inline_style() {
-		if ( self::$css_loaded ) {
-			return;
-		}
-
-		$styles = self::get_style_content();
-		if ( ! $styles ) {
-			return;
-		}
-
-		self::$css_loaded = true;
-		wp_add_inline_style( 'tasty-recipes-main', Utils::minify_css( $styles ) );
-	}
-
-	/**
-	 * Get the CSS content for ratings.
-	 *
-	 * @since 3.12.3
-	 *
-	 * @return string
-	 */
-	private static function get_style_content() {
-		if ( ! self::is_enabled( 'any' ) ) {
-			return '';
-		}
-		return Utils::get_contents( dirname( __DIR__ ) . '/assets/dist/ratings.css' );
-	}
-
-	/**
-	 * Renders ratings CSS in <head> when enabled.
-	 *
 	 * @return void
 	 */
 	public static function action_admin_head() {
@@ -165,12 +97,7 @@ class Ratings {
 			return;
 		}
 
-		$styles = self::get_styles();
-		if ( empty( $styles ) ) {
-			return;
-		}
-
-		echo $styles; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		wp_enqueue_style( 'tasty-recipes-main' );
 	}
 
 	/**
@@ -930,6 +857,40 @@ class Ratings {
 			'<span class="average">' . $average_rating . '</span>',
 			'<span class="count">' . (int) $total_reviews . '</span>'
 		);
+	}
+
+	/**
+	 * Renders ratings CSS in <head> when enabled.
+	 *
+	 * @deprecated 3.11.1
+	 *
+	 * @return void
+	 */
+	public static function action_wp_head() {
+		_deprecated_function( __METHOD__, '3.11.1' );
+	}
+
+	/**
+	 * Get rating needed styles.
+	 *
+	 * @since 3.11.1
+	 *
+	 * @return string
+	 */
+	public static function get_styles() {
+		_deprecated_function( __METHOD__, '1.0' );
+		return '';
+	}
+
+	/**
+	 * Add ratings CSS inline on the page.
+	 *
+	 * @since 3.12.3
+	 *
+	 * @return void
+	 */
+	public static function add_inline_style() {
+		_deprecated_function( __METHOD__, '1.0' );
 	}
 
 	/**

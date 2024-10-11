@@ -80,7 +80,7 @@ class MetaBox {
 	}
 
 	/**
-	 * Initialize metabox.
+	 * Initialize metabox and css in classic editor.
 	 *
 	 * @since 3.8
 	 *
@@ -101,7 +101,6 @@ class MetaBox {
 		}
 
 		add_editor_style( plugins_url( '/assets/dist/recipe.css', __DIR__ ) );
-		add_editor_style( plugins_url( '/assets/dist/ratings.css', __DIR__ ) );
 
 		if ( empty( Editor::get_dismissed_converters() ) ) {
 			return;

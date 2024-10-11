@@ -8,8 +8,6 @@
 $print_view_options = tasty_recipes_get_print_view_options();
 ?>
 
-<?php echo $recipe_styles; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-
 <h2 class="tasty-recipes-title" data-tasty-recipes-customization="h2-color.color h2-transform.text-transform"><?php \Tasty_Recipes\Utils::kses( $recipe_title, true ); ?></h2>
 <div class="tasty-recipes-image-button-container">
 	<?php if ( ! empty( $recipe_image ) && isset( $print_view_options['images'] ) ) : ?>
@@ -174,5 +172,3 @@ if ( ! empty( $recipe_equipment ) ) :
 		<p><strong class="tasty-recipes-label"><?php esc_html_e( 'Find it online', 'tasty-recipes-lite' ); ?></strong>: <a href="<?php echo esc_url( get_permalink( get_the_ID() ) ); ?>"><?php echo esc_url( get_permalink( get_the_ID() ) ); ?></a></p>
 	</div>
 <?php endif; ?>
-
-<?php echo $recipe_scripts; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>

@@ -151,7 +151,6 @@ class Template {
 	 * @return void
 	 */
 	public static function handle_wp_ajax_preview_recipe_card() { // phpcs:ignore SlevomatCodingStandard
-		global $editor_styles;
 		$nonce = Utils::request_param( 'nonce', 'sanitize_key' );
 		if ( empty( $nonce ) || ! current_user_can( Admin::CAPABILITY ) || ! wp_verify_nonce( $nonce, Admin::NONCE_KEY ) ) {
 			wp_die( esc_html__( "Sorry, you don't have permission to do this.", 'tasty-recipes-lite' ) );
@@ -178,8 +177,7 @@ class Template {
 		$nutrifox_display_style = $show_nutrifox ? $get_nutrifox_display_style : null;
 
 		$styles  = Shortcodes::get_styles_as_string( $custom_design );
-		$styles .= Utils::get_contents( dirname( TASTY_RECIPES_LITE_FILE ) . '/assets/dist/ratings.css' );
-		$styles .= Utils::get_contents( dirname( TASTY_RECIPES_LITE_FILE ) . '/assets/dist/recipe-card-preview.css' );
+		$styles .= Utils::get_contents( 'assets/dist/recipe-card-preview.css', 'path' );
 
 		$template        = 'recipe/tasty-recipes';
 		$template_object = self::get_object_by_name( $custom_design );
@@ -263,21 +261,9 @@ EOT;
 			);
 			$recipe_nutrifox_embed = '';
 		} else {
-			$recipe_nutrition       = array();
-			$nutrifox_id            = 26460;
-			$nutrifox_iframe_url    = sprintf(
-				'%s/embed/label/%d',
-				Tasty_Recipes::nutrifox_url(),
-				$nutrifox_id
-			);
-			$nutrifox_resize_script = Utils::get_contents( dirname( TASTY_RECIPES_LITE_FILE ) . '/assets/js/nutrifox-resize.js' );
-
-			$recipe_nutrifox_embed = <<<EOT
-<script data-cfasync="false">
-{$nutrifox_resize_script}
-</script>
-<iframe title="nutritional information" id="nutrifox-label-{$nutrifox_id}" src="{$nutrifox_iframe_url}" style="width:100%;border-width:0;"></iframe>
-EOT;
+			$recipe_nutrition      = array();
+			$nutrifox_id           = 26460;
+			$recipe_nutrifox_embed = Shortcodes::nutrifox_iframe( $nutrifox_id );
 		}
 
 		$template_vars = array(
@@ -375,23 +361,12 @@ EOT;
 		 */
 		$template_vars = apply_filters( 'tasty_recipes_preview_vars', $template_vars );
 
-		$stylesheets = '';
-		if ( $editor_styles && current_theme_supports( 'editor-styles' ) ) {
-			foreach ( $editor_styles as $style ) {
-				if ( preg_match( '~^(https?:)?//~', $style ) ) {
-					// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet
-					$stylesheets .= '<link rel="stylesheet" href="' . esc_url( $style ) . '">' . PHP_EOL;
-				} else {
-					 // phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet
-					$stylesheets .= '<link rel="stylesheet" href="' . esc_url( get_theme_file_uri( $style ) ) . '">' . PHP_EOL;
-				}
-			}
-		}
+		self::enqueue_editor_styles();
 
-		$template_vars['recipe_styles'] .= '<style>' . $styles . PHP_EOL . '</style>' . PHP_EOL;
+		wp_add_inline_style( 'tasty-recipes-main', $styles );
 
 		$ret            = '<!DOCTYPE html><html><head>' .
-			$stylesheets . self::load_enqueued_assets() .
+			self::load_enqueued_assets() .
 			'</head><body>';
 		$ret           .= '<div class="' . esc_attr( implode( ' ', $wrapper_classes ) ) . '"';
 		$customizations = Shortcodes::get_card_container_customizations( $custom_design );
@@ -401,10 +376,43 @@ EOT;
 		$ret .= '>' . PHP_EOL;
 		$ret .= Tasty_Recipes::get_template_part( $template, $template_vars );
 		$ret .= '</div>';
-		$ret .= '<script>' . PHP_EOL . Utils::get_contents( dirname( TASTY_RECIPES_LITE_FILE ) . '/assets/dist/settings-recipe-card-preview.build.js' ) . PHP_EOL . '</script>';
+
+		wp_enqueue_script(
+			'tasty-recipe-card-preview',
+			plugins_url( 'assets/dist/settings-recipe-card-preview.build.js', TASTY_RECIPES_LITE_FILE ),
+			array(),
+			TASTY_RECIPES_LITE_VERSION,
+			true
+		);
+		$ret .= self::load_enqueued_assets();
 		$ret .= '</body></html>';
-		echo apply_filters( 'tasty_recipes_recipe_card_output', $ret, 'admin', compact( 'recipe' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo apply_filters( 'tasty_recipes_recipe_card_output', $ret, 'admin', compact( 'recipe' ) );
+
 		exit;
+	}
+
+	/**
+	 * Enqueue editor styles for the recipe card preview.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
+	 */
+	private static function enqueue_editor_styles() {
+		global $editor_styles;
+
+		if ( ! $editor_styles || ! current_theme_supports( 'editor-styles' ) ) {
+			return;
+		}
+
+		foreach ( $editor_styles as $style ) {
+			if ( ! preg_match( '~^(https?:)?//~', $style ) ) {
+				$style = get_theme_file_uri( $style );
+			}
+			wp_enqueue_style( 'tasty-recipe-preview', $style, array(), TASTY_RECIPES_LITE_VERSION );
+		}
 	}
 
 	/**
