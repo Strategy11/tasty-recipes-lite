@@ -177,8 +177,7 @@ class Template {
 		$nutrifox_display_style = $show_nutrifox ? $get_nutrifox_display_style : null;
 
 		$styles  = Shortcodes::get_styles_as_string( $custom_design );
-		$styles .= Utils::get_contents( dirname( TASTY_RECIPES_LITE_FILE ) . '/assets/dist/ratings.css' );
-		$styles .= Utils::get_contents( dirname( TASTY_RECIPES_LITE_FILE ) . '/assets/dist/recipe-card-preview.css' );
+		$styles .= Utils::get_contents( 'assets/dist/recipe-card-preview.css', 'path' );
 
 		$template        = 'recipe/tasty-recipes';
 		$template_object = self::get_object_by_name( $custom_design );

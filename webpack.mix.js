@@ -13,7 +13,6 @@ const mix = require('laravel-mix');
 
 mix.sass('assets/scss/editor.scss', 'assets/dist/');
 mix.sass('assets/scss/print.scss', 'assets/dist/');
-mix.sass('assets/scss/ratings.scss', 'assets/dist/');
 mix.sass('assets/scss/recipe.scss', 'assets/dist/');
 mix.sass('assets/scss/recipe-card-preview.scss', 'assets/dist/');
 mix.sass('assets/scss/recipe-print-controls.scss', 'assets/dist/');

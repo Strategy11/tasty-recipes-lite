@@ -248,7 +248,7 @@ class Utils {
 			$scripts = preg_replace( '/\/\*(.|\s)*?\*\//', '', $scripts );
 
 			// Remove extra white space.
-			$scripts = str_replace( array( "\t" ), '', $scripts );
+			$scripts = str_replace( array( "\t", "\n\n", "\r\n\r\n" ), '', $scripts );
 		}
 		return $scripts;
 	}
