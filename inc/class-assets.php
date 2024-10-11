@@ -579,11 +579,9 @@ class Assets {
 	 * @since 3.13
 	 * @deprecated x.x
 	 *
-	 * @param array $template_vars Recipe template vars.
-	 *
 	 * @return void
 	 */
-	public static function maybe_add_tinymce_style( $template_vars = array() ) {
+	public static function maybe_add_tinymce_style() {
 		_deprecated_function( __METHOD__, 'x.x' );
 	}
 
