@@ -1,5 +1,5 @@
-# Copyright (C) 2024 WP Tasty
-# This file is distributed under the same license as the Tasty Recipes Lite plugin.
+# Copyright (C) 2024 WP Tasty Recipes Team
+# This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
 "Project-Id-Version: Tasty Recipes Lite 1.0\n"
@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-10-07T20:39:34+00:00\n"
+"POT-Creation-Date: 2024-10-12T02:02:33+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.6.0\n"
 "X-Domain: tasty-recipes-lite\n"
@@ -27,7 +27,7 @@ msgid "Tasty Recipes is the easiest way to publish recipes on your WordPress blo
 msgstr ""
 
 #. Author of the plugin
-msgid "WP Tasty"
+msgid "WP Tasty Recipes Team"
 msgstr ""
 
 #. Author URI of the plugin
@@ -45,15 +45,15 @@ msgstr ""
 
 #: functions.php:67
 #: inc/objects/class-recipe.php:103
-#: templates/designs/snap/tasty-recipes.php:207
-#: templates/recipe/tasty-recipes.php:127
+#: templates/designs/snap/tasty-recipes.php:205
+#: templates/recipe/tasty-recipes.php:125
 msgid "Notes"
 msgstr ""
 
 #: functions.php:68
 #: inc/class-assets.php:314
-#: templates/designs/snap/tasty-recipes.php:231
-#: templates/recipe/tasty-recipes.php:144
+#: templates/designs/snap/tasty-recipes.php:229
+#: templates/recipe/tasty-recipes.php:142
 msgid "Nutrition"
 msgstr ""
 
@@ -64,11 +64,13 @@ msgstr ""
 #: inc/class-admin.php:263
 #: inc/class-admin.php:280
 #: assets/block-editor/recipe-block.js:127
+#: assets/dist/block-editor.build.js:248
 msgid "Edit Tasty Recipe"
 msgstr ""
 
 #: inc/class-admin.php:332
 #: inc/class-settings.php:494
+#: inc/libs/tasty-framework/inc/Admin/Pages/Dashboard.php:265
 msgid "Settings"
 msgstr ""
 
@@ -78,7 +80,7 @@ msgstr ""
 
 #: inc/class-admin.php:369
 #: inc/class-admin.php:397
-#: inc/designs/class-template.php:157
+#: inc/designs/class-template.php:156
 msgid "Sorry, you don't have permission to do this."
 msgstr ""
 
@@ -96,9 +98,9 @@ msgid "Couldn't convert recipe in '%1$s' (post %2$d). Please contact support for
 msgstr ""
 
 #: inc/class-admin.php:613
-#: inc/class-editor.php:423
-#: inc/class-editor.php:428
-#: inc/class-editor.php:437
+#: inc/class-editor.php:344
+#: inc/class-editor.php:349
+#: inc/class-editor.php:358
 msgid "You don't have permission to do this."
 msgstr ""
 
@@ -167,104 +169,104 @@ msgstr ""
 msgid "Hide Controls"
 msgstr ""
 
-#: inc/class-content-model.php:52
-#: inc/class-content-model.php:64
+#: inc/class-content-model.php:51
+#: inc/class-content-model.php:63
 msgid "Recipes"
 msgstr ""
 
-#: inc/class-content-model.php:53
+#: inc/class-content-model.php:52
 msgid "Recipe"
 msgstr ""
 
-#: inc/class-content-model.php:54
+#: inc/class-content-model.php:53
 msgid "All Recipes"
 msgstr ""
 
-#: inc/class-content-model.php:55
+#: inc/class-content-model.php:54
 msgid "New Recipe"
 msgstr ""
 
-#: inc/class-content-model.php:56
+#: inc/class-content-model.php:55
 msgid "Add New"
 msgstr ""
 
-#: inc/class-content-model.php:57
+#: inc/class-content-model.php:56
 msgid "Add New Recipe"
 msgstr ""
 
-#: inc/class-content-model.php:58
+#: inc/class-content-model.php:57
 #: inc/integrations/elementor/class-recipe-control.php:84
 msgid "Edit Recipe"
 msgstr ""
 
-#: inc/class-content-model.php:59
+#: inc/class-content-model.php:58
 msgid "View Recipes"
 msgstr ""
 
-#: inc/class-content-model.php:60
+#: inc/class-content-model.php:59
 msgid "Search Recipes"
 msgstr ""
 
-#: inc/class-content-model.php:61
+#: inc/class-content-model.php:60
 msgid "No recipes found"
 msgstr ""
 
-#: inc/class-content-model.php:62
+#: inc/class-content-model.php:61
 msgid "No recipes found in trash"
 msgstr ""
 
-#: inc/class-content-model.php:63
+#: inc/class-content-model.php:62
 msgid "Parent recipe"
 msgstr ""
 
 #. translators: Nutrifox HTTP error code.
-#: inc/class-content-model.php:140
+#: inc/class-content-model.php:139
 msgid "Nutrifox API request failed (HTTP code %d)"
 msgstr ""
 
-#: inc/class-content-model.php:175
+#: inc/class-content-model.php:174
 msgid "Unknown shortcode in video URL."
 msgstr ""
 
-#: inc/class-content-model.php:194
+#: inc/class-content-model.php:193
 msgid "Shortcode is missing video id."
 msgstr ""
 
-#: inc/class-content-model.php:220
+#: inc/class-content-model.php:219
 msgid "Unknown provider for URL."
 msgstr ""
 
-#: inc/class-content-model.php:239
+#: inc/class-content-model.php:238
 msgid "Invalid response from provider."
 msgstr ""
 
 #. translators: Individual hour.
-#: inc/class-distribution-metadata.php:1494
+#: inc/class-distribution-metadata.php:1492
 msgid "%s hour"
 msgstr ""
 
 #. translators: Multiple hours.
-#: inc/class-distribution-metadata.php:1496
+#: inc/class-distribution-metadata.php:1494
 msgid "%s hours"
 msgstr ""
 
 #. translators: Multiple hours and minutes.
-#: inc/class-distribution-metadata.php:1498
+#: inc/class-distribution-metadata.php:1496
 msgid "%1$s hours %2$s minutes"
 msgstr ""
 
 #. translators: Individual hour but multiple minutes.
-#: inc/class-distribution-metadata.php:1500
+#: inc/class-distribution-metadata.php:1498
 msgid "%1$s hour %2$s minutes"
 msgstr ""
 
 #. translators: Individual minute.
-#: inc/class-distribution-metadata.php:1502
+#: inc/class-distribution-metadata.php:1500
 msgid "%s minute"
 msgstr ""
 
 #. translators: Multiple minutes.
-#: inc/class-distribution-metadata.php:1504
+#: inc/class-distribution-metadata.php:1502
 msgid "%s minutes"
 msgstr ""
 
@@ -287,6 +289,8 @@ msgid "Warning: Post revisions are not enabled, please back up post content befo
 msgstr ""
 
 #: inc/class-editor.php:266
+#: inc/libs/tasty-framework/inc/Admin/Pages/Dashboard.php:195
+#: inc/libs/tasty-framework/inc/Admin/Pages/Dashboard.php:320
 msgid "Learn more"
 msgstr ""
 
@@ -298,21 +302,17 @@ msgstr ""
 msgid "Add Recipe"
 msgstr ""
 
-#: inc/class-editor.php:342
-msgid "Add rel=\"nofollow\" to link"
-msgstr ""
-
-#: inc/class-editor.php:461
+#: inc/class-editor.php:382
 msgid "Unknown error converting recipe."
 msgstr ""
 
-#: inc/class-editor.php:497
-#: inc/class-ratings.php:606
+#: inc/class-editor.php:418
+#: inc/class-ratings.php:533
 msgid "Invalid request"
 msgstr ""
 
-#: inc/class-editor.php:620
-#: inc/class-editor.php:688
+#: inc/class-editor.php:541
+#: inc/class-editor.php:609
 msgid "No recipe found."
 msgstr ""
 
@@ -320,42 +320,42 @@ msgstr ""
 msgid "Leave a Review"
 msgstr ""
 
-#: inc/class-ratings.php:345
+#: inc/class-ratings.php:272
 msgid "Recipe rating"
 msgstr ""
 
-#: inc/class-ratings.php:698
+#: inc/class-ratings.php:625
 msgid "Something went wrong. Your rating was not saved."
 msgstr ""
 
-#: inc/class-ratings.php:788
+#: inc/class-ratings.php:715
 msgid "Thank you for rating!"
 msgstr ""
 
-#: inc/class-ratings.php:793
+#: inc/class-ratings.php:720
 msgid "Update comment"
 msgstr ""
 
-#: inc/class-ratings.php:838
+#: inc/class-ratings.php:765
 msgid "To leave a rating, please share your feedback."
 msgstr ""
 
 #. translators: %1$d star rating.
-#: inc/class-ratings.php:843
+#: inc/class-ratings.php:770
 msgid "To leave a %1$d-star rating, please share your feedback."
 msgstr ""
 
 #. translators: %1$d star rating.
-#: inc/class-ratings.php:860
+#: inc/class-ratings.php:787
 msgid "Rating updated to %1$d stars!"
 msgstr ""
 
-#: inc/class-ratings.php:873
+#: inc/class-ratings.php:800
 msgid "Leave a comment"
 msgstr ""
 
 #. translators: Ratings from number of reviews.
-#: inc/class-ratings.php:929
+#: inc/class-ratings.php:856
 msgid "%1$s from %2$s review"
 msgid_plural "%1$s from %2$s reviews"
 msgstr[0] ""
@@ -412,8 +412,8 @@ msgstr ""
 #: inc/class-settings.php:371
 #: inc/class-settings.php:403
 #: inc/class-settings.php:834
-#: templates/designs/snap/tasty-recipes.php:176
-#: templates/recipe/tasty-recipes.php:99
+#: templates/designs/snap/tasty-recipes.php:174
+#: templates/recipe/tasty-recipes.php:97
 msgid "Off"
 msgstr ""
 
@@ -423,8 +423,8 @@ msgstr ""
 #: inc/class-settings.php:353
 #: inc/class-settings.php:372
 #: inc/class-settings.php:402
-#: templates/designs/snap/tasty-recipes.php:175
-#: templates/recipe/tasty-recipes.php:98
+#: templates/designs/snap/tasty-recipes.php:173
+#: templates/recipe/tasty-recipes.php:96
 msgid "On"
 msgstr ""
 
@@ -494,8 +494,8 @@ msgid "About"
 msgstr ""
 
 #: inc/class-settings.php:837
-#: inc/class-shortcodes.php:383
-#: templates/recipe-print-controls.php:17
+#: inc/class-shortcodes.php:400
+#: templates/recipe-print-controls.php:21
 msgid "Print"
 msgstr ""
 
@@ -511,23 +511,23 @@ msgstr ""
 msgid "Slickstream Favorites"
 msgstr ""
 
-#: inc/class-shortcodes.php:639
+#: inc/class-shortcodes.php:643
 msgid "No reviews"
 msgstr ""
 
-#: inc/class-shortcodes.php:723
+#: inc/class-shortcodes.php:731
 msgid "Author"
 msgstr ""
 
-#: inc/class-shortcodes.php:885
+#: inc/class-shortcodes.php:932
 msgid "Recipe Card powered by"
 msgstr ""
 
-#: inc/class-shortcodes.php:961
+#: inc/class-shortcodes.php:1038
 msgid "Jump to Recipe"
 msgstr ""
 
-#: inc/class-shortcodes.php:967
+#: inc/class-shortcodes.php:1044
 #: templates/buttons/print.php:25
 msgid "Print Recipe"
 msgstr ""
@@ -538,6 +538,305 @@ msgstr ""
 
 #: inc/integrations/elementor/class-recipe-widget.php:87
 msgid "No Tasty Recipe created yet. Click 'Edit Recipe' in the widget controls to create one."
+msgstr ""
+
+#: inc/libs/tasty-framework/inc/Abstracts/PluginInstaller.php:269
+msgid "Failed to read file content."
+msgstr ""
+
+#: inc/libs/tasty-framework/inc/Abstracts/PluginInstaller.php:278
+msgid "Failed to write to new file."
+msgstr ""
+
+#: inc/libs/tasty-framework/inc/Abstracts/PluginInstaller.php:482
+#: inc/libs/tasty-framework/inc/Admin/License/Manager.php:423
+#: inc/libs/tasty-framework/inc/Admin/License/Manager.php:461
+msgid "That's not a valid license."
+msgstr ""
+
+#: inc/libs/tasty-framework/inc/Admin/License/APIClient.php:42
+msgid "No plugins are associated with that license or it does not exist."
+msgstr ""
+
+#: inc/libs/tasty-framework/inc/Admin/License/APIClient.php:159
+msgid "Unknown error"
+msgstr ""
+
+#. translators: the plugin name.
+#: inc/libs/tasty-framework/inc/Admin/License/EDDUpdater.php:364
+msgid "There is a new version of %1$s available."
+msgstr ""
+
+#: inc/libs/tasty-framework/inc/Admin/License/EDDUpdater.php:370
+msgid "Contact your network administrator to install the update."
+msgstr ""
+
+#. translators: 1: opening anchor tag, do not translate 2. the new plugin version 3. closing anchor tag, do not translate.
+#: inc/libs/tasty-framework/inc/Admin/License/EDDUpdater.php:375
+msgid "%1$sView version %2$s details%3$s."
+msgstr ""
+
+#. translators: 1: changelog url, do not translate 2: new version 3: closing a tag, do not translate 4:upgrade plugin button, do not translate 5: closing a tag, do not translate
+#: inc/libs/tasty-framework/inc/Admin/License/EDDUpdater.php:385
+msgid "%1$sView version %2$s details%3$s or %4$supdate now%5$s."
+msgstr ""
+
+#: inc/libs/tasty-framework/inc/Admin/License/EDDUpdater.php:396
+msgid "Update now."
+msgstr ""
+
+#: inc/libs/tasty-framework/inc/Admin/License/EDDUpdater.php:642
+msgid "You do not have permission to install plugin updates"
+msgstr ""
+
+#: inc/libs/tasty-framework/inc/Admin/License/EDDUpdater.php:642
+#: inc/libs/tasty-framework/inc/Admin/Pages/Dashboard.php:169
+msgid "Error"
+msgstr ""
+
+#: inc/libs/tasty-framework/inc/Admin/License/Manager.php:115
+msgid "All Plugins"
+msgstr ""
+
+#: inc/libs/tasty-framework/inc/Admin/License/Manager.php:181
+msgid "Can't download plugin, please reach out to our support."
+msgstr ""
+
+#: inc/libs/tasty-framework/inc/Admin/License/Manager.php:188
+msgid "Downloaded and activated successfully."
+msgstr ""
+
+#: inc/libs/tasty-framework/inc/Admin/License/Manager.php:210
+msgid "Activated successfully."
+msgstr ""
+
+#: inc/libs/tasty-framework/inc/Admin/License/Manager.php:232
+msgid "Deactivated successfully."
+msgstr ""
+
+#: inc/libs/tasty-framework/inc/Admin/License/Manager.php:261
+msgid "License was removed successfully."
+msgstr ""
+
+#. translators: %s Plugin name.
+#: inc/libs/tasty-framework/inc/Admin/License/Manager.php:361
+msgid "%s is almost ready. Click the \"Enter License\" button above to continue."
+msgstr ""
+
+#: inc/libs/tasty-framework/inc/Admin/License/Manager.php:389
+msgid "The license was not saved."
+msgstr ""
+
+#: inc/libs/tasty-framework/inc/Admin/License/Manager.php:406
+#: inc/libs/tasty-framework/inc/Admin/License/Manager.php:503
+msgid "That's not a valid plugin."
+msgstr ""
+
+#: inc/libs/tasty-framework/inc/Admin/License/Manager.php:413
+#: inc/libs/tasty-framework/inc/Admin/License/Manager.php:478
+msgid "Can't connect to the WP Tasty server. Please try again later."
+msgstr ""
+
+#. translators: %1$s Error message.
+#: inc/libs/tasty-framework/inc/Admin/License/Manager.php:416
+msgid "Error: %1$s"
+msgstr ""
+
+#: inc/libs/tasty-framework/inc/Admin/License/Manager.php:520
+msgid "Not authorized!"
+msgstr ""
+
+#: inc/libs/tasty-framework/inc/Admin/Menu.php:98
+msgid "WP Tasty Dashboard"
+msgstr ""
+
+#: inc/libs/tasty-framework/inc/Admin/Menu.php:99
+#: inc/libs/tasty-framework/inc/Admin/Menu.php:104
+msgid "Dashboard"
+msgstr ""
+
+#: inc/libs/tasty-framework/inc/Admin/Pages/Dashboard.php:164
+msgid "Active"
+msgstr ""
+
+#: inc/libs/tasty-framework/inc/Admin/Pages/Dashboard.php:165
+msgid "Installed"
+msgstr ""
+
+#: inc/libs/tasty-framework/inc/Admin/Pages/Dashboard.php:166
+msgid "Not installed"
+msgstr ""
+
+#: inc/libs/tasty-framework/inc/Admin/Pages/Dashboard.php:167
+msgid "No License"
+msgstr ""
+
+#: inc/libs/tasty-framework/inc/Admin/Pages/Dashboard.php:168
+msgid "Expired"
+msgstr ""
+
+#: inc/libs/tasty-framework/inc/Admin/Pages/Dashboard.php:215
+msgid "Get a license"
+msgstr ""
+
+#: inc/libs/tasty-framework/inc/Admin/Pages/Dashboard.php:251
+msgid "Remove license"
+msgstr ""
+
+#: inc/libs/tasty-framework/inc/Admin/Pages/Dashboard.php:294
+msgid "Upgrade plan"
+msgstr ""
+
+#: inc/libs/tasty-framework/inc/Admin/Pages/Dashboard.php:325
+msgid "Activate plugin"
+msgstr ""
+
+#: inc/libs/tasty-framework/inc/Admin/Pages/Dashboard.php:354
+msgid "Deactivate"
+msgstr ""
+
+#: inc/libs/tasty-framework/inc/Admin/Pages/Dashboard.php:385
+msgid "Download"
+msgstr ""
+
+#: inc/libs/tasty-framework/inc/Admin/Pages/Dashboard.php:404
+msgid "Activate"
+msgstr ""
+
+#: inc/libs/tasty-framework/inc/Admin/Pages/Dashboard.php:434
+msgid "Renew"
+msgstr ""
+
+#: inc/libs/tasty-framework/inc/Admin/Pages/Dashboard.php:469
+msgid "Upgrade"
+msgstr ""
+
+#: inc/libs/tasty-framework/inc/Main.php:182
+#: inc/libs/tasty-framework/inc/Main.php:191
+#: inc/libs/tasty-framework/inc/Traits/Singleton.php:42
+#: inc/libs/tasty-framework/inc/Traits/Singleton.php:51
+msgid "Don't try again!"
+msgstr ""
+
+#: inc/libs/tasty-framework/templates/Admin/dashboard-modal.php:21
+#: inc/libs/tasty-framework/templates/Admin/dashboard.php:22
+msgid "Enter License"
+msgstr ""
+
+#: inc/libs/tasty-framework/templates/Admin/dashboard-modal.php:27
+msgid "Already have a license?"
+msgstr ""
+
+#: inc/libs/tasty-framework/templates/Admin/dashboard-modal.php:33
+msgid "License"
+msgstr ""
+
+#: inc/libs/tasty-framework/templates/Admin/dashboard-modal.php:40
+msgid "Plugin(s) to activate"
+msgstr ""
+
+#: inc/libs/tasty-framework/templates/Admin/dashboard-modal.php:43
+#: inc/libs/tasty-framework/templates/Admin/dashboard-modal.php:45
+msgid "Add a valid license first"
+msgstr ""
+
+#: inc/libs/tasty-framework/templates/Admin/dashboard-modal.php:51
+msgid "Save License"
+msgstr ""
+
+#: inc/libs/tasty-framework/templates/Admin/dashboard-modal.php:62
+msgid "License Saved"
+msgstr ""
+
+#: inc/libs/tasty-framework/templates/Admin/dashboard-modal.php:67
+msgid "After activating your plugin license, you must download the plugin before you can use it. Here are the steps:"
+msgstr ""
+
+#: inc/libs/tasty-framework/templates/Admin/dashboard-modal.php:69
+msgid "Download plugin files"
+msgstr ""
+
+#: inc/libs/tasty-framework/templates/Admin/dashboard-modal.php:70
+msgid "Upload plugin"
+msgstr ""
+
+#: inc/libs/tasty-framework/templates/Admin/dashboard-modal.php:71
+msgid "Activate and install it"
+msgstr ""
+
+#: inc/libs/tasty-framework/templates/Admin/dashboard-modal.php:72
+msgid "Enjoy!"
+msgstr ""
+
+#: inc/libs/tasty-framework/templates/Admin/dashboard-modal.php:77
+msgid "Just one more step and you’ll be ready to start."
+msgstr ""
+
+#: inc/libs/tasty-framework/templates/Admin/dashboard-modal.php:81
+msgid "Thanks for choosing WP Tasty. Enjoy!"
+msgstr ""
+
+#: inc/libs/tasty-framework/templates/Admin/dashboard-modal.php:89
+msgid "Download Plugin"
+msgstr ""
+
+#: inc/libs/tasty-framework/templates/Admin/dashboard-modal.php:94
+msgid "Activate Plugin"
+msgstr ""
+
+#: inc/libs/tasty-framework/templates/Admin/dashboard-modal.php:98
+msgid "Close"
+msgstr ""
+
+#: inc/libs/tasty-framework/templates/Admin/dashboard.php:18
+msgid "Licensing"
+msgstr ""
+
+#: inc/libs/tasty-framework/templates/Admin/dashboard.php:64
+msgid "Refresh the page in 1 minute. If the problem continues, please reach out to support."
+msgstr ""
+
+#: inc/libs/tasty-framework/templates/Admin/dashboard.php:118
+msgid "all access"
+msgstr ""
+
+#: inc/libs/tasty-framework/templates/Admin/dashboard.php:121
+msgid "Save"
+msgstr ""
+
+#: inc/libs/tasty-framework/templates/Admin/dashboard.php:137
+msgid "Get this Deal"
+msgstr ""
+
+#. translators: %1$s Plugin name.
+#: inc/libs/tasty-framework/templates/Admin/Notices/license-empty.php:14
+msgid "%1$s is almost ready."
+msgstr ""
+
+#: inc/libs/tasty-framework/templates/Admin/Notices/license-empty.php:18
+msgid "Enter your license to continue."
+msgstr ""
+
+#. translators: %1$s Plugin name.
+#: inc/libs/tasty-framework/templates/Admin/Notices/license-invalid.php:14
+msgid "To enable updates and support for %1$s"
+msgstr ""
+
+#: inc/libs/tasty-framework/templates/Admin/Notices/license-invalid.php:17
+msgid "enter a valid license"
+msgstr ""
+
+#: inc/libs/tasty-framework/templates/Admin/Notices/license-invalid.php:21
+msgid "Think you've reached this message in error?"
+msgstr ""
+
+#. translators: %1$s Opening anchor tag, %1$s Closing anchor tag.
+#: inc/libs/tasty-framework/templates/Admin/Notices/license-invalid.php:26
+msgid "%1$sSubmit a support ticket%2$s, and we'll do our best to help out."
+msgstr ""
+
+#: inc/libs/tasty-framework/templates/Admin/tabs.php:28
+msgid "Support and documentation"
 msgstr ""
 
 #: inc/objects/class-recipe.php:65
@@ -561,8 +860,8 @@ msgid "Description Video Settings"
 msgstr ""
 
 #: inc/objects/class-recipe.php:87
-#: templates/designs/snap/tasty-recipes.php:137
-#: templates/recipe/tasty-recipes.php:69
+#: templates/designs/snap/tasty-recipes.php:135
+#: templates/recipe/tasty-recipes.php:67
 msgid "Ingredients"
 msgstr ""
 
@@ -571,8 +870,8 @@ msgid "Ingredients Video Settings"
 msgstr ""
 
 #: inc/objects/class-recipe.php:95
-#: templates/designs/snap/tasty-recipes.php:170
-#: templates/recipe/tasty-recipes.php:93
+#: templates/designs/snap/tasty-recipes.php:168
+#: templates/recipe/tasty-recipes.php:91
 msgid "Instructions"
 msgstr ""
 
@@ -585,9 +884,13 @@ msgid "Notes Video Settings"
 msgstr ""
 
 #: inc/objects/class-recipe.php:111
-#: templates/designs/snap/tasty-recipes.php:242
-#: templates/recipe/tasty-recipes.php:155
+#: templates/designs/snap/tasty-recipes.php:240
+#: templates/recipe/tasty-recipes.php:153
 msgid "Keywords"
+msgstr ""
+
+#: inc/objects/class-recipe.php:113
+msgid "Keywords help Google find your recipes. Include keywords that are not also a category or cuisine ie summer, Halloween, quick, nutmeg crust."
 msgstr ""
 
 #: inc/objects/class-recipe.php:119
@@ -738,11 +1041,11 @@ msgstr ""
 msgid "Cholesterol"
 msgstr ""
 
-#: tasty-recipes.php:692
+#: tasty-recipes.php:700
 msgid "Did you make this recipe?"
 msgstr ""
 
-#: tasty-recipes.php:694
+#: tasty-recipes.php:702
 msgid "Tag @wptasty on Instagram and hashtag it #tastyrecipes"
 msgstr ""
 
@@ -812,7 +1115,7 @@ msgid "Visit Documentation"
 msgstr ""
 
 #. translators: %s: template name
-#: templates/admin/locked-template.php:15
+#: templates/admin/locked-template.php:13
 msgid "Preview %s template"
 msgstr ""
 
@@ -824,23 +1127,24 @@ msgstr ""
 msgid "Upgrade to Pro"
 msgstr ""
 
-#: templates/designs/snap/tasty-recipes.php:173
-#: templates/recipe/tasty-recipes.php:96
+#: templates/designs/snap/tasty-recipes.php:171
+#: templates/recipe/tasty-recipes.php:94
 msgid "Video"
 msgstr ""
 
-#: templates/designs/snap/tasty-recipes.php:200
-#: templates/recipe/tasty-recipes.php:120
+#: templates/designs/snap/tasty-recipes.php:198
+#: templates/recipe/tasty-recipes.php:118
 msgid "Equipment"
 msgstr ""
 
-#: templates/designs/snap/tasty-recipes.php:265
-#: templates/recipe/tasty-recipes.php:174
+#: templates/designs/snap/tasty-recipes.php:263
+#: templates/recipe/tasty-recipes.php:172
 msgid "Find it online"
 msgstr ""
 
 #: templates/parts/metabox.php:11
 #: assets/block-editor/metabox.js:14
+#: assets/dist/block-editor.build.js:153
 msgid "Conversion options for the following products will not be shown:"
 msgstr ""
 
@@ -870,27 +1174,27 @@ msgstr ""
 msgid "Update"
 msgstr ""
 
-#: templates/recipe-print-controls.php:20
+#: templates/recipe-print-controls.php:24
 msgid "Options"
 msgstr ""
 
-#: templates/recipe-print-controls.php:43
+#: templates/recipe-print-controls.php:47
 msgid "Include in print view:"
 msgstr ""
 
-#: templates/recipe-print-controls.php:58
+#: templates/recipe-print-controls.php:62
 msgid "Text size:"
 msgstr ""
 
-#: templates/recipe-print-controls.php:62
+#: templates/recipe-print-controls.php:66
 msgid "Small"
 msgstr ""
 
-#: templates/recipe-print-controls.php:63
+#: templates/recipe-print-controls.php:67
 msgid "Medium"
 msgstr ""
 
-#: templates/recipe-print-controls.php:64
+#: templates/recipe-print-controls.php:68
 msgid "Large"
 msgstr ""
 
@@ -954,5 +1258,21 @@ msgid "No %s recipes were found to convert."
 msgstr ""
 
 #: assets/block-editor/recipe-block.js:59
+#: assets/dist/block-editor.build.js:216
 msgid "Create Tasty Recipe"
+msgstr ""
+
+#: assets/block-editor/recipe-block.js:98
+#: assets/dist/block-editor.build.js:236
+msgid "No Tasty Recipe created yet. Click here to start one."
+msgstr ""
+
+#: assets/block-editor/recipe-block.js:154
+#: assets/dist/block-editor.build.js:261
+msgid "Recipe options"
+msgstr ""
+
+#: assets/block-editor/recipe-block.js:158
+#: assets/dist/block-editor.build.js:264
+msgid "Override Author Link"
 msgstr ""
