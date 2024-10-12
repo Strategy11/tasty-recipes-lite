@@ -1057,12 +1057,11 @@ class Shortcodes {
 			$recipe_id,
 			$should_prepend_jump_to
 		);
-		$links = implode( '<span>&middot;</span>', $links );
-		$html  = <<<EOT
-<div class="tasty-recipes-quick-links">
-{$links}
-</div>
-EOT;
+
+		$html  = '<div class="tasty-recipes-quick-links">';
+		$html .= implode( '<span>&middot;</span>', $links );
+		$html .= '</div>';
+
 		return $html;
 	}
 

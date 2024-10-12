@@ -196,29 +196,6 @@ class Template {
 
 		$recipe      = new \stdClass();
 		$recipe_json = array();
-		$ingredients = <<<EOT
-<ul>
-	<li><span data-amount="3/4" data-unit="cup">3/4 cup</span> melted coconut oil</li>
-	<li><span data-amount="1/2" data-unit="cup">1/2 cup</span> cocoa powder</li>
-	<li><span data-amount="2" data-unit="tablespoon">2 tbsp.</span> natural sweetener (agave or maple syrup)</li>
-	<li><span data-amount="3/4" data-unit="cup">3/4 cup</span> almond butter</li>
-	<li><span data-amount="" data-unit=""></span>pinch of sea salt, plus more for topping</li>
-</ul>
-EOT;
-		$ingredients = apply_filters( 'tasty_recipes_the_content', $ingredients, 'ingredients' );
-
-		// phpcs:disable SlevomatCodingStandard.Files.LineLength.LineTooLong
-		$instructions = <<<EOT
-<ol>
-<li id="instruction-step-1">Whisk the coconut oil, cocoa powder, sweetener, and a pinch of salt.</li>
-<li id="instruction-step-2">Fill a regular size muffin tin with paper liners. Pour a small amount of the cocoa mixture (1-2 tablespoons) into the paper cups. Drop a small spoonful of the almond butter (2-3 teaspoons) into the center of each cup. Divide remaining chocolate amongst the cups.</li>
-<li id="instruction-step-3">If almond butter is sticking up, just gently press it down so each cup has a smooth top layer. Sprinkle each almond butter cup with a pinch of coarse sea salt. Freeze for one hour or until solid. YUM TOWN.</li>
-</ol>
-EOT;
-		$notes        = <<<EOT
-<p>These are very adaptable – I’ve used as much as 3/4 cup cocoa, and as little as 2 tablespoons agave. It just depends on how sweet / dark you want them to be. I’ve also used peanut butter which is (obviously) delicious!</p>
-EOT;
-		// phpcs:enable
 
 		if ( 'card' === $nutrifox_display_style ) {
 			$nutrifox_id           = '';
@@ -336,11 +313,11 @@ EOT;
 				),
 			),
 			'recipe_description'            => '<p>Almond Butter Cups: made with five ingredients and no refined sugar. So creamy, rich, and yummy!</p>',
-			'recipe_ingredients'            => $ingredients,
+			'recipe_ingredients'            => self::ingredients_example(),
 			'recipe_instructions_has_video' => false,
-			'recipe_instructions'           => $instructions,
+			'recipe_instructions'           => self::instructions_example(),
 			'recipe_keywords'               => '',
-			'recipe_notes'                  => $notes,
+			'recipe_notes'                  => self::notes_example(),
 			'recipe_nutrifox_id'            => $nutrifox_id,
 			'recipe_nutrifox_embed'         => $recipe_nutrifox_embed,
 			'recipe_video_embed'            => '',
@@ -391,6 +368,56 @@ EOT;
 		echo apply_filters( 'tasty_recipes_recipe_card_output', $ret, 'admin', compact( 'recipe' ) );
 
 		exit;
+	}
+
+	/**
+	 * Get the html for the ingredients list.
+	 *
+	 * @since x.x
+	 *
+	 * @return string
+	 */
+	private static function ingredients_example() {
+		$ingredients = '<ul>' .
+			'<li><span data-amount="3/4" data-unit="cup">3/4 cup</span> melted coconut oil</li>' .
+			'<li><span data-amount="1/2" data-unit="cup">1/2 cup</span> cocoa powder</li>' .
+			'<li><span data-amount="2" data-unit="tablespoon">2 tbsp.</span> natural sweetener (agave or maple syrup)</li>' .
+			'<li><span data-amount="3/4" data-unit="cup">3/4 cup</span> almond butter</li>' .
+			'<li><span data-amount="" data-unit=""></span>pinch of sea salt, plus more for topping</li>' .
+			'</ul>';
+		$ingredients = apply_filters( 'tasty_recipes_the_content', $ingredients, 'ingredients' );
+		return $ingredients;
+	}
+
+	/**
+	 * Get HTMl for the instructions box.
+	 *
+	 * @since x.x
+	 *
+	 * @return string
+	 */
+	private static function instructions_example() {
+		return '<ol>' .
+			'<li id="instruction-step-1">Whisk the coconut oil, cocoa powder, sweetener, and a pinch of salt.</li>' .
+			'<li id="instruction-step-2">Fill a regular size muffin tin with paper liners. ' .
+			'Pour a small amount of the cocoa mixture (1-2 tablespoons) into the paper cups. ' .
+			'Drop a small spoonful of the almond butter (2-3 teaspoons) into the center of each cup. ' .
+			'Divide remaining chocolate amongst the cups.</li>' .
+			'<li id="instruction-step-3">If almond butter is sticking up, just gently press it down so each cup has a smooth top layer. ' .
+			'Sprinkle each almond butter cup with a pinch of coarse sea salt. Freeze for one hour or until solid. YUM TOWN.</li>' .
+			'</ol>';
+	}
+
+	/**
+	 * Get HTML for the notes box.
+	 *
+	 * @since x.x
+	 *
+	 * @return string
+	 */
+	private static function notes_example() {
+		return '<p>These are very adaptable – I’ve used as much as 3/4 cup cocoa, and as little as 2 tablespoons agave. ' .
+			'It just depends on how sweet / dark you want them to be. I’ve also used peanut butter which is (obviously) delicious!</p>';
 	}
 
 	/**
