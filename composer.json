@@ -39,7 +39,14 @@
         "phpcbf": "vendor/bin/phpcbf",
         "phpunit": "vendor/bin/phpunit",
         "phpcsfixer": "vendor/bin/php-cs-fixer fix --dry-run --verbose",
-        "phpstan": "vendor/bin/phpstan analyze ./ --memory-limit=2G"
+        "phpstan": "vendor/bin/phpstan analyze ./ --memory-limit=2G",
+        "replace-textdomain": "find ./inc/libs/tasty-framework/inc ./inc/libs/tasty-framework/templates -type f -name '*.php' -exec sed -i '' -e \"s/, 'tasty'/, 'tasty-recipes-lite'/g\" {} +",
+        "post-install-cmd": [
+            "composer replace-textdomain"
+        ],
+        "post-update-cmd": [
+            "composer replace-textdomain"
+        ]
     },
     "config": {
         "allow-plugins": {
