@@ -53,7 +53,7 @@ class ZipList extends Converter {
 	 * @return false|Recipe
 	 */
 	public static function create_recipe_from_existing( $existing, $post_id ) { // phpcs:ignore VariableAnalysis
-		global $wpdb, $table_prefix;
+		global $wpdb;
 
 		// Shortcode: [amd-zlrecipe-recipe:1].
 		// Block: <!-- wp:zip-recipes/recipe-block {"id":"1"} /-->.
@@ -74,8 +74,8 @@ class ZipList extends Converter {
 			$recipe_id = (int) $block_attr['id'];
 		}
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery
-		$existing = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table_prefix}amd_zlrecipe_recipes WHERE recipe_id=%d", $recipe_id ) );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		$existing = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}amd_zlrecipe_recipes WHERE recipe_id=%d", $recipe_id ) );
 		if ( ! $existing ) {
 			return false;
 		}
@@ -146,11 +146,11 @@ class ZipList extends Converter {
 		}
 
 		// Persist ratings data if it exists.
-		$ratings_table = "{$table_prefix}zrdn_visitor_ratings";
+		$ratings_table = "{$wpdb->prefix}zrdn_visitor_ratings";
 		$results       = $wpdb->get_results( $wpdb->prepare( 'SHOW TABLES LIKE %s', $ratings_table ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 		if ( ! empty( $results ) ) {
-			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery
-			$ratings = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$ratings_table} WHERE recipe_id=%d", $recipe_id ) );
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery
+			$ratings = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}zrdn_visitor_ratings WHERE recipe_id=%d", $recipe_id ) );
 			update_post_meta( $recipe->get_id(), 'zrp_ratings', $ratings );
 		}
 

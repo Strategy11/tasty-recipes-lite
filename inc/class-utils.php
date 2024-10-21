@@ -504,4 +504,35 @@ class Utils {
 			)
 		);
 	}
+
+	/**
+	 * Prepare the limit clause for a SQL query.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $limit Limit clause to prepare.
+	 *
+	 * @return string
+	 */
+	public static function esc_limit( $limit ) {
+		if ( empty( $limit ) ) {
+			return '';
+		}
+
+		$limit = trim( str_replace( 'limit ', '', strtolower( $limit ) ) );
+		if ( is_numeric( $limit ) ) {
+			return ' LIMIT ' . $limit;
+		}
+
+		$limit = explode( ',', trim( $limit ) );
+		foreach ( $limit as $k => $l ) {
+			if ( is_numeric( $l ) ) {
+				$limit[ $k ] = $l;
+			}
+		}
+
+		$limit = implode( ',', $limit );
+
+		return ' LIMIT ' . $limit;
+	}
 }

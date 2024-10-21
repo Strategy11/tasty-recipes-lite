@@ -50,15 +50,15 @@ class Yummly extends Converter {
 	 * @return false|Recipe
 	 */
 	public static function create_recipe_from_existing( $existing, $post_id ) { // phpcs:ignore SlevomatCodingStandard
-		global $wpdb, $table_prefix;
+		global $wpdb;
 
 		preg_match( self::$regex_pattern, $existing, $matches );
 		if ( empty( $matches[1] ) ) {
 			return false;
 		}
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery
-		$existing = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table_prefix}amd_yrecipe_recipes WHERE recipe_id=%d", $matches[1] ) );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		$existing = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}amd_yrecipe_recipes WHERE recipe_id=%d", $matches[1] ) );
 		if ( ! $existing ) {
 			return false;
 		}

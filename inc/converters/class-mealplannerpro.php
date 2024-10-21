@@ -45,15 +45,15 @@ class MealPlannerPro extends Converter {
 	 * @return false|Recipe
 	 */
 	public static function create_recipe_from_existing( $existing, $post_id ) {
-		global $wpdb, $table_prefix;
+		global $wpdb;
 
 		preg_match( '#\[mpprecipe-recipe:([\d]+)\]#s', $existing, $matches );
 		if ( empty( $matches[1] ) ) {
 			return false;
 		}
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery
-		$existing = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table_prefix}mpprecipe_recipes WHERE recipe_id=%d", $matches[1] ) );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		$existing = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}mpprecipe_recipes WHERE recipe_id=%d", $matches[1] ) );
 		if ( ! $existing ) {
 			return false;
 		}
