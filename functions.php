@@ -5,6 +5,8 @@
  * @package Tasty_Recipes
  */
 
+defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
+
 use Tasty_Recipes\Content_Model;
 
 /**

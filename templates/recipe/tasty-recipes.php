@@ -5,6 +5,8 @@
  * @package Tasty_Recipes
  */
 
+defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
+
 $print_view_options = tasty_recipes_get_print_view_options();
 ?>
 

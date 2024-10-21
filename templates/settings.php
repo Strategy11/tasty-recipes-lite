@@ -5,6 +5,8 @@
  * @package Tasty_Recipes
  */
 
+defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
+
 use Tasty_Recipes\Admin;
 use Tasty_Recipes\Utils;
 use Tasty_Recipes\Designs\Template;

@@ -5,6 +5,7 @@
  * @package Tasty_Recipes
  */
 
+defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 ?>
 <div id='tasty_recipes_ignored_converters'>
 	<p class="howto">

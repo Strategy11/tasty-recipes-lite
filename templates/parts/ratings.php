@@ -5,6 +5,8 @@
  * @package Tasty_Recipes
  */
 
+defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
+
 $no_ratings   = isset( $no_ratings ) ? $no_ratings : false;
 $average      = isset( $average ) ? $average : 0;
 $rating_style = isset( $rating_style ) ? $rating_style : 'outline';

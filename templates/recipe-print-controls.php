@@ -5,6 +5,8 @@
  * @package Tasty_Recipes
  */
 
+defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
+
 $show_options = apply_filters( 'tasty_recipes_show_print_options', true );
 ?>
 

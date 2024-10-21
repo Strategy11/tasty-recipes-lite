@@ -5,6 +5,8 @@
  * @package Tasty_Recipes
  */
 
+defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
+
 echo wp_json_encode(
 	array(
 		'provider_url'  => 'https://www.adthrive.com/',
