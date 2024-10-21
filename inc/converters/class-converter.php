@@ -86,13 +86,14 @@ abstract class Converter {
 
 		$query = $wpdb->prepare(
 			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-			"SELECT {$select_var} FROM {$wpdb->posts}
-				WHERE post_type != %s
-				AND post_status != %s",
+			"SELECT {$select_var} FROM {$wpdb->posts} WHERE post_type != %s AND post_status != %s",
 			'revision',
 			'trash'
 		);
-		$query .= ' AND ' . $like_query . $limit; // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
+		// Add already escaped values to the query.
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$query .= ' AND ' . $like_query . $limit;
 
 		// Validate query type to prevent misuse.
 		$allowed_query_types = array( 'get_col', 'get_row', 'get_results', 'get_var' );
