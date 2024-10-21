@@ -457,17 +457,17 @@ class Utils {
 	 * @return array
 	 */
 	private static function get_allowed_html() {
-		$allowed_html        = wp_kses_allowed_html( 'post' );
+		$allowed_html = wp_kses_allowed_html( 'post' );
 
 		$add_html = array(
-			'defs' => array(),
-			'desc' => array(
+			'defs'           => array(),
+			'desc'           => array(
 				'id' => true,
 			),
-			'g'    => array(
+			'g'              => array(
 				'fill' => true,
 			),
-			'path' => array(
+			'path'           => array(
 				'd'               => true,
 				'fill'            => true,
 				'stroke'          => true,
@@ -483,40 +483,42 @@ class Utils {
 				'offset'       => true,
 				'stop-color'   => true,
 			),
-			'svg'  => array(
-				'class'       => true,
-				'id'          => true,
-				'xmlns'       => true,
-				'viewbox'     => true,
-				'width'       => true,
-				'height'      => true,
-				'style'       => true,
-				'fill'        => true,
-				'aria-label'  => true,
-				'aria-hidden' => true,
-				'stroke'      => true,
-
+			'svg'            => array(
+				'class'           => true,
+				'id'              => true,
+				'xmlns'           => true,
+				'viewbox'         => true,
+				'width'           => true,
+				'height'          => true,
+				'style'           => true,
+				'fill'            => true,
+				'aria-label'      => true,
+				'aria-hidden'     => true,
 				'aria-labelledby' => true,
+				'stroke'          => true,
 			),
-			'symbol' => array(
+			'symbol'         => array(
 				'id'      => true,
 				'width'   => true,
 				'height'  => true,
 				'viewbox' => true,
 			),
-			'use'  => array(
-				'href'       => true,
-				'xlink:href' => true,
+			'use'            => array(
+				'href'        => true,
+				'xlink:href'  => true,
 				'class'       => true,
 				'aria-hidden' => true,
 			),
 		);
 
 		// Allow display none on an svg sprite.
-		add_filter( 'safe_style_css', function( $styles ) {
-			$styles[] = 'display';
-			return $styles;
-		} );
+		add_filter(
+			'safe_style_css',
+			function ( $styles ) {
+				$styles[] = 'display';
+				return $styles;
+			}
+		);
 
 		$allowed_html = array_merge( $add_html, $allowed_html );
 		return (array) apply_filters( 'tasty_recipes_allowed_html', $allowed_html );
