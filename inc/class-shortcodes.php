@@ -707,7 +707,7 @@ class Shortcodes {
 			return;
 		}
 
-		$custom_design = $custom_design !== false ? $custom_design : 'current';
+		$custom_design = $custom_design ? $custom_design : 'current';
 		$template_obj  = Template::get_object_by_name( $custom_design );
 
 		self::$custom_template = $custom_design;

@@ -286,6 +286,7 @@ class Tasty_Recipes {
 	 */
 	private function setup_actions() {
 		// Bootstrap.
+		Tasty_Recipes\Assets::load_hooks();
 		add_action( 'init', array( 'Tasty_Recipes\Block_Editor', 'action_init_register' ) );
 		add_action( 'init', array( 'Tasty_Recipes\Content_Model', 'action_init_register_cron_events' ) );
 		add_action( 'tasty_recipes_process_thumbnails', array( 'Tasty_Recipes\Content_Model', 'action_tasty_recipes_process_thumbnails' ) );
@@ -294,7 +295,6 @@ class Tasty_Recipes {
 		add_action( 'init', array( 'Tasty_Recipes\Content_Model', 'action_init_register_oembed_providers' ) );
 		add_action( 'init', array( 'Tasty_Recipes\Shortcodes', 'action_init_register_shortcode' ) );
 		// Frontend.
-		add_action( 'wp_print_styles', array( 'Tasty_Recipes\Assets', 'action_wp_print_styles' ) );
 		add_action( 'body_class', array( 'Tasty_Recipes\Content_Model', 'filter_body_class' ) );
 		add_action( 'wpseo_robots', array( 'Tasty_Recipes\Distribution_Metadata', 'action_wpseo_robots' ) );
 		add_filter( 'wpseo_schema_graph_pieces', array( 'Tasty_Recipes\Distribution_Metadata', 'filter_wpseo_schema_graph_pieces' ), 10, 2 );
@@ -312,9 +312,6 @@ class Tasty_Recipes {
 
 		// Admin.
 		Tasty_Recipes\Admin::load_hooks();
-		add_action( 'admin_enqueue_scripts', array( 'Tasty_Recipes\Assets', 'action_admin_enqueue_scripts' ) );
-		add_action( 'wp_enqueue_editor', array( 'Tasty_Recipes\Assets', 'action_wp_enqueue_editor' ) );
-		add_action( 'enqueue_block_editor_assets', array( 'Tasty_Recipes\Assets', 'action_enqueue_block_editor_assets' ) );
 		add_action( 'admin_notices', array( 'Tasty_Recipes\Editor', 'action_admin_notices' ) );
 		add_action( 'update_option_' . self::LICENSE_KEY_OPTION, array( 'Tasty_Recipes\Admin', 'action_update_option_clear_transient' ) );
 		add_action( 'media_buttons', array( 'Tasty_Recipes\Editor', 'action_media_buttons' ) );

@@ -30,6 +30,20 @@ class Assets {
 	private static $css_loaded = false;
 
 	/**
+	 * Load hooks.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
+	 */
+	public static function load_hooks() {
+		add_action( 'wp_print_styles', array( __CLASS__, 'action_wp_print_styles' ) );
+		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'action_admin_enqueue_scripts' ) );
+		add_action( 'wp_enqueue_editor', array( __CLASS__, 'action_wp_enqueue_editor' ) );
+		add_action( 'enqueue_block_editor_assets', array( __CLASS__, 'action_enqueue_block_editor_assets' ) );
+	}
+
+	/**
 	 * Enqueues relevant scripts in the admin.
 	 *
 	 * @return void
