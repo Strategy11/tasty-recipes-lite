@@ -920,15 +920,17 @@ class Shortcodes {
 		}
 
 		$allowed_html['iframe'] = array(
-			'allow'           => true,
-			'allowfullscreen' => true,
-			'id'              => true,
-			'class'           => true,
-			'frameborder'     => true,
-			'referrerpolicy'  => true,
-			'src'             => true,
-			'style'           => true,
-			'title'           => true,
+			'allow'                 => true,
+			'allowfullscreen'       => true,
+			'id'                    => true,
+			'class'                 => true,
+			'frameborder'           => true,
+			'referrerpolicy'        => true,
+			'src'                   => true,
+			'style'                 => true,
+			'title'                 => true,
+			'webkitallowfullscreen' => true,
+			'mozallowfullscreen'    => true,
 		);
 
 		return $allowed_html;
