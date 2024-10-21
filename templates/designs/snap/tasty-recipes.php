@@ -30,7 +30,7 @@ if ( '.svg' === $ext ) {
 	<?php if ( ! empty( $recipe_rating_icons ) || ! empty( $recipe_rating_label ) ) { ?>
 		<div class="tasty-recipes-rating">
 			<?php if ( ! empty( $recipe_rating_icons ) ) { ?>
-				<p><?php echo $recipe_rating_icons; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
+				<p><?php Utils::kses( $recipe_rating_icons, true ); ?></p>
 			<?php } ?>
 			<?php if ( ! empty( $recipe_rating_label ) ) { ?>
 				<p><?php Utils::kses( $recipe_rating_label, true ); ?></p>
@@ -136,7 +136,7 @@ if ( '.svg' === $ext ) {
 				<div class="tasty-recipes-ingredients-clipboard-container">
 					<h3 data-tasty-recipes-customization="h3-color.color h3-transform.text-transform"><?php esc_html_e( 'Ingredients', 'tasty-recipes-lite' ); ?></h3>
 					<?php if ( $copy_ingredients ) : ?>
-						<?php echo $copy_ingredients; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+						<?php Utils::kses( $copy_ingredients, true ); ?>
 					<?php endif; ?>
 				</div>
 				<?php
@@ -149,7 +149,7 @@ if ( '.svg' === $ext ) {
 				?>
 			</div>
 			<div data-tasty-recipes-customization="body-color.color">
-				<?php echo $recipe_ingredients; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+				<?php Utils::kses( $recipe_ingredients, true ); ?>
 			</div>
 			<?php
 			/**

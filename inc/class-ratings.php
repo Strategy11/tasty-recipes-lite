@@ -270,7 +270,7 @@ class Ratings {
 		?>
 		<fieldset class="tasty-recipes-ratings tasty-recipes-comment-form">
 			<legend><?php esc_html_e( 'Recipe rating', 'tasty-recipes-lite' ); ?></legend>
-			<?php echo self::get_rating_stars_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			<?php self::show_rating_stars_html(); ?>
 		</fieldset>
 		<?php
 		$rating_html = ob_get_clean();
@@ -398,7 +398,7 @@ class Ratings {
 			return array();
 		}
 
-		$star_svg = Utils::get_contents( dirname( __DIR__ ) . '/assets/images/' . $svg_name );
+		$star_svg = Utils::get_contents( 'assets/images/' . $svg_name, 'path' );
 		return array(
 			'checked'   => $star_svg,
 			'unchecked' => $star_svg,
@@ -449,6 +449,21 @@ class Ratings {
 				'rating_style'     => $rating_style,
 			)
 		);
+	}
+
+	/**
+	 * Show rating stars HTML.
+	 *
+	 * @since x.x
+	 *
+	 * @param bool $no_ratings Show no rating template without review yet.
+	 * @param int  $average    The rating valie to show.
+	 *
+	 * @return void
+	 */
+	public static function show_rating_stars_html( $no_ratings = false, $average = 0 ) {
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo self::get_rating_stars_html( $no_ratings, $average );
 	}
 
 	/**
