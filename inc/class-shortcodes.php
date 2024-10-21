@@ -501,6 +501,8 @@ class Shortcodes {
 
 		$embed_data = $recipe->get_video_url_response();
 		if ( ! empty( $embed_data->html ) ) {
+			add_filter( 'tasty_recipes_allowed_html', array( __CLASS__, 'allow_html_iframe' ) );
+
 			$template_vars['recipe_video_embed'] = $responsive_iframes ? self::make_iframes_responsive(
 				$embed_data->html,
 				$responsive_styles
@@ -918,11 +920,15 @@ class Shortcodes {
 		}
 
 		$allowed_html['iframe'] = array(
-			'id'    => true,
-			'class' => true,
-			'style' => true,
-			'title' => true,
-			'src'   => true,
+			'allow'           => true,
+			'allowfullscreen' => true,
+			'id'              => true,
+			'class'           => true,
+			'frameborder'     => true,
+			'referrerpolicy'  => true,
+			'src'             => true,
+			'style'           => true,
+			'title'           => true,
 		);
 
 		return $allowed_html;

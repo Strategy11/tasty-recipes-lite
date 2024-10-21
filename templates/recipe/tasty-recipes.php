@@ -22,12 +22,12 @@ $print_view_options = tasty_recipes_get_print_view_options();
 	<div class="tasty-recipes-buttons">
 		<?php if ( ! empty( $first_button ) ) : ?>
 		<div class="tasty-recipes-button-wrap">
-			<?php echo $first_button; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			<?php Utils::kses( $first_button, true ); ?>
 		</div>
 		<?php endif; ?>
 		<?php if ( ! empty( $second_button ) ) : ?>
 		<div class="tasty-recipes-button-wrap">
-			<?php echo $second_button; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			<?php Utils::kses( $second_button, true ); ?>
 		</div>
 		<?php endif; ?>
 	</div>
@@ -45,7 +45,7 @@ $print_view_options = tasty_recipes_get_print_view_options();
 <?php endif; ?>
 
 <?php if ( ! empty( $recipe_print_button ) && ! tasty_recipes_is_print() ) : ?>
-	<?php echo $recipe_print_button; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+	<?php Utils::kses( $recipe_print_button, true ); ?>
 <?php endif; ?>
 
 <?php if ( ! empty( $recipe_description ) && isset( $print_view_options['description'] ) ) : ?>
@@ -111,7 +111,7 @@ $print_view_options = tasty_recipes_get_print_view_options();
 
 <?php if ( ! empty( $recipe_video_embed ) ) : ?>
 	<div class="tasty-recipe-video-embed" id="<?php echo esc_attr( 'tasty-recipe-video-embed-' . $recipe->get_id() ); ?>">
-		<?php echo $recipe_video_embed; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		<?php Utils::kses( $recipe_video_embed, true ); ?>
 	</div>
 <?php endif; ?>
 

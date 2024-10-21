@@ -475,7 +475,7 @@ class Utils {
 				'stroke-linejoin' => true,
 				'stroke-width'    => true,
 			),
-			'linearGradient' => array(
+			'lineargradient' => array(
 				'id' => true,
 			),
 			'stop'           => array(
@@ -498,6 +498,12 @@ class Utils {
 
 				'aria-labelledby' => true,
 			),
+			'symbol' => array(
+				'id'      => true,
+				'width'   => true,
+				'height'  => true,
+				'viewbox' => true,
+			),
 			'use'  => array(
 				'href'       => true,
 				'xlink:href' => true,
@@ -505,6 +511,12 @@ class Utils {
 				'aria-hidden' => true,
 			),
 		);
+
+		// Allow display none on an svg sprite.
+		add_filter( 'safe_style_css', function( $styles ) {
+			$styles[] = 'display';
+			return $styles;
+		} );
 
 		$allowed_html = array_merge( $add_html, $allowed_html );
 		return (array) apply_filters( 'tasty_recipes_allowed_html', $allowed_html );

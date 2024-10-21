@@ -15,7 +15,7 @@ $ext           = is_feed() ? '.png' : '.svg';
 $other_details = '';
 
 if ( '.svg' === $ext ) {
-	echo str_replace( array( "\n", "\t" ), '', Utils::get_contents( __DIR__ . '/images/icon-sprite.svg' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	Utils::kses( str_replace( array( "\n", "\t" ), '', Utils::get_contents( __DIR__ . '/images/icon-sprite.svg' ) ), true );
 }
 ?>
 <?php if ( ! empty( $recipe_image ) && isset( $print_view_options['images'] ) ) { ?>
@@ -42,12 +42,12 @@ if ( '.svg' === $ext ) {
 	<div class="tasty-recipes-buttons">
 		<?php if ( ! empty( $first_button ) ) : ?>
 		<div class="tasty-recipes-button-wrap">
-			<?php echo $first_button; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			<?php Utils::kses( $first_button, true ); ?>
 		</div>
 		<?php endif; ?>
 		<?php if ( ! empty( $second_button ) ) : ?>
 		<div class="tasty-recipes-button-wrap">
-			<?php echo $second_button; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			<?php Utils::kses( $second_button, true ); ?>
 		</div>
 		<?php endif; ?>
 	</div>
@@ -189,7 +189,7 @@ if ( '.svg' === $ext ) {
 		$show_hr = false;
 		?>
 		<div class="tasty-recipe-video-embed" id="<?php echo esc_attr( 'tasty-recipe-video-embed-' . $recipe->get_id() ); ?>">
-			<?php echo $recipe_video_embed; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			<?php Utils::kses( $recipe_video_embed, true ); ?>
 		</div>
 	<?php endif; ?>
 
