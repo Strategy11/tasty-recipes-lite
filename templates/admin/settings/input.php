@@ -5,6 +5,7 @@
  * @package Tasty_Recipes
  */
 
+defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 ?>
 
 <input type="<?php echo esc_attr( $type ); ?>"

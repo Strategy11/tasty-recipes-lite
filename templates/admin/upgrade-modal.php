@@ -5,6 +5,7 @@
  * @package Tasty_Recipes
  */
 
+defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 ?>
 
 <section class="tasty-framework-modal" id="tasty_recipes_upgrade_modal">

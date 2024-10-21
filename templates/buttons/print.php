@@ -8,6 +8,8 @@
  * @var string $customization Customization options.
  */
 
+defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
+
 $current_post = get_post();
 $ext          = is_feed() ? '.png' : '.svg';
 $print_link   = '#';

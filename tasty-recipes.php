@@ -21,6 +21,8 @@
  * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 
+defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
+
 use Tasty_Recipes\MetaBox;
 use Tasty_Recipes\Frontend;
 use Tasty_Recipes\Integrations;

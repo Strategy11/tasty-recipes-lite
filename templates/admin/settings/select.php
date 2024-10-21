@@ -5,6 +5,7 @@
  * @package Tasty_Recipes
  */
 
+defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 ?>
 
 <select name="<?php echo esc_attr( $name ); ?>"
