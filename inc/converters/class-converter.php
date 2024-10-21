@@ -79,10 +79,7 @@ abstract class Converter {
 			'limit' => '',
 		);
 		$query_details = wp_parse_args( $query_details, $defaults );
-
-		$like_query = self::get_prepared_like_query();
-		$select_var = esc_sql( $select_var );
-		$limit      = Utils::esc_limit( $query_details['limit'] );
+		$select_var    = esc_sql( $select_var );
 
 		$query = $wpdb->prepare(
 			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
@@ -93,7 +90,7 @@ abstract class Converter {
 
 		// Add already escaped values to the query.
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$query .= ' AND ' . $like_query . $limit;
+		$query .= ' AND ' . self::get_prepared_like_query() . Utils::esc_limit( $query_details['limit'] );
 
 		// Validate query type to prevent misuse.
 		$allowed_query_types = array( 'get_col', 'get_row', 'get_results', 'get_var' );
