@@ -49,7 +49,7 @@ class Mediavine_Create extends Converter {
 	 * @return false|Recipe
 	 */
 	public static function create_recipe_from_existing( $existing, $post_id ) { // phpcs:ignore SlevomatCodingStandard
-		global $wpdb, $table_prefix;
+		global $wpdb;
 
 		$post_id = (int) $post_id; // Avoid UnusedVariable.
 
@@ -70,8 +70,8 @@ class Mediavine_Create extends Converter {
 		$recipe         = Recipe::create();
 		$converted_data = array();
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery
-		$existing = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table_prefix}mv_creations WHERE id=%d", $recipe_id ) );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		$existing = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}mv_creations WHERE id=%d", $recipe_id ) );
 		if ( ! $existing ) {
 			return false;
 		}
@@ -147,8 +147,8 @@ class Mediavine_Create extends Converter {
 			$converted_data[ $tr ] = $value;
 		}
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery
-		$existing_supplies = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$table_prefix}mv_supplies WHERE creation=%d ORDER BY position ASC", $recipe_id ) );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		$existing_supplies = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}mv_supplies WHERE creation=%d ORDER BY position ASC", $recipe_id ) );
 		$ingredients       = array();
 		foreach ( $existing_supplies as $ingredient ) {
 			$ingredient = (array) $ingredient;
@@ -215,8 +215,8 @@ class Mediavine_Create extends Converter {
 			'protein'         => 'protein',
 		);
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery
-		$existing_nutrition = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table_prefix}mv_nutrition WHERE creation=%d", $recipe_id ) );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		$existing_nutrition = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}mv_nutrition WHERE creation=%d", $recipe_id ) );
 		if ( is_object( $existing_nutrition ) ) {
 			foreach ( $mapping_fields as $mc => $tr ) {
 

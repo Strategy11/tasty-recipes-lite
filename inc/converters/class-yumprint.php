@@ -43,7 +43,7 @@ class YumPrint extends Converter {
 	 * @return false|Recipe
 	 */
 	public static function create_recipe_from_existing( $existing, $post_id ) { // phpcs:ignore SlevomatCodingStandard
-		global $wpdb, $table_prefix;
+		global $wpdb;
 
 		$existing = substr( $existing, 1, -1 ); // Remove '[' and ']' from shortcode.
 		$parsed   = shortcode_parse_atts( $existing );
@@ -51,8 +51,8 @@ class YumPrint extends Converter {
 			return false;
 		}
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery
-		$existing = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table_prefix}yumprint_recipe_recipe WHERE id=%d", $parsed['id'] ) );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		$existing = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}yumprint_recipe_recipe WHERE id=%d", $parsed['id'] ) );
 		if ( ! $existing ) {
 			return false;
 		}

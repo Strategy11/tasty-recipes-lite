@@ -31,14 +31,10 @@ abstract class Converter {
 	 * @return int
 	 */
 	public static function get_count() {
-		global $wpdb;
 		if ( is_null( static::$match_string ) ) {
 			return 0;
 		}
-		$query = self::get_select_query( 'COUNT(ID)' );
-		// @codingStandardsIgnoreStart
-		return $wpdb->get_var( $query );
-		// @codingStandardsIgnoreEnd
+		return (int) self::get_select_query( 'COUNT(ID)', array( 'type' => 'get_var' ) );
 	}
 
 	/**
@@ -49,14 +45,16 @@ abstract class Converter {
 	 * @return array
 	 */
 	public static function get_post_ids( $per_page = 10 ) {
-		global $wpdb;
 		if ( is_null( static::$match_string ) ) {
 			return array();
 		}
-		$query = self::get_select_query( 'ID' ) . ' LIMIT 0,' . (int) $per_page;
-		// @codingStandardsIgnoreStart
-		$post_ids = $wpdb->get_col( $query );
-		// @codingStandardsIgnoreEnd
+		$post_ids = self::get_select_query(
+			'ID',
+			array(
+				'type'  => 'get_col',
+				'limit' => '0, ' . (int) $per_page,
+			)
+		);
 		return array_map( 'intval', $post_ids );
 	}
 
@@ -64,22 +62,68 @@ abstract class Converter {
 	 * Get a SELECT query for posts matching the $match_string.
 	 *
 	 * @param string $select_var Selection to perform.
+	 * @param array  $query_details {
+	 *   Details for the query.
+	 *
+	 *   @type string $type  Type of query to perform.
+	 *   @type string $limit Limit for the query.
+	 * }
+	 *
+	 * @return array|int|string
+	 */
+	protected static function get_select_query( $select_var, $query_details = array() ) {
+		global $wpdb;
+
+		$defaults      = array(
+			'type'  => '',
+			'limit' => '',
+		);
+		$query_details = wp_parse_args( $query_details, $defaults );
+		$select_var    = esc_sql( $select_var );
+
+		$query = $wpdb->prepare(
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			"SELECT {$select_var} FROM {$wpdb->posts} WHERE post_type != %s AND post_status != %s",
+			'revision',
+			'trash'
+		);
+
+		// Add already escaped values to the query.
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$query .= ' AND ' . self::get_prepared_like_query() . Utils::esc_limit( $query_details['limit'] );
+
+		// Validate query type to prevent misuse.
+		$allowed_query_types = array( 'get_col', 'get_row', 'get_results', 'get_var' );
+		if ( ! in_array( $query_details['type'], $allowed_query_types, true ) ) {
+			// For reverse compatibility.
+			_deprecated_argument( __METHOD__, '1.0', 'The $query_details[type] argument is required.' );
+			return $query;
+		}
+
+		$query_type = $query_details['type'];
+		return $wpdb->$query_type( $query );
+	}
+
+	/**
+	 * Get the LIKE query for the match string.
+	 *
+	 * @since x.x
 	 *
 	 * @return string
 	 */
-	protected static function get_select_query( $select_var ) {
+	protected static function get_prepared_like_query() {
 		global $wpdb;
 
 		$match_strings = is_array( static::$match_string ) ? static::$match_string : array( static::$match_string );
 		$like_query    = array();
 		foreach ( $match_strings as $match_string ) {
-			$like_query[] = $wpdb->prepare( 'post_content LIKE %s', '%' . $match_string . '%' );
+			$like_query[] = $wpdb->prepare( 'post_content LIKE %s', '%' . $wpdb->esc_like( $match_string ) . '%' );
 		}
 		$like_query = implode( ' OR ', $like_query );
 		if ( count( $match_strings ) > 1 ) {
 			$like_query = ' ( ' . $like_query . ' ) ';
 		}
-		return "SELECT {$select_var} FROM {$wpdb->posts} WHERE post_type != 'revision' AND post_status !='trash' AND {$like_query}";
+		return $like_query;
 	}
 
 	/**
@@ -366,7 +410,7 @@ abstract class Converter {
 
 		$id = media_handle_sideload( $file_array, 0 );
 		if ( is_wp_error( $id ) ) {
-			// phpcs:ignore
+			// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions
 			unlink( $file_array['tmp_name'] );
 			do_action( 'tasty_recipes_imported_image', 0 );
 			return 0;
