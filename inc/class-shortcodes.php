@@ -887,6 +887,8 @@ class Shortcodes {
 			$nutrifox_id
 		);
 
+		add_filter( 'tasty_recipes_allowed_html', array( __CLASS__, 'allow_html_iframe' ) );
+
 		$embed = '<iframe ' .
 			'title="nutritional information" ' .
 			'id="nutrifox-label-' . absint( $nutrifox_id ) . '" ' .
@@ -895,6 +897,31 @@ class Shortcodes {
 			'></iframe>';
 
 		return $embed;
+	}
+
+	/**
+	 * Allow iframe in sanitized HTML.
+	 *
+	 * @since x.x
+	 *
+	 * @param array $allowed_html Allowed HTML.
+	 *
+	 * @return array
+	 */
+	public static function allow_html_iframe( $allowed_html ) {
+		if ( isset( $allowed_html['iframe'] ) ) {
+			return $allowed_html;
+		}
+
+		$allowed_html['iframe'] = array(
+			'id'    => true,
+			'class' => true,
+			'style' => true,
+			'title' => true,
+			'src'   => true,
+		);
+
+		return $allowed_html;
 	}
 
 	/**

@@ -137,7 +137,7 @@ if ( ! empty( $recipe_equipment ) ) :
 
 <?php if ( ! empty( $recipe_nutrifox_embed ) && isset( $print_view_options['nutrition'] ) ) : ?>
 	<div class="tasty-recipes-nutrifox">
-		<?php echo $recipe_nutrifox_embed; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		<?php Utils::kses( $recipe_nutrifox_embed, true ); ?>
 	</div>
 <?php endif; ?>
 
