@@ -613,6 +613,10 @@ class Shortcodes {
 			}
 		}
 
+		if ( $template_vars['recipe_instructions_has_video'] ) {
+			add_filter( 'tasty_recipes_allowed_html', array( __CLASS__, 'allow_html_iframe' ) );
+		}
+
 		/*
 		 * Make all <iframes> responsive if feature is enabled.
 		 */

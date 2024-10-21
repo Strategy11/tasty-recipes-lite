@@ -179,7 +179,7 @@ if ( '.svg' === $ext ) {
 			<?php endif; ?>
 		</div>
 		<div data-tasty-recipes-customization="body-color.color">
-			<?php echo $recipe_instructions; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			<?php Utils::kses( $recipe_instructions, true );  ?>
 		</div>
 	</div>
 	<?php endif; ?>

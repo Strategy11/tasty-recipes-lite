@@ -805,7 +805,7 @@ class Tasty_Recipes {
 	}
 
 	/**
-	 * Echo a rendered template.
+	 * Echo a rendered template that has already been escaped.
 	 *
 	 * @param string $template Template to render.
 	 * @param array  $vars     Variables to pass to the template.

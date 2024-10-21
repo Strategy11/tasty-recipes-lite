@@ -104,7 +104,7 @@ $print_view_options = tasty_recipes_get_print_view_options();
 		<?php endif; ?>
 		</div>
 		<div class="tasty-recipes-instructions-body" data-tasty-recipes-customization="body-color.color">
-			<?php echo $recipe_instructions; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			<?php Utils::kses( $recipe_instructions, true ); ?>
 		</div>
 	</div>
 <?php endif; ?>

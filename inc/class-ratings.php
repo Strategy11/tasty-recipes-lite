@@ -452,7 +452,7 @@ class Ratings {
 	}
 
 	/**
-	 * Show rating stars HTML.
+	 * Show rating stars HTML that has already been escaped.
 	 *
 	 * @since x.x
 	 *
