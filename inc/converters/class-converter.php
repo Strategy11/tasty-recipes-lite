@@ -34,7 +34,7 @@ abstract class Converter {
 		if ( is_null( static::$match_string ) ) {
 			return 0;
 		}
-		return (int) self::get_select_query( 'COUNT(ID)', 'get_var' );
+		return (int) self::get_select_query( 'COUNT(ID)', array( 'type' => 'get_var' ) );
 	}
 
 	/**
@@ -48,7 +48,13 @@ abstract class Converter {
 		if ( is_null( static::$match_string ) ) {
 			return array();
 		}
-		$post_ids = self::get_select_query( 'ID', 'get_col', '0, ' . (int) $per_page );
+		$post_ids = self::get_select_query(
+			'ID',
+			array(
+				'type'  => 'get_col',
+				'limit' => '0, ' . (int) $per_page,
+			)
+		);
 		return array_map( 'intval', $post_ids );
 	}
 
@@ -56,35 +62,47 @@ abstract class Converter {
 	 * Get a SELECT query for posts matching the $match_string.
 	 *
 	 * @param string $select_var Selection to perform.
-	 * @param string $query_type Type of query to perform.
-	 * @param string $limit      Limit for the query.
+	 * @param array  $query_details {
+	 *   Details for the query.
+	 *
+	 *   @type string $type  Type of query to perform.
+	 *   @type string $limit Limit for the query.
+	 * }
 	 *
 	 * @return array|int|string
 	 */
-	protected static function get_select_query( $select_var, $query_type = '', $limit = '' ) {
+	protected static function get_select_query( $select_var, $query_details = array() ) {
 		global $wpdb;
+
+		$defaults      = array(
+			'type'  => '',
+			'limit' => '',
+		);
+		$query_details = wp_parse_args( $query_details, $defaults );
 
 		$like_query = self::get_prepared_like_query();
 		$select_var = esc_sql( $select_var );
-    	$limit      = Utils::esc_limit( $limit );
+		$limit      = Utils::esc_limit( $query_details['limit'] );
 
 		$query = $wpdb->prepare(
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			"SELECT {$select_var} FROM {$wpdb->posts}
 				WHERE post_type != %s
-				AND post_status != %s
-				AND {$like_query}{$limit}",
+				AND post_status != %s",
 			'revision',
 			'trash'
 		);
+		$query .= ' AND ' . $like_query . $limit; // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
 		// Validate query type to prevent misuse.
-		$allowed_query_types = [ 'get_col', 'get_row', 'get_results', 'get_var' ];
-		if ( ! in_array( $query_type, $allowed_query_types, true ) ) {
+		$allowed_query_types = array( 'get_col', 'get_row', 'get_results', 'get_var' );
+		if ( ! in_array( $query_details['type'], $allowed_query_types, true ) ) {
 			// For reverse compatibility.
-			_deprecated_argument( __METHOD__, '1.0', 'The $query_type argument is required.' );
+			_deprecated_argument( __METHOD__, '1.0', 'The $query_details[type] argument is required.' );
 			return $query;
 		}
 
+		$query_type = $query_details['type'];
 		return $wpdb->$query_type( $query );
 	}
 

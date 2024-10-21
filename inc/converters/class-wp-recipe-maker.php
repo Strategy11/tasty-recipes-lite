@@ -51,7 +51,14 @@ class WP_Recipe_Maker extends Converter {
 	 * @return array
 	 */
 	public static function get_post_ids( $per_page = 10 ) {
-		$results  = self::get_select_query( 'ID, post_content', 'get_results', '0, ' . (int) $per_page );
+		$results = self::get_select_query(
+			'ID, post_content',
+			array(
+				'type'  => 'get_results',
+				'limit' => '0, ' . (int) $per_page,
+			)
+		);
+
 		$post_ids = array();
 		foreach ( $results as $result ) {
 			if ( self::get_existing_to_convert( $result->post_content ) ) {
