@@ -364,6 +364,7 @@ class Template {
 		$ret .= self::load_enqueued_assets();
 		$ret .= '</body></html>';
 
+		// Don't escape this since it includes js, css, and unusual html from above.
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo apply_filters( 'tasty_recipes_recipe_card_output', $ret, 'admin', compact( 'recipe' ) );
 

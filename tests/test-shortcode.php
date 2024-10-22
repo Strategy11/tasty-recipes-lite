@@ -126,7 +126,7 @@ class Test_Shortcode extends Tasty_Recipes_Testcase {
 EOT;
 		$rendered = Shortcodes::render_tasty_recipe_shortcode( array( 'id' => $recipe->get_id() ) );
 		$this->assertStringContainsString( $expected, $rendered );
-		$this->assertStringContainsString( '<iframe class="fitvidsignore" src="https://player.vimeo.com/video/261212868?app_id=122963"   frameborder="0" title="One City: Many Futures / Ryan Hashagen, Gwen Shaw, &amp; Ben Chaney" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>', $rendered );
+		$this->assertStringContainsString( '<iframe class="fitvidsignore" src="https://player.vimeo.com/video/261212868?app_id=122963" frameborder="0" title="One City: Many Futures / Ryan Hashagen, Gwen Shaw, &amp; Ben Chaney" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>', $rendered );
 	}
 
 	/**

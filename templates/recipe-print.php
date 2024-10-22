@@ -36,6 +36,8 @@ defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 	 * @param int $recipe_id ID for the recipe being rendered.
 	 */
 	do_action( 'tasty_recipes_before_render_print' );
+
+	// The output comes from a template file that has already been escaped.
 	echo Tasty_Recipes\Shortcodes::render_tasty_recipe_shortcode( array( 'id' => $recipe_id ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	/**
 	 * Fires after a recipe has been rendered for print.

@@ -15,7 +15,7 @@ $ext           = is_feed() ? '.png' : '.svg';
 $other_details = '';
 
 if ( '.svg' === $ext ) {
-	echo str_replace( array( "\n", "\t" ), '', Utils::get_contents( __DIR__ . '/images/icon-sprite.svg' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	Utils::kses( str_replace( array( "\n", "\t" ), '', Utils::get_contents( __DIR__ . '/images/icon-sprite.svg' ) ), true );
 }
 ?>
 <?php if ( ! empty( $recipe_image ) && isset( $print_view_options['images'] ) ) { ?>
@@ -30,7 +30,7 @@ if ( '.svg' === $ext ) {
 	<?php if ( ! empty( $recipe_rating_icons ) || ! empty( $recipe_rating_label ) ) { ?>
 		<div class="tasty-recipes-rating">
 			<?php if ( ! empty( $recipe_rating_icons ) ) { ?>
-				<p><?php echo $recipe_rating_icons; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
+				<p><?php Utils::kses( $recipe_rating_icons, true ); ?></p>
 			<?php } ?>
 			<?php if ( ! empty( $recipe_rating_label ) ) { ?>
 				<p><?php Utils::kses( $recipe_rating_label, true ); ?></p>
@@ -42,12 +42,12 @@ if ( '.svg' === $ext ) {
 	<div class="tasty-recipes-buttons">
 		<?php if ( ! empty( $first_button ) ) : ?>
 		<div class="tasty-recipes-button-wrap">
-			<?php echo $first_button; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			<?php Utils::kses( $first_button, true ); ?>
 		</div>
 		<?php endif; ?>
 		<?php if ( ! empty( $second_button ) ) : ?>
 		<div class="tasty-recipes-button-wrap">
-			<?php echo $second_button; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			<?php Utils::kses( $second_button, true ); ?>
 		</div>
 		<?php endif; ?>
 	</div>
@@ -136,7 +136,7 @@ if ( '.svg' === $ext ) {
 				<div class="tasty-recipes-ingredients-clipboard-container">
 					<h3 data-tasty-recipes-customization="h3-color.color h3-transform.text-transform"><?php esc_html_e( 'Ingredients', 'tasty-recipes-lite' ); ?></h3>
 					<?php if ( $copy_ingredients ) : ?>
-						<?php echo $copy_ingredients; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+						<?php Utils::kses( $copy_ingredients, true ); ?>
 					<?php endif; ?>
 				</div>
 				<?php
@@ -149,7 +149,7 @@ if ( '.svg' === $ext ) {
 				?>
 			</div>
 			<div data-tasty-recipes-customization="body-color.color">
-				<?php echo $recipe_ingredients; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+				<?php Utils::kses( $recipe_ingredients, true ); ?>
 			</div>
 			<?php
 			/**
@@ -179,7 +179,7 @@ if ( '.svg' === $ext ) {
 			<?php endif; ?>
 		</div>
 		<div data-tasty-recipes-customization="body-color.color">
-			<?php echo $recipe_instructions; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			<?php Utils::kses( $recipe_instructions, true ); ?>
 		</div>
 	</div>
 	<?php endif; ?>
@@ -189,7 +189,7 @@ if ( '.svg' === $ext ) {
 		$show_hr = false;
 		?>
 		<div class="tasty-recipe-video-embed" id="<?php echo esc_attr( 'tasty-recipe-video-embed-' . $recipe->get_id() ); ?>">
-			<?php echo $recipe_video_embed; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			<?php Utils::kses( $recipe_video_embed, true ); ?>
 		</div>
 	<?php endif; ?>
 
@@ -222,7 +222,7 @@ if ( '.svg' === $ext ) {
 
 	<?php if ( ! empty( $recipe_nutrifox_embed ) && isset( $print_view_options['nutrition'] ) ) : ?>
 		<div class="tasty-recipes-nutrifox">
-			<?php echo $recipe_nutrifox_embed; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			<?php Utils::kses( $recipe_nutrifox_embed, true ); ?>
 		</div>
 	<?php endif; ?>
 

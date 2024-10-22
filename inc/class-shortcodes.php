@@ -501,6 +501,8 @@ class Shortcodes {
 
 		$embed_data = $recipe->get_video_url_response();
 		if ( ! empty( $embed_data->html ) ) {
+			add_filter( 'tasty_recipes_allowed_html', array( __CLASS__, 'allow_html_iframe' ) );
+
 			$template_vars['recipe_video_embed'] = $responsive_iframes ? self::make_iframes_responsive(
 				$embed_data->html,
 				$responsive_styles
@@ -611,6 +613,10 @@ class Shortcodes {
 					$template_vars[ $oembed_field ]
 				);
 			}
+		}
+
+		if ( $template_vars['recipe_instructions_has_video'] ) {
+			add_filter( 'tasty_recipes_allowed_html', array( __CLASS__, 'allow_html_iframe' ) );
 		}
 
 		/*
@@ -887,6 +893,8 @@ class Shortcodes {
 			$nutrifox_id
 		);
 
+		add_filter( 'tasty_recipes_allowed_html', array( __CLASS__, 'allow_html_iframe' ) );
+
 		$embed = '<iframe ' .
 			'title="nutritional information" ' .
 			'id="nutrifox-label-' . absint( $nutrifox_id ) . '" ' .
@@ -895,6 +903,37 @@ class Shortcodes {
 			'></iframe>';
 
 		return $embed;
+	}
+
+	/**
+	 * Allow iframe in sanitized HTML.
+	 *
+	 * @since x.x
+	 *
+	 * @param array $allowed_html Allowed HTML.
+	 *
+	 * @return array
+	 */
+	public static function allow_html_iframe( $allowed_html ) {
+		if ( isset( $allowed_html['iframe'] ) ) {
+			return $allowed_html;
+		}
+
+		$allowed_html['iframe'] = array(
+			'allow'                 => true,
+			'allowfullscreen'       => true,
+			'id'                    => true,
+			'class'                 => true,
+			'frameborder'           => true,
+			'referrerpolicy'        => true,
+			'src'                   => true,
+			'style'                 => true,
+			'title'                 => true,
+			'webkitallowfullscreen' => true,
+			'mozallowfullscreen'    => true,
+		);
+
+		return $allowed_html;
 	}
 
 	/**
