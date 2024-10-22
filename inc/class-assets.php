@@ -37,10 +37,35 @@ class Assets {
 	 * @return void
 	 */
 	public static function load_hooks() {
+		add_action( 'init', array( __CLASS__, 'register_assets' ) );
 		add_action( 'wp_print_styles', array( __CLASS__, 'action_wp_print_styles' ) );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'action_admin_enqueue_scripts' ) );
 		add_action( 'wp_enqueue_editor', array( __CLASS__, 'action_wp_enqueue_editor' ) );
 		add_action( 'enqueue_block_editor_assets', array( __CLASS__, 'action_enqueue_block_editor_assets' ) );
+	}
+
+	/**
+	 * Registers all scripts and styles.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
+	 */
+	public static function register_assets() {
+		wp_register_style(
+			'tasty-recipes-main',
+			plugins_url( '/assets/dist/recipe.css', __DIR__ ),
+			array(),
+			TASTY_RECIPES_LITE_VERSION
+		);
+
+		wp_register_script(
+			'tasty-recipes',
+			plugins_url( '/assets/dist/recipe.js', __DIR__ ),
+			array(),
+			TASTY_RECIPES_LITE_VERSION,
+			true
+		);
 	}
 
 	/**
@@ -277,6 +302,8 @@ class Assets {
 			$blocks_data['editorNotices'] = Editor::get_converter_messages( $post_id );
 		}
 		wp_localize_script( 'tasty-recipes-block-editor', 'tastyRecipesBlockEditor', $blocks_data );
+
+		self::action_wp_head();
 	}
 
 	/**
