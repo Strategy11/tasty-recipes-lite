@@ -23,6 +23,20 @@ class Content_Model {
 	const PRINT_QUERY_VAR = 'print';
 
 	/**
+	 * Load everything triggered on the init hook.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
+	 */
+	public static function init_post_type() {
+		self::action_init_register_cron_events();
+		self::action_init_register_post_types();
+		self::action_init_register_rewrite_rules();
+		self::action_init_register_oembed_providers();
+	}
+
+	/**
 	 * Registers our cron events.
 	 *
 	 * @return void

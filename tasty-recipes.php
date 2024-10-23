@@ -289,13 +289,11 @@ class Tasty_Recipes {
 	private function setup_actions() {
 		// Bootstrap.
 		Tasty_Recipes\Assets::load_hooks();
+		Tasty_Recipes\Shortcodes::load_hooks();
 		add_action( 'init', array( 'Tasty_Recipes\Block_Editor', 'action_init_register' ) );
-		add_action( 'init', array( 'Tasty_Recipes\Content_Model', 'action_init_register_cron_events' ) );
+		add_action( 'init', array( 'Tasty_Recipes\Content_Model', 'init_post_type' ) );
 		add_action( 'tasty_recipes_process_thumbnails', array( 'Tasty_Recipes\Content_Model', 'action_tasty_recipes_process_thumbnails' ) );
-		add_action( 'init', array( 'Tasty_Recipes\Content_Model', 'action_init_register_post_types' ) );
-		add_action( 'init', array( 'Tasty_Recipes\Content_Model', 'action_init_register_rewrite_rules' ) );
-		add_action( 'init', array( 'Tasty_Recipes\Content_Model', 'action_init_register_oembed_providers' ) );
-		add_action( 'init', array( 'Tasty_Recipes\Shortcodes', 'action_init_register_shortcode' ) );
+
 		// Frontend.
 		add_action( 'body_class', array( 'Tasty_Recipes\Content_Model', 'filter_body_class' ) );
 		add_action( 'wpseo_robots', array( 'Tasty_Recipes\Distribution_Metadata', 'action_wpseo_robots' ) );
@@ -347,11 +345,6 @@ class Tasty_Recipes {
 		// Bootstrap.
 		add_filter( 'rewrite_rules_array', array( 'Tasty_Recipes\Content_Model', 'filter_rewrite_rules_array' ) );
 
-		add_filter( 'get_the_excerpt', array( 'Tasty_Recipes\Shortcodes', 'filter_get_the_excerpt_early' ), 1 );
-		add_filter( 'get_the_excerpt', array( 'Tasty_Recipes\Shortcodes', 'filter_get_the_excerpt_late' ), 1000 );
-		add_filter( 'the_content', array( 'Tasty_Recipes\Shortcodes', 'filter_the_content_late' ), 100 );
-		add_filter( 'tasty_recipes_recipe_card_output', array( 'Tasty_Recipes\Shortcodes', 'filter_tasty_recipes_recipe_card_output' ), 10, 2 );
-
 		// WordPress' standard text formatting filters.
 		add_filter( 'tasty_recipes_the_title', 'wptexturize' );
 		add_filter( 'tasty_recipes_the_title', 'convert_chars' );
@@ -371,10 +364,6 @@ class Tasty_Recipes {
 		if ( function_exists( 'wp_filter_content_tags' ) ) {
 			add_filter( 'tasty_recipes_the_content', 'wp_filter_content_tags' );
 		}
-
-		add_filter( 'tasty_recipes_the_content', array( 'Tasty_Recipes\Shortcodes', 'add_inside_ingredients' ), 10, 2 );
-		add_filter( 'tasty_recipes_recipe_card_output', array( 'Tasty_Recipes\Shortcodes', 'inside_ingredients_handler' ), 10, 3 );
-		add_action( 'tasty_recipes_card_after_ingredients', array( 'Tasty_Recipes\Shortcodes', 'run_after_ingredients' ) );
 
 		// Plugin-specific filters.
 		add_filter( 'teeny_mce_buttons', array( 'Tasty_Recipes\Admin', 'filter_teeny_mce_buttons' ), 10, 2 );

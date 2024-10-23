@@ -74,6 +74,26 @@ class Shortcodes {
 	private static $js_loaded = false;
 
 	/**
+	 * Load hooks.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
+	 */
+	public static function load_hooks() {
+		add_action( 'init', array( __CLASS__, 'action_init_register_shortcode' ) );
+
+		add_filter( 'get_the_excerpt', array( __CLASS__, 'filter_get_the_excerpt_early' ), 1 );
+		add_filter( 'get_the_excerpt', array( __CLASS__, 'filter_get_the_excerpt_late' ), 1000 );
+		add_filter( 'the_content', array( __CLASS__, 'filter_the_content_late' ), 100 );
+		add_filter( 'tasty_recipes_recipe_card_output', array( __CLASS__, 'filter_tasty_recipes_recipe_card_output' ), 10, 2 );
+
+		add_filter( 'tasty_recipes_the_content', array( __CLASS__, 'add_inside_ingredients' ), 10, 2 );
+		add_filter( 'tasty_recipes_recipe_card_output', array( __CLASS__, 'inside_ingredients_handler' ), 10, 3 );
+		add_action( 'tasty_recipes_card_after_ingredients', array( __CLASS__, 'run_after_ingredients' ) );
+	}
+
+	/**
 	 * Registers shortcodes with their callbacks.
 	 *
 	 * @return void
@@ -83,21 +103,6 @@ class Shortcodes {
 		add_shortcode( self::QUICK_LINKS_SHORTCODE, array( __CLASS__, 'render_quick_links_shortcode' ) );
 
 		add_action( 'wp_head', array( __CLASS__, 'action_wp_head' ), 7 );
-
-		wp_register_style(
-			'tasty-recipes-main',
-			plugins_url( '/assets/dist/recipe.css', __DIR__ ),
-			array(),
-			TASTY_RECIPES_LITE_VERSION
-		);
-
-		wp_register_script(
-			'tasty-recipes',
-			plugins_url( '/assets/dist/recipe.js', __DIR__ ),
-			array(),
-			TASTY_RECIPES_LITE_VERSION,
-			true
-		);
 	}
 
 	/**
@@ -686,6 +691,7 @@ class Shortcodes {
 		$ret .= '</div>';
 
 		self::add_powered_by( $shareasale, $ret );
+		Assets::maybe_add_tinymce_style( $ret );
 
 		return apply_filters( 'tasty_recipes_recipe_card_output', $ret, 'frontend', compact( 'recipe' ) );
 	}
