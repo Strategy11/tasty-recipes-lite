@@ -32,17 +32,16 @@ $print_view_options = tasty_recipes_get_print_view_options();
 		<?php endif; ?>
 	</div>
 </div>
-<?php do_action( 'tasty_recipes_card_after_title', $vars ); ?>
-<?php if ( ! empty( $recipe_rating_icons ) || ! empty( $recipe_rating_label ) ) : ?>
-	<div class="tasty-recipes-rating" data-tasty-recipes-customization="body-color.color">
-		<?php if ( ! empty( $recipe_rating_icons ) ) : ?>
-			<p><?php Utils::kses( $recipe_rating_icons, true ); ?></p>
-		<?php endif; ?>
-		<?php if ( ! empty( $recipe_rating_label ) ) : ?>
-			<p><?php Utils::kses( $recipe_rating_label, true ); ?></p>
-		<?php endif; ?>
-	</div>
-<?php endif; ?>
+<?php
+/**
+ * Add more information after the title.
+ *
+ * @since x.x
+ *
+ * @var array $vars Array of variables to pass to the action.
+ */
+do_action( 'tasty_recipes_card_after_title', $vars );
+?>
 
 <?php if ( ! empty( $recipe_print_button ) && ! tasty_recipes_is_print() ) : ?>
 	<?php Utils::kses( $recipe_print_button, true ); ?>

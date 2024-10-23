@@ -91,6 +91,7 @@ class Shortcodes {
 		add_filter( 'tasty_recipes_the_content', array( __CLASS__, 'add_inside_ingredients' ), 10, 2 );
 		add_filter( 'tasty_recipes_recipe_card_output', array( __CLASS__, 'inside_ingredients_handler' ), 10, 3 );
 		add_action( 'tasty_recipes_card_after_ingredients', array( __CLASS__, 'run_after_ingredients' ) );
+		add_action( 'tasty_recipes_card_after_title', array( __CLASS__, 'print_ratings' ) );
 	}
 
 	/**
@@ -1032,6 +1033,30 @@ class Shortcodes {
 	}
 
 	/**
+	 * Print ratings html.
+	 * This is run on the tasty_recipes_card_after_title hook
+	 * which won't exist in older templates. This will prevent
+	 * the ratings from showing multiple times.
+	 *
+	 * @since x.x
+	 *
+	 * @param array $template_vars Template variables.
+	 *
+	 * @return void
+	 */
+	public static function print_ratings( $template_vars ) {
+		if ( empty( $template_vars['recipe_rating_icons'] ) && empty( $template_vars['recipe_rating_label'] ) ) {
+			return;
+		}
+
+		$template_vars['fallback'] = 'parts/card-ratings';
+		Tasty_Recipes::echo_template_part(
+			str_replace( 'tasty-recipes.php', 'card-ratings.php', self::$template['php'] ),
+			$template_vars
+		);
+	}
+
+	/**
 	 * Renders the Quick Links shortcode.
 	 *
 	 * @param array $atts Shortcode attributes.
@@ -1129,12 +1154,24 @@ class Shortcodes {
 	 * @return string
 	 */
 	public static function get_card_container_customizations( $custom_design = '' ) {
+		return self::get_template_customization( 'container', $custom_design );
+	}
+
+	/**
+	 * Gets any customizations for the recipe template.
+	 *
+	 * @param string $name          Name of the customization.
+	 * @param string $custom_design Design being rendered.
+	 *
+	 * @return string
+	 */
+	public static function get_template_customization( $name, $custom_design = '' ) {
 		if ( ! $custom_design ) {
 			$custom_design = self::$custom_template;
 		}
 
 		$template_obj = Template::get_object_by_name( $custom_design );
-		return $template_obj->get_customized( 'container' );
+		return $template_obj->get_customized( $name );
 	}
 
 	/**

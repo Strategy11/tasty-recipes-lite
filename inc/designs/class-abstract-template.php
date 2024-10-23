@@ -53,6 +53,7 @@ abstract class Abstract_Template {
 			'first'  => 'print',
 			'second' => '',
 		],
+		'rating_color' => 'body-color.color',
 	];
 
 	/**
