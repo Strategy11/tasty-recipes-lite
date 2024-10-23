@@ -1,5 +1,5 @@
 /** Only applies inside of the print controls iframe **/
-@import "reset.scss";
+@use 'reset.scss';
 
 #tr-control-form {
 	padding: 10px;
