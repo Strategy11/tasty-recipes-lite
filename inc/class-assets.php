@@ -583,6 +583,29 @@ class Assets {
 		return 'body{ ' . $css . ' }' . PHP_EOL;
 	}
 
+	/**
+	 * Maybe add the TinyMCE style to the shortcode output.
+	 *
+	 * @since 3.13
+	 *
+	 * @param string $ret Shortcode output.
+	 *
+	 * @return void
+	 */
+	public static function maybe_add_tinymce_style( &$ret ) {
+		if ( ! wp_doing_ajax() || Utils::get_post_value( 'action' ) !== 'tasty_recipes_parse_shortcode' ) {
+			return;
+		}
+
+		global $wp_styles;
+
+		self::action_wp_head();
+		ob_start();
+		$wp_styles->do_item( 'tasty-recipes-main' );
+		$styles_output = ob_get_clean();
+
+		$ret .= $styles_output;
+	}
 
 	/**
 	 * Enqueues the main Tasty Recipes stylesheet and loads in the head.
@@ -612,18 +635,6 @@ class Assets {
 
 		wp_add_inline_style( 'tasty-recipes-main', Utils::minify_css( self::get_css_vars() . $styles ) );
 		self::$css_loaded = true;
-	}
-
-	/**
-	 * Maybe add the TinyMCE style.
-	 *
-	 * @since 3.13
-	 * @deprecated x.x
-	 *
-	 * @return void
-	 */
-	public static function maybe_add_tinymce_style() {
-		_deprecated_function( __METHOD__, 'x.x' );
 	}
 
 	/**

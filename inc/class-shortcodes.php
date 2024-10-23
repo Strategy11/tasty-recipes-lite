@@ -691,6 +691,7 @@ class Shortcodes {
 		$ret .= '</div>';
 
 		self::add_powered_by( $shareasale, $ret );
+		Assets::maybe_add_tinymce_style( $ret );
 
 		return apply_filters( 'tasty_recipes_recipe_card_output', $ret, 'frontend', compact( 'recipe' ) );
 	}
