@@ -26,18 +26,16 @@ if ( '.svg' === $ext ) {
 
 <header class="tasty-recipes-entry-header">
 	<h2 class="tasty-recipes-title" data-tasty-recipes-customization="h2-color.color h2-transform.text-transform"><?php \Tasty_Recipes\Utils::kses( $recipe_title, true ); ?></h2>
-	<?php do_action( 'tasty_recipes_card_after_title', $vars ); ?>
-	<?php if ( ! empty( $recipe_rating_icons ) || ! empty( $recipe_rating_label ) ) { ?>
-		<div class="tasty-recipes-rating">
-			<?php if ( ! empty( $recipe_rating_icons ) ) { ?>
-				<p><?php Utils::kses( $recipe_rating_icons, true ); ?></p>
-			<?php } ?>
-			<?php if ( ! empty( $recipe_rating_label ) ) { ?>
-				<p><?php Utils::kses( $recipe_rating_label, true ); ?></p>
-			<?php } ?>
-		</div>
-	<?php } ?>
-
+	<?php
+	/**
+	 * Add more information after the title.
+	 *
+	 * @since x.x
+	 *
+	 * @var array $vars Array of variables to pass to the action.
+	 */
+	do_action( 'tasty_recipes_card_after_title', $vars );
+	?>
 	<?php if ( ! tasty_recipes_is_print() ) : ?>
 	<div class="tasty-recipes-buttons">
 		<?php if ( ! empty( $first_button ) ) : ?>

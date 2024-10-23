@@ -763,12 +763,8 @@ class Tasty_Recipes {
 	 * @return false|string
 	 */
 	public static function get_template_part( $template, $vars = array() ) {
-		$full_path = self::get_template_path( $template );
-		// Provided template may already be a full path.
-		if ( ! file_exists( $full_path ) ) {
-			$full_path = $template;
-		}
-		if ( ! file_exists( $full_path ) ) {
+		$full_path = self::get_full_path( $template, $vars );
+		if ( ! $full_path ) {
 			return '';
 		}
 
@@ -791,6 +787,33 @@ class Tasty_Recipes {
 			return $contents;
 		}
 		return str_replace( array( "\r\n", "\r", "\n" ), '', $contents );
+	}
+
+	/**
+	 * Get the full path to a template.
+	 *
+	 * @param string $template Template to render.
+	 * @param array  $vars     Variables to pass to the template.
+	 *
+	 * @return string
+	 */
+	private static function get_full_path( $template, $vars ) {
+		$full_path = self::get_template_path( $template );
+
+		// Provided template may already be a full path.
+		if ( ! file_exists( $full_path ) ) {
+			$full_path = $template;
+		}
+
+		if ( ! file_exists( $full_path ) && isset( $vars['fallback'] ) ) {
+			$full_path = self::get_template_path( $vars['fallback'] );
+		}
+
+		if ( ! file_exists( $full_path ) ) {
+			$full_path = '';
+		}
+
+		return $full_path;
 	}
 
 	/**

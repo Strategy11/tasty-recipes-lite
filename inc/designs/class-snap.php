@@ -22,6 +22,7 @@ class Snap extends Abstract_Template {
 	 */
 	public function set_vars() {
 		parent::set_vars();
-		$this->customized['image_size'] = 'medium_large';
+		$this->customized['image_size']   = 'medium_large';
+		$this->customized['rating_color'] = '';
 	}
 }
