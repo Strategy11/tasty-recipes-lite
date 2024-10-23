@@ -1,3 +1,5 @@
+@use 'ratings';
+
 .tasty-recipes-print-button {
 	background-color: #666677;
 	display: inline-block;
@@ -321,5 +323,3 @@ label[for="tasty-recipes-video-toggle"] {
 		display: none !important;
 	}
 }
-
-@import 'ratings';
