@@ -1222,9 +1222,14 @@ class Shortcodes {
 		// Add stylesheet so we can add inline CSS to it.
 		wp_enqueue_style( 'tasty-recipes-main' );
 
+		$styles    = '';
 		$css_files = [];
 		if ( self::$custom_template && self::$template['css'] ) {
 			$css_files[] = self::$template['css'];
+			$vars        = self::get_template_customization( 'radius', self::$custom_template );
+			if ( $vars ) {
+				$styles .= 'body{--tr-radius:' . esc_attr( $vars ) . ';}';
+			}
 		}
 
 		/**
@@ -1244,7 +1249,6 @@ class Shortcodes {
 		 */
 		$css_files = (array) apply_filters( 'tasty_recipes_styles', $css_files );
 		$css_files = array_unique( $css_files );
-		$styles    = '';
 		foreach ( $css_files as $css_file ) {
 			if ( file_exists( $css_file ) ) {
 				$styles .= Utils::get_contents( $css_file );

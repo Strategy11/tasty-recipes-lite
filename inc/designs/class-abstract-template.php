@@ -54,6 +54,7 @@ abstract class Abstract_Template {
 			'second' => '',
 		],
 		'rating_color' => 'body-color.color',
+		'radius'       => '2px',
 	];
 
 	/**
