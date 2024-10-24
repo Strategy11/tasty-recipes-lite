@@ -638,7 +638,8 @@ class Assets {
 			return;
 		}
 
-		wp_add_inline_style( 'tasty-recipes-main', Utils::minify_css( self::get_css_vars() . $styles ) );
+    	wp_add_inline_style( 'tasty-recipes-before', Utils::minify_css( self::get_css_vars() ) );
+		wp_add_inline_style( 'tasty-recipes-main', Utils::minify_css( $styles ) );
 		self::$css_loaded = true;
 	}
 

@@ -1220,16 +1220,15 @@ class Shortcodes {
 		self::set_template_info( $override_design );
 
 		// Add stylesheet so we can add inline CSS to it.
+		wp_register_style( 'tasty-recipes-before', false, array(), TASTY_RECIPES_LITE_VERSION );
+		wp_enqueue_style( 'tasty-recipes-before' );
 		wp_enqueue_style( 'tasty-recipes-main' );
 
 		$styles    = '';
 		$css_files = [];
 		if ( self::$custom_template && self::$template['css'] ) {
 			$css_files[] = self::$template['css'];
-			$vars        = self::get_template_customization( 'radius', self::$custom_template );
-			if ( $vars ) {
-				$styles .= 'body{--tr-radius:' . esc_attr( $vars ) . ';}';
-			}
+			add_filter( 'tasty_recipes_css_vars', array( __CLASS__, 'add_template_css_vars' ) );
 		}
 
 		/**
@@ -1263,6 +1262,23 @@ class Shortcodes {
 		 * @param string $styles Existing styles.
 		 */
 		return apply_filters( 'tasty_recipes_styles_string', $styles );
+	}
+
+	/**
+	 * Add the template customization to the CSS vars.
+	 *
+	 * @since x.x
+	 *
+	 * @param array $vars Existing CSS vars.
+	 *
+	 * @return array
+	 */
+	public static function add_template_css_vars( $vars ) {
+		$radius = self::get_template_customization( 'radius', self::$custom_template );
+		if ( $radius ) {
+			$vars['--tr-radius'] = $radius;
+		}
+		return $vars;
 	}
 
 	/**
