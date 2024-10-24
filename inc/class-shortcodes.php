@@ -1220,11 +1220,15 @@ class Shortcodes {
 		self::set_template_info( $override_design );
 
 		// Add stylesheet so we can add inline CSS to it.
+		wp_register_style( 'tasty-recipes-before', false, array(), TASTY_RECIPES_LITE_VERSION );
+		wp_enqueue_style( 'tasty-recipes-before' );
 		wp_enqueue_style( 'tasty-recipes-main' );
 
+		$styles    = '';
 		$css_files = [];
 		if ( self::$custom_template && self::$template['css'] ) {
 			$css_files[] = self::$template['css'];
+			add_filter( 'tasty_recipes_css_vars', array( __CLASS__, 'add_template_css_vars' ) );
 		}
 
 		/**
@@ -1243,7 +1247,7 @@ class Shortcodes {
 		 * @param array $css_files Existing styles.
 		 */
 		$css_files = (array) apply_filters( 'tasty_recipes_styles', $css_files );
-		$styles    = '';
+		$css_files = array_unique( $css_files );
 		foreach ( $css_files as $css_file ) {
 			if ( file_exists( $css_file ) ) {
 				$styles .= Utils::get_contents( $css_file );
@@ -1258,6 +1262,20 @@ class Shortcodes {
 		 * @param string $styles Existing styles.
 		 */
 		return apply_filters( 'tasty_recipes_styles_string', $styles );
+	}
+
+	/**
+	 * Add the template customization to the CSS vars.
+	 *
+	 * @since x.x
+	 *
+	 * @param array $vars Existing CSS vars.
+	 *
+	 * @return array
+	 */
+	public static function add_template_css_vars( $vars ) {
+		$vars['--tr-radius'] = self::get_template_customization( 'radius', self::$custom_template );
+		return $vars;
 	}
 
 	/**
