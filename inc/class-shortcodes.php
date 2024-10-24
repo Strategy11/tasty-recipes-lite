@@ -1274,10 +1274,7 @@ class Shortcodes {
 	 * @return array
 	 */
 	public static function add_template_css_vars( $vars ) {
-		$radius = self::get_template_customization( 'radius', self::$custom_template );
-		if ( $radius ) {
-			$vars['--tr-radius'] = $radius;
-		}
+		$vars['--tr-radius'] = self::get_template_customization( 'radius', self::$custom_template );
 		return $vars;
 	}
 

@@ -562,9 +562,14 @@ class Assets {
 		$css_vars = array();
 
 		$maybe_add_vars = array(
-			'star_color', 'button_color', 'button_text_color',
-			'primary_color', 'body_color', 'h3_color',
-			'detail_value_color', 'detail_label_color',
+			'star_color',
+			'button_color',
+			'button_text_color',
+			'primary_color',
+			'body_color',
+			'h3_color',
+			'detail_value_color',
+			'detail_label_color',
 		);
 
 		foreach ( $maybe_add_vars as $var ) {
@@ -576,7 +581,13 @@ class Assets {
 		}
 
 		$css_vars = (array) apply_filters( 'tasty_recipes_css_vars', $css_vars, $settings );
-		$css_vars = array_filter( $css_vars );
+		$css_vars = array_filter(
+			$css_vars,
+			function ( $value ) {
+				// Allow 0.
+				return $value || is_numeric( $value );
+			}
+		);
 		if ( empty( $css_vars ) ) {
 			return '';
 		}
@@ -638,7 +649,7 @@ class Assets {
 			return;
 		}
 
-    	wp_add_inline_style( 'tasty-recipes-before', Utils::minify_css( self::get_css_vars() ) );
+		wp_add_inline_style( 'tasty-recipes-before', Utils::minify_css( self::get_css_vars() ) );
 		wp_add_inline_style( 'tasty-recipes-main', Utils::minify_css( $styles ) );
 		self::$css_loaded = true;
 	}
