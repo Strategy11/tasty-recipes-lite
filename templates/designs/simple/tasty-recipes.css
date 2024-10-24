@@ -13,6 +13,7 @@
 .tasty-recipes-display ul,
 .tasty-recipes-display ol {
 	margin-left: 0;
+	padding-left: 0;
 }
 
 .tasty-recipes-display h2 {

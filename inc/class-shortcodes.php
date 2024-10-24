@@ -1243,6 +1243,7 @@ class Shortcodes {
 		 * @param array $css_files Existing styles.
 		 */
 		$css_files = (array) apply_filters( 'tasty_recipes_styles', $css_files );
+		$css_files = array_unique( $css_files );
 		$styles    = '';
 		foreach ( $css_files as $css_file ) {
 			if ( file_exists( $css_file ) ) {

@@ -553,7 +553,7 @@ class Assets {
 	 *
 	 * @return string
 	 */
-	private static function get_css_vars() {
+	public static function get_css_vars() {
 		if ( self::$css_loaded ) {
 			return '';
 		}
@@ -561,7 +561,12 @@ class Assets {
 		$settings = Tasty_Recipes::get_filtered_customization_settings();
 		$css_vars = array();
 
-		$maybe_add_vars = array( 'star_color', 'button_color', 'button_text_color' );
+		$maybe_add_vars = array(
+			'star_color', 'button_color', 'button_text_color',
+			'primary_color', 'body_color', 'h3_color',
+			'detail_value_color', 'detail_label_color',
+		);
+
 		foreach ( $maybe_add_vars as $var ) {
 			if ( ! empty( $settings[ $var ] ) ) {
 				$key              = '--tr-' . str_replace( '_', '-', $var );

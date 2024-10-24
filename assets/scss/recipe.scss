@@ -179,12 +179,14 @@ button[name="tasty-recipes-video-toggle"] {
 	height: 30px;
 	border-radius: 2px;
 	border: #979599;
+	border-color: var(--tr-button-color, #979599);
 	display: inline-block;
 	line-height: 20px;
 	vertical-align: middle;
 	text-align: center;
 	font-size: 14px;
 	background: #979599;
+	background: var(--tr-button-color, #979599);
 
 	span {
 		padding: 0 4px;
@@ -195,7 +197,9 @@ button[name="tasty-recipes-video-toggle"] {
 button[name="tasty-recipes-video-toggle"][aria-checked="false"] :last-child,
 button[name="tasty-recipes-video-toggle"][aria-checked="true"] :first-child {
 	background: #fff;
+	background: var(--tr-button-text-color, #fff);
 	color: #979599;
+	color: var(--tr-button-color, #979599);
 	border-radius: 2px;
 	padding: 2px 4px;
 }
@@ -203,6 +207,7 @@ button[name="tasty-recipes-video-toggle"][aria-checked="true"] :first-child {
 button[name="tasty-recipes-video-toggle"][aria-checked="false"] :first-child,
 button[name="tasty-recipes-video-toggle"][aria-checked="true"] :last-child {
 	color: #fff;
+	color: var(--tr-button-text-color, #fff);
 }
 
 label[for="tasty-recipes-video-toggle"] {
@@ -210,6 +215,7 @@ label[for="tasty-recipes-video-toggle"] {
 	font-size: 0.6rem;
 	padding-right: 8px;
 	color: #979599;
+	color: var(--tr-h3-color, #979599);
 	line-height: 30px;
 	user-select: none;
 	vertical-align: middle;

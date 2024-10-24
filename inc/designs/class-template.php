@@ -10,6 +10,7 @@ namespace Tasty_Recipes\Designs;
 use Tasty_Recipes;
 use Tasty_Recipes\Ratings;
 use Tasty_Recipes\Utils;
+use Tasty_Recipes\Assets;
 use Tasty_Recipes\Admin;
 use Tasty_Recipes\Shortcodes;
 
@@ -177,6 +178,7 @@ class Template {
 		$nutrifox_display_style = $show_nutrifox ? $get_nutrifox_display_style : null;
 
 		$styles  = Shortcodes::get_styles_as_string( $custom_design );
+		$styles .= Assets::get_css_vars();
 		$styles .= Utils::get_contents( 'assets/dist/recipe-card-preview.css', 'path' );
 
 		$template        = 'recipe/tasty-recipes';
