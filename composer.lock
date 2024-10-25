@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "849eb949571575f512013ad80573f1ac",
+    "content-hash": "01772c117e16057276758f3979c24a0e",
     "packages": [
         {
             "name": "composer/installers",
@@ -154,16 +154,16 @@
         },
         {
             "name": "strategy11/tasty-framework",
-            "version": "v1.1",
+            "version": "v1.1.1",
             "source": {
                 "type": "git",
                 "url": "git@github.com:Strategy11/tasty-framework.git",
-                "reference": "5bfaac80c9c8e4b9fb99411c6073eca37b549385"
+                "reference": "56c53a886ddf981788ffb9e97234b56b1d0c85aa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Strategy11/tasty-framework/zipball/5bfaac80c9c8e4b9fb99411c6073eca37b549385",
-                "reference": "5bfaac80c9c8e4b9fb99411c6073eca37b549385",
+                "url": "https://api.github.com/repos/Strategy11/tasty-framework/zipball/56c53a886ddf981788ffb9e97234b56b1d0c85aa",
+                "reference": "56c53a886ddf981788ffb9e97234b56b1d0c85aa",
                 "shasum": ""
             },
             "require-dev": {
@@ -237,7 +237,7 @@
                 "issues": "https://github.com/Strategy11/tasty-framework/issues",
                 "source": "https://github.com/Strategy11/tasty-framework"
             },
-            "time": "2024-10-09T23:10:09+00:00"
+            "time": "2024-10-24T23:56:25+00:00"
         }
     ],
     "packages-dev": [
@@ -6154,11 +6154,11 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
-    "platform-dev": [],
+    "platform": {},
+    "platform-dev": {},
     "platform-overrides": {
         "php": "8.0"
     },
