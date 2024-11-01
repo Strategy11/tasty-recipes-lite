@@ -19,7 +19,7 @@ class Test_Tasty_Recipes extends Tasty_Recipes_Testcase {
 	 * Ensures the tasty_recipes() function yields a Tasty_Recipes instance.
 	 */
 	public function test_tasty_recipes_function() {
-		$this->assertInstanceOf( 'Tasty_Recipes', tasty_recipes() );
+		$this->assertInstanceOf( 'Tasty_Recipes', tasty_recipes_lite() );
 	}
 
 	/**
