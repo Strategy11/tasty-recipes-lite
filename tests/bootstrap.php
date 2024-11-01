@@ -21,6 +21,8 @@ require_once $_tests_dir . '/includes/functions.php';
 function _manually_load_plugin() {
 	// Plugin being tested.
 	require dirname( __DIR__ ) . '/tasty-recipes.php';
+	require_once dirname( __DIR__ ) . '/inc/class-tasty-recipes.php';
+
 	// Important plugin we want to test alongside.
 	if ( version_compare( str_replace( '-src', '', $GLOBALS['wp_version'] ), '4.9', '>=' ) ) {
 		require dirname( __DIR__ ) . '/vendor/wordpress-seo/wp-seo.php';

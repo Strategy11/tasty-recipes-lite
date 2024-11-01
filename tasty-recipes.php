@@ -45,9 +45,19 @@ function tasty_recipes_lite() {
 
 	return Tasty_Recipes::get_instance();
 }
-add_action( 'plugins_loaded', 'tasty_recipes_lite', 11 );
+add_action( 'plugins_loaded', 'tasty_recipes_lite' );
 
 /**
- * Register the plugin activation hook.
+ * Run the plugin activation hook.
+ *
+ * @since x.x
+ *
+ * @return void
  */
-register_activation_hook( __FILE__, array( 'Tasty_Recipes', 'plugin_activation' ) );
+function tasty_recipes_lite_activation() {
+	if ( ! class_exists( 'Tasty_Recipes' ) ) {
+		require_once dirname( TASTY_RECIPES_LITE_FILE ) . '/inc/class-tasty-recipes.php';
+	}
+	Tasty_Recipes::plugin_activation();
+}
+register_activation_hook( __FILE__, 'tasty_recipes_lite_activation' );
