@@ -54,7 +54,7 @@ tests_add_filter( 'pre_option_siteurl', '_set_siteurl' );
  * @return mixed
  */
 function _nutrifox_api_request( $pre, $r, $url ) {
-	if ( 'nutrifox.com' !== parse_url( $url, PHP_URL_HOST ) ) {
+	if ( 'nutrifox.com' !== parse_url( $url, PHP_URL_HOST ) || $pre ) {
 		return $pre;
 	}
 	if ( preg_match( '#api/recipes/([\d]+)#', $url, $matches ) ) {

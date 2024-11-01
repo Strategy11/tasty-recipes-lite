@@ -823,18 +823,17 @@ class Distribution_Metadata {
 				return false;
 			}
 			$response_data = $wp_oembed->fetch( $provider, $video_url );
-			if ( ! $response_data ) {
-				/**
-				 * Add extra data to the video schema response.
-				 *
-				 * @since 1.0
-				 */
-				$response_data = apply_filters(
-					'tasty_recipes_video_schema_response',
-					false,
-					compact( 'response_data', 'video_url', 'post' )
-				);
-			}
+
+			/**
+			 * Add extra data to the video schema response.
+			 *
+			 * @since 1.0
+			 */
+			$response_data = apply_filters(
+				'tasty_recipes_video_schema_response',
+				false,
+				compact( 'response_data', 'video_url', 'post' )
+			);
 
 			if ( false === $response_data ) {
 				update_post_meta( $post->ID, $cache_key, '{{unknown}}' );

@@ -656,12 +656,6 @@ class Tasty_Recipes {
 				'star_ratings_style'       => 'solid',
 				'star_color'               => '',
 				'nutrifox_display_style'   => 'label',
-				'footer_social_platform'   => 'instagram',
-				'footer_icon_color'        => '',
-				'footer_heading'           => esc_html__( 'Did you make this recipe?', 'tasty-recipes-lite' ),
-				'footer_heading_color'     => '',
-				'footer_description'       => __( 'Tag @wptasty on Instagram and hashtag it #tastyrecipes', 'tasty-recipes-lite' ),
-				'footer_description_color' => '',
 			),
 			(array) get_option( self::CUSTOMIZATION_OPTION, array() )
 		);
