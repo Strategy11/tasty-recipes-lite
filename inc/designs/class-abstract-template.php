@@ -137,7 +137,7 @@ abstract class Abstract_Template {
 	 * @return array
 	 */
 	protected function get_template_design_opts() {
-		return $this->get_customized( 'design_opts' );
+		return (array) $this->get_customized( 'design_opts' );
 	}
 
 	/**
@@ -145,7 +145,7 @@ abstract class Abstract_Template {
 	 *
 	 * @param string $key Setting to get.
 	 *
-	 * @return string
+	 * @return array|string
 	 */
 	protected function get_customized( $key = '' ) {
 		return $this->customized[ $key ];
