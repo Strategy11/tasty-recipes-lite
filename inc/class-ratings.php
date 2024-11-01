@@ -344,7 +344,7 @@ class Ratings {
 		}
 
 		if ( is_null( $style ) ) {
-			$settings = Tasty_Recipes::get_customization_settings();
+			$settings = Tasty_Recipes::get_filtered_customization_settings();
 			$style    = $settings['star_ratings_style'];
 		}
 
@@ -436,7 +436,7 @@ class Ratings {
 			return '';
 		}
 
-		$settings     = Tasty_Recipes::get_customization_settings();
+		$settings     = Tasty_Recipes::get_filtered_customization_settings();
 		$rating_style = $settings['star_ratings_style'];
 
 		return Tasty_Recipes::get_template_part(

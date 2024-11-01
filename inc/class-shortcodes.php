@@ -662,7 +662,7 @@ class Shortcodes {
 		self::add_author_info( $template_vars );
 		self::add_cooking_attrs( $template_vars );
 
-		$settings = Tasty_Recipes::get_customization_settings();
+		$settings = Tasty_Recipes::get_filtered_customization_settings();
 
 		/**
 		 * Filters the Nutrifox display style: 'card' or 'label'.
