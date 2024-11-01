@@ -218,8 +218,10 @@ class Tasty_Recipes {
 	 * @return void
 	 */
 	public static function register_autoloader( $class_name, $base = '' ) {
+		$lite_plugin = false;
 		if ( empty( $base ) ) {
-			$base = dirname( TASTY_RECIPES_LITE_FILE );
+			$base        = dirname( TASTY_RECIPES_LITE_FILE );
+			$lite_plugin = true;
 		}
 		$class_name = ltrim( $class_name, '\\' );
 		if ( 0 !== stripos( $class_name, 'Tasty_Recipes' ) ) {
@@ -227,7 +229,6 @@ class Tasty_Recipes {
 		}
 
 		$lite_class  = stripos( $class_name, 'Pro\\' ) === false;
-		$lite_plugin = stripos( $base, 'lite' ) !== false || stripos( $base, 'recipe' ) === false;
 		if ( $lite_class !== $lite_plugin ) {
 			// Don't load Pro classes in Lite.
 			return;
