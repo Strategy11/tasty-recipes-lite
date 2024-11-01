@@ -55,6 +55,7 @@ abstract class Abstract_Template {
 		],
 		'rating_color' => 'body-color.color',
 		'radius'       => '2px',
+		'design_opts'  => array(),
 	];
 
 	/**
@@ -126,6 +127,17 @@ abstract class Abstract_Template {
 	 */
 	protected function get_image_size() {
 		return $this->get_customized( 'image_size' );
+	}
+
+	/**
+	 * Get a list of extra options that show in the customization settings.
+	 *
+	 * @since x.x
+	 *
+	 * @return array
+	 */
+	protected function get_template_design_opts() {
+		return $this->get_customized( 'design_opts' );
 	}
 
 	/**

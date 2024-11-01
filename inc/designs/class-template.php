@@ -52,9 +52,11 @@ class Template {
 	/**
 	 * Get templates as an array, key is template ID and value is the template name.
 	 *
+	 * @param array $parts Array of parts to include in the return.
+	 *
 	 * @return array
 	 */
-	public static function get_all_templates() {
+	public static function get_all_templates( $parts = array() ) {
 		self::set_template_objects();
 
 		$templates = [];
@@ -62,8 +64,19 @@ class Template {
 			return $templates;
 		}
 
+		if ( empty( $parts ) ) {
+			$parts = array( 'name' );
+		}
 		foreach ( self::$template_objects as $template ) {
-			$templates[ $template->get_id() ] = $template->get_template_name();
+			if ( count( $parts ) === 1 ) {
+				$templates[ $template->get_id() ] = $template->{ 'get_template_' . $part }();
+				continue;
+			}
+
+			$templates[ $template->get_id() ] = array();
+			foreach ( $parts as $part ) {
+				$templates[ $template->get_id() ][ $part ] = $template->{ 'get_template_' . $part }();
+			}
 		}
 
 		return $templates;

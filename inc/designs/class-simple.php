@@ -22,6 +22,7 @@ class Simple extends Abstract_Template {
 	 */
 	public function set_vars() {
 		parent::set_vars();
-		$this->customized['container'] = 'primary-color.background-color secondary-color.border-color';
+		$this->customized['container']   = 'primary-color.background-color secondary-color.border-color';
+		$this->customized['design_opts'] = array( 'primary', 'secondary' );
 	}
 }
