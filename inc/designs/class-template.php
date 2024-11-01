@@ -69,7 +69,7 @@ class Template {
 		}
 		foreach ( self::$template_objects as $template ) {
 			if ( count( $parts ) === 1 ) {
-				$templates[ $template->get_id() ] = $template->{ 'get_template_' . $part }();
+				$templates[ $template->get_id() ] = $template->{ 'get_template_' . $parts[0] }();
 				continue;
 			}
 
