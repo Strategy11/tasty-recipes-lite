@@ -831,8 +831,8 @@ class Distribution_Metadata {
 			 */
 			$response_data = apply_filters(
 				'tasty_recipes_video_schema_response',
-				false,
-				compact( 'response_data', 'video_url', 'post' )
+				$response_data,
+				compact( 'video_url', 'post' )
 			);
 
 			if ( false === $response_data ) {
