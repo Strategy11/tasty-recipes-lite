@@ -40,7 +40,7 @@ use Tasty\Framework\Utils\Url;
 				settings_fields( Tasty_Recipes\Settings::SETTINGS_SECTION_CARD_DESIGN );
 				$initial_options = array(
 					'template'      => get_option( Tasty_Recipes::TEMPLATE_OPTION, '' ),
-					'customization' => Tasty_Recipes::get_customization_settings(),
+					'customization' => Tasty_Recipes::get_filtered_customization_settings(),
 					'upgrade_url'   => Url::get_upgrade_url( 'Tasty Recipes', [ 'utm_content' => 'template' ] ),
 					'locked'        => Template::get_locked_templates(),
 				);
