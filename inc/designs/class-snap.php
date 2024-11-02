@@ -25,5 +25,6 @@ class Snap extends Abstract_Template {
 		$this->customized['image_size']   = 'medium_large';
 		$this->customized['rating_color'] = '';
 		$this->customized['radius']       = '3px';
+		$this->customized['design_opts']  = array( 'primary', 'secondary', 'icon' );
 	}
 }

@@ -142,25 +142,21 @@
 						></color-picker>
 					</fieldset>
 					<fieldset
-						v-show="canCustomizeColor('button')"
 						class="tasty-recipes-button-color-fieldset"
 					>
 						<label>Button color</label>
 						<color-picker
 							v-model="customization.button_color"
 							name="tasty_recipes_customization[button_color]"
-							:disabled="!canCustomizeColor('button')"
 						></color-picker>
 					</fieldset>
 					<fieldset
-						v-show="canCustomizeColor('button-text')"
 						class="tasty-recipes-button-text-color-fieldset"
 					>
 						<label>Button text color</label>
 						<color-picker
 							v-model="customization.button_text_color"
 							name="tasty_recipes_customization[button_text_color]"
-							:disabled="!canCustomizeColor('button-text')"
 						></color-picker>
 					</fieldset>
 					<fieldset class="tasty-recipes-detail-label-color-fieldset">
@@ -398,7 +394,7 @@ export default {
 			// Show the template count, and use the index for the current template.
 			const keys = Object.keys( this.templateOptions );
 
-			return this.templateOptions[this.currentTemplate] +
+			return this.templateOptions[this.currentTemplate].name +
 				" ("
 				+ (keys.indexOf(this.currentTemplate) + 1) + "/"
 				+ keys.length
@@ -425,62 +421,9 @@ export default {
 	},
 	methods: {
 		canCustomizeColor(color) {
-			switch (this.currentTemplate) {
-				case "bold":
-				case "fresh":
-				case "snap":
-					if (
-						-1 !==
-						[
-							"primary",
-							"secondary",
-							"icon",
-							"button",
-							"button-text",
-						].indexOf(color)
-					) {
-						return true;
-					}
-					break;
-				case "simple":
-					if (
-						-1 !==
-						[
-							"primary",
-							"secondary",
-							"button",
-							"button-text",
-						].indexOf(color)
-					) {
-						return true;
-					}
-					break;
-				case "modern-compact":
-					if (
-						-1 !==
-						[
-							"primary",
-							"secondary",
-							"button",
-							"button-text",
-						].indexOf(color)
-					) {
-						return true;
-					}
-					break;
-				case "elegant":
-					if (
-						-1 !==
-						["primary", "button", "button-text"].indexOf(color)
-					) {
-						return true;
-					}
-					break;
-				default:
-					if (-1 !== ["button", "button-text"].indexOf(color)) {
-						return true;
-					}
-					break;
+			const extraColors = this.templateOptions[this.currentTemplate].design_opts;
+			if ( -1 !== extraColors.indexOf(color) ) {
+				return true;
 			}
 			return false;
 		},

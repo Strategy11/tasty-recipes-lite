@@ -29,9 +29,9 @@ const initialOptions = {
 const recipeCardPreviewUrlBase =
 	'"http://tastyrecipes.test/wp-admin/admin-ajax.php?action=tasty_recipes_preview_recipe_card&nonce=6c8f2158d1"';
 const templateOptions = {
-	"": "Default",
-	simple: "Simple",
-	snap: "Snap",
+	"": {"name":"Default","design_opts":[]},
+	simple: {"name":"Simple","design_opts":["primary","secondary"]},
+	snap: {"name":"Snap","design_opts":["primary","secondary","icon"]},
 };
 
 describe("design", () => {

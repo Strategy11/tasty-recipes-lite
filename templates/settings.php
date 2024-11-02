@@ -44,10 +44,11 @@ use Tasty\Framework\Utils\Url;
 					'upgrade_url'   => Url::get_upgrade_url( 'Tasty Recipes', [ 'utm_content' => 'template' ] ),
 					'locked'        => Template::get_locked_templates(),
 				);
+				$template_parts  = array( 'name', 'design_opts' );
 				?>
 				<tasty-recipes-design-settings
 					recipe-card-preview-url-base="<?php echo esc_url( $recipe_card_preview_url_base ); ?>"
-					:template-options="<?php echo esc_attr( wp_json_encode( Template::get_all_templates() ) ); ?>"
+					:template-options="<?php echo esc_attr( wp_json_encode( Template::get_all_templates( $template_parts ) ) ); ?>"
 					:initial-options="<?php echo esc_attr( wp_json_encode( $initial_options ) ); ?>"></tasty-recipes-design-settings>
 			</form>
 			<?php

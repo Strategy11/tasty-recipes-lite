@@ -55,6 +55,7 @@ abstract class Abstract_Template {
 		],
 		'rating_color' => 'body-color.color',
 		'radius'       => '2px',
+		'design_opts'  => array(),
 	];
 
 	/**
@@ -129,11 +130,22 @@ abstract class Abstract_Template {
 	}
 
 	/**
+	 * Get a list of extra options that show in the customization settings.
+	 *
+	 * @since x.x
+	 *
+	 * @return array
+	 */
+	protected function get_template_design_opts() {
+		return (array) $this->get_customized( 'design_opts' );
+	}
+
+	/**
 	 * Get customize options.
 	 *
 	 * @param string $key Setting to get.
 	 *
-	 * @return string
+	 * @return array|string
 	 */
 	protected function get_customized( $key = '' ) {
 		return $this->customized[ $key ];
