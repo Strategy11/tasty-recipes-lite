@@ -1,6 +1,6 @@
 {
   "name": "tasty-recipes-lite",
-  "version": "3.7.3",
+  "version": "1.0",
   "main": "Gruntfile.js",
   "author": "WP Tasty",
   "devDependencies": {

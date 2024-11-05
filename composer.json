@@ -1,8 +1,16 @@
 {
-    "name": "wp-tasty/tasty-recipes",
+    "name": "strategy11/tasty-recipes-lite",
     "description": "The most complete recipe plugin for WordPress.",
-    "type": "wordpress-plugin",
+    "homepage": "https://github.com/Strategy11/tasty-recipes-lite",
     "license": "GPL-2.0-or-later",
+    "authors": [
+		{
+			"name": "WP Tasty team",
+			"email": "support@wptasty.com",
+			"homepage": "https://wptasty.com"
+		}
+	],
+    "type": "wordpress-plugin",
     "repositories":[
         {
           "type":"vcs",
