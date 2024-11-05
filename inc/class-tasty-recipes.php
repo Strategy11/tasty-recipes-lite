@@ -304,6 +304,7 @@ class Tasty_Recipes {
 
 		if ( is_admin() ) {
 			Tasty_Recipes\MetaBox::get_instance();
+			Tasty_Recipes\Onboarding_Wizard::get_instance();
 		}
 	}
 
