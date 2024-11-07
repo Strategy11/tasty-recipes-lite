@@ -80,7 +80,7 @@ class Onboarding_Wizard {
 	 *
 	 * @since x.x
 	 */
-	private function add_hooks() {
+	public function load_hooks() {
 		$this->set_page_url();
 
 		add_action( 'admin_init', array( $this, 'do_admin_redirects' ) );
