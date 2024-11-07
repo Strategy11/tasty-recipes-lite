@@ -6,6 +6,7 @@
  */
 
 namespace Tasty_Recipes;
+use Tasty\Framework\Traits\Singleton;
 
 /**
  * Handles the Onboarding Wizard page in the admin area.
@@ -14,14 +15,7 @@ namespace Tasty_Recipes;
  */
 class Onboarding_Wizard {
 
-	/**
-	 * Singleton instance.
-	 *
-	 * @since 3.8
-	 *
-	 * @var Frontend
-	 */
-	private static $instance = null;
+	use Singleton;
 
 	/**
 	 * The slug of the Onboarding Wizard page.
@@ -80,30 +74,6 @@ class Onboarding_Wizard {
 	 * @var string
 	 */
 	private static $page_url = '';
-
-	/**
-	 * Path to views.
-	 *
-	 * @var string
-	 */
-	private $view_path = '';
-
-	/**
-	 * Get singleton instance.
-	 *
-	 * @since x.x
-	 *
-	 * @return MetaBox
-	 */
-	public static function get_instance() {
-		if ( null !== self::$instance ) {
-			return self::$instance;
-		}
-
-		self::$instance = new self();
-		self::$instance->add_hooks();
-		return self::$instance;
-	}
 
 	/**
 	 * Initialize hooks for template page only.
@@ -427,16 +397,5 @@ class Onboarding_Wizard {
 	 */
 	private function set_page_url() {
 		self::$page_url = admin_url( 'admin.php?page=' . self::PAGE_SLUG );
-	}
-
-	/**
-	 * Get the path to the Onboarding Wizard views.
-	 *
-	 * @since x.x
-	 *
-	 * @return string Path to views.
-	 */
-	public function get_view_path() {
-		return $this->view_path;
 	}
 }
