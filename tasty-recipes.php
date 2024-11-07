@@ -23,8 +23,10 @@
 
 defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 
-define( 'TASTY_RECIPES_LITE_VERSION', '1.0' );
-define( 'TASTY_RECIPES_LITE_FILE', __FILE__ );
+if ( ! defined( 'TASTY_RECIPES_LITE_VERSION' ) ) {
+	define( 'TASTY_RECIPES_LITE_VERSION', '1.0' );
+	define( 'TASTY_RECIPES_LITE_FILE', __FILE__ );
+}
 
 if ( ! defined( 'TASTY_RECIPES_NUTRIFOX_DOMAIN' ) ) {
 	define( 'TASTY_RECIPES_NUTRIFOX_DOMAIN', 'nutrifox.com' );
@@ -33,31 +35,35 @@ if ( ! defined( 'TASTY_RECIPES_NUTRIFOX_DOMAIN' ) ) {
 // Load Tasty framework.
 require_once dirname( TASTY_RECIPES_LITE_FILE ) . '/inc/libs/tasty-framework/tasty-framework.php';
 
-/**
- * Access the Tasty Recipes instance.
- *
- * @return Tasty_Recipes
- */
-function tasty_recipes_lite() {
-	if ( ! class_exists( 'Tasty_Recipes' ) ) {
-		require_once dirname( TASTY_RECIPES_LITE_FILE ) . '/inc/class-tasty-recipes.php';
-	}
+if ( ! function_exists( 'tasty_recipes_lite' ) ) {
+	/**
+	 * Access the Tasty Recipes instance.
+	 *
+	 * @return Tasty_Recipes
+	 */
+	function tasty_recipes_lite() {
+		if ( ! class_exists( 'Tasty_Recipes' ) ) {
+			require_once dirname( TASTY_RECIPES_LITE_FILE ) . '/inc/class-tasty-recipes.php';
+		}
 
-	return Tasty_Recipes::get_instance();
-}
-add_action( 'plugins_loaded', 'tasty_recipes_lite' );
-
-/**
- * Run the plugin activation hook.
- *
- * @since x.x
- *
- * @return void
- */
-function tasty_recipes_lite_activation() {
-	if ( ! class_exists( 'Tasty_Recipes' ) ) {
-		require_once dirname( TASTY_RECIPES_LITE_FILE ) . '/inc/class-tasty-recipes.php';
+		return Tasty_Recipes::get_instance();
 	}
-	Tasty_Recipes::plugin_activation();
+	add_action( 'plugins_loaded', 'tasty_recipes_lite' );
 }
-register_activation_hook( __FILE__, 'tasty_recipes_lite_activation' );
+
+if ( ! function_exists( 'tasty_recipes_lite_activation' ) ) {
+	/**
+	 * Run the plugin activation hook.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
+	 */
+	function tasty_recipes_lite_activation() {
+		if ( ! class_exists( 'Tasty_Recipes' ) ) {
+			require_once dirname( TASTY_RECIPES_LITE_FILE ) . '/inc/class-tasty-recipes.php';
+		}
+		Tasty_Recipes::plugin_activation();
+	}
+	register_activation_hook( __FILE__, 'tasty_recipes_lite_activation' );
+}
