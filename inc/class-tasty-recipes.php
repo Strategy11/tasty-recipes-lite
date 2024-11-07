@@ -89,6 +89,13 @@ class Tasty_Recipes {
 	const SHAREASALE_OPTION = 'tasty_recipes_shareasale';
 
 	/**
+	 * Option name for the powered by link.
+	 *
+	 * @var string
+	 */
+	const POWEREDBY_OPTION = 'tasty_recipes_poweredby';
+
+	/**
 	 * Option name for plugin activation state.
 	 *
 	 * @var string

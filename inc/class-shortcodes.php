@@ -10,6 +10,7 @@ namespace Tasty_Recipes;
 use Tasty_Recipes;
 use Tasty_Recipes\Objects\Recipe;
 use Tasty_Recipes\Designs\Template;
+use Tasty\Framework\Utils\Url;
 use WP_Post;
 
 /**
@@ -375,7 +376,8 @@ class Shortcodes {
 		}
 
 		$shareasale = get_option( Tasty_Recipes::SHAREASALE_OPTION );
-		if ( $shareasale ) {
+		$show_plug  = $shareasale || get_option( Tasty_Recipes::POWEREDBY_OPTION );
+		if ( $show_plug ) {
 			$wrapper_classes[] = 'tasty-recipes-has-plug';
 		}
 
@@ -691,7 +693,7 @@ class Shortcodes {
 		$ret .= Tasty_Recipes::get_template_part( self::$template['php'], $template_vars );
 		$ret .= '</div>';
 
-		self::add_powered_by( $shareasale, $ret );
+		self::add_powered_by( $shareasale, $show_plug, $ret );
 		Assets::maybe_add_tinymce_style( $ret );
 
 		return apply_filters( 'tasty_recipes_recipe_card_output', $ret, 'frontend', compact( 'recipe' ) );
@@ -965,20 +967,24 @@ class Shortcodes {
 	 * Add the "Powered by Tasty Recipes" link to the recipe card.
 	 *
 	 * @param string $shareasale ShareASale ID.
+	 * @param bool   $show_plug  Whether to show the powered by link.
 	 * @param string $ret        Recipe card HTML.
 	 *
 	 * @return void
 	 */
-	private static function add_powered_by( $shareasale, &$ret ) {
-		if ( ! $shareasale ) {
+	private static function add_powered_by( $shareasale, $show_plug, &$ret ) {
+		if ( ! $show_plug ) {
 			return;
+		}
+
+		$url = Url::add_utm_params( 'tasty-recipes', array( 'utm_content' => 'poweredby' ) );
+		if ( $shareasale ) {
+			$url = sprintf( 'https://shareasale.com/r.cfm?b=973044&u=%s&m=69860&urllink=&afftrack=trattr', $shareasale );
 		}
 
 		$ret .= '<div class="tasty-recipes-plug">';
 		$ret .= esc_html__( 'Recipe Card powered by', 'tasty-recipes-lite' );
-		$ret .= '<a href="' .
-			esc_url( sprintf( 'https://shareasale.com/r.cfm?b=973044&u=%s&m=69860&urllink=&afftrack=trattr', $shareasale ) ) .
-			'" target="_blank" rel="nofollow">';
+		$ret .= '<a href="' . esc_url( $url ) . '" target="_blank" rel="nofollow">';
 		$ret .= '<img data-pin-nopin="true" alt="Tasty Recipes" src="' . esc_url( plugins_url( 'assets/images/tasty-recipes-neutral.svg', __DIR__ ) ) . '" height="20">';
 		$ret .= '</a>';
 		$ret .= '</div>';

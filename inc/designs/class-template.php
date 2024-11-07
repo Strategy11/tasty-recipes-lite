@@ -176,8 +176,8 @@ class Template {
 			'tasty-recipes-has-image',
 		);
 
-		$shareasale = get_option( Tasty_Recipes::SHAREASALE_OPTION );
-		if ( $shareasale ) {
+		$show_plug  = get_option( Tasty_Recipes::SHAREASALE_OPTION ) || get_option( Tasty_Recipes::POWEREDBY_OPTION );
+		if ( $show_plug ) {
 			$wrapper_classes[] = 'tasty-recipes-has-plug';
 		}
 
