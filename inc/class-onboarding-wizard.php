@@ -209,8 +209,6 @@ class Onboarding_Wizard {
 		// Include SVG images for icons.
 		TASTY_App_Helper::include_svg();
 
-		$view_path        = $this->get_view_path();
-
 		// Note: Add step parts in order.
 		$step_parts = array(
 			'consent-tracking' => 'steps/consent-tracking-step.php',
