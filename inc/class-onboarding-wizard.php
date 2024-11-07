@@ -181,13 +181,13 @@ class Onboarding_Wizard {
 			return;
 		}
 
-		$label = __( 'Onboarding Wizard', 'business-directory-plugin' );
+		$label = __( 'Onboarding Wizard', 'tasty-recipes-lite' );
 
 		add_submenu_page(
-			'tasty_admin',
-			__( 'Business Directory', 'business-directory-plugin' ) . ' | ' . $label,
+			'tasty',
+			__( 'WP Tasty', 'tasty-recipes-lite' ) . ' | ' . $label,
 			$label,
-			tasty_backend_minimim_role(),
+			'manage_options',
 			self::PAGE_SLUG,
 			array( $this, 'render' )
 		);
