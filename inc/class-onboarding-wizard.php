@@ -22,14 +22,14 @@ class Onboarding_Wizard {
 	 *
 	 * @var string
 	 */
-	const PAGE_SLUG = 'tasty-onboarding-wizard';
+	const PAGE_SLUG = 'tasty-recipes-onboarding-wizard';
 
 	/**
 	 * Transient name used for managing redirection to the Onboarding Wizard page.
 	 *
 	 * @var string
 	 */
-	const TRANSIENT_NAME = 'tasty_activation_redirect';
+	const TRANSIENT_NAME = 'tasty_recipes_activation_redirect';
 
 	/**
 	 * Transient value associated with the redirection to the Onboarding Wizard page.
@@ -37,7 +37,7 @@ class Onboarding_Wizard {
 	 *
 	 * @var string
 	 */
-	const TRANSIENT_VALUE = 'tasty-welcome';
+	const TRANSIENT_VALUE = 'tasty-recipes-welcome';
 
 	/**
 	 * Transient value associated with the redirection to the Onboarding Wizard page.
@@ -45,21 +45,21 @@ class Onboarding_Wizard {
 	 *
 	 * @var string
 	 */
-	const TRANSIENT_MULTI_VALUE = 'tasty-welcome-multi';
+	const TRANSIENT_MULTI_VALUE = 'tasty-recipes-welcome-multi';
 
 	/**
 	 * Option name for storing the redirect status for the Onboarding Wizard page.
 	 *
 	 * @var string
 	 */
-	const REDIRECT_STATUS_OPTION = 'tasty_welcome_redirect';
+	const REDIRECT_STATUS_OPTION = 'tasty_recipes_welcome_redirect';
 
 	/**
 	 * Option name for tracking if the onboarding wizard was skipped.
 	 *
 	 * @var string
 	 */
-	const ONBOARDING_SKIPPED_OPTION = 'tasty_onboarding_skipped';
+	const ONBOARDING_SKIPPED_OPTION = 'tasty_recipes_onboarding_skipped';
 
 	/**
 	 * Defines the initial step for redirection within the application flow.
@@ -160,7 +160,7 @@ class Onboarding_Wizard {
 	 * @return void
 	 */
 	public function maybe_load_page() {
-		add_action( 'wp_ajax_tasty_onboarding_consent_tracking', array( $this, 'ajax_consent_tracking' ) );
+		add_action( 'wp_ajax_tasty_recipes_onboarding_consent_tracking', array( $this, 'ajax_consent_tracking' ) );
 
 		if ( $this->is_onboarding_wizard_page() ) {
 			$this->view_path = TASTY_PATH . 'includes/admin/views/onboarding-wizard/';
@@ -235,9 +235,9 @@ class Onboarding_Wizard {
 	public function ajax_consent_tracking() {
 		// Check permission and nonce.
 		TASTY_App_Helper::permission_check();
-		check_ajax_referer( 'tasty_ajax', 'nonce' );
+		check_ajax_referer( 'tasty_recipes_ajax', 'nonce' );
 
-		update_option( 'tasty-show-tracking-pointer', 0, 'no' );
+		update_option( 'tasty-recipes-show-tracking-pointer', 0, 'no' );
 		tasty_set_option( 'tracking-on', true );
 
 		$this->subscribe_to_active_campaign();
@@ -292,7 +292,7 @@ class Onboarding_Wizard {
 		 *
 		 * @since x.x
 		 */
-		do_action( 'tasty_onboarding_wizard_enqueue_assets' );
+		do_action( 'tasty_recipes_onboarding_wizard_enqueue_assets' );
 	}
 
 	/**
@@ -317,7 +317,7 @@ class Onboarding_Wizard {
 	 * @return void
 	 */
 	public function remove_menu() {
-		remove_submenu_page( 'tasty_admin', self::PAGE_SLUG );
+		remove_submenu_page( 'tasty_recipes_admin', self::PAGE_SLUG );
 	}
 
 	/**
@@ -331,7 +331,7 @@ class Onboarding_Wizard {
 	 * @return string Updated list of body classes, including the newly added classes.
 	 */
 	public function add_admin_body_classes( $classes ) {
-		return $classes . ' tasty-admin-full-screen';
+		return $classes . ' tasty-recipes-admin-full-screen';
 	}
 
 	/**
@@ -375,7 +375,7 @@ class Onboarding_Wizard {
 			return true;
 		}
 
-		update_option( self::REDIRECT_STATUS_OPTION, TASTY_VERSION, 'no' );
+		update_option( self::REDIRECT_STATUS_OPTION, TASTY_RECIPES_LITE_VERSION, 'no' );
 		return false;
 	}
 
