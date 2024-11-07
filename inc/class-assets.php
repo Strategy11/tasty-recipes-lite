@@ -52,6 +52,8 @@ class Assets {
 	 * @return void
 	 */
 	public static function register_assets() {
+		add_action( 'wp_head', array( __CLASS__, 'maybe_load_head' ), 7 );
+
 		wp_register_style(
 			'tasty-recipes-main',
 			plugins_url( '/assets/dist/recipe.css', __DIR__ ),
@@ -624,6 +626,32 @@ class Assets {
 	}
 
 	/**
+	 * Prepare the head if the post has a recipe.
+	 * This must be loaded before the styles are printed in the head.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
+	 */
+	public static function maybe_load_head() {
+		Distribution_Metadata::action_wp_head();
+		if ( ! is_singular() ) {
+			return;
+		}
+
+		$recipes = Tasty_Recipes::get_recipes_for_post(
+			0,
+			array( 'disable-json-ld' => false )
+		);
+
+		if ( empty( $recipes ) ) {
+			return;
+		}
+
+		self::action_wp_head();
+	}
+
+	/**
 	 * Enqueues the main Tasty Recipes stylesheet and loads in the head.
 	 *
 	 * @since 3.13
@@ -652,6 +680,35 @@ class Assets {
 		wp_add_inline_style( 'tasty-recipes-before', Utils::minify_css( self::get_css_vars() ) );
 		wp_add_inline_style( 'tasty-recipes-main', Utils::minify_css( $styles ) );
 		self::$css_loaded = true;
+	}
+
+	/**
+	 * Get common recipe scripts, like JS vars needed for other scripts.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
+	 */
+	public static function get_common_recipe_scripts() {
+		global $post;
+
+		$vars = array(
+			'ajaxurl'     => esc_url_raw( admin_url( 'admin-ajax.php' ) ),
+			'ratingNonce' => is_user_logged_in() ? wp_create_nonce( 'tasty-recipes-save-rating' ) : '',
+			'postId'      => $post ? $post->ID : 0,
+		);
+
+		/**
+		 * Filters the common recipe scripts.
+		 *
+		 * @since 1.0
+		 *
+		 * @param array $vars Existing variables.
+		 */
+		$vars = apply_filters( 'tasty_recipes_common_js_vars', $vars );
+
+		wp_enqueue_script( 'tasty-recipes' );
+		wp_add_inline_script( 'tasty-recipes', 'window.trCommon=' . wp_json_encode( $vars ) . ';', 'before' );
 	}
 
 	/**

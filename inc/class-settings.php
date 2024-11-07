@@ -441,7 +441,7 @@ class Settings {
 				false => __( 'Off', 'tasty-recipes-lite' ),
 				true  => __( 'On', 'tasty-recipes-lite' ),
 			),
-			'order' => 199,
+			'order'   => 199,
 		];
 	}
 

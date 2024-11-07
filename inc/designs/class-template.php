@@ -160,6 +160,21 @@ class Template {
 	}
 
 	/**
+	 * Gets any customizations for the recipe template.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $name          Name of the customization.
+	 * @param string $custom_design Design being rendered.
+	 *
+	 * @return string
+	 */
+	public static function get_template_customization( $name, $custom_design = '' ) {
+		$template_obj = self::get_object_by_name( $custom_design );
+		return $template_obj->get_customized( $name );
+	}
+
+	/**
 	 * Handles an AJAX request to preview a recipe template.
 	 *
 	 * @return void
@@ -176,7 +191,7 @@ class Template {
 			'tasty-recipes-has-image',
 		);
 
-		$show_plug  = get_option( Tasty_Recipes::SHAREASALE_OPTION ) || get_option( Tasty_Recipes::POWEREDBY_OPTION );
+		$show_plug = get_option( Tasty_Recipes::SHAREASALE_OPTION ) || get_option( Tasty_Recipes::POWEREDBY_OPTION );
 		if ( $show_plug ) {
 			$wrapper_classes[] = 'tasty-recipes-has-plug';
 		}

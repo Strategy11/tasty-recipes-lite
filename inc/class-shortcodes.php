@@ -103,34 +103,6 @@ class Shortcodes {
 	public static function action_init_register_shortcode() {
 		add_shortcode( self::RECIPE_SHORTCODE, array( __CLASS__, 'render_tasty_recipe_shortcode' ) );
 		add_shortcode( self::QUICK_LINKS_SHORTCODE, array( __CLASS__, 'render_quick_links_shortcode' ) );
-
-		add_action( 'wp_head', array( __CLASS__, 'action_wp_head' ), 7 );
-	}
-
-	/**
-	 * Prepare the head if the post has a recipe.
-	 * This must be loaded before the styles are printed in the head.
-	 *
-	 * @since 3.13
-	 *
-	 * @return void
-	 */
-	public static function action_wp_head() {
-		Distribution_Metadata::action_wp_head();
-		if ( ! is_singular() ) {
-			return;
-		}
-
-		$recipes = Tasty_Recipes::get_recipes_for_post(
-			0,
-			array( 'disable-json-ld' => false )
-		);
-
-		if ( empty( $recipes ) ) {
-			return;
-		}
-
-		Assets::action_wp_head();
 	}
 
 	/**
@@ -1172,12 +1144,7 @@ class Shortcodes {
 	 * @return string
 	 */
 	public static function get_template_customization( $name, $custom_design = '' ) {
-		if ( ! $custom_design ) {
-			$custom_design = self::$custom_template;
-		}
-
-		$template_obj = Template::get_object_by_name( $custom_design );
-		return $template_obj->get_customized( $name );
+		return Template::get_template_customization( $name, $custom_design ? $custom_design : self::$custom_template );
 	}
 
 	/**
@@ -1449,29 +1416,20 @@ class Shortcodes {
 	 * @return void
 	 */
 	private static function get_common_recipe_scripts() {
-		global $post;
-
-		if ( self::$js_loaded ) {
-			return;
+		if ( ! self::$js_loaded ) {
+			Assets::get_common_recipe_scripts();
 		}
+	}
 
-		$vars = array(
-			'ajaxurl'     => esc_url_raw( admin_url( 'admin-ajax.php' ) ),
-			'ratingNonce' => is_user_logged_in() ? wp_create_nonce( 'tasty-recipes-save-rating' ) : '',
-			'postId'      => $post ? $post->ID : 0,
-		);
-
-		/**
-		 * Filters the common recipe scripts.
-		 *
-		 * @since 1.0
-		 *
-		 * @param array $vars Existing variables.
-		 */
-		$vars = apply_filters( 'tasty_recipes_common_js_vars', $vars );
-
-		wp_enqueue_script( 'tasty-recipes' );
-		wp_add_inline_script( 'tasty-recipes', 'window.trCommon=' . wp_json_encode( $vars ) . ';', 'before' );
+	/**
+	 * Moved to Assets to get Shortcodes smaller.
+	 *
+	 * @since 3.13
+	 *
+	 * @return void
+	 */
+	public static function action_wp_head() {
+		_deprecated_function( __METHOD__, '1.0', 'Assets::maybe_load_head' );
 	}
 
 	/**
