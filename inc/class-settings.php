@@ -120,6 +120,7 @@ class Settings {
 			Tasty_Recipes::DEFAULT_AUTHOR_LINK_OPTION => [
 				'sanitize_callback' => 'esc_url_raw',
 			],
+			Tasty_Recipes::POWEREDBY_OPTION           => $sanitize_title,
 			Tasty_Recipes::SHAREASALE_OPTION          => [
 				'sanitize_callback' => 'sanitize_text_field',
 			],
@@ -426,6 +427,21 @@ class Settings {
 				'<a href="https://www.wptasty.com/affiliate-id" target="_blank">',
 				'</a>'
 			),
+		];
+
+		$shareasale = get_option( Tasty_Recipes::SHAREASALE_OPTION );
+		if ( $shareasale ) {
+			// Don't show powered by option if ShareASale is already enabled.
+			return;
+		}
+
+		$settings[ Tasty_Recipes::POWEREDBY_OPTION ] = [
+			'label'   => __( 'Show Powered By', 'tasty-recipes-lite' ),
+			'options' => array(
+				false => __( 'Off', 'tasty-recipes-lite' ),
+				true  => __( 'On', 'tasty-recipes-lite' ),
+			),
+			'order'   => 199,
 		];
 	}
 
