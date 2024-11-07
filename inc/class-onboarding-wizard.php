@@ -10,6 +10,7 @@ namespace Tasty_Recipes;
 use Tasty\Framework\Admin\Plugins\Recipes;
 use Tasty\Framework\Traits\Singleton;
 use Tasty\Framework\Utils\Url;
+use Tasty_Recipes;
 
 /**
  * Handles the Onboarding Wizard page in the admin area.
@@ -206,16 +207,16 @@ class Onboarding_Wizard {
 			$this->has_already_redirected();
 		}
 
-		// Include SVG images for icons.
-		TASTY_App_Helper::include_svg();
-
+		Tasty_Recipes::echo_template_part(
+			'admin/onboarding-wizard/index',
+			[
 		// Note: Add step parts in order.
-		$step_parts = array(
+				'step_parts' => array(
 			'consent-tracking' => 'steps/consent-tracking-step.php',
 			'success'          => 'steps/success-step.php',
+				),
+			]
 		);
-
-		include $view_path . 'index.php';
 	}
 
 	/**
