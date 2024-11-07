@@ -161,14 +161,11 @@ class Onboarding_Wizard {
 		add_action( 'wp_ajax_tasty_recipes_onboarding_consent_tracking', array( $this, 'ajax_consent_tracking' ) );
 
 		if ( $this->is_onboarding_wizard_page() ) {
-			$this->view_path = TASTY_PATH . 'includes/admin/views/onboarding-wizard/';
-
 			add_action( 'admin_menu', array( $this, 'menu' ), 99 );
-			add_action( 'tasty_enqueue_admin_scripts', array( $this, 'enqueue_assets' ), 15 );
 			add_action( 'admin_head', array( $this, 'remove_menu' ) );
+			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 
 			add_filter( 'admin_body_class', array( $this, 'add_admin_body_classes' ), 999 );
-			add_filter( 'tasty_enqueue_floating_links', '__return_false' );
 		}
 	}
 
