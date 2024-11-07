@@ -6,7 +6,10 @@
  */
 
 namespace Tasty_Recipes;
+
+use Tasty\Framework\Admin\Plugins\Recipes;
 use Tasty\Framework\Traits\Singleton;
+use Tasty\Framework\Utils\Url;
 
 /**
  * Handles the Onboarding Wizard page in the admin area.
@@ -97,12 +100,7 @@ class Onboarding_Wizard {
 	 * @return void
 	 */
 	public function do_admin_redirects() {
-		$current_page = tasty_get_var(
-			array(
-				'param'    => 'page',
-				'sanitize' => 'sanitize_title',
-			)
-		);
+		$current_page = Utils::sanitize_get_key( 'page' );
 
 		// Prevent endless loop.
 		if ( $current_page === self::PAGE_SLUG ) {
@@ -115,7 +113,7 @@ class Onboarding_Wizard {
 			return;
 		}
 
-		if ( $this->has_onboarding_been_skipped() ) {
+		if ( $this->has_onboarding_been_skipped() || Recipes::instance()->is_pro_active() ) {
 			return;
 		}
 
@@ -133,7 +131,7 @@ class Onboarding_Wizard {
 			return;
 		}
 
-		if ( self::TRANSIENT_MULTI_VALUE === $transient_value && ! TASTY_App_Helper::is_bd_page() ) {
+		if ( self::TRANSIENT_MULTI_VALUE === $transient_value && ! Url::is_wpt_page() ) {
 			// For multi-activations we want to only redirect when a user loads a BD page.
 			return;
 		}
