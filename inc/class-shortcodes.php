@@ -1074,10 +1074,7 @@ class Shortcodes {
 			$open_new = ' target="_blank"';
 		}
 
-		$btn_class = '';
-		if ( 'buttons' === get_option( Tasty_Recipes::QUICK_LINKS_STYLE ) ) {
-			$btn_class = ' button';
-		}
+		$btn_class = self::quick_links_classes( '' );
 
 		$links = array();
 		if ( in_array( 'jump', $should_prepend_jump_to, true ) ) {
@@ -1111,6 +1108,17 @@ class Shortcodes {
 		$html .= '</div>';
 
 		return $html;
+	}
+
+	/**
+	 * Get the classes for the quick links.
+	 *
+	 * @param string $classes Existing classes.
+	 *
+	 * @return string
+	 */
+	public static function quick_links_classes( $classes ) {
+		return apply_filters( 'tasty_recipes_quick_links_class', $classes );
 	}
 
 	/**

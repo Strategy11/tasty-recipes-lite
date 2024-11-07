@@ -65,8 +65,8 @@
 
 	.tasty-recipes-nutrifox-field-container {
 		margin-top: 1em;
-		background-color: #F2F2F2;
-		border: 1px solid #E0E0E0;
+		background-color: var(--grey-75, #F2F2F2);
+		border: 1px solid var(--grey-300, #E0E0E0 );
 		border-radius: 6px;
 		padding-top: 12px;
 		padding-bottom: 8px;

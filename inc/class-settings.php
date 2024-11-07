@@ -264,6 +264,7 @@ class Settings {
 				'buttons' => __( 'Buttons', 'tasty-recipes-lite' ),
 			),
 			'default_value' => 'links',
+			'is_pro'        => true,
 		];
 	}
 
