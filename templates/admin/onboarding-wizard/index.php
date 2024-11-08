@@ -10,12 +10,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 ?>
-<div id="wpbdp-onboarding-wizard-page" class="wrap wpbdp-admin-plugin-landing wpbdp-hide-js" data-current-step="consent-tracking">
-	<div id="wpbdp-onboarding-container">
-		<ul id="wpbdp-onboarding-rootline" class="wpbdp-onboarding-rootline">
-			<li class="wpbdp-onboarding-rootline-item" data-step="consent-tracking">
+<div id="tasty-recipes-onboarding-wizard-page" class="wrap tasty-recipes-admin-plugin-landing tasty-recipes-hide-js" data-current-step="consent-tracking">
+	<div id="tasty-recipes-onboarding-container">
+		<ul id="tasty-recipes-onboarding-rootline" class="tasty-recipes-onboarding-rootline">
+			<li class="tasty-recipes-onboarding-rootline-item tasty-recipes-current" data-step="consent-tracking">
 			</li>
-			<li class="wpbdp-onboarding-rootline-item" data-step="success">
+			<li class="tasty-recipes-onboarding-rootline-item" data-step="success">
 			</li>
 		</ul>
 
@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		}
 		?>
 
-		<a id="wpbdp-onboarding-return-dashboard" href="<?php echo esc_url( admin_url( 'admin.php?page=wpbdp_settings' ) ); ?>">
+		<a id="tasty-recipes-onboarding-return-dashboard" href="<?php echo esc_url( admin_url( 'admin.php?page=tasty-recipes_settings' ) ); ?>">
 			<?php esc_html_e( 'Exit Onboarding', 'tasty-recipes-lite' ); ?>
 		</a>
 	</div>
