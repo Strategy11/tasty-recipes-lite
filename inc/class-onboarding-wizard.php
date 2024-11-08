@@ -7,6 +7,7 @@
 
 namespace Tasty_Recipes;
 
+use Tasty\Framework\Admin\Menu;
 use Tasty\Framework\Admin\Plugins\Recipes;
 use Tasty\Framework\Traits\Singleton;
 use Tasty\Framework\Utils\Url;
@@ -164,6 +165,14 @@ class Onboarding_Wizard {
 			add_action( 'admin_menu', array( $this, 'menu' ), 99 );
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 
+			add_action(
+				'init',
+				function () {
+					remove_action( 'in_admin_header', array( Menu::instance(), 'show_admin_header' ), 100 );
+				},
+				PHP_INT_MAX
+			);
+
 			add_filter( 'admin_body_class', array( $this, 'add_admin_body_classes' ), 999 );
 		}
 	}
@@ -313,9 +322,9 @@ class Onboarding_Wizard {
 	 * @return void
 	 */
 	public function enqueue_assets() {
-		wp_enqueue_style( self::PAGE_SLUG, plugins_url( 'assets/dist/onboarding-wizard.css' ), array(), TASTY_RECIPES_LITE_VERSION );
+		wp_enqueue_style( self::PAGE_SLUG, plugins_url( 'assets/dist/onboarding-wizard.css', __DIR__ ), array( 'editor-buttons' ), TASTY_RECIPES_LITE_VERSION );
 
-		wp_enqueue_script( self::PAGE_SLUG, plugins_url( 'assets/dist/onboarding-wizard.js' ), array( 'wp-i18n' ), TASTY_RECIPES_LITE_VERSION, true );
+		wp_enqueue_script( self::PAGE_SLUG, plugins_url( 'assets/dist/onboarding-wizard.js', __DIR__ ), array( 'wp-i18n' ), TASTY_RECIPES_LITE_VERSION, true );
 		wp_localize_script( self::PAGE_SLUG, 'tastyRecipesOnboardingWizardVars', $this->get_js_variables() );
 	}
 

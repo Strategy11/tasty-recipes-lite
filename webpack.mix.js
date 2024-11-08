@@ -17,6 +17,7 @@ mix.sass('assets/scss/recipe.scss', 'assets/dist/');
 mix.sass('assets/scss/recipe-card-preview.scss', 'assets/dist/');
 mix.sass('assets/scss/recipe-print-controls.scss', 'assets/dist/');
 mix.sass('assets/scss/settings.scss', 'assets/dist/');
+mix.sass('assets/scss/onboarding-wizard.scss', 'assets/dist/');
 
 mix.js('assets/block-editor/index.js', 'assets/dist/block-editor.build.js');
 mix.js('assets/recipe-editor/index.js', 'assets/dist/recipe-editor.build.js').vue({version: 2});
