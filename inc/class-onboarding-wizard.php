@@ -228,11 +228,10 @@ class Onboarding_Wizard {
 	 */
 	public function ajax_consent_tracking() {
 		// Check permission and nonce.
-		TASTY_App_Helper::permission_check();
 		check_ajax_referer( 'tasty_recipes_ajax', 'nonce' );
+		Admin::validate_ajax_capability();
 
-		update_option( 'tasty-recipes-show-tracking-pointer', 0, 'no' );
-		tasty_set_option( 'tracking-on', true );
+		// TODO: Enable tracking setting here after adding tracking setting.
 
 		$this->subscribe_to_active_campaign();
 
