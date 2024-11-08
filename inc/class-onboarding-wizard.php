@@ -246,23 +246,65 @@ class Onboarding_Wizard {
 	 *
 	 * @return void
 	 */
-	private function subscribe_to_active_campaign() {
+	private static function subscribe_to_active_campaign() {
 		$user = wp_get_current_user();
-
 		if ( empty( $user->user_email ) ) {
 			return;
 		}
 
+		if ( ! self::should_send_email_to_active_campaign( $user->user_email ) ) {
+			return;
+		}
+
+		$user_id    = $user->ID;
+		$first_name = get_user_meta( $user_id, 'first_name', true );
+		$last_name  = get_user_meta( $user_id, 'last_name', true );
+
 		wp_remote_post(
-			'https://feedback.strategy11.com/wp-json/frm/v2/entries',
+			'https://feedback.strategy11.com/wp-admin/admin-ajax.php?action=frm_forms_preview&form=tasty-onboarding',
 			array(
-				'body' => array(
-					'bd-firstname1' => $user->first_name,
-					'bd-email-1'    => $user->user_email,
-					'form_id'       => 'bd-plugin-course',
+				'body' => http_build_query(
+					array(
+						'form_key'       => 'subscribe-onboarding',
+						'frm_action'     => 'create',
+						'form_id'        => 21,
+						'item_key'       => '',
+						'item_meta[0]'   => '',
+						'item_meta[228]' => $user->user_email,
+						'item_meta[231]' => 'Source - WPT Plugin Onboarding',
+						'item_meta[229]' => is_string( $first_name ) ? $first_name : '',
+						'item_meta[230]' => is_string( $last_name ) ? $last_name : '',
+					)
 				),
 			)
 		);
+	}
+
+	/**
+	 * Try to skip any fake emails.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $email The user email.
+	 * @return bool
+	 */
+	private static function should_send_email_to_active_campaign( $email ) {
+		$substrings = array(
+			'@wpengine.local',
+			'@example.com',
+			'@localhost',
+			'@local.dev',
+			'@local.test',
+			'test@gmail.com',
+			'admin@gmail.com',
+
+		);
+		foreach ( $substrings as $substring ) {
+			if ( false !== strpos( $email, $substring ) ) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**
