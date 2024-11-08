@@ -315,19 +315,10 @@ class Onboarding_Wizard {
 	 * @return void
 	 */
 	public function enqueue_assets() {
-		wp_enqueue_style( self::PAGE_SLUG, TASTY_ASSETS_URL . '/css/onboarding-wizard.min.css', array(), TASTY_VERSION );
+		wp_enqueue_style( self::PAGE_SLUG, plugins_url( 'assets/dist/onboarding-wizard.css' ), array(), TASTY_RECIPES_LITE_VERSION );
 
-		// Register and enqueue Onboarding Wizard script.
-		wp_register_script( self::PAGE_SLUG, TASTY_ASSETS_URL . '/js/onboarding-wizard.js', array( 'wp-i18n' ), TASTY_VERSION, true );
-		wp_localize_script( self::PAGE_SLUG, 'wpbdpOnboardingWizardVars', $this->get_js_variables() );
-		wp_enqueue_script( self::PAGE_SLUG );
-
-		/**
-		 * Fires after the Onboarding Wizard enqueue assets.
-		 *
-		 * @since x.x
-		 */
-		do_action( 'tasty_recipes_onboarding_wizard_enqueue_assets' );
+		wp_enqueue_script( self::PAGE_SLUG, plugins_url( 'assets/dist/onboarding-wizard.js' ), array( 'wp-i18n' ), TASTY_RECIPES_LITE_VERSION, true );
+		wp_localize_script( self::PAGE_SLUG, 'tastyRecipesOnboardingWizardVars', $this->get_js_variables() );
 	}
 
 	/**
