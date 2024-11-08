@@ -18,7 +18,6 @@ use Tasty_Recipes;
  * @since x.x
  */
 class Onboarding_Wizard {
-
 	use Singleton;
 
 	/**
@@ -209,10 +208,10 @@ class Onboarding_Wizard {
 		Tasty_Recipes::echo_template_part(
 			'admin/onboarding-wizard/index',
 			[
-		// Note: Add step parts in order.
+				// Note: Add step parts in order.
 				'step_parts' => array(
-			'consent-tracking' => 'steps/consent-tracking-step.php',
-			'success'          => 'steps/success-step.php',
+					'consent-tracking' => 'steps/consent-tracking-step.php',
+					'success'          => 'steps/success-step.php',
 				),
 			]
 		);
@@ -375,7 +374,7 @@ class Onboarding_Wizard {
 	 * @return bool True if the current page is the Onboarding Wizard page, false otherwise.
 	 */
 	public function is_onboarding_wizard_page() {
-		return TASTY_App_Helper::is_admin_page( self::PAGE_SLUG );
+		return Utils::is_admin_page( self::PAGE_SLUG );
 	}
 
 	/**

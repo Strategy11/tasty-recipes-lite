@@ -587,4 +587,27 @@ class Utils {
 
 		return ' LIMIT ' . $limit;
 	}
+
+	/**
+	 * Check for certain page in Formidable settings
+	 *
+	 * @since x.x
+	 *
+	 * @param string $page The name of the page to check.
+	 * @return bool
+	 */
+	public static function is_admin_page( $page = 'tasty' ) {
+		global $pagenow;
+		$get_page = self::sanitize_get_key( 'page' );
+
+		if ( $pagenow ) {
+			// Allow this to be true during ajax load i.e. ajax form builder loading.
+			$is_page  = ( $pagenow === 'admin.php' || $pagenow === 'admin-ajax.php' ) && $get_page === $page;
+			if ( $is_page ) {
+				return true;
+			}
+		}
+
+		return is_admin() && $get_page === $page;
+	}
 }
