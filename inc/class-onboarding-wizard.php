@@ -163,7 +163,6 @@ class Onboarding_Wizard {
 
 		if ( $this->is_onboarding_wizard_page() ) {
 			add_action( 'admin_menu', array( $this, 'menu' ), 99 );
-			add_action( 'admin_head', array( $this, 'remove_menu' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 
 			add_filter( 'admin_body_class', array( $this, 'add_admin_body_classes' ), 999 );
@@ -332,18 +331,6 @@ class Onboarding_Wizard {
 		return array(
 			'INITIAL_STEP' => self::INITIAL_STEP,
 		);
-	}
-
-	/**
-	 * Remove the Onboarding Wizard submenu page from the bD parent menu
-	 * since it is not necessary to show that link there.
-	 *
-	 * @since x.x
-	 *
-	 * @return void
-	 */
-	public function remove_menu() {
-		remove_submenu_page( 'tasty_recipes_admin', self::PAGE_SLUG );
 	}
 
 	/**
