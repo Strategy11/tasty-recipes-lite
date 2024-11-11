@@ -235,7 +235,7 @@ class Onboarding_Wizard {
 	 */
 	public function ajax_consent_tracking() {
 		// Check permission and nonce.
-		check_ajax_referer( 'tasty_recipes_ajax', 'nonce' );
+		check_ajax_referer( 'tasty_recipes_onboarding_nonce', 'nonce' );
 		Admin::validate_ajax_capability();
 
 		// TODO: Enable tracking setting here after adding tracking setting.
@@ -324,7 +324,7 @@ class Onboarding_Wizard {
 	public function enqueue_assets() {
 		wp_enqueue_style( self::PAGE_SLUG, plugins_url( 'assets/dist/onboarding-wizard.css', __DIR__ ), array( 'editor-buttons' ), TASTY_RECIPES_LITE_VERSION );
 
-		wp_enqueue_script( self::PAGE_SLUG, plugins_url( 'assets/dist/onboarding-wizard.js', __DIR__ ), array( 'wp-i18n' ), TASTY_RECIPES_LITE_VERSION, true );
+		wp_enqueue_script( self::PAGE_SLUG, plugins_url( 'assets/dist/onboarding-wizard.build.js', __DIR__ ), array( 'wp-i18n' ), TASTY_RECIPES_LITE_VERSION, true );
 		wp_localize_script( self::PAGE_SLUG, 'tastyRecipesOnboardingWizardVars', $this->get_js_variables() );
 	}
 
@@ -337,6 +337,7 @@ class Onboarding_Wizard {
 	 */
 	private function get_js_variables() {
 		return array(
+			'NONCE'        => wp_create_nonce( 'tasty_recipes_onboarding_nonce' ),
 			'INITIAL_STEP' => self::INITIAL_STEP,
 		);
 	}
