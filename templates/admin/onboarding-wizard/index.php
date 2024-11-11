@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 <div id="tasty-recipes-onboarding-wizard-page" class="wrap tasty-recipes-admin-plugin-landing tasty-recipes-hide-js" data-current-step="consent-tracking">
 	<div id="tasty-recipes-onboarding-container">
 		<ul id="tasty-recipes-onboarding-rootline" class="tasty-recipes-onboarding-rootline">
-			<li class="tasty-recipes-onboarding-rootline-item tasty-recipes-current" data-step="consent-tracking">
+			<li class="tasty-recipes-onboarding-rootline-item" data-step="consent-tracking">
 				<?php
 				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 				echo Utils::get_contents( TASTY_FRAMEWORK_PATH_ASSETS . '/images/icon-check.svg' );

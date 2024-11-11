@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 ?>
-<section id="tasty-recipes-onboarding-success-step" class="tasty-recipes-onboarding-step tasty-recipes-card-box" data-step-name="<?php echo esc_attr( $step ); ?>">
+<section id="tasty-recipes-onboarding-success-step" class="tasty-recipes-onboarding-step tasty-recipes-card-box hidden" data-step-name="<?php echo esc_attr( $step ); ?>">
 	<div class="tasty-recipes-card-box-header">
 		<?php
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped

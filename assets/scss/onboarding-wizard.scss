@@ -102,7 +102,12 @@ html.wp-toolbar {
 		}
 
 		&-item svg {
-			color: #fff;
+			width: 11px;
+			height: 11px;
+
+			path {
+				fill: #fff;
+			}
 		}
 
 		&-item:not(.tasty-recipes-completed-step) svg {
