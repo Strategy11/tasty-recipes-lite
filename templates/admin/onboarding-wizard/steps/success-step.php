@@ -5,14 +5,19 @@
  * @package Tasty_Recipes
  */
 
+use Tasty_Recipes\Utils;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	die( 'You are not allowed to call this page directly.' );
 }
 
 ?>
-<section id="tasty-recipes-onboarding-success-step" class="tasty-recipes-onboarding-step tasty-recipes-card-box hidden" data-step-name="<?php echo esc_attr( $step ); ?>">
+<section id="tasty-recipes-onboarding-success-step" class="tasty-recipes-onboarding-step tasty-recipes-card-box" data-step-name="<?php echo esc_attr( $step ); ?>">
 	<div class="tasty-recipes-card-box-header">
-		<img src="<?php echo esc_url( TASTY_FRAMEWORK_URL_ASSETS_IMAGES . '/header-logo.svg' ); ?>" alt="WP Tasty" title="WP Tasty">
+		<?php
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo Utils::get_contents( TASTY_FRAMEWORK_PATH_ASSETS . '/images/logo.svg' );
+		?>
 	</div>
 
 	<div class="tasty-recipes-card-box-content">
@@ -23,11 +28,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	</div>
 
 	<div class="tasty-recipes-card-box-footer">
-		<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=tasty-recipes_listing' ) ); ?>" class="button button-secondary tasty-recipes-button-secondary tasty-recipes-button-large">
+		<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=tasty-recipes_listing' ) ); ?>" class="tasty-button tasty-highlight">
 			<?php esc_html_e( 'Create a Listing', 'tasty-recipes-lite' ); ?>
 		</a>
 
-		<a href="<?php echo esc_url( admin_url( 'admin.php?page=tasty-recipes_settings' ) ); ?>" class="button button-primary tasty-recipes-button-primary tasty-recipes-button-large">
+		<a href="<?php echo esc_url( admin_url( 'admin.php?page=tasty-recipes_settings' ) ); ?>" class="tasty-button tasty-button-pink">
 			<?php esc_html_e( 'Go to Settings', 'tasty-recipes-lite' ); ?>
 		</a>
 	</div>
