@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<div class="tasty-recipes-card-box-content">
 		<h2 class="tasty-recipes-card-box-title"><?php esc_html_e( 'You\'re All Set!', 'tasty-recipes-lite' ); ?></h2>
 		<p class="tasty-recipes-card-box-text">
-			<?php esc_html_e( 'Congratulations on completing the onboarding process! We hope you enjoy using Business Directory Plugin.', 'tasty-recipes-lite' ); ?>
+			<?php esc_html_e( 'Congratulations on completing the onboarding process! We hope you enjoy using Tasty Recipes Lite Plugin.', 'tasty-recipes-lite' ); ?>
 		</p>
 	</div>
 
