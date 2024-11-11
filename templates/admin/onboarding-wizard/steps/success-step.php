@@ -5,6 +5,8 @@
  * @package Tasty_Recipes
  */
 
+use Tasty\Framework\Utils\Url;
+use Tasty_Recipes\Settings;
 use Tasty_Recipes\Utils;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -28,11 +30,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	</div>
 
 	<div class="tasty-recipes-card-box-footer">
-		<a href="<?php echo esc_url( admin_url( 'edit.php?post_type=tasty-recipes_listing' ) ); ?>" class="tasty-button tasty-highlight">
-			<?php esc_html_e( 'Create a Listing', 'tasty-recipes-lite' ); ?>
+		<a href="<?php echo esc_url( Url::get_main_admin_url() ); ?>" class="tasty-button tasty-highlight">
+			<?php esc_html_e( 'Go to Dashboard', 'tasty-recipes-lite' ); ?>
 		</a>
 
-		<a href="<?php echo esc_url( admin_url( 'admin.php?page=tasty-recipes_settings' ) ); ?>" class="tasty-button tasty-button-pink">
+		<a href="<?php echo esc_url( add_query_arg( 'tab', 'settings', menu_page_url( Settings::PAGE_SLUG, false ) ) ); ?>" class="tasty-button tasty-button-pink">
 			<?php esc_html_e( 'Go to Settings', 'tasty-recipes-lite' ); ?>
 		</a>
 	</div>

@@ -5,6 +5,7 @@
  * @package Tasty_Recipes
  */
 
+use Tasty\Framework\Utils\Url;
 use Tasty_Recipes\Utils;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -35,7 +36,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		}
 		?>
 
-		<a id="tasty-recipes-onboarding-return-dashboard" href="<?php echo esc_url( admin_url( 'admin.php?page=tasty-recipes_settings' ) ); ?>">
+		<a id="tasty-recipes-onboarding-return-dashboard" href="<?php echo esc_url( Url::get_main_admin_url() ); ?>">
 			<?php esc_html_e( 'Exit Onboarding', 'tasty-recipes-lite' ); ?>
 		</a>
 	</div>

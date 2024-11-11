@@ -52,7 +52,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			?>
 		</span>
 
-		<div class="tasty-recipes-collapsible-content">
+		<div class="tasty-recipes-collapsible-content hidden">
 			<div class="tasty-recipes-card-box-permission-item">
 				<span>
 					<?php
