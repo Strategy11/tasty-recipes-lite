@@ -295,6 +295,7 @@ class Onboarding_Wizard {
 	 * @since x.x
 	 *
 	 * @param string $email The user email.
+	 *
 	 * @return bool
 	 */
 	private static function should_send_email_to_active_campaign( $email ) {
@@ -352,6 +353,7 @@ class Onboarding_Wizard {
 	 * @since x.x
 	 *
 	 * @param string $classes Existing body classes.
+	 *
 	 * @return string Updated list of body classes, including the newly added classes.
 	 */
 	public function add_admin_body_classes( $classes ) {
@@ -362,6 +364,7 @@ class Onboarding_Wizard {
 	 * Checks if the Onboarding Wizard was skipped during the plugin's installation.
 	 *
 	 * @since x.x
+	 *
 	 * @return bool True if the Onboarding Wizard was skipped, false otherwise.
 	 */
 	public function has_onboarding_been_skipped() {
@@ -372,6 +375,7 @@ class Onboarding_Wizard {
 	 * Marks the Onboarding Wizard as skipped to prevent automatic redirects to the wizard.
 	 *
 	 * @since x.x
+	 *
 	 * @return void
 	 */
 	public function mark_onboarding_as_skipped() {

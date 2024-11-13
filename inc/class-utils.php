@@ -594,6 +594,7 @@ class Utils {
 	 * @since x.x
 	 *
 	 * @param string $page The name of the page to check.
+	 *
 	 * @return bool
 	 */
 	public static function is_admin_page( $page = 'tasty' ) {
