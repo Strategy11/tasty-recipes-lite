@@ -602,7 +602,7 @@ class Utils {
 
 		if ( $pagenow ) {
 			// Allow this to be true during ajax load i.e. ajax form builder loading.
-			$is_page  = ( $pagenow === 'admin.php' || $pagenow === 'admin-ajax.php' ) && $get_page === $page;
+			$is_page = ( $pagenow === 'admin.php' || $pagenow === 'admin-ajax.php' ) && $get_page === $page;
 			if ( $is_page ) {
 				return true;
 			}

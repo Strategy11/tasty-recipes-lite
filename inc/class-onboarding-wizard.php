@@ -123,7 +123,7 @@ class Onboarding_Wizard {
 			return;
 		}
 
-		if ( isset( $_GET['activate-multi'] ) ) {
+		if ( isset( $_GET['activate-multi'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			/**
 			 * $_GET['activate-multi'] is set after activating multiple plugins.
 			 * In this case, change the transient value so we know for future checks.
