@@ -140,7 +140,6 @@ class Admin {
 			return;
 		}
 
-		add_action( 'admin_init', array( __CLASS__, 'action_admin_init' ) );
 		// phpcs:ignore WordPressVIPMinimum.Hooks.RestrictedHooks.http_request_args
 		add_action( 'http_request_args', array( __CLASS__, 'filter_http_request_args' ), 10, 2 );
 		add_filter( 'manage_posts_columns', array( __CLASS__, 'action_manage_posts_columns' ) );
@@ -159,21 +158,6 @@ class Admin {
 
 		add_action( 'wp_ajax_tasty_recipes_get_count', array( __CLASS__, 'handle_wp_ajax_get_count' ) );
 		add_action( 'wp_ajax_tasty_recipes_convert', array( __CLASS__, 'handle_wp_ajax_convert' ) );
-	}
-
-	/**
-	 * Registers the updater object.
-	 *
-	 * @return void
-	 */
-	public static function action_admin_init() {
-		if ( get_option( Tasty_Recipes::PLUGIN_ACTIVATION_OPTION, false ) ) {
-			delete_option( Tasty_Recipes::PLUGIN_ACTIVATION_OPTION );
-			if ( empty( Utils::get_param( 'activate-multi' ) ) ) {
-				wp_safe_redirect( add_query_arg( 'tab', 'about', menu_page_url( Settings::PAGE_SLUG, false ) ) );
-				exit;
-			}
-		}
 	}
 
 	/**
