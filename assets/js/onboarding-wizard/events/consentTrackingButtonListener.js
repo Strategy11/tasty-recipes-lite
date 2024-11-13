@@ -36,6 +36,7 @@ const onConsentTrackingButtonClick = async ( event ) => {
 	let data;
 
 	try {
+		// eslint-disable-next-line no-undef
 		const response = await fetch( ajaxurl, {
 			method: 'POST',
 			body: formData,
@@ -43,10 +44,12 @@ const onConsentTrackingButtonClick = async ( event ) => {
 
 		data = await response.json();
 	} catch ( error ) {
+		// eslint-disable-next-line no-console
 		console.error( 'Error:', error );
 	}
 
 	if ( ! data.success ) {
+		// eslint-disable-next-line no-console
 		console.error( data || 'Request failed' );
 		return;
 	}
