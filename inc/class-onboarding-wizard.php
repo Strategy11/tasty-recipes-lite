@@ -83,6 +83,8 @@ class Onboarding_Wizard {
 	 * Initialize hooks for template page only.
 	 *
 	 * @since x.x
+	 *
+	 * @return void
 	 */
 	public function load_hooks() {
 		$this->set_page_url();
@@ -253,7 +255,7 @@ class Onboarding_Wizard {
 	 *
 	 * @return void
 	 */
-	private static function subscribe_to_active_campaign() {
+	private function subscribe_to_active_campaign() {
 		$user = wp_get_current_user();
 		if ( empty( $user->user_email ) ) {
 			return;
@@ -373,7 +375,7 @@ class Onboarding_Wizard {
 	 * @return void
 	 */
 	public function mark_onboarding_as_skipped() {
-		update_option( self::ONBOARDING_SKIPPED_OPTION, true, 'no' );
+		update_option( self::ONBOARDING_SKIPPED_OPTION, true, false );
 	}
 
 	/**
@@ -397,7 +399,7 @@ class Onboarding_Wizard {
 			return true;
 		}
 
-		update_option( self::REDIRECT_STATUS_OPTION, TASTY_RECIPES_LITE_VERSION, 'no' );
+		update_option( self::REDIRECT_STATUS_OPTION, TASTY_RECIPES_LITE_VERSION, false );
 		return false;
 	}
 

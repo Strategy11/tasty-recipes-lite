@@ -145,3 +145,17 @@ namespace Tasty\Framework\Utils {
 		}
 	}
 }
+
+namespace Tasty\Framework\Admin {
+	class Menu {
+		public static function instance() {
+		}
+	}
+}
+
+namespace Tasty\Framework\Admin\Plugins {
+	class Recipes {
+		public static function instance() {
+		}
+	}
+}
