@@ -98,13 +98,6 @@ class Tasty_Recipes {
 	const POWEREDBY_OPTION = 'tasty_recipes_poweredby';
 
 	/**
-	 * Option name for plugin activation state.
-	 *
-	 * @var string
-	 */
-	const PLUGIN_ACTIVATION_OPTION = 'tasty_recipes_do_activation_redirect';
-
-	/**
 	 * Option name for the template.
 	 *
 	 * @var string
@@ -426,7 +419,6 @@ class Tasty_Recipes {
 		\Tasty_Recipes\Content_Model::action_init_register_rewrite_rules();
 		// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.flush_rewrite_rules_flush_rewrite_rules
 		flush_rewrite_rules();
-		update_option( self::PLUGIN_ACTIVATION_OPTION, true );
 	}
 
 	/**

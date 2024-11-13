@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 		<?php
 		foreach ( $step_parts as $step => $file ) {
-			require $view_path . $file; // phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
+			require dirname( TASTY_RECIPES_LITE_FILE ) . '/templates/admin/onboarding-wizard/' . $file;
 		}
 		?>
 

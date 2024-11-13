@@ -180,6 +180,17 @@ class Onboarding_Wizard {
 	}
 
 	/**
+	 * Actions to perform when activating the plugin.
+	 *
+	 * @return void
+	 */
+	public static function plugin_activation() {
+		if ( get_transient( self::TRANSIENT_NAME ) !== 'no' ) {
+			set_transient( self::TRANSIENT_NAME, self::TRANSIENT_VALUE, 60 );
+		}
+	}
+
+	/**
 	 * Add Onboarding Wizard menu item to sidebar and define index page.
 	 *
 	 * @since x.x
@@ -379,7 +390,7 @@ class Onboarding_Wizard {
 	 * @return void
 	 */
 	public function mark_onboarding_as_skipped() {
-		update_option( self::ONBOARDING_SKIPPED_OPTION, true, false );
+		update_option( self::ONBOARDING_SKIPPED_OPTION, true );
 	}
 
 	/**
@@ -403,7 +414,7 @@ class Onboarding_Wizard {
 			return true;
 		}
 
-		update_option( self::REDIRECT_STATUS_OPTION, TASTY_RECIPES_LITE_VERSION, false );
+		update_option( self::REDIRECT_STATUS_OPTION, TASTY_RECIPES_LITE_VERSION );
 		return false;
 	}
 
