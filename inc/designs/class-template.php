@@ -162,7 +162,7 @@ class Template {
 	/**
 	 * Gets any customizations for the recipe template.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @param string $name          Name of the customization.
 	 * @param string $custom_design Design being rendered.
@@ -404,7 +404,7 @@ class Template {
 	/**
 	 * Get the html for the ingredients list.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @return string
 	 */
@@ -423,7 +423,7 @@ class Template {
 	/**
 	 * Get HTMl for the instructions box.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @return string
 	 */
@@ -442,7 +442,7 @@ class Template {
 	/**
 	 * Get HTML for the notes box.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @return string
 	 */
@@ -454,7 +454,7 @@ class Template {
 	/**
 	 * Enqueue editor styles for the recipe card preview.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @return void
 	 */

@@ -24,7 +24,14 @@ On the frontend of your website, your published recipe uses standard markup to f
 
 Tasty Recipes automatically includes Schema.org microdata and JSON+LD to make it easy for Google and other search engines to read your recipes. When entering in your recipe's ingredients or instructions, make sure to create an ordered or unordered list. The list will signal to Tasty Recipes that these items should be marked up with Schema.org microdata and JSON+LD.
 
+= Earn revenue with ads =
+
+You're most likely creating a recipe blog because you'd like some extra revenue. In Tasty Recipes Lite you can insert ads and videos into recipe cards from Mediavine, AdThrive, or Swoop. Or display a "powered by" affiliate link if you love Tasty Recipes and would like to share it. Each of these options requires an account with each service in order to start earning revenue.
+
+Get more ways of generating revenue in the permium version, including adding links to ingredients and an Instacart integration.
+
 = Pain-free switching from other WordPress recipe plugins =
+
 Tasty Recipes can fully convert from your existing recipe plugin into the Tasty Recipes format. First, perform a couple of test conversions on existing posts. If your posts support revisions, Tasty Recipes creates new revisions so you can safely roll back to the previous markup. Once you've verified your recipes convert as expected, use the batch conversion tool in "Settings" -> "Tasty Recipes" to migrate any remaining existing recipes.
 
 The following recipe plugin conversions are supported:

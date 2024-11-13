@@ -537,7 +537,7 @@ class Utils {
 	public static function get_post_value( $key, $sanitize = 'sanitize_text_field' ) {
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		$value = isset( $_POST[ $key ] ) ? wp_unslash( $_POST[ $key ] ) : '';
-		return ! empty( $sanitize ) && function_exists( $sanitize ) ? call_user_func( $sanitize, $value ) : $value;
+		return function_exists( $sanitize ) ? call_user_func( $sanitize, $value ) : $value;
 	}
 
 	/**
@@ -560,7 +560,7 @@ class Utils {
 	/**
 	 * Prepare the limit clause for a SQL query.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @param string $limit Limit clause to prepare.
 	 *
@@ -591,7 +591,7 @@ class Utils {
 	/**
 	 * Check for certain page in Formidable settings
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @param string $page The name of the page to check.
 	 *

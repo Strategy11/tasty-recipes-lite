@@ -324,7 +324,7 @@ class Editor {
 	/**
 	 * Adds a 'Add rel="nofollow" to link' checkbox to the WordPress link editor.
 	 *
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @return void
 	 */

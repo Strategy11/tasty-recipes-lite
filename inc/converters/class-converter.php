@@ -107,7 +107,7 @@ abstract class Converter {
 	/**
 	 * Get the LIKE query for the match string.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @return string
 	 */
