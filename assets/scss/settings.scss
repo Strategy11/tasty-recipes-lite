@@ -105,3 +105,11 @@
 .tasty-social-preview {
 	max-width: 100%;
 }
+
+.tasty-recipes-about {
+	@media screen and (min-width: 700px) {
+		.first {
+			margin-top: -3rem;
+		}
+	}
+}

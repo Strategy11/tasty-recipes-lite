@@ -8,45 +8,6 @@
 defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 ?>
 
-<style>
-	main {
-		max-width: 700px;
-		margin-top: 1rem;
-	}
-	section::after {
-		content: '';
-		display: block;
-		clear: both;
-		margin-bottom: 2rem;
-	}
-	h2 {
-		margin: 3rem auto 0;
-	}
-	section p {
-		font-size: 1rem;
-	}
-	.wp-core-ui .button {
-		font-size: 1rem;
-		padding: 5px 15px 6px;
-		height: unset;
-	}
-	section img {
-		max-width: 300px;
-		display: block;
-		margin: auto;
-	}
-	@media screen and (min-width: 700px) {
-		section img {
-			margin: 1rem auto;
-			margin-left: 1rem;
-			float: right;
-		}
-		.first {
-			margin: -3rem 0 0 1rem;
-		}
-	}
-</style>
-
 <div class="tasty-recipes-about tasty-tab-content"><main>
 
 	<section>
