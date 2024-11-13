@@ -5,6 +5,8 @@
  * @package Tasty_Recipes
  */
 
+use Tasty_Recipes\Onboarding_Wizard;
+
 /**
  * Base controller class for the plugin.
  */
@@ -311,6 +313,7 @@ class Tasty_Recipes {
 
 		if ( is_admin() ) {
 			Tasty_Recipes\MetaBox::get_instance();
+			Onboarding_Wizard::instance()->load_hooks();
 		}
 	}
 

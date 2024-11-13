@@ -1,0 +1,269 @@
+html.wp-toolbar {
+	padding: 0;
+}
+
+.js .tasty-recipes-hide-js {
+	display: none;
+}
+
+.tasty-recipes-admin-full-screen {
+	#adminmenumain,
+	#wpadminbar,
+	#adminmenuback,
+	#adminmenuwrap,
+	#wpfooter,
+	.tasty-recipes-notice {
+		display: none;
+	}
+
+	#wpcontent,
+	&.auto-fold #wpcontent,
+	#wpbody,
+	#wpbody-content {
+		margin: 0;
+		padding: 0;
+	}
+}
+
+#tasty-recipes-onboarding-wizard-page {
+	position: relative;
+	text-align: center;
+	background-color: var(--grey-50);
+	margin: 0;
+	overflow: hidden;
+	color: var(--grey-700);
+
+	&,
+	&::before,
+	&::after,
+	*,
+	*::before,
+	*::after {
+		box-sizing: border-box;
+	}
+
+	h2 {
+		color: var(--grey-800);
+	}
+
+	#tasty-recipes-onboarding-container {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		min-height: 100vh;
+		padding: 40px;
+		z-index: 2;
+	}
+
+	/* Rootline */
+	.tasty-recipes-onboarding-rootline {
+		position: relative;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		gap: 120px;
+		padding: 0;
+		margin: 0 0 32px;
+
+		&::before {
+			content: "";
+			position: absolute;
+			width: calc(100% - 32px);
+			border: 1px solid var(--grey-300);
+			z-index: 1;
+		}
+
+		&-item {
+			position: relative;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			width: 16px;
+			height: 16px;
+			background-color: #fff;
+			border: 2px solid var(--grey-300);
+			outline: 4px solid var(--grey-50);
+			border-radius: 100%;
+			padding: 0;
+			margin: 0;
+			z-index: 2;
+		}
+
+		&-item.tasty-recipes-completed-step {
+			background-color: var(--grey-700);
+			border-color: var(--grey-700);
+		}
+
+		&-item.tasty-recipes-current {
+			background-color: #fff;
+			border-color: var(--pink);
+		}
+
+		&-item svg {
+			width: 11px;
+			height: 11px;
+
+			path {
+				fill: #fff;
+			}
+		}
+
+		&-item:not(.tasty-recipes-completed-step) svg {
+			display: none;
+		}
+	}
+
+	#tasty-recipes-onboarding-return-dashboard {
+		color: var(--grey-400);
+		font-size: 14px;
+		font-weight: 500;
+		margin-top: 32px;
+		text-decoration: none;
+
+		&:hover {
+			color: var(--grey-700);
+		}
+	}
+
+	&[data-current-step="success"] #tasty-recipes-onboarding-return-dashboard {
+		display: none;
+	}
+
+	.tasty-recipes-card-box {
+		max-width: 524px;
+		background-color: #fff;
+		border-radius: 16px;
+		padding: 40px;
+		border: 1px solid var(--grey-100);
+		box-shadow:
+			0px 1.88298px 3.76596px -0.941489px rgba(16, 24, 40, 0.1),
+			0px 0.941489px 1.88298px -0.941489px rgba(16, 24, 40, 0.06);
+
+		&-header {
+			display: flex;
+			justify-content: center;
+			margin-bottom: 16px;
+
+			svg {
+				height: 60px;
+			}
+		}
+
+		&-content {
+			margin-top: 24px;
+		}
+
+		&-title {
+			font-size: 20px !important;
+			font-weight: 600 !important;
+			margin-top: 0;
+			margin-bottom: 16px;
+		}
+
+		&-text {
+			font-size: 16px !important;
+			color: var(--grey-700) !important;
+			margin-top: 0 !important;
+		}
+
+		&-content > :last-child {
+			margin-bottom: 0;
+		}
+
+		&-footer {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			gap: 16px;
+			margin-top: 32px;
+
+			.tasty-button {
+				padding: 12px 16px;
+
+				&-pink svg {
+					color: #fff;
+					vertical-align: middle;
+					margin-left: 8px;
+				}
+			}
+		}
+
+		&-permission {
+			margin-top: 32px;
+
+			svg {
+				vertical-align: middle;
+				margin-left: 6px;
+			}
+
+			.tasty-recipes-collapsible {
+				cursor: pointer;
+
+				&.tasty-recipes-open svg {
+					transform: rotate(180deg);
+				}
+			}
+
+			.tasty-recipes-collapsible-content {
+				text-align: left;
+				margin-top: 16px;
+			}
+		}
+
+		&-permission-item {
+			display: flex;
+			gap: 12px;
+			align-items: center;
+			text-align: left;
+			padding-top: 16px;
+			padding-bottom: 16px;
+
+			h4 {
+				color: var(--grey-800);
+				margin: 0 0 4px;
+			}
+
+			svg {
+				width: 24px;
+				height: 24px;
+				vertical-align: middle;
+				margin-left: 0;
+				color: #667085;
+			}
+		}
+	}
+}
+
+.tasty-recipes-fadein-up {
+	animation: fadeInUp 300ms ease-in-out forwards;
+}
+
+.tasty-recipes-fadein-down {
+	animation: fadeInDown 220ms ease-out forwards;
+}
+
+@keyframes fadeInUp {
+	0% {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes fadeInDown {
+	0% {
+		opacity: 0.1;
+		transform: translateY(-6px);
+	}
+
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
