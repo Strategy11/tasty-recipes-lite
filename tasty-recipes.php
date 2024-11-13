@@ -55,7 +55,7 @@ if ( ! function_exists( 'tasty_recipes_lite_activation' ) ) {
 	/**
 	 * Run the plugin activation hook.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @return void
 	 */

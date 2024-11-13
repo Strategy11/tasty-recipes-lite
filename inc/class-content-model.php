@@ -25,7 +25,7 @@ class Content_Model {
 	/**
 	 * Load everything triggered on the init hook.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @return void
 	 */

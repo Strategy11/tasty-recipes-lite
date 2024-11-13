@@ -16,7 +16,7 @@ use Tasty_Recipes;
 /**
  * Handles the Onboarding Wizard page in the admin area.
  *
- * @since x.x
+ * @since 1.0
  */
 class Onboarding_Wizard {
 	use Singleton;
@@ -82,7 +82,7 @@ class Onboarding_Wizard {
 	/**
 	 * Initialize hooks for template page only.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @return void
 	 */
@@ -156,7 +156,7 @@ class Onboarding_Wizard {
 	/**
 	 * Initializes the Onboarding Wizard setup if on its designated admin page.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @return void
 	 */
@@ -193,7 +193,7 @@ class Onboarding_Wizard {
 	/**
 	 * Add Onboarding Wizard menu item to sidebar and define index page.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @return void
 	 */
@@ -217,7 +217,7 @@ class Onboarding_Wizard {
 	/**
 	 * Renders the Onboarding Wizard page in the WordPress admin area.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @return void
 	 */
@@ -242,7 +242,7 @@ class Onboarding_Wizard {
 	/**
 	 * Handle AJAX request to setup the "Never miss an important update" step.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @return void
 	 */
@@ -262,7 +262,7 @@ class Onboarding_Wizard {
 	/**
 	 * When the user consents to receiving news of updates, subscribe their email to ActiveCampaign.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @return void
 	 */
@@ -303,7 +303,7 @@ class Onboarding_Wizard {
 	/**
 	 * Try to skip any fake emails.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @param string $email The user email.
 	 *
@@ -331,7 +331,7 @@ class Onboarding_Wizard {
 	/**
 	 * Enqueues the Onboarding Wizard page scripts and styles.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @return void
 	 */
@@ -345,7 +345,7 @@ class Onboarding_Wizard {
 	/**
 	 * Get the Onboarding Wizard JS variables as an array.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @return array
 	 */
@@ -361,7 +361,7 @@ class Onboarding_Wizard {
 	 *
 	 * The function appends a custom class to the existing admin body classes, enabling full-screen mode for the admin interface.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @param string $classes Existing body classes.
 	 *
@@ -374,7 +374,7 @@ class Onboarding_Wizard {
 	/**
 	 * Checks if the Onboarding Wizard was skipped during the plugin's installation.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @return bool True if the Onboarding Wizard was skipped, false otherwise.
 	 */
@@ -385,7 +385,7 @@ class Onboarding_Wizard {
 	/**
 	 * Marks the Onboarding Wizard as skipped to prevent automatic redirects to the wizard.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @return void
 	 */
@@ -396,7 +396,7 @@ class Onboarding_Wizard {
 	/**
 	 * Check if the current page is the Onboarding Wizard page.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @return bool True if the current page is the Onboarding Wizard page, false otherwise.
 	 */
@@ -421,7 +421,7 @@ class Onboarding_Wizard {
 	/**
 	 * Get the path to the Onboarding Wizard views.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @return string Path to views.
 	 */

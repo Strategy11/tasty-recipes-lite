@@ -454,7 +454,7 @@ class Ratings {
 	/**
 	 * Show rating stars HTML that has already been escaped.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @param bool $no_ratings Show no rating template without review yet.
 	 * @param int  $average    The rating valie to show.

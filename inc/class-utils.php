@@ -560,7 +560,7 @@ class Utils {
 	/**
 	 * Prepare the limit clause for a SQL query.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @param string $limit Limit clause to prepare.
 	 *
@@ -591,7 +591,7 @@ class Utils {
 	/**
 	 * Check for certain page in Formidable settings
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @param string $page The name of the page to check.
 	 *

@@ -132,7 +132,7 @@ abstract class Abstract_Template {
 	/**
 	 * Get a list of extra options that show in the customization settings.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @return array
 	 */

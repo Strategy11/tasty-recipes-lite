@@ -32,7 +32,7 @@ class Assets {
 	/**
 	 * Load hooks.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @return void
 	 */
@@ -47,7 +47,7 @@ class Assets {
 	/**
 	 * Registers all scripts and styles.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @return void
 	 */
@@ -629,7 +629,7 @@ class Assets {
 	 * Prepare the head if the post has a recipe.
 	 * This must be loaded before the styles are printed in the head.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @return void
 	 */
@@ -685,7 +685,7 @@ class Assets {
 	/**
 	 * Get common recipe scripts, like JS vars needed for other scripts.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @return void
 	 */
@@ -717,7 +717,7 @@ class Assets {
 	 * added.
 	 *
 	 * @since 3.12.4
-	 * @deprecated x.x
+	 * @deprecated 1.0
 	 *
 	 * @param string $block_content Block content.
 	 *

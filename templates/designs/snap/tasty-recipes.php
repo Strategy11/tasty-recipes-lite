@@ -30,7 +30,7 @@ if ( '.svg' === $ext ) {
 	/**
 	 * Add more information after the title.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @var array $vars Array of variables to pass to the action.
 	 */

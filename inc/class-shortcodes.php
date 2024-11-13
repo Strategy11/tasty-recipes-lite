@@ -68,7 +68,7 @@ class Shortcodes {
 	/**
 	 * Only load inline JS once.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @var bool
 	 */
@@ -77,7 +77,7 @@ class Shortcodes {
 	/**
 	 * Load hooks.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @return void
 	 */
@@ -855,7 +855,7 @@ class Shortcodes {
 	/**
 	 * Get the Nutrifox iframe.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @param int $nutrifox_id Nutrifox ID.
 	 *
@@ -889,7 +889,7 @@ class Shortcodes {
 	/**
 	 * Allow iframe in sanitized HTML.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @param array $allowed_html Allowed HTML.
 	 *
@@ -920,7 +920,7 @@ class Shortcodes {
 	/**
 	 * Set the Nutrifox javascript attributes.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @param array  $attributes Existing attributes.
 	 * @param string $data       Javascript to show.
@@ -994,7 +994,7 @@ class Shortcodes {
 	/**
 	 * Load late registered styles.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @param string $css CSS to load.
 	 *
@@ -1016,7 +1016,7 @@ class Shortcodes {
 	 * which won't exist in older templates. This will prevent
 	 * the ratings from showing multiple times.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @param array $template_vars Template variables.
 	 *
@@ -1240,7 +1240,7 @@ class Shortcodes {
 	/**
 	 * Add the template customization to the CSS vars.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @param array $vars Existing CSS vars.
 	 *
