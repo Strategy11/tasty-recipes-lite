@@ -252,7 +252,7 @@
 				</div>
 				<div class="tasty-recipes-nutrifox-field-container">
 					<div>
-						<h3>Nutrifox Display</h3>
+						<h3>Nutrition Facts</h3>
 						<fieldset>
 							<label
 								><input

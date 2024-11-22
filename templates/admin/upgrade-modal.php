@@ -17,12 +17,12 @@ defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 		</div>
 
 		<div class="tasty-framework-modal-body">
-			<?php esc_html_e( 'This is a premium feature. Consider upgrading to a paid plan to get this and more.', 'tasty-recipes-lite' ); ?>
+			<?php esc_html_e( 'This is a premium feature. Consider upgrading to a paid plan to get this and more great features.', 'tasty-recipes-lite' ); ?>
 
 			<div class="tasty-framework-spacer"></div>
 
 			<a href="<?php echo esc_url( $tasty_recipes_lite_upgrade_url ); ?>" target="_blank" rel="noopener" class="tasty-button tasty-button-pink tasty-button-large tasty-button-full">
-				<?php esc_html_e( 'Upgrade to Pro', 'tasty-recipes-lite' ); ?>
+				<?php esc_html_e( 'Upgrade Now', 'tasty-recipes-lite' ); ?>
 			</a>
 		</div>
 	</div>
