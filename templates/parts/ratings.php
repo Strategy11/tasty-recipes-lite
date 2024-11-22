@@ -37,7 +37,13 @@ for ( $i = 5; $i >= 1; $i-- ) {
 	<span class="tasty-recipes-rating" <?php echo $is_selected ? 'data-tr-checked="1"' : ''; ?>>
 		<i class="checked" data-rating="<?php echo esc_attr( $i ); ?>">
 			<span class="tasty-recipes-rating-<?php echo esc_attr( $rating_style ); ?>" data-tr-clip="<?php echo esc_attr( $percentage ); ?>">
-				<?php Tasty_Recipes\Utils::kses( $icons['checked'], true ); ?>
+				<?php
+				if ( $percentage === 100 || $percentage === 0 ) {
+					Tasty_Recipes\Utils::kses( $icons['full'], true );
+				} else {
+					Tasty_Recipes\Utils::kses( $icons['checked'], true );
+				}
+				?>
 			</span>
 			<span class="tasty-recipes-screen-reader">
 				<?php

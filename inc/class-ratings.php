@@ -63,6 +63,13 @@ class Ratings {
 	const RATING_COMMENT_HASH_META_KEY = 'tasty-recipes-comment-hash';
 
 	/**
+	 * Whether the SVG has been loaded.
+	 *
+	 * @var bool
+	 */
+	private static $svg_loaded = false;
+
+	/**
 	 * Whether or not ratings are enabled. Optionally pass a comment status to
 	 * check if comments are open for the current post.
 	 *
@@ -353,27 +360,36 @@ class Ratings {
 			return '';
 		}
 
-		$ret = '';
-		for ( $i = 1; $i <= 5; $i++ ) {
-			if ( ceil( $rating ) >= $i || in_array( $style, array( 'outline', 'solid' ), true ) ) {
-				$percentage = self::get_fill_percent(
-					array(
-						'i'       => $i,
-						'average' => $rating,
-					)
-				);
+		$ret  = '';
+		$ret .= self::maybe_load_sprite( $icons );
 
-				$ret .= '<span';
-				if ( ! empty( $customization ) ) {
-					$ret .= ' data-tasty-recipes-customization="' . esc_attr( $customization ) . '"';
-				}
-				$ret .= ' class="' . esc_attr( 'tasty-recipes-rating tasty-recipes-rating-' . $style ) . '"';
-				$ret .= ' data-tr-clip="' . esc_attr( (string) $percentage ) . '"';
-				$ret .= ' data-rating="' . intval( $i ) . '"';
-				$ret .= '>';
-				$ret .= $icons['checked'];
-				$ret .= '</span>';
+		for ( $i = 1; $i <= 5; $i++ ) {
+			$show_star = ceil( $rating ) >= $i || in_array( $style, array( 'outline', 'solid' ), true );
+			if ( ! $show_star ) {
+				continue;
 			}
+
+			$percentage = self::get_fill_percent(
+				array(
+					'i'       => $i,
+					'average' => $rating,
+				)
+			);
+
+			$ret .= '<span';
+			if ( ! empty( $customization ) ) {
+				$ret .= ' data-tasty-recipes-customization="' . esc_attr( $customization ) . '"';
+			}
+			$ret .= ' class="' . esc_attr( 'tasty-recipes-rating tasty-recipes-rating-' . $style ) . '"';
+			$ret .= ' data-tr-clip="' . esc_attr( (string) $percentage ) . '"';
+			$ret .= ' data-rating="' . intval( $i ) . '"';
+			$ret .= '>';
+			if ( $percentage === 100 || $percentage === 0 ) {
+				$ret .= $icons['full'];
+			} else {
+				$ret .= $icons['checked'];
+			}
+			$ret .= '</span>';
 		}
 		return $ret;
 	}
@@ -399,10 +415,45 @@ class Ratings {
 		}
 
 		$star_svg = Utils::get_contents( 'assets/images/' . $svg_name, 'path' );
+
+		$sprite_name = str_replace( '.svg', '-sprite.svg', $svg_name );
+		$star_sprite = Utils::get_contents( 'assets/images/' . $sprite_name, 'path' );
+
 		return array(
 			'checked'   => $star_svg,
 			'unchecked' => $star_svg,
+			'sprite'    => $star_sprite,
+			'full'      => self::filled_star_from_sprite(),
 		);
+	}
+
+	/**
+	 * Load the SVG sprite if it hasn't been loaded yet.
+	 *
+	 * @since x.x
+	 *
+	 * @param array $icons Icons to load.
+	 *
+	 * @return string
+	 */
+	private static function maybe_load_sprite( $icons ) {
+		if ( self::$svg_loaded ) {
+			return '';
+		}
+
+		self::$svg_loaded = true;
+		return Utils::kses( $icons['sprite'] );
+	}
+
+	/**
+	 * Show the filled star from the sprite.
+	 *
+	 * @since x.x
+	 *
+	 * @return string
+	 */
+	private static function filled_star_from_sprite() {
+		return '<svg class="tasty-recipes-svg"><use href="#wpt-star-full" /></svg>';
 	}
 
 	/**
@@ -439,16 +490,20 @@ class Ratings {
 		$settings     = Tasty_Recipes::get_filtered_customization_settings();
 		$rating_style = $settings['star_ratings_style'];
 
-		return Tasty_Recipes::get_template_part(
-			'parts/ratings',
-			array(
-				'no_ratings'       => $no_ratings,
-				'icons'            => self::get_icons_by_type( $rating_style ),
-				'remove_new_lines' => true,
-				'average'          => $average,
-				'rating_style'     => $rating_style,
-			)
-		);
+		$icons  = self::get_icons_by_type( $rating_style );
+		$sprite = self::maybe_load_sprite( $icons );
+
+		return $sprite .
+			Tasty_Recipes::get_template_part(
+				'parts/ratings',
+				array(
+					'no_ratings'       => $no_ratings,
+					'icons'            => $icons,
+					'remove_new_lines' => true,
+					'average'          => $average,
+					'rating_style'     => $rating_style,
+				)
+			);
 	}
 
 	/**
