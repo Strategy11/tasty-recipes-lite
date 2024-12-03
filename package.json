@@ -50,7 +50,7 @@
     "zip": "bin/compile.sh"
   },
   "dependencies": {
-    "@wordpress/dom-ready": "^4.11.0",
+    "@wordpress/dom-ready": "^4.13.0",
     "vue": "^2.7",
     "vue-color": "^2.8"
   },
