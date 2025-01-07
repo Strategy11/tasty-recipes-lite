@@ -82,7 +82,11 @@ class Frontend {
 			return $links;
 		}
 
-		$recipe            = Recipe::get_by_id( $recipe_id );
+		$recipe = Recipe::get_by_id( $recipe_id );
+		if ( ! $recipe ) {
+			return $links;
+		}
+
 		$total_reviews     = $recipe->get_total_reviews();
 		$rating_link_class = '';
 

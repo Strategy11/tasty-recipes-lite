@@ -1103,11 +1103,38 @@ class Shortcodes {
 			$should_prepend_jump_to
 		);
 
+		self::maybe_remove_smooth_scroll( $links );
+
 		$html  = '<div class="tasty-recipes-quick-links">';
 		$html .= implode( '<span>&middot;</span>', $links );
 		$html .= '</div>';
 
 		return $html;
+	}
+
+	/**
+	 * Remove the smooth scroll class if the jump link is not present.
+	 *
+	 * @param array $links Links to check.
+	 *
+	 * @return void
+	 */
+	private static function maybe_remove_smooth_scroll( &$links ) {
+		/**
+		 * This filter allows disabling the smooth scrolling for quick links.
+		 *
+		 * @since x.x
+		 */
+		$use_smooth = apply_filters( 'tasty_recipes_smooth_scroll', true );
+		if ( $use_smooth ) {
+			return;
+		}
+
+		foreach ( $links as $key => $link ) {
+			if ( false !== strpos( $link, 'tasty-recipes-scrollto' ) ) {
+				$links[ $key ] = str_replace( ' tasty-recipes-scrollto', '', $link );
+			}
+		}
 	}
 
 	/**

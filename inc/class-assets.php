@@ -42,6 +42,7 @@ class Assets {
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'action_admin_enqueue_scripts' ) );
 		add_action( 'wp_enqueue_editor', array( __CLASS__, 'action_wp_enqueue_editor' ) );
 		add_action( 'enqueue_block_editor_assets', array( __CLASS__, 'action_enqueue_block_editor_assets' ) );
+		add_action( 'tcb_editor_enqueue_scripts', array( __CLASS__, 'action_enqueue_tcb_frame_styles' ) );
 	}
 
 	/**
@@ -306,6 +307,23 @@ class Assets {
 		wp_localize_script( 'tasty-recipes-block-editor', 'tastyRecipesBlockEditor', $blocks_data );
 
 		self::action_wp_head();
+	}
+
+	/**
+	 * Enqueue the main style in the Thrive Architect inner frame.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
+	 */
+	public static function action_enqueue_tcb_frame_styles() {
+		/**
+		 * If the post was already saved and the page refreshed in the editor,
+		 * the styles are already enqueued, so we don't need to do it again.
+		*/
+		if ( ! wp_style_is( 'tasty-recipes-main' ) ) {
+			self::action_wp_head();
+		}
 	}
 
 	/**
