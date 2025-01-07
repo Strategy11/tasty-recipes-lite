@@ -12,7 +12,7 @@ The easiest recipe plugin to get your food blog up and running fast.
 
 == Description ==
 
-Tasty Recipes makes it possible for anyone to publish their favorite recipes to the world. Your recipes will automatically be optimized for search engines and match your theme's design.
+[Tasty Recipes](https://www.wptasty.com/tasty-recipes) makes it possible for anyone to publish their favorite recipes to the world. Your recipes will automatically be optimized for search engines and match your theme's design.
 
 = Optimized for humans and machines =
 
@@ -26,9 +26,9 @@ Tasty Recipes automatically includes Schema.org microdata and JSON+LD to make it
 
 = Earn revenue with ads =
 
-You're most likely creating a recipe blog because you'd like some extra revenue. In Tasty Recipes Lite you can insert ads and videos into recipe cards from Mediavine, AdThrive, or Swoop. Or display a "powered by" affiliate link if you love Tasty Recipes and would like to share it. Each of these options requires an account with each service in order to start earning revenue.
+You're most likely creating a recipe blog because you'd like some extra revenue. In Tasty Recipes Lite you can insert ads and videos into recipe cards from [Mediavine](https://vault.pactsafe.io/s/9cf003f8-52ba-4f99-af33-f4edb31f1d1a/privacy.html) or [Raptive](https://raptive.com/raptive-service-agreement/) (previously AdThrive). Or display a "powered by" affiliate link if you love Tasty Recipes and would like to share it. Each of these options requires an account with each service in order to start earning revenue.
 
-Get more ways of generating revenue in the permium version, including adding links to ingredients and an Instacart integration.
+Get more ways of generating revenue in the [premium version](https://www.wptasty.com/pricing-recipes), including adding links to ingredients and an Instacart integration.
 
 = Pain-free switching from other WordPress recipe plugins =
 
