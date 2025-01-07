@@ -22,7 +22,7 @@
     "laravel-mix": "^6.0",
     "postcss": "^8.4",
     "resolve-url-loader": "^5.0",
-    "sass": "^1.80",
+    "sass": "^1.83",
     "sass-loader": "^16.0",
     "style-loader": "^4.0",
     "svglint": "^3.0",
