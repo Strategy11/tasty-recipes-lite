@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<div class="tasty-recipes-card-box-content">
 		<h2 class="tasty-recipes-card-box-title"><?php esc_html_e( 'Never Miss an Important Update', 'tasty-recipes-lite' ); ?></h2>
 		<p class="tasty-recipes-card-box-text">
-			<?php esc_html_e( 'Get key updates, tips, and occasional offers to enhance your WordPress experience. Opt in to help us improve compatibility with your site!', 'tasty-recipes-lite' ); ?>
+			<?php esc_html_e( 'Get key updates, tips, and occasional offers to enhance your WordPress experience.', 'tasty-recipes-lite' ); ?>
 		</p>
 	</div>
 
@@ -65,6 +65,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</div>
 			</div>
 
+			<!--
 			<div class="tasty-recipes-card-box-permission-item">
 				<span>
 					<?php
@@ -103,6 +104,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<span><?php esc_html_e( 'Names, slugs, versions, and if active or not', 'tasty-recipes-lite' ); ?></span>
 				</div>
 			</div>
+			-->
 		</div>
 	</div>
 </section>
