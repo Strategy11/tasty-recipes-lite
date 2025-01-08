@@ -605,10 +605,7 @@ class Admin {
 	public static function add_lite_upgrade_modal() {
 		$tasty_recipes_lite_upgrade_url = Url::get_upgrade_url(
 			'Tasty Recipes',
-			[
-				'utm_campaign' => 'modal',
-				'utm_content'  => '__setting_utm_content__',
-			]
+			[ 'utm_content'  => 'modal' ]
 		);
 		Tasty_Recipes::echo_template_part( 'admin/upgrade-modal', compact( 'tasty_recipes_lite_upgrade_url' ) );
 	}

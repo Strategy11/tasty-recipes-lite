@@ -17,16 +17,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<div id="tasty-recipes-onboarding-container">
 		<ul id="tasty-recipes-onboarding-rootline" class="tasty-recipes-onboarding-rootline">
 			<li class="tasty-recipes-onboarding-rootline-item" data-step="consent-tracking">
-				<?php
-				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-				echo Utils::get_contents( TASTY_FRAMEWORK_PATH_ASSETS . '/images/icon-check.svg' );
-				?>
+				<?php Utils::kses( Utils::get_contents( TASTY_FRAMEWORK_PATH_ASSETS . '/images/icon-check.svg' ), true ); ?>
 			</li>
 			<li class="tasty-recipes-onboarding-rootline-item" data-step="success">
-				<?php
-				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-				echo Utils::get_contents( TASTY_FRAMEWORK_PATH_ASSETS . '/images/icon-check.svg' );
-				?>
+				<?php Utils::kses( Utils::get_contents( TASTY_FRAMEWORK_PATH_ASSETS . '/images/icon-check.svg' ), true ); ?>
 			</li>
 		</ul>
 
