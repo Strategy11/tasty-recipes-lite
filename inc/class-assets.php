@@ -320,7 +320,7 @@ class Assets {
 		/**
 		 * If the post was already saved and the page refreshed in the editor,
 		 * the styles are already enqueued, so we don't need to do it again.
-		*/
+		 */
 		if ( ! wp_style_is( 'tasty-recipes-main' ) ) {
 			self::action_wp_head();
 		}
