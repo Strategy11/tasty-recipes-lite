@@ -11,7 +11,7 @@ name: Inspections
 jobs:
   runJSTests:
     if: contains(github.event.pull_request.labels.*.name, 'run tests')
-    name: Run PHPCS inspection
+    name: Run JS Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4.1.1
