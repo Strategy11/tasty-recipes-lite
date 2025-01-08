@@ -83,3 +83,6 @@ jobs:
 
       - name: Run PHPUnit
         run: composer phpunit
+
+      - name: Run Javascript Tests
+        run: npm run test

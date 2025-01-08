@@ -32,6 +32,12 @@ jobs:
 
       - name: PHPCS check
         run: ./vendor/bin/phpcs --parallel=10 ./
+
+      - name: PHPStan
+        run: composer phpstan
+
+      - name: phpcsfixer
+        run: composer phpcsfixer
       
       - name: Javascript Lint
         run: npm run lint
