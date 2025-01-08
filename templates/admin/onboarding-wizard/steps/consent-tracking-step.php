@@ -12,18 +12,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 ?>
-<section id="tasty-recipes-onboarding-consent-tracking-step" class="tasty-recipes-onboarding-step tasty-recipes-card-box tasty-recipes-current" data-step-name="<?php echo esc_attr( $step ); ?>">
+<section
+	id="tasty-recipes-onboarding-consent-tracking-step"
+	class="tasty-recipes-onboarding-step tasty-recipes-card-box tasty-shadow tasty-recipes-current"
+	data-step-name="<?php echo esc_attr( $step ); ?>"
+	>
 	<div class="tasty-recipes-card-box-header">
-		<?php
-		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		echo Utils::get_contents( TASTY_FRAMEWORK_PATH_ASSETS . '/images/logo.svg' );
-		?>
+		<?php Utils::kses( Utils::get_contents( TASTY_FRAMEWORK_PATH_ASSETS . '/images/logo.svg' ), true ); ?>
 	</div>
 
 	<div class="tasty-recipes-card-box-content">
-		<h2 class="tasty-recipes-card-box-title"><?php esc_html_e( 'Never miss an important update', 'tasty-recipes-lite' ); ?></h2>
+		<h2 class="tasty-recipes-card-box-title"><?php esc_html_e( 'Never Miss an Important Update', 'tasty-recipes-lite' ); ?></h2>
 		<p class="tasty-recipes-card-box-text">
-			<?php esc_html_e( 'Get key updates, tips, and occasional offers to enhance your WordPress experience. Opt in and help us improve compatibility with your site!', 'tasty-recipes-lite' ); ?>
+			<?php esc_html_e( 'Get key updates, tips, and occasional offers to enhance your WordPress experience.', 'tasty-recipes-lite' ); ?>
 		</p>
 	</div>
 
@@ -36,8 +37,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<?php
 			esc_html_e( 'Allow & Continue', 'tasty-recipes-lite' );
 
-			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-			echo Utils::get_contents( TASTY_FRAMEWORK_PATH_ASSETS . '/images/arrow-right-icon.svg' );
+			Utils::kses( Utils::get_contents( TASTY_FRAMEWORK_PATH_ASSETS . '/images/arrow-right-icon.svg' ), true );
 			?>
 		</a>
 	</div>
@@ -45,10 +45,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<div class="tasty-recipes-card-box-permission">
 		<span class="tasty-recipes-collapsible">
 			<?php
-			esc_html_e( 'Allow Tasty Recipes Plugin to', 'tasty-recipes-lite' );
+			esc_html_e( 'Allow Tasty Recipes to', 'tasty-recipes-lite' );
 
-			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-			echo Utils::get_contents( TASTY_FRAMEWORK_PATH_ASSETS . '/images/arrow-bottom-icon.svg' );
+			Utils::kses( Utils::get_contents( TASTY_FRAMEWORK_PATH_ASSETS . '/images/arrow-bottom-icon.svg' ), true );
 			?>
 		</span>
 
@@ -56,22 +55,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<div class="tasty-recipes-card-box-permission-item">
 				<span>
 					<?php
-					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-					echo Utils::get_contents( TASTY_FRAMEWORK_PATH_ASSETS . '/images/user-icon.svg' );
+					Utils::kses( Utils::get_contents( TASTY_FRAMEWORK_PATH_ASSETS . '/images/user-icon.svg' ), true );
 					?>
 				</span>
 
 				<div class="tasty-recipes-card-box-permission-item-content">
 					<h4><?php esc_html_e( 'View Basic Profile Info', 'tasty-recipes-lite' ); ?></h4>
-					<span><?php esc_html_e( 'Your WordPress user’s: first & last name and email address', 'tasty-recipes-lite' ); ?></span>
+					<span><?php esc_html_e( 'Your WordPress user full name and email address', 'tasty-recipes-lite' ); ?></span>
 				</div>
 			</div>
 
+			<!--
 			<div class="tasty-recipes-card-box-permission-item">
 				<span>
 					<?php
-					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-					echo Utils::get_contents( TASTY_FRAMEWORK_PATH_ASSETS . '/images/layout-icon.svg' );
+					Utils::kses( Utils::get_contents( TASTY_FRAMEWORK_PATH_ASSETS . '/images/layout-icon.svg' ), true );
 					?>
 				</span>
 
@@ -84,13 +82,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<div class="tasty-recipes-card-box-permission-item">
 				<span>
 					<?php
-					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-					echo Utils::get_contents( TASTY_FRAMEWORK_PATH_ASSETS . '/images/puzzle-icon.svg' );
+					Utils::kses( Utils::get_contents( TASTY_FRAMEWORK_PATH_ASSETS . '/images/puzzle-icon.svg' ), true );
 					?>
 				</span>
 
 				<div class="tasty-recipes-card-box-permission-item-content">
-					<h4><?php esc_html_e( 'View Basic Plugin Info', 'tasty-recipes-lite' ); ?></h4>
+					<h4><?php esc_html_e( 'View Basic Tasty Plugin Info', 'tasty-recipes-lite' ); ?></h4>
 					<span><?php esc_html_e( 'Current plugin & SDK versions, and if active or uninstalled', 'tasty-recipes-lite' ); ?></span>
 				</div>
 			</div>
@@ -98,8 +95,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<div class="tasty-recipes-card-box-permission-item">
 				<span>
 					<?php
-					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-					echo Utils::get_contents( TASTY_FRAMEWORK_PATH_ASSETS . '/images/field-colors-style-icon.svg' );
+					Utils::kses( Utils::get_contents( TASTY_FRAMEWORK_PATH_ASSETS . '/images/field-colors-style-icon.svg' ), true );
 					?>
 				</span>
 
@@ -108,6 +104,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<span><?php esc_html_e( 'Names, slugs, versions, and if active or not', 'tasty-recipes-lite' ); ?></span>
 				</div>
 			</div>
+			-->
 		</div>
 	</div>
 </section>

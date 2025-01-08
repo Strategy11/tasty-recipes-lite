@@ -14,18 +14,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 ?>
-<section id="tasty-recipes-onboarding-success-step" class="tasty-recipes-onboarding-step tasty-recipes-card-box hidden" data-step-name="<?php echo esc_attr( $step ); ?>">
+<section id="tasty-recipes-onboarding-success-step"
+	class="tasty-recipes-onboarding-step tasty-recipes-card-box tasty-shadow hidden"
+	data-step-name="<?php echo esc_attr( $step ); ?>"
+	>
 	<div class="tasty-recipes-card-box-header">
-		<?php
-		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		echo Utils::get_contents( TASTY_FRAMEWORK_PATH_ASSETS . '/images/logo.svg' );
-		?>
+		<?php Utils::kses( Utils::get_contents( TASTY_FRAMEWORK_PATH_ASSETS . '/images/logo.svg' ), true ); ?>
 	</div>
 
 	<div class="tasty-recipes-card-box-content">
 		<h2 class="tasty-recipes-card-box-title"><?php esc_html_e( 'You\'re All Set!', 'tasty-recipes-lite' ); ?></h2>
 		<p class="tasty-recipes-card-box-text">
-			<?php esc_html_e( 'Congratulations on completing the onboarding process! We hope you enjoy using Tasty Recipes Lite Plugin.', 'tasty-recipes-lite' ); ?>
+			<?php esc_html_e( 'We hope you enjoy using Tasty Recipes!', 'tasty-recipes-lite' ); ?>
 		</p>
 	</div>
 

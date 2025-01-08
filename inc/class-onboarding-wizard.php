@@ -116,7 +116,7 @@ class Onboarding_Wizard {
 			return;
 		}
 
-		if ( $this->has_onboarding_been_skipped() || Recipes::instance()->is_pro_active() ) {
+		if ( $this->has_onboarding_been_skipped() || class_exists( 'Tasty_Recipes_Pro' ) ) {
 			return;
 		}
 
