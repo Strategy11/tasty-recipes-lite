@@ -561,11 +561,58 @@ class Assets {
 	private static function get_current_post_id() {
 		global $post;
 
+		$param_id = Utils::get_param( 'post', 'intval', 0 );
+
 		if ( $post ) {
-			return $post->ID;
+			if ( $post->ID === $param_id ) {
+				return $post->ID;
+			}
 		}
 
-		return Utils::get_param( 'post', 'intval', 0 );
+		if ( $param_id === 0 ) {
+			return self::get_auto_draft_id();
+		}
+
+		return $param_id;
+	}
+
+	/**
+	 * Retrieve or create an auto-draft post ID.
+	 * 
+	 * @since x.x
+	 *
+	 * @return int
+	 */
+	private static function get_auto_draft_id() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$post_type = isset( $_GET['post_type'] ) ? sanitize_text_field( $_GET['post_type'] ) : 'post';
+
+		// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.get_posts_get_posts
+		$recent_auto_drafts = get_posts(
+			array(
+				'post_type'      => $post_type,
+				'post_status'    => 'auto-draft',
+				'posts_per_page' => 1,
+				'orderby'        => 'date',
+				'order'          => 'DESC',
+				'date_query'     => array(
+					array(
+						'after' => '10 minutes ago',
+					),
+				),
+				'author'         => get_current_user_id(),
+			)
+		);
+	
+		if ( ! empty( $recent_auto_drafts ) ) {
+			return $recent_auto_drafts[0]->ID;
+		}
+
+		if ( ! function_exists( 'get_default_post_to_edit' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/post.php';
+		}
+	
+		return get_default_post_to_edit( $post_type, true )->ID;
 	}
 
 	/**
