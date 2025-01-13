@@ -1119,11 +1119,11 @@ class Shortcodes {
 	 *
 	 * @return void
 	 */
-	private static function maybe_remove_smooth_scroll( &$links ) {
+	private static function maybe_remove_smooth_scroll( array &$links ) {
 		/**
 		 * This filter allows disabling the smooth scrolling for quick links.
 		 *
-		 * @since x.x
+		 * @since 1.0
 		 */
 		$use_smooth = apply_filters( 'tasty_recipes_smooth_scroll', true );
 		if ( $use_smooth ) {

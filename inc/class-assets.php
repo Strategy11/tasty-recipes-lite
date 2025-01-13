@@ -312,7 +312,7 @@ class Assets {
 	/**
 	 * Enqueue the main style in the Thrive Architect inner frame.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @return void
 	 */
@@ -577,7 +577,7 @@ class Assets {
 	/**
 	 * Retrieve or create an auto-draft post ID.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @return int
 	 */
