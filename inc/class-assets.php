@@ -42,6 +42,7 @@ class Assets {
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'action_admin_enqueue_scripts' ) );
 		add_action( 'wp_enqueue_editor', array( __CLASS__, 'action_wp_enqueue_editor' ) );
 		add_action( 'enqueue_block_editor_assets', array( __CLASS__, 'action_enqueue_block_editor_assets' ) );
+		add_action( 'tcb_editor_enqueue_scripts', array( __CLASS__, 'action_enqueue_tcb_frame_styles' ) );
 	}
 
 	/**
@@ -309,6 +310,23 @@ class Assets {
 	}
 
 	/**
+	 * Enqueue the main style in the Thrive Architect inner frame.
+	 *
+	 * @since 1.0
+	 *
+	 * @return void
+	 */
+	public static function action_enqueue_tcb_frame_styles() {
+		/**
+		 * If the post was already saved and the page refreshed in the editor,
+		 * the styles are already enqueued, so we don't need to do it again.
+		 */
+		if ( ! wp_style_is( 'tasty-recipes-main' ) ) {
+			self::action_wp_head();
+		}
+	}
+
+	/**
 	 * Register the modal editor script with its localization.
 	 *
 	 * @return void
@@ -543,11 +561,55 @@ class Assets {
 	private static function get_current_post_id() {
 		global $post;
 
-		if ( $post ) {
+		$param_id = Utils::get_param( 'post', 'intval', 0 );
+
+		if ( $post && $post->ID === $param_id ) {
 			return $post->ID;
 		}
 
-		return Utils::get_param( 'post', 'intval', 0 );
+		if ( $param_id === 0 ) {
+			return self::get_auto_draft_id();
+		}
+
+		return $param_id;
+	}
+
+	/**
+	 * Retrieve or create an auto-draft post ID.
+	 *
+	 * @since 1.0
+	 *
+	 * @return int
+	 */
+	private static function get_auto_draft_id() {
+		$post_type = Utils::get_param( 'post_type', 'sanitize_text_field', 'post' );
+
+		// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.get_posts_get_posts
+		$recent_auto_drafts = get_posts(
+			array(
+				'post_type'      => $post_type,
+				'post_status'    => 'auto-draft',
+				'posts_per_page' => 1,
+				'orderby'        => 'date',
+				'order'          => 'DESC',
+				'date_query'     => array(
+					array(
+						'after' => '10 minutes ago',
+					),
+				),
+				'author'         => get_current_user_id(),
+			)
+		);
+
+		if ( ! empty( $recent_auto_drafts ) ) {
+			return $recent_auto_drafts[0]->ID;
+		}
+
+		if ( ! function_exists( 'get_default_post_to_edit' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/post.php';
+		}
+
+		return get_default_post_to_edit( $post_type, true )->ID;
 	}
 
 	/**

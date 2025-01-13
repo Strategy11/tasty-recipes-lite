@@ -430,7 +430,7 @@ class Ratings {
 	/**
 	 * Load the SVG sprite if it hasn't been loaded yet.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @param array $icons Icons to load.
 	 *
@@ -448,7 +448,7 @@ class Ratings {
 	/**
 	 * Show the filled star from the sprite.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @return string
 	 */
