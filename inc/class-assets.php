@@ -563,10 +563,8 @@ class Assets {
 
 		$param_id = Utils::get_param( 'post', 'intval', 0 );
 
-		if ( $post ) {
-			if ( $post->ID === $param_id ) {
-				return $post->ID;
-			}
+		if ( $post && $post->ID === $param_id ) {
+			return $post->ID;
 		}
 
 		if ( $param_id === 0 ) {
@@ -578,14 +576,13 @@ class Assets {
 
 	/**
 	 * Retrieve or create an auto-draft post ID.
-	 * 
+	 *
 	 * @since x.x
 	 *
 	 * @return int
 	 */
 	private static function get_auto_draft_id() {
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$post_type = isset( $_GET['post_type'] ) ? sanitize_text_field( $_GET['post_type'] ) : 'post';
+		$post_type = Utils::get_param( 'post_type', 'sanitize_text_field', 'post' );
 
 		// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.get_posts_get_posts
 		$recent_auto_drafts = get_posts(
@@ -603,7 +600,7 @@ class Assets {
 				'author'         => get_current_user_id(),
 			)
 		);
-	
+
 		if ( ! empty( $recent_auto_drafts ) ) {
 			return $recent_auto_drafts[0]->ID;
 		}
@@ -611,7 +608,7 @@ class Assets {
 		if ( ! function_exists( 'get_default_post_to_edit' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/post.php';
 		}
-	
+
 		return get_default_post_to_edit( $post_type, true )->ID;
 	}
 

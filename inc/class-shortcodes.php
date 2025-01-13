@@ -1132,7 +1132,7 @@ class Shortcodes {
 
 		foreach ( $links as $key => $link ) {
 			if ( false !== strpos( $link, 'tasty-recipes-scrollto' ) ) {
-				$links[ $key ] = str_replace( ' tasty-recipes-scrollto', '', $link );
+				$links[ $key ] = str_replace( 'tasty-recipes-scrollto', '', $link );
 			}
 		}
 	}
