@@ -20,7 +20,7 @@
     "jest": "^29.7",
     "jest-environment-jsdom": "^29.7",
     "laravel-mix": "^6.0",
-    "postcss": "^8.4",
+    "postcss": "^8.5",
     "resolve-url-loader": "^5.0",
     "sass": "^1.80",
     "sass-loader": "^16.0",
