@@ -265,6 +265,7 @@ class Tasty_Recipes {
 		// Bootstrap.
 		Tasty_Recipes\Assets::load_hooks();
 		Tasty_Recipes\Shortcodes::load_hooks();
+		Tasty_Recipes\Quick_Links::load_hooks();
 		add_action( 'init', array( 'Tasty_Recipes\Block_Editor', 'action_init_register' ) );
 		add_action( 'init', array( 'Tasty_Recipes\Content_Model', 'init_post_type' ) );
 		add_action( 'tasty_recipes_process_thumbnails', array( 'Tasty_Recipes\Content_Model', 'action_tasty_recipes_process_thumbnails' ) );

@@ -48,7 +48,6 @@ phpcs.xml.dist
 .phpunit.result.*
 phpstan.neon
 stubs.php
-README.md
 webpack.config.js
 webpack.mix.js
 wp-cli.local.yml
