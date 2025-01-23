@@ -84,6 +84,8 @@ class Shortcodes {
 	public static function load_hooks() {
 		add_action( 'init', array( __CLASS__, 'action_init_register_shortcode' ) );
 
+		add_action( 'wp_head', array( __CLASS__, 'doing_header' ), 0 );
+		add_action( 'wp_head', array( __CLASS__, 'ending_header' ), 1000 );
 		add_filter( 'get_the_excerpt', array( __CLASS__, 'filter_get_the_excerpt_early' ), 1 );
 		add_filter( 'get_the_excerpt', array( __CLASS__, 'filter_get_the_excerpt_late' ), 1000 );
 		add_filter( 'the_content', array( __CLASS__, 'filter_the_content_late' ), 100 );
@@ -106,6 +108,29 @@ class Shortcodes {
 	}
 
 	/**
+	 * Prevent the quicklinks from being loaded
+	 * within the head tags.
+	 *
+	 * @since 1.0
+	 *
+	 * @return void
+	 */
+	public static function doing_header() {
+		self::$doing_excerpt = true;
+	}
+
+	/**
+	 * Indicate the end of the WP head.
+	 *
+	 * @since 1.0
+	 *
+	 * @return void
+	 */
+	public static function ending_header() {
+		self::$doing_excerpt = false;
+	}
+
+	/**
 	 * Keeps track of when 'get_the_excerpt' is running.
 	 *
 	 * @param string $excerpt Existing excerpt.
@@ -113,7 +138,7 @@ class Shortcodes {
 	 * @return string
 	 */
 	public static function filter_get_the_excerpt_early( $excerpt ) {
-		self::$doing_excerpt = true;
+		self::doing_header();
 		return $excerpt;
 	}
 
@@ -125,7 +150,7 @@ class Shortcodes {
 	 * @return string
 	 */
 	public static function filter_get_the_excerpt_late( $excerpt ) {
-		self::$doing_excerpt = false;
+		self::ending_header();
 		return $excerpt;
 	}
 
@@ -149,12 +174,45 @@ class Shortcodes {
 
 		$quick_links = self::prepended_quick_links( $post, $content );
 
-		if ( ! empty( $quick_links ) ) {
-			$html    = do_shortcode( '[' . self::QUICK_LINKS_SHORTCODE . ' links="' . $quick_links . '"]' );
-			$content = $html . PHP_EOL . PHP_EOL . $content;
+		if ( empty( $quick_links ) ) {
+			return $content;
+		}
+
+		$html    = do_shortcode( '[' . self::QUICK_LINKS_SHORTCODE . ' links="' . $quick_links . '" prepended=1]' );
+		$content = $html . PHP_EOL . PHP_EOL . $content;
+		if ( strpos( $html, '#wpt-star-full' ) ) {
+			self::move_svg_definition_up( $content );
 		}
 
 		return $content;
+	}
+
+	/**
+	 * Move SVG definitions to the top of the content to avoid
+	 * rendering issues and CLS.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $content Post content.
+	 *
+	 * @return void
+	 */
+	private static function move_svg_definition_up( &$content ) {
+		if ( ! strpos( $content, 'wpt-star-full' ) ) {
+			return;
+		}
+
+		// Find the <svg> block containing <symbol id="wpt-star-full">
+		$pattern = '/<svg[^>]*>\s*<defs>(?:(?!<\/svg>).)*?<symbol[^>]*\bid="wpt-star-full"[^>]*>.*?<\/symbol>.*?<\/defs>\s*<\/svg>/is';
+
+		// Check if the pattern matches and move the <svg> block to the top.
+		if ( preg_match( $pattern, $content, $matches )) {
+			$svg_block = $matches[0];
+
+			// Remove the matched <svg> block from its current position.
+			$content = preg_replace( $pattern, '', $content, 1 );
+			$content = $svg_block . "\n" . $content;
+		}
 	}
 
 	/**
@@ -1123,7 +1181,7 @@ class Shortcodes {
 		/**
 		 * This filter allows disabling the smooth scrolling for quick links.
 		 *
-		 * @since 1.0
+		 * @since 3.14
 		 */
 		$use_smooth = apply_filters( 'tasty_recipes_smooth_scroll', true );
 		if ( $use_smooth ) {

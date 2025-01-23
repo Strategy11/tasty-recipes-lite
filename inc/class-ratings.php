@@ -420,17 +420,17 @@ class Ratings {
 		$star_sprite = Utils::get_contents( 'assets/images/' . $sprite_name, 'path' );
 
 		return array(
-			'checked'   => $star_svg,
+			'checked'   => Utils::minify_js( $star_svg ),
 			'unchecked' => $star_svg,
-			'sprite'    => $star_sprite,
-			'full'      => self::filled_star_from_sprite(),
+			'sprite'    => Utils::minify_js( $star_sprite ),
+			'full'      => Utils::minify_js( self::filled_star_from_sprite() ),
 		);
 	}
 
 	/**
 	 * Load the SVG sprite if it hasn't been loaded yet.
 	 *
-	 * @since 1.0
+	 * @since 3.14
 	 *
 	 * @param array $icons Icons to load.
 	 *
@@ -448,7 +448,7 @@ class Ratings {
 	/**
 	 * Show the filled star from the sprite.
 	 *
-	 * @since 1.0
+	 * @since 3.14
 	 *
 	 * @return string
 	 */

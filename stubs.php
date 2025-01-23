@@ -101,7 +101,7 @@ namespace Tasty_Recipes_Pro {
 }
 
 namespace Tasty\Framework\Admin\License{
-	class Updater {
+	class EDDUpdater {
 		public function __construct( $_api_url, $_plugin_file, $_api_data = null ) {
 		}
 
