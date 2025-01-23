@@ -7,6 +7,7 @@
 
 use Tasty_Recipes\Content_Model;
 use Tasty_Recipes\Shortcodes;
+use Tasty_Recipes\Quick_Links;
 
 /**
  * Tests behavior of the Shortcodes class.
