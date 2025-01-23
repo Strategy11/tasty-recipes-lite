@@ -453,7 +453,9 @@ class Ratings {
 	 * @return string
 	 */
 	private static function filled_star_from_sprite() {
-		return '<svg class="tasty-recipes-svg"><use href="#wpt-star-full" /></svg>';
+		return '<svg class="tasty-recipes-svg" width="18" height="17">' .
+			'<use href="#wpt-star-full" />' .
+			'</svg>';
 	}
 
 	/**
