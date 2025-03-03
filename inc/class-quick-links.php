@@ -1,6 +1,6 @@
 <?php
 /**
- * Registers shortcodes used by the plugin.
+ * Holds the Quick Links class.
  *
  * @since x.x
  *
@@ -13,7 +13,9 @@ use Tasty_Recipes;
 use WP_Post;
 
 /**
- * Registers shortcodes used by the plugin.
+ * Manages the Quick Links and the SVG sprite.
+ * 
+ * @since x.x
  */
 class Quick_Links {
 
@@ -21,6 +23,8 @@ class Quick_Links {
 	 * Quick Links shortcode name.
 	 *
 	 * @var string
+	 * 
+	 * @since x.x
 	 */
 	private static $shortcode_name = 'tasty-recipes-quick-links';
 
@@ -28,6 +32,8 @@ class Quick_Links {
 	 * Whether or not we're currently doing the excerpt.
 	 *
 	 * @var bool
+	 * 
+	 * @since x.x
 	 */
 	private static $doing_excerpt = false;
 
@@ -49,8 +55,7 @@ class Quick_Links {
 	}
 
 	/**
-	 * Prevent the quicklinks from being loaded
-	 * within the head tags.
+	 * Prevent the quicklinks from being loaded within the head tags.
 	 *
 	 * @since 1.0
 	 *
@@ -75,6 +80,8 @@ class Quick_Links {
 	 * Keeps track of when 'get_the_excerpt' is running.
 	 *
 	 * @param string $excerpt Existing excerpt.
+	 * 
+	 * @since x.x
 	 *
 	 * @return string
 	 */
@@ -87,6 +94,8 @@ class Quick_Links {
 	 * Keeps track of when 'get_the_excerpt' is running.
 	 *
 	 * @param string $excerpt Existing excerpt.
+	 * 
+	 * @since x.x
 	 *
 	 * @return string
 	 */
@@ -99,6 +108,8 @@ class Quick_Links {
 	 * Add "Jump to Recipe" and "Print Recipe" buttons when the post has a recipe.
 	 *
 	 * @param string $content Existing post content.
+	 * 
+	 * @since x.x
 	 *
 	 * @return string
 	 */
@@ -132,9 +143,9 @@ class Quick_Links {
 	 * Move SVG definitions to the top of the content to avoid
 	 * rendering issues and CLS.
 	 *
-	 * @since x.x
-	 *
 	 * @param string $content Post content.
+	 * 
+	 * @since x.x
 	 *
 	 * @return void
 	 */
@@ -161,6 +172,8 @@ class Quick_Links {
 	 *
 	 * @param WP_Post $post    Post object.
 	 * @param string  $content Post content.
+	 * 
+	 * @since x.x
 	 *
 	 * @return string
 	 */
@@ -187,6 +200,8 @@ class Quick_Links {
 		 * @param array $quick_links The links to prepend.
 		 * @param int   $post_id     ID for the recipe's post.
 		 * @param array $recipe_ids  Recipe IDs within the post.
+		 * 
+		 * @since x.x
 		 */
 		$quick_links = apply_filters( 'tasty_recipes_should_prepend_jump_to', $quick_links, $post->ID, $recipe_ids );
 
@@ -208,6 +223,8 @@ class Quick_Links {
 	 * Renders the Quick Links shortcode.
 	 *
 	 * @param array $atts Shortcode attributes.
+	 * 
+	 * @since x.x
 	 *
 	 * @return string
 	 */
@@ -239,6 +256,8 @@ class Quick_Links {
 		 * Filter to control whether the print link opens in a new window.
 		 *
 		 * @param bool
+		 * 
+		 * @since x.x
 		 */
 		if ( apply_filters( 'tasty_recipes_print_link_open_new', false ) ) {
 			$open_new = ' target="_blank"';
@@ -264,6 +283,8 @@ class Quick_Links {
 		 * Filter to modify the links used in Quick Links.
 		 *
 		 * @param array $links Existing links.
+		 * 
+		 * @since x.x
 		 */
 		$links = apply_filters(
 			'tasty_recipes_quick_links',
@@ -286,6 +307,8 @@ class Quick_Links {
 	 * Remove the smooth scroll class if the jump link is not present.
 	 *
 	 * @param array $links Links to check.
+	 * 
+	 * @since x.x
 	 *
 	 * @return void
 	 */
@@ -311,6 +334,8 @@ class Quick_Links {
 	 * Get the classes for the quick links.
 	 *
 	 * @param string $classes Existing classes.
+	 * 
+	 * @since x.x
 	 *
 	 * @return string
 	 */
