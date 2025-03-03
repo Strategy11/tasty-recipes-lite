@@ -1,0 +1,85 @@
+name: Run PHPUnit Tests
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types: [ opened, labeled, synchronize ]
+
+jobs:
+  phpunit:
+    if: contains(github.event.pull_request.labels.*.name, 'run tests')
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php-version: [8.0, 7.4]
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: wordpress
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd "mysqladmin ping --silent"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 3
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: mysqli
+          ini-values: |
+            memory_limit=512M
+          coverage: none
+
+      - name: Start WordPress Environment
+        run: |
+          curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+          chmod +x wp-cli.phar
+          sudo mv wp-cli.phar /usr/local/bin/wp
+          wp core download --path=/tmp/wordpress
+          wp config create --dbname=wordpress_tests --dbuser=root --dbpass=root --dbhost=127.0.0.1 --path=/tmp/wordpress
+          wp db create --path=/tmp/wordpress
+          wp core install --url=http://localhost --title="Test Site" --admin_user=admin --admin_password=admin --admin_email=admin@example.com --path=/tmp/wordpress
+
+      - name: Configure SSH for GitHub
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+      - name: Install Dependencies Server Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y subversion
+
+      - name: Install Composer Dependencies
+        env:
+          COMPOSER_AUTH: '{"github-oauth":{"github.com":"${{ secrets.GH_TOKEN }}"}}'
+        run: |
+          composer install --dev --prefer-dist --no-progress
+
+      - name: Install NPM Dependencies
+        run: npm ci
+
+      - name: Download WordPress Test Suite
+        run: |
+          curl -o /tmp/install-wp-tests.sh https://raw.githubusercontent.com/wp-cli/sample-plugin/master/bin/install-wp-tests.sh
+          chmod +x /tmp/install-wp-tests.sh
+          /tmp/install-wp-tests.sh wordpress_test root root 127.0.0.1 latest
+
+      - name: Build Javascript Assets
+        run: npm run build
+
+      - name: Run PHPUnit
+        run: composer phpunit
