@@ -585,6 +585,23 @@ class Ratings {
 	}
 
 	/**
+	 * Add the rating stars sprite to the recipe card.
+	 * 
+	 * @since x.x
+	 * 
+	 * @param string $output - The output of the recipe card.
+	 *
+	 * @return string
+	 */
+	public static function add_star_sprite_to_recipe_card( $output ) {
+		$settings     = Tasty_Recipes::get_customization_settings();
+		$rating_style = $settings['star_ratings_style'];
+		$icons        = self::get_icons_by_type( $rating_style );
+
+		return Utils::kses( $icons['sprite'] ) . $output;
+	}
+
+	/**
 	 * Save the quick rating.
 	 *
 	 * @since 3.12

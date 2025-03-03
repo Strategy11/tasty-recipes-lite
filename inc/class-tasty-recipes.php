@@ -281,6 +281,7 @@ class Tasty_Recipes {
 		add_action( 'admin_head', array( 'Tasty_Recipes\Ratings', 'action_admin_head' ) );
 
 		add_filter( 'tasty_recipes_customization_settings', array( 'Tasty_Recipes\Ratings', 'apply_default_rating_stars_color' ) );
+		add_filter( 'tasty_recipes_recipe_card_output', array( 'Tasty_Recipes\Ratings', 'add_star_sprite_to_recipe_card' ) );
 
 		if ( ! is_admin() && ! Tasty_Recipes\Utils::is_rest_api_request() ) {
 			Tasty_Recipes\Frontend::get_instance();
