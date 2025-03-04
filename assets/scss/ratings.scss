@@ -37,7 +37,18 @@
 		display: inline-block;
 		margin: 0;
 		font-size: var(--tr-star-size, 1.1em);
+		// Use padding instead of gap to select the star on hover.
+		padding-right: var(--tr-star-margin, 0.3em);
 	}
+
+	// Don't add padding on the 5th star when it's reversed.
+	span.tasty-recipes-rating:first-child[data-rating="5"] {
+		padding-right: 0;
+	}
+}
+
+.tasty-recipes-rating p {
+	margin: 4px 0;
 }
 
 .tasty-recipes-entry-header div.tasty-recipes-rating p {
