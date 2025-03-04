@@ -10,15 +10,7 @@ module.exports = function( grunt ) {
 
 			pkg: grunt.file.readJSON( 'package.json' ),
 			compress: {},
-			replace: {},
-
-			wp_readme_to_markdown: {
-				your_target: {
-					files: {
-						'README.md': 'readme.txt'
-					}
-				},
-			},
+			replace: {}
 
 		}
 	);
@@ -96,14 +88,9 @@ module.exports = function( grunt ) {
 		}
 
 		grunt.task.run('setversion:' + v );
-		grunt.task.run('readme');
 	});
 
 	grunt.loadNpmTasks( 'grunt-text-replace' );
-	grunt.loadNpmTasks( 'grunt-wp-readme-to-markdown' );
-
-	grunt.registerTask( 'default', [ 'readme' ] );
-	grunt.registerTask( 'readme', ['wp_readme_to_markdown'] );
 
 	grunt.util.linefeed = '\n';
 

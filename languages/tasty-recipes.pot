@@ -1,4 +1,4 @@
-# Copyright (C) 2024 WP Tasty Recipes Team
+# Copyright (C) 2025 WP Tasty Recipes Team
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-10-12T02:02:33+00:00\n"
+"POT-Creation-Date: 2025-01-23T18:37:27+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.6.0\n"
 "X-Domain: tasty-recipes-lite\n"
@@ -34,239 +34,238 @@ msgstr ""
 msgid "https://www.wptasty.com"
 msgstr ""
 
-#: functions.php:65
+#: functions.php:67
 msgid "Images"
 msgstr ""
 
-#: functions.php:66
+#: functions.php:68
 #: inc/objects/class-recipe.php:79
 msgid "Description"
 msgstr ""
 
-#: functions.php:67
+#: functions.php:69
 #: inc/objects/class-recipe.php:103
 #: templates/designs/snap/tasty-recipes.php:205
-#: templates/recipe/tasty-recipes.php:125
+#: templates/recipe/tasty-recipes.php:128
 msgid "Notes"
 msgstr ""
 
-#: functions.php:68
-#: inc/class-assets.php:314
+#: functions.php:70
+#: inc/class-assets.php:375
 #: templates/designs/snap/tasty-recipes.php:229
-#: templates/recipe/tasty-recipes.php:142
+#: templates/recipe/tasty-recipes.php:145
 msgid "Nutrition"
 msgstr ""
 
-#: inc/class-admin.php:244
+#: inc/class-admin.php:228
 msgid "Tasty Recipe"
 msgstr ""
 
-#: inc/class-admin.php:263
-#: inc/class-admin.php:280
+#: inc/class-admin.php:247
+#: inc/class-admin.php:264
 #: assets/block-editor/recipe-block.js:127
-#: assets/dist/block-editor.build.js:248
 msgid "Edit Tasty Recipe"
 msgstr ""
 
-#: inc/class-admin.php:332
-#: inc/class-settings.php:494
+#: inc/class-admin.php:316
+#: inc/class-settings.php:511
 #: inc/libs/tasty-framework/inc/Admin/Pages/Dashboard.php:265
 msgid "Settings"
 msgstr ""
 
-#: inc/class-admin.php:334
+#: inc/class-admin.php:318
 msgid "License manager"
 msgstr ""
 
-#: inc/class-admin.php:369
-#: inc/class-admin.php:397
-#: inc/designs/class-template.php:156
+#: inc/class-admin.php:353
+#: inc/class-admin.php:381
+#: inc/designs/class-template.php:185
 msgid "Sorry, you don't have permission to do this."
 msgstr ""
 
-#: inc/class-admin.php:379
+#: inc/class-admin.php:363
 msgid "Couldn't count recipes. Please contact support for assistance."
 msgstr ""
 
-#: inc/class-admin.php:408
+#: inc/class-admin.php:392
 msgid "Couldn't convert recipes. Please contact support for assistance."
 msgstr ""
 
 #. translators: %1$s: post title, %2$d: post ID
-#: inc/class-admin.php:427
+#: inc/class-admin.php:411
 msgid "Couldn't convert recipe in '%1$s' (post %2$d). Please contact support for assistance."
 msgstr ""
 
-#: inc/class-admin.php:613
+#: inc/class-admin.php:597
 #: inc/class-editor.php:344
 #: inc/class-editor.php:349
 #: inc/class-editor.php:358
 msgid "You don't have permission to do this."
 msgstr ""
 
-#: inc/class-assets.php:153
-#: inc/class-assets.php:209
-#: inc/class-assets.php:359
+#: inc/class-assets.php:195
+#: inc/class-assets.php:251
+#: inc/class-assets.php:420
 msgid "Media Library"
 msgstr ""
 
-#: inc/class-assets.php:154
-#: inc/class-assets.php:210
-#: inc/class-assets.php:311
-#: inc/class-assets.php:360
+#: inc/class-assets.php:196
+#: inc/class-assets.php:252
+#: inc/class-assets.php:372
+#: inc/class-assets.php:421
 msgid "Select Image"
 msgstr ""
 
-#: inc/class-assets.php:312
+#: inc/class-assets.php:373
 msgid "Details"
 msgstr ""
 
-#: inc/class-assets.php:313
+#: inc/class-assets.php:374
 msgid "Video URL"
 msgstr ""
 
-#: inc/class-assets.php:316
+#: inc/class-assets.php:377
 msgid "+ Time"
 msgstr ""
 
-#: inc/class-assets.php:317
+#: inc/class-assets.php:378
 msgid "- Time"
 msgstr ""
 
-#: inc/class-assets.php:318
+#: inc/class-assets.php:379
 msgid "Add an additional time field"
 msgstr ""
 
-#: inc/class-assets.php:319
+#: inc/class-assets.php:380
 msgid "Remove additional time field"
 msgstr ""
 
-#: inc/class-assets.php:320
+#: inc/class-assets.php:381
 msgid "Additional Time Label"
 msgstr ""
 
-#: inc/class-assets.php:321
+#: inc/class-assets.php:382
 msgid "Additional Time Value"
 msgstr ""
 
-#: inc/class-assets.php:330
+#: inc/class-assets.php:391
 msgid "Video Settings: "
 msgstr ""
 
-#: inc/class-assets.php:332
+#: inc/class-assets.php:393
 msgid "Autoplay"
 msgstr ""
 
-#: inc/class-assets.php:333
+#: inc/class-assets.php:394
 msgid "Mute"
 msgstr ""
 
-#: inc/class-assets.php:334
+#: inc/class-assets.php:395
 msgid "Loop"
 msgstr ""
 
-#: inc/class-assets.php:335
+#: inc/class-assets.php:396
 msgid "Hide Controls"
 msgstr ""
 
-#: inc/class-content-model.php:51
-#: inc/class-content-model.php:63
+#: inc/class-content-model.php:65
+#: inc/class-content-model.php:77
 msgid "Recipes"
 msgstr ""
 
-#: inc/class-content-model.php:52
+#: inc/class-content-model.php:66
 msgid "Recipe"
 msgstr ""
 
-#: inc/class-content-model.php:53
+#: inc/class-content-model.php:67
 msgid "All Recipes"
 msgstr ""
 
-#: inc/class-content-model.php:54
+#: inc/class-content-model.php:68
 msgid "New Recipe"
 msgstr ""
 
-#: inc/class-content-model.php:55
+#: inc/class-content-model.php:69
 msgid "Add New"
 msgstr ""
 
-#: inc/class-content-model.php:56
+#: inc/class-content-model.php:70
 msgid "Add New Recipe"
 msgstr ""
 
-#: inc/class-content-model.php:57
+#: inc/class-content-model.php:71
 #: inc/integrations/elementor/class-recipe-control.php:84
 msgid "Edit Recipe"
 msgstr ""
 
-#: inc/class-content-model.php:58
+#: inc/class-content-model.php:72
 msgid "View Recipes"
 msgstr ""
 
-#: inc/class-content-model.php:59
+#: inc/class-content-model.php:73
 msgid "Search Recipes"
 msgstr ""
 
-#: inc/class-content-model.php:60
+#: inc/class-content-model.php:74
 msgid "No recipes found"
 msgstr ""
 
-#: inc/class-content-model.php:61
+#: inc/class-content-model.php:75
 msgid "No recipes found in trash"
 msgstr ""
 
-#: inc/class-content-model.php:62
+#: inc/class-content-model.php:76
 msgid "Parent recipe"
 msgstr ""
 
 #. translators: Nutrifox HTTP error code.
-#: inc/class-content-model.php:139
+#: inc/class-content-model.php:153
 msgid "Nutrifox API request failed (HTTP code %d)"
 msgstr ""
 
-#: inc/class-content-model.php:174
+#: inc/class-content-model.php:188
 msgid "Unknown shortcode in video URL."
 msgstr ""
 
-#: inc/class-content-model.php:193
+#: inc/class-content-model.php:207
 msgid "Shortcode is missing video id."
 msgstr ""
 
-#: inc/class-content-model.php:219
+#: inc/class-content-model.php:233
 msgid "Unknown provider for URL."
 msgstr ""
 
-#: inc/class-content-model.php:238
+#: inc/class-content-model.php:252
 msgid "Invalid response from provider."
 msgstr ""
 
 #. translators: Individual hour.
-#: inc/class-distribution-metadata.php:1492
+#: inc/class-distribution-metadata.php:1491
 msgid "%s hour"
 msgstr ""
 
 #. translators: Multiple hours.
-#: inc/class-distribution-metadata.php:1494
+#: inc/class-distribution-metadata.php:1493
 msgid "%s hours"
 msgstr ""
 
 #. translators: Multiple hours and minutes.
-#: inc/class-distribution-metadata.php:1496
+#: inc/class-distribution-metadata.php:1495
 msgid "%1$s hours %2$s minutes"
 msgstr ""
 
 #. translators: Individual hour but multiple minutes.
-#: inc/class-distribution-metadata.php:1498
+#: inc/class-distribution-metadata.php:1497
 msgid "%1$s hour %2$s minutes"
 msgstr ""
 
 #. translators: Individual minute.
-#: inc/class-distribution-metadata.php:1500
+#: inc/class-distribution-metadata.php:1499
 msgid "%s minute"
 msgstr ""
 
 #. translators: Multiple minutes.
-#: inc/class-distribution-metadata.php:1502
+#: inc/class-distribution-metadata.php:1501
 msgid "%s minutes"
 msgstr ""
 
@@ -307,7 +306,7 @@ msgid "Unknown error converting recipe."
 msgstr ""
 
 #: inc/class-editor.php:418
-#: inc/class-ratings.php:533
+#: inc/class-ratings.php:603
 msgid "Invalid request"
 msgstr ""
 
@@ -316,219 +315,233 @@ msgstr ""
 msgid "No recipe found."
 msgstr ""
 
-#: inc/class-frontend.php:97
+#: inc/class-frontend.php:101
 msgid "Leave a Review"
 msgstr ""
 
-#: inc/class-ratings.php:272
+#: inc/class-onboarding-wizard.php:205
+msgid "Onboarding Wizard"
+msgstr ""
+
+#: inc/class-onboarding-wizard.php:209
+msgid "WP Tasty"
+msgstr ""
+
+#: inc/class-ratings.php:279
 msgid "Recipe rating"
 msgstr ""
 
-#: inc/class-ratings.php:625
+#: inc/class-ratings.php:695
 msgid "Something went wrong. Your rating was not saved."
 msgstr ""
 
-#: inc/class-ratings.php:715
+#: inc/class-ratings.php:785
 msgid "Thank you for rating!"
 msgstr ""
 
-#: inc/class-ratings.php:720
+#: inc/class-ratings.php:790
 msgid "Update comment"
 msgstr ""
 
-#: inc/class-ratings.php:765
+#: inc/class-ratings.php:835
 msgid "To leave a rating, please share your feedback."
 msgstr ""
 
 #. translators: %1$d star rating.
-#: inc/class-ratings.php:770
+#: inc/class-ratings.php:840
 msgid "To leave a %1$d-star rating, please share your feedback."
 msgstr ""
 
 #. translators: %1$d star rating.
-#: inc/class-ratings.php:787
+#: inc/class-ratings.php:857
 msgid "Rating updated to %1$d stars!"
 msgstr ""
 
-#: inc/class-ratings.php:800
+#: inc/class-ratings.php:870
 msgid "Leave a comment"
 msgstr ""
 
 #. translators: Ratings from number of reviews.
-#: inc/class-ratings.php:856
+#: inc/class-ratings.php:926
 msgid "%1$s from %2$s review"
 msgid_plural "%1$s from %2$s reviews"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/class-settings.php:245
+#: inc/class-settings.php:246
 msgid "Quick Links"
 msgstr ""
 
-#: inc/class-settings.php:247
+#: inc/class-settings.php:248
 msgid "Enable or disable quick links below the post title."
 msgstr ""
 
-#: inc/class-settings.php:253
+#: inc/class-settings.php:254
 msgid "'Jump to Recipe' link"
 msgstr ""
 
-#: inc/class-settings.php:254
+#: inc/class-settings.php:255
 msgid "'Print Recipe' link"
 msgstr ""
 
-#: inc/class-settings.php:255
+#: inc/class-settings.php:256
 msgid "'Leave a Review' link"
 msgstr ""
 
-#: inc/class-settings.php:260
+#: inc/class-settings.php:261
 msgid "Quick Links Style"
 msgstr ""
 
-#: inc/class-settings.php:262
+#: inc/class-settings.php:263
 msgid "Links"
 msgstr ""
 
-#: inc/class-settings.php:263
+#: inc/class-settings.php:264
 msgid "Buttons"
 msgstr ""
 
-#: inc/class-settings.php:278
+#: inc/class-settings.php:280
 msgid "Recipe Card Buttons"
 msgstr ""
 
-#: inc/class-settings.php:292
+#: inc/class-settings.php:294
 msgid "Unit Conversion"
 msgstr ""
 
-#: inc/class-settings.php:293
+#: inc/class-settings.php:295
 msgid "Allow visitors to convert between US Customary and Metric."
 msgstr ""
 
-#: inc/class-settings.php:295
-#: inc/class-settings.php:314
-#: inc/class-settings.php:334
-#: inc/class-settings.php:352
-#: inc/class-settings.php:371
-#: inc/class-settings.php:403
-#: inc/class-settings.php:834
+#: inc/class-settings.php:297
+#: inc/class-settings.php:316
+#: inc/class-settings.php:336
+#: inc/class-settings.php:354
+#: inc/class-settings.php:373
+#: inc/class-settings.php:405
+#: inc/class-settings.php:442
+#: inc/class-settings.php:851
 #: templates/designs/snap/tasty-recipes.php:174
-#: templates/recipe/tasty-recipes.php:97
+#: templates/recipe/tasty-recipes.php:100
 msgid "Off"
 msgstr ""
 
-#: inc/class-settings.php:296
-#: inc/class-settings.php:315
-#: inc/class-settings.php:333
-#: inc/class-settings.php:353
-#: inc/class-settings.php:372
-#: inc/class-settings.php:402
+#: inc/class-settings.php:298
+#: inc/class-settings.php:317
+#: inc/class-settings.php:335
+#: inc/class-settings.php:355
+#: inc/class-settings.php:374
+#: inc/class-settings.php:404
+#: inc/class-settings.php:443
 #: templates/designs/snap/tasty-recipes.php:173
-#: templates/recipe/tasty-recipes.php:96
+#: templates/recipe/tasty-recipes.php:99
 msgid "On"
 msgstr ""
 
-#: inc/class-settings.php:311
+#: inc/class-settings.php:313
 msgid "Ingredient Checkboxes"
 msgstr ""
 
-#: inc/class-settings.php:312
+#: inc/class-settings.php:314
 msgid "Allow visitors to check off recipe ingredients."
 msgstr ""
 
-#: inc/class-settings.php:330
+#: inc/class-settings.php:332
 msgid "Cook Mode"
 msgstr ""
 
-#: inc/class-settings.php:331
+#: inc/class-settings.php:333
 msgid "Show Cook Mode toggle to let visitors prevent sleep mode for supported devices."
 msgstr ""
 
-#: inc/class-settings.php:349
+#: inc/class-settings.php:351
 msgid "Scaling"
 msgstr ""
 
-#: inc/class-settings.php:350
+#: inc/class-settings.php:352
 msgid "Allow visitors to scale the recipe 1x, 2x, or 3x."
 msgstr ""
 
-#: inc/class-settings.php:368
+#: inc/class-settings.php:370
 msgid "Copy to Clipboard"
 msgstr ""
 
-#: inc/class-settings.php:369
+#: inc/class-settings.php:371
 msgid "Allow visitors to copy ingredients to clipboard."
 msgstr ""
 
-#: inc/class-settings.php:387
+#: inc/class-settings.php:389
 msgid "Default Author Link"
 msgstr ""
 
-#: inc/class-settings.php:400
+#: inc/class-settings.php:402
 msgid "Instacart Button"
 msgstr ""
 
-#: inc/class-settings.php:419
+#: inc/class-settings.php:421
 msgid "ShareASale Affiliate ID"
 msgstr ""
 
 #. translators: %1$s opening link tag, %2$s closing tag, %3$s opening link tag, %4$s closing tag.
-#: inc/class-settings.php:423
+#: inc/class-settings.php:425
 msgid "%1$sApply for the affiliate program%2$s, or %3$sfind your affiliate ID%4$s."
 msgstr ""
 
-#: inc/class-settings.php:493
+#: inc/class-settings.php:440
+msgid "Show Powered By"
+msgstr ""
+
+#: inc/class-settings.php:510
 msgid "Design"
 msgstr ""
 
-#: inc/class-settings.php:495
+#: inc/class-settings.php:512
 msgid "Converters"
 msgstr ""
 
-#: inc/class-settings.php:499
+#: inc/class-settings.php:516
 msgid "Debug"
 msgstr ""
 
-#: inc/class-settings.php:502
+#: inc/class-settings.php:519
 msgid "About"
 msgstr ""
 
-#: inc/class-settings.php:837
-#: inc/class-shortcodes.php:400
-#: templates/recipe-print-controls.php:21
+#: inc/class-settings.php:854
+#: inc/class-shortcodes.php:438
+#: templates/recipe-print-controls.php:23
 msgid "Print"
 msgstr ""
 
-#: inc/class-settings.php:840
+#: inc/class-settings.php:857
 msgid "Pin this recipe"
 msgstr ""
 
-#: inc/class-settings.php:844
+#: inc/class-settings.php:861
 msgid "Mediavine Grow.me Save"
 msgstr ""
 
-#: inc/class-settings.php:848
+#: inc/class-settings.php:865
 msgid "Slickstream Favorites"
 msgstr ""
 
-#: inc/class-shortcodes.php:643
+#: inc/class-shortcodes.php:687
 msgid "No reviews"
 msgstr ""
 
-#: inc/class-shortcodes.php:731
+#: inc/class-shortcodes.php:776
 msgid "Author"
 msgstr ""
 
-#: inc/class-shortcodes.php:932
+#: inc/class-shortcodes.php:1016
 msgid "Recipe Card powered by"
 msgstr ""
 
-#: inc/class-shortcodes.php:1038
+#: inc/class-shortcodes.php:1141
 msgid "Jump to Recipe"
 msgstr ""
 
-#: inc/class-shortcodes.php:1044
-#: templates/buttons/print.php:25
+#: inc/class-shortcodes.php:1147
+#: templates/buttons/print.php:27
 msgid "Print Recipe"
 msgstr ""
 
@@ -653,6 +666,14 @@ msgstr ""
 #: inc/libs/tasty-framework/inc/Admin/Menu.php:99
 #: inc/libs/tasty-framework/inc/Admin/Menu.php:104
 msgid "Dashboard"
+msgstr ""
+
+#: inc/libs/tasty-framework/inc/Admin/Menu.php:138
+msgid "Black Friday!"
+msgstr ""
+
+#: inc/libs/tasty-framework/inc/Admin/Menu.php:138
+msgid "Cyber Monday!"
 msgstr ""
 
 #: inc/libs/tasty-framework/inc/Admin/Pages/Dashboard.php:164
@@ -809,29 +830,29 @@ msgid "Get this Deal"
 msgstr ""
 
 #. translators: %1$s Plugin name.
-#: inc/libs/tasty-framework/templates/Admin/Notices/license-empty.php:14
+#: inc/libs/tasty-framework/templates/Admin/Notices/license-empty.php:17
 msgid "%1$s is almost ready."
 msgstr ""
 
-#: inc/libs/tasty-framework/templates/Admin/Notices/license-empty.php:18
+#: inc/libs/tasty-framework/templates/Admin/Notices/license-empty.php:21
 msgid "Enter your license to continue."
 msgstr ""
 
 #. translators: %1$s Plugin name.
-#: inc/libs/tasty-framework/templates/Admin/Notices/license-invalid.php:14
+#: inc/libs/tasty-framework/templates/Admin/Notices/license-invalid.php:17
 msgid "To enable updates and support for %1$s"
 msgstr ""
 
-#: inc/libs/tasty-framework/templates/Admin/Notices/license-invalid.php:17
+#: inc/libs/tasty-framework/templates/Admin/Notices/license-invalid.php:20
 msgid "enter a valid license"
 msgstr ""
 
-#: inc/libs/tasty-framework/templates/Admin/Notices/license-invalid.php:21
+#: inc/libs/tasty-framework/templates/Admin/Notices/license-invalid.php:24
 msgid "Think you've reached this message in error?"
 msgstr ""
 
 #. translators: %1$s Opening anchor tag, %1$s Closing anchor tag.
-#: inc/libs/tasty-framework/templates/Admin/Notices/license-invalid.php:26
+#: inc/libs/tasty-framework/templates/Admin/Notices/license-invalid.php:29
 msgid "%1$sSubmit a support ticket%2$s, and we'll do our best to help out."
 msgstr ""
 
@@ -861,7 +882,7 @@ msgstr ""
 
 #: inc/objects/class-recipe.php:87
 #: templates/designs/snap/tasty-recipes.php:135
-#: templates/recipe/tasty-recipes.php:67
+#: templates/recipe/tasty-recipes.php:70
 msgid "Ingredients"
 msgstr ""
 
@@ -871,7 +892,7 @@ msgstr ""
 
 #: inc/objects/class-recipe.php:95
 #: templates/designs/snap/tasty-recipes.php:168
-#: templates/recipe/tasty-recipes.php:91
+#: templates/recipe/tasty-recipes.php:94
 msgid "Instructions"
 msgstr ""
 
@@ -885,7 +906,7 @@ msgstr ""
 
 #: inc/objects/class-recipe.php:111
 #: templates/designs/snap/tasty-recipes.php:240
-#: templates/recipe/tasty-recipes.php:153
+#: templates/recipe/tasty-recipes.php:156
 msgid "Keywords"
 msgstr ""
 
@@ -1041,238 +1062,297 @@ msgstr ""
 msgid "Cholesterol"
 msgstr ""
 
-#: tasty-recipes.php:700
-msgid "Did you make this recipe?"
-msgstr ""
-
-#: tasty-recipes.php:702
-msgid "Tag @wptasty on Instagram and hashtag it #tastyrecipes"
-msgstr ""
-
-#: templates/about.php:52
+#: templates/about.php:14
 msgid "Welcome to Tasty Recipes! 🎉"
 msgstr ""
 
-#: templates/about.php:56
+#: templates/about.php:18
 msgid "Tasty Recipes is a fast, simple, and SEO-optimized recipe plugin for food bloggers. By purchasing Tasty Recipes, you're getting access to an impecable recipe creation experience, superior code quality, and a helpful support team ready to answer all your questions."
 msgstr ""
 
-#: templates/about.php:58
+#: templates/about.php:20
 msgid "Getting Started"
 msgstr ""
 
-#: templates/about.php:60
+#: templates/about.php:22
 msgid "Tasty Recipes is extremely easy to configure. Visit the settings page to select a recipe card theme, add your Instagram information, and set the default Author URL."
 msgstr ""
 
-#: templates/about.php:62
+#: templates/about.php:24
 msgid "Visit Settings"
 msgstr ""
 
-#: templates/about.php:64
+#: templates/about.php:26
 msgid "Convert Recipes"
 msgstr ""
 
-#: templates/about.php:66
+#: templates/about.php:28
 msgid "Tasty Recipes converts recipes from many sources, including WP Recipe Maker, Easy Recipe, Zip Recipes, and more. We recommend converting a single recipe first to try out the conversion process, then converting everything in bulk once you're satisfied."
 msgstr ""
 
 #. translators: Read more about converting recipes individually and converting recipes in bulk.
-#: templates/about.php:72
+#: templates/about.php:34
 msgid "Read more about %1$s and %2$s."
 msgstr ""
 
-#: templates/about.php:75
+#: templates/about.php:37
 msgid "converting recipes individually"
 msgstr ""
 
-#: templates/about.php:79
+#: templates/about.php:41
 msgid "converting recipes in bulk"
 msgstr ""
 
-#: templates/about.php:90
+#: templates/about.php:52
 msgid "Create New Recipes"
 msgstr ""
 
-#: templates/about.php:92
+#: templates/about.php:54
 msgid "Creating new recipes is easy. Just add a new \"Tasty Recipe\" block to a post and you'll be on your way."
 msgstr ""
 
-#: templates/about.php:94
+#: templates/about.php:56
 msgid "We recommend filling out all the fields for the best SEO potential. Tasty Recipes creates amazing structured data - but it needs the proper information in order to do it!"
 msgstr ""
 
-#: templates/about.php:96
+#: templates/about.php:58
 msgid "Visit Our Documentation"
 msgstr ""
 
-#: templates/about.php:98
+#: templates/about.php:60
 msgid "We pride ourselves on our plugin documentation. If you have questions, head on over to our support site - your question is likely answered there! If not, send us a quick chat and we'll be happy to help."
 msgstr ""
 
-#: templates/about.php:100
+#: templates/about.php:62
 msgid "Visit Documentation"
 msgstr ""
 
 #. translators: %s: template name
-#: templates/admin/locked-template.php:13
+#: templates/admin/locked-template.php:15
 msgid "Preview %s template"
 msgstr ""
 
-#: templates/admin/upgrade-modal.php:19
-msgid "This is a premium feature. Consider upgrading to a paid plan to get this and more."
+#: templates/admin/onboarding-wizard/index.php:34
+msgid "Exit Onboarding"
 msgstr ""
 
-#: templates/admin/upgrade-modal.php:24
-msgid "Upgrade to Pro"
+#: templates/admin/onboarding-wizard/steps/consent-tracking-step.php:25
+msgid "Never Miss an Important Update"
+msgstr ""
+
+#: templates/admin/onboarding-wizard/steps/consent-tracking-step.php:27
+msgid "Get key updates, tips, and occasional offers to enhance your WordPress experience."
+msgstr ""
+
+#: templates/admin/onboarding-wizard/steps/consent-tracking-step.php:33
+msgid "Skip"
+msgstr ""
+
+#: templates/admin/onboarding-wizard/steps/consent-tracking-step.php:38
+msgid "Allow & Continue"
+msgstr ""
+
+#: templates/admin/onboarding-wizard/steps/consent-tracking-step.php:48
+msgid "Allow Tasty Recipes to"
+msgstr ""
+
+#: templates/admin/onboarding-wizard/steps/consent-tracking-step.php:63
+msgid "View Basic Profile Info"
+msgstr ""
+
+#: templates/admin/onboarding-wizard/steps/consent-tracking-step.php:64
+msgid "Your WordPress user full name and email address"
+msgstr ""
+
+#: templates/admin/onboarding-wizard/steps/consent-tracking-step.php:77
+msgid "View Basic Website Info"
+msgstr ""
+
+#: templates/admin/onboarding-wizard/steps/consent-tracking-step.php:78
+msgid "Homepage URL & title, WP & PHP versions, site language"
+msgstr ""
+
+#: templates/admin/onboarding-wizard/steps/consent-tracking-step.php:90
+msgid "View Basic Tasty Plugin Info"
+msgstr ""
+
+#: templates/admin/onboarding-wizard/steps/consent-tracking-step.php:91
+msgid "Current plugin & SDK versions, and if active or uninstalled"
+msgstr ""
+
+#: templates/admin/onboarding-wizard/steps/consent-tracking-step.php:103
+msgid "View Plugins & Themes List"
+msgstr ""
+
+#: templates/admin/onboarding-wizard/steps/consent-tracking-step.php:104
+msgid "Names, slugs, versions, and if active or not"
+msgstr ""
+
+#: templates/admin/onboarding-wizard/steps/success-step.php:26
+msgid "You're All Set!"
+msgstr ""
+
+#: templates/admin/onboarding-wizard/steps/success-step.php:28
+msgid "We hope you enjoy using Tasty Recipes!"
+msgstr ""
+
+#: templates/admin/onboarding-wizard/steps/success-step.php:34
+msgid "Go to Dashboard"
+msgstr ""
+
+#: templates/admin/onboarding-wizard/steps/success-step.php:38
+msgid "Go to Settings"
+msgstr ""
+
+#: templates/admin/upgrade-modal.php:20
+msgid "This is a premium feature. Consider upgrading to a paid plan to get this and more great features."
+msgstr ""
+
+#: templates/admin/upgrade-modal.php:25
+msgid "Upgrade Now"
 msgstr ""
 
 #: templates/designs/snap/tasty-recipes.php:171
-#: templates/recipe/tasty-recipes.php:94
+#: templates/recipe/tasty-recipes.php:97
 msgid "Video"
 msgstr ""
 
 #: templates/designs/snap/tasty-recipes.php:198
-#: templates/recipe/tasty-recipes.php:118
+#: templates/recipe/tasty-recipes.php:121
 msgid "Equipment"
 msgstr ""
 
 #: templates/designs/snap/tasty-recipes.php:263
-#: templates/recipe/tasty-recipes.php:172
+#: templates/recipe/tasty-recipes.php:175
 msgid "Find it online"
 msgstr ""
 
-#: templates/parts/metabox.php:11
+#: templates/parts/metabox.php:12
 #: assets/block-editor/metabox.js:14
-#: assets/dist/block-editor.build.js:153
 msgid "Conversion options for the following products will not be shown:"
 msgstr ""
 
 #. translators: The aria label for a specific star rating.
-#: templates/parts/ratings.php:22
+#: templates/parts/ratings.php:24
 msgid "Rate this recipe %d star"
 msgid_plural "Rate this recipe %d stars"
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: The number of stars.
-#: templates/parts/ratings.php:44
+#: templates/parts/ratings.php:52
 msgid "%d Star"
 msgid_plural "%d Stars"
 msgstr[0] ""
 msgstr[1] ""
 
-#: templates/recipe-editor.php:12
+#: templates/recipe-editor.php:13
 msgid "Close Modal"
 msgstr ""
 
-#: templates/recipe-editor.php:25
+#: templates/recipe-editor.php:26
 msgid "Insert"
 msgstr ""
 
-#: templates/recipe-editor.php:26
+#: templates/recipe-editor.php:27
 msgid "Update"
 msgstr ""
 
-#: templates/recipe-print-controls.php:24
+#: templates/recipe-print-controls.php:26
 msgid "Options"
 msgstr ""
 
-#: templates/recipe-print-controls.php:47
+#: templates/recipe-print-controls.php:49
 msgid "Include in print view:"
 msgstr ""
 
-#: templates/recipe-print-controls.php:62
+#: templates/recipe-print-controls.php:64
 msgid "Text size:"
 msgstr ""
 
-#: templates/recipe-print-controls.php:66
+#: templates/recipe-print-controls.php:68
 msgid "Small"
 msgstr ""
 
-#: templates/recipe-print-controls.php:67
+#: templates/recipe-print-controls.php:69
 msgid "Medium"
 msgstr ""
 
-#: templates/recipe-print-controls.php:68
+#: templates/recipe-print-controls.php:70
 msgid "Large"
 msgstr ""
 
-#: templates/settings.php:25
+#: templates/settings.php:27
 msgid "Looks like you're using a custom recipe card template. To enable design customization options, you'll need to remove the custom tasty-recipes.php file from your theme folder."
 msgstr ""
 
-#: templates/settings.php:70
+#: templates/settings.php:73
 msgid "Convert Existing Recipes"
 msgstr ""
 
 #. translators: %1$s opening anchor tag to the conversion page, %2$s closing tag.
-#: templates/settings.php:75
+#: templates/settings.php:78
 msgid "Just in case, we recommend backing up your database before converting your recipes in bulk to Tasty Recipes. %1$sLearn more about backing up your database%2$s."
 msgstr ""
 
-#: templates/settings.php:81
+#: templates/settings.php:84
 msgid "Select an option from the left to start converting recipes."
 msgstr ""
 
-#: templates/settings.php:87
+#: templates/settings.php:90
 msgid "Close Converter"
 msgstr ""
 
 #. translators: Source of the conversion.
-#: templates/settings.php:92
+#: templates/settings.php:95
 msgid "Convert recipes from %s"
 msgstr ""
 
-#: templates/settings.php:97
+#: templates/settings.php:100
 msgid "Determining whether there are any recipes to convert."
 msgstr ""
 
 #. translators: Source of the conversion.
-#: templates/settings.php:105
+#: templates/settings.php:108
 msgid "Converting recipes from %s. Leave this window open until the conversion is complete."
 msgstr ""
 
 #. translators: Source of the conversion.
-#: templates/settings.php:113
+#: templates/settings.php:116
 msgid "%s conversion complete. You may now close this converter."
 msgstr ""
 
 #. translators: Singular number of recipes, source.
-#: templates/settings.php:128
+#: templates/settings.php:131
 msgid "%1$s recipe was found to convert from %2$s."
 msgstr ""
 
 #. translators: Plural number of recipes, source.
-#: templates/settings.php:135
+#: templates/settings.php:138
 msgid "%1$s recipes were found to convert from %2$s."
 msgstr ""
 
-#: templates/settings.php:139
+#: templates/settings.php:142
 msgid "Start Conversion"
 msgstr ""
 
 #. translators: Source of the conversion.
-#: templates/settings.php:144
+#: templates/settings.php:147
 msgid "No %s recipes were found to convert."
 msgstr ""
 
 #: assets/block-editor/recipe-block.js:59
-#: assets/dist/block-editor.build.js:216
 msgid "Create Tasty Recipe"
 msgstr ""
 
 #: assets/block-editor/recipe-block.js:98
-#: assets/dist/block-editor.build.js:236
 msgid "No Tasty Recipe created yet. Click here to start one."
 msgstr ""
 
 #: assets/block-editor/recipe-block.js:154
-#: assets/dist/block-editor.build.js:261
 msgid "Recipe options"
 msgstr ""
 
 #: assets/block-editor/recipe-block.js:158
-#: assets/dist/block-editor.build.js:264
 msgid "Override Author Link"
 msgstr ""

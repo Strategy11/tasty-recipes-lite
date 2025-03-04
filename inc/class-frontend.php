@@ -100,7 +100,7 @@ class Frontend {
 		} else {
 			$recipe_rating_label = esc_html__( 'Leave a Review', 'tasty-recipes-lite' );
 			$recipe_rating_icons = '';
-			$rating_link_class   = Shortcodes::quick_links_classes( $rating_link_class );
+			$rating_link_class   = Quick_Links::quick_links_classes( $rating_link_class );
 		}
 		$links['rating'] = '<a class="tasty-recipes-rating-link tasty-recipes-scrollto ' . esc_attr( $rating_link_class ) . '" href="#respond">' .
 			$recipe_rating_icons . $recipe_rating_label .

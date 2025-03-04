@@ -7,6 +7,7 @@
 
 use Tasty_Recipes\Content_Model;
 use Tasty_Recipes\Shortcodes;
+use Tasty_Recipes\Quick_Links;
 
 /**
  * Tests behavior of the Shortcodes class.
@@ -289,12 +290,12 @@ EOT;
 
 		// Doesn't render Quick Links on the homepage.
 		$this->go_to( home_url( '/' ) );
-		$actual = Shortcodes::filter_the_content_late( $post->post_content );
+		$actual = Quick_Links::filter_the_content_late( $post->post_content );
 		$this->assertStringNotContainsString( $expected, $actual );
 
 		// Quick Links should render on the individual post.
 		$this->go_to( get_permalink( $this->post_id ) );
-		$actual = Shortcodes::filter_the_content_late( $post->post_content );
+		$actual = Quick_Links::filter_the_content_late( $post->post_content );
 		$this->assertStringContainsString( $expected, $actual );
 	}
 

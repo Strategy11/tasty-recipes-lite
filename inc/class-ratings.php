@@ -420,17 +420,17 @@ class Ratings {
 		$star_sprite = Utils::get_contents( 'assets/images/' . $sprite_name, 'path' );
 
 		return array(
-			'checked'   => $star_svg,
+			'checked'   => Utils::minify_js( $star_svg ),
 			'unchecked' => $star_svg,
-			'sprite'    => $star_sprite,
-			'full'      => self::filled_star_from_sprite(),
+			'sprite'    => Utils::minify_js( $star_sprite ),
+			'full'      => Utils::minify_js( self::filled_star_from_sprite() ),
 		);
 	}
 
 	/**
 	 * Load the SVG sprite if it hasn't been loaded yet.
 	 *
-	 * @since 1.0
+	 * @since 3.14
 	 *
 	 * @param array $icons Icons to load.
 	 *
@@ -448,12 +448,14 @@ class Ratings {
 	/**
 	 * Show the filled star from the sprite.
 	 *
-	 * @since 1.0
+	 * @since 3.14
 	 *
 	 * @return string
 	 */
 	private static function filled_star_from_sprite() {
-		return '<svg class="tasty-recipes-svg"><use href="#wpt-star-full" /></svg>';
+		return '<svg class="tasty-recipes-svg" width="18" height="17">' .
+			'<use href="#wpt-star-full" />' .
+			'</svg>';
 	}
 
 	/**
@@ -580,6 +582,23 @@ class Ratings {
 		}
 
 		return 6;
+	}
+
+	/**
+	 * Add the rating stars sprite to the recipe card.
+	 * 
+	 * @since x.x
+	 * 
+	 * @param string $output - The output of the recipe card.
+	 *
+	 * @return string
+	 */
+	public static function add_star_sprite_to_recipe_card( $output ) {
+		$settings     = Tasty_Recipes::get_customization_settings();
+		$rating_style = $settings['star_ratings_style'];
+		$icons        = self::get_icons_by_type( $rating_style );
+
+		return Utils::kses( $icons['sprite'] ) . $output;
 	}
 
 	/**
