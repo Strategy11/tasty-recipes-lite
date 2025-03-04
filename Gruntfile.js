@@ -15,6 +15,56 @@ module.exports = function( grunt ) {
 		}
 	);
 
+	// Configure the compress task for creating the plugin zip
+	grunt.config.set( 'compress.dist', {
+		options: {
+			archive: '../tasty-recipes-lite-<%= compress.version %>.zip',
+			mode: 'zip',
+			level: 9 // Maximum compression
+		},
+		files: [
+			{
+				expand: true,
+				cwd: './',
+				src: [
+					'**/*',
+					'!node_modules/**',
+					'!tests/**',
+					'!vendor/**',
+					'!.*',
+					'!*.zip',
+					'!**/*.less',
+					'!**/*.scss',
+					'!**/less/**',
+					'!**/scss/**',
+					'!Gruntfile.js',
+					'!package.json',
+					'!package-lock.json',
+					'!composer.json',
+					'!composer.lock',
+					'!phpcs.xml',
+					'!phpcs.xml.dist',
+					'!phpunit.xml',
+					'!phpunit.xml.dist',
+					'!**/*.md',
+					'!**/*.yml',
+					'!zip-cli.php',
+					'!stubs.php',
+					'!**phpstan.**',
+					'!**/*~',
+					'!**/mix-manifest.json',
+					'!**/webpack.mix.js',
+					'!**/jest.setup.js',
+					'!**/block-editor',
+					'!**/recipe-editor',
+					'!**/settings',
+					'!**/bin',
+				],
+				dest: 'tasty-recipes-lite/'
+			}
+		]
+	});
+
 	grunt.config.set( 'replace.setversion', {
 		src: [
 			'tasty-*.php',
@@ -88,9 +138,11 @@ module.exports = function( grunt ) {
 		}
 
 		grunt.task.run('setversion:' + v );
+		grunt.task.run('compress:dist');
 	});
 
 	grunt.loadNpmTasks( 'grunt-text-replace' );
+	grunt.loadNpmTasks( 'grunt-contrib-compress' );
 
 	grunt.util.linefeed = '\n';
 

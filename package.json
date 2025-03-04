@@ -16,6 +16,7 @@
     "eslint-plugin-vue": "^9",
     "grunt": "^1.6",
     "grunt-text-replace": "^0.4",
+    "grunt-contrib-compress": "^2.0.0",
     "jest": "^29.7",
     "jest-environment-jsdom": "^29.7",
     "laravel-mix": "^6.0",
