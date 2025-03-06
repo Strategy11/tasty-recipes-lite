@@ -50,15 +50,6 @@ class Tasty_Recipes {
 	const INSTACART_OPTION = 'tasty_recipes_instacart';
 
 	/**
-	 * Option name for the Instacart affiliate ID.
-	 *
-	 * @deprecated 1.0
-	 *
-	 * @var string
-	 */
-	const INSTACART_AFFILIATE_ID_OPTION = '';
-
-	/**
 	 * Option name for the Instagram handle.
 	 *
 	 * @deprecated 1.0
