@@ -75,7 +75,7 @@ do_action( 'tasty_recipes_card_after_title', $vars );
 			<?php do_action( 'tasty_recipes_card_before_ingredients', $vars ); ?>
 		</div>
 		<div class="tasty-recipes-ingredients-body" data-tasty-recipes-customization="body-color.color">
-			<?php Utils::kses( $recipe_ingredients, true ); ?>
+			<?php echo $recipe_ingredients; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 		</div>
 		<?php
 		/**
