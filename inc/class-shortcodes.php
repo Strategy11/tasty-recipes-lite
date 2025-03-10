@@ -532,6 +532,8 @@ class Shortcodes {
 		self::add_nutrition_attrs( $recipe, $nutrifox_display_style, $template_vars );
 		self::add_nutrifox_label( $nutrifox_display_style, $template_vars );
 
+		$template_vars['atts'] = $atts;
+
 		/**
 		 * Allow third-parties to modify the template variables prior to rendering.
 		 *
