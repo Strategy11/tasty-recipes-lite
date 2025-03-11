@@ -22,12 +22,12 @@ $print_view_options = tasty_recipes_get_print_view_options();
 	<div class="tasty-recipes-buttons">
 		<?php if ( ! empty( $first_button ) ) : ?>
 		<div class="tasty-recipes-button-wrap">
-			<?php Utils::kses( $first_button, true ); ?>
+			<?php echo $first_button; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 		</div>
 		<?php endif; ?>
 		<?php if ( ! empty( $second_button ) ) : ?>
 		<div class="tasty-recipes-button-wrap">
-			<?php Utils::kses( $second_button, true ); ?>
+			<?php echo $second_button; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 		</div>
 		<?php endif; ?>
 	</div>
