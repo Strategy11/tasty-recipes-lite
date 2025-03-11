@@ -635,7 +635,15 @@ class Tasty_Recipes {
 	 * @return array
 	 */
 	public static function get_customization_settings() {
-		$settings = array_merge(
+		/**
+		 * Filter the default customization settings.
+		 * 
+		 * @since x.x
+		 *
+		 * @param array $defaults Default customization settings.
+		 */
+		$defaults = apply_filters(
+			'tasty_recipes_default_customization_settings',
 			array(
 				'primary_color'          => '',
 				'secondary_color'        => '',
@@ -651,11 +659,22 @@ class Tasty_Recipes {
 				'star_ratings_style'     => 'solid',
 				'star_color'             => '',
 				'nutrifox_display_style' => 'label',
-			),
+			)
+		);
+
+		$settings = array_merge(
+			$defaults,
 			(array) get_option( self::CUSTOMIZATION_OPTION, array() )
 		);
 
-		return $settings;
+		/**
+		 * Filter the customization settings.
+		 * 
+		 * @param array $settings Customization settings.
+		 *
+		 * @since x.x
+		 */
+		return apply_filters( 'tasty_recipes_customization_settings', $settings );
 	}
 
 	/**
