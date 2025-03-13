@@ -151,6 +151,7 @@ class Admin {
 
 		add_action( 'tasty_framework_admin_footer_after', array( __CLASS__, 'add_lite_upgrade_modal' ) );
 		add_filter( 'plugin_action_links_' . plugin_basename( TASTY_RECIPES_LITE_FILE ), array( __CLASS__, 'filter_plugin_action_links' ) );
+		add_filter( 'tasty_framework_admin_header_title', array( __CLASS__, 'update_admin_dashboard_title' ) );
 
 		if ( ! wp_doing_ajax() ) {
 			return;
@@ -317,6 +318,20 @@ class Admin {
 			'</a>';
 		$links['tr_license_manager'] = '<a href="' . esc_url( Url::get_main_admin_url() ) . '">' . esc_html__( 'License manager', 'tasty-recipes-lite' ) . '</a>';
 		return $links;
+	}
+
+	/**
+	 * Update the admin dashboard title.
+	 *
+	 * @param string $title The title to update.
+	 *
+	 * @return string
+	 */
+	public static function update_admin_dashboard_title( $title ) {
+		if ( 'Tasty Recipes Lite' === $title ) {
+			$title = 'Recipes Lite';
+		}
+		return $title;
 	}
 
 	/**
