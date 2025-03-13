@@ -11,26 +11,4 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.sass('assets/scss/editor.scss', 'assets/dist/');
-mix.sass('assets/scss/print.scss', 'assets/dist/');
-mix.sass('assets/scss/recipe.scss', 'assets/dist/');
-mix.sass('assets/scss/recipe-card-preview.scss', 'assets/dist/');
-mix.sass('assets/scss/recipe-print-controls.scss', 'assets/dist/');
-mix.sass('assets/scss/settings.scss', 'assets/dist/');
-mix.sass('assets/scss/onboarding-wizard.scss', 'assets/dist/');
-
-mix.js('assets/block-editor/index.js', 'assets/dist/block-editor.build.js');
 mix.js('assets/recipe-editor/index.js', 'assets/dist/recipe-editor.build.js').vue({version: 2});
-mix.js('assets/settings/index.js', 'assets/dist/settings.build.js').vue({version: 2});
-mix.js('assets/settings/recipe-card-preview.js', 'assets/dist/settings-recipe-card-preview.build.js');
-mix.js('assets/js/recipe-print-controls.js', 'assets/dist/recipe-print-controls.build.js');
-mix.js('assets/js/onboarding-wizard/index.js', 'assets/dist/onboarding-wizard.build.js');
-
-mix.combine(
-	[
-		'assets/js/smooth-scroll.js',
-		'assets/js/ratings.js',
-		'assets/js/video-toggle.js'
-	],
-	'assets/dist/recipe.js'
-);

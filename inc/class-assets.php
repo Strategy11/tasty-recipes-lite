@@ -64,7 +64,7 @@ class Assets {
 
 		wp_register_script(
 			'tasty-recipes',
-			plugins_url( '/assets/dist/recipe.js', __DIR__ ),
+			plugins_url( '/assets/dist/recipe-js.js', __DIR__ ),
 			array(),
 			TASTY_RECIPES_LITE_VERSION,
 			true

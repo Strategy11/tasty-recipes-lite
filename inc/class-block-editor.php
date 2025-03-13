@@ -41,12 +41,12 @@ class Block_Editor {
 			true
 		);
 		$time = 0;
-		if ( file_exists( dirname( __DIR__ ) . '/assets/dist/block-editor.build.js' ) ) {
-			$time = filemtime( dirname( __DIR__ ) . '/assets/dist/block-editor.build.js' );
+		if ( file_exists( dirname( __DIR__ ) . '/assets/dist/recipes-block.build.js' ) ) {
+			$time = filemtime( dirname( __DIR__ ) . '/assets/dist/recipes-block.build.js' );
 		}
 		wp_register_script(
 			'tasty-recipes-block-editor',
-			plugins_url( 'assets/dist/block-editor.build.js', __DIR__ ),
+			plugins_url( 'assets/dist/recipes-block.build.js', __DIR__ ),
 			array(
 				'tasty-recipes-editor-modal',
 				'tasty-recipes-nutrifox-resize',
