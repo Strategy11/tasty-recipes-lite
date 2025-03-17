@@ -149,7 +149,6 @@ class Admin {
 		add_action( 'quick_edit_custom_box', array( __CLASS__, 'action_quick_edit_custom_box' ) );
 		add_filter( 'hidden_columns', array( __CLASS__, 'filter_hidden_columns' ) );
 
-		add_action( 'tasty_framework_admin_footer_after', array( __CLASS__, 'add_lite_upgrade_modal' ) );
 		add_filter( 'plugin_action_links_' . plugin_basename( TASTY_RECIPES_LITE_FILE ), array( __CLASS__, 'filter_plugin_action_links' ) );
 		add_filter( 'tasty_framework_admin_header_title', array( __CLASS__, 'update_admin_dashboard_title' ) );
 
@@ -610,22 +609,6 @@ class Admin {
 		}
 
 		Utils::send_json_error( __( 'You don\'t have permission to do this.', 'tasty-recipes-lite' ) );
-	}
-
-	/**
-	 * Add lite update modal html.
-	 *
-	 * @return void
-	 */
-	public static function add_lite_upgrade_modal() {
-		$tasty_recipes_lite_upgrade_url = Url::get_upgrade_url(
-			'Tasty Recipes',
-			[
-				'utm_campaign' => 'modal',
-				'utm_content'  => '__setting_utm_content__',
-			]
-		);
-		Tasty_Recipes::echo_template_part( 'admin/upgrade-modal', compact( 'tasty_recipes_lite_upgrade_url' ) );
 	}
 
 	/**

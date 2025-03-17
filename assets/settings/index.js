@@ -1,12 +1,15 @@
-import Vue from 'vue';
+import { createRoot } from '@wordpress/element';
+import domReady from '@wordpress/dom-ready';
+import { Design } from './tabs';
+import '../scss/settings.scss';
 
-/**
- * Entire views
- */
-Vue.component('tasty-recipes-design-settings', require('./views/Design.vue').default);
+domReady( () => {
+	const designSettings = document.getElementById(
+		'tasty-recipes-design-settings'
+	);
 
-if (document.querySelector('.tasty-recipes-design-settings-app')) {
-	new Vue({
-		el: '.tasty-recipes-design-settings-app',
-	});
-}
+	if ( designSettings ) {
+		const root = createRoot( designSettings );
+		root.render( <Design /> );
+	}
+} );

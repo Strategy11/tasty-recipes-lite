@@ -39,6 +39,7 @@ module.exports = {
 			__dirname,
 			'assets/js/recipe-print-controls.js'
 		),
+		settings: resolve( __dirname, 'assets/settings/index.js' ),
 		'recipe-js': [
 			resolve( __dirname, 'assets/js/smooth-scroll.js' ),
 			resolve( __dirname, 'assets/js/ratings.js' ),
@@ -52,6 +53,10 @@ module.exports = {
 		'recipe-card-preview': resolve(
 			__dirname,
 			'assets/scss/recipe-card-preview.scss'
+		),
+		'recipe-card-preview-js': resolve(
+			__dirname,
+			'assets/settings/recipe-card-preview.js'
 		),
 		'recipe-print-controls': resolve(
 			__dirname,

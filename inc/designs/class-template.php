@@ -386,7 +386,7 @@ class Template {
 
 		wp_enqueue_script(
 			'tasty-recipe-card-preview',
-			plugins_url( 'assets/dist/settings-recipe-card-preview.build.js', TASTY_RECIPES_LITE_FILE ),
+			plugins_url( 'assets/dist/recipe-card-preview-js.build.js', TASTY_RECIPES_LITE_FILE ),
 			array(),
 			TASTY_RECIPES_LITE_VERSION,
 			true
