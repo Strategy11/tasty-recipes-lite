@@ -117,35 +117,90 @@ class Assets {
 
 			$nonce = wp_create_nonce( Admin::NONCE_KEY );
 
-			$recipe_card_preview_url_base = add_query_arg(
-				array(
-					'action' => 'tasty_recipes_preview_recipe_card',
-					'nonce'  => $nonce,
-				),
-				admin_url( 'admin-ajax.php' )
-			);
-
 			wp_localize_script(
 				'tasty-recipes-settings-v2',
 				'tastyRecipesSettings',
 				array(
 					'nonce'          => $nonce,
 					'pluginUrl'      => plugins_url( '', __DIR__ ),
-					'isNutrifoxUser' => $wpdb->get_var( "SELECT meta_value FROM {$wpdb->postmeta} WHERE meta_key='nutrifox_id';" ), // phpcs:ignore WordPress.DB.DirectDatabaseQuery,
+					'isNutrifoxUser' => $wpdb->get_var( "SELECT meta_value FROM {$wpdb->postmeta} WHERE meta_key='nutrifox_id';" ), // phpcs:ignore
 					'upgrade_url'    => Url::get_upgrade_url( 'Tasty Recipes', [ 'utm_content' => 'template' ] ),
-					'design'         => array(
-						'allTemplates'             => Template::get_all_templates(),
-						'recipeCardPreviewUrlBase' => $recipe_card_preview_url_base,
-						'template'                 => get_option( Tasty_Recipes::TEMPLATE_OPTION, '' ),
-						'template_parts'           => array( 'name', 'design_opts' ),
-						'customization'            => Tasty_Recipes::get_filtered_customization_settings(),
-						'locked'                   => Template::get_locked_templates(),
-					),
+					'design'         => self::get_design_options( $nonce ),
+					'settings'       => self::get_settings_tab_options(),
 				)
 			);
 		}
 
 		self::setup_editor_screen( $screen );
+	}
+
+	/**
+	 * Get the design options for the design tab.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $nonce The nonce for the design tab.
+	 *
+	 * @return array
+	 */
+	private static function get_design_options( $nonce ) {
+		$recipe_card_preview_url_base = add_query_arg(
+			array(
+				'action' => 'tasty_recipes_preview_recipe_card',
+				'nonce'  => $nonce,
+			),
+			admin_url( 'admin-ajax.php' )
+		);
+
+		/**
+		 * Filters the design options for the design tab.
+		 *
+		 * @since x.x
+		 *
+		 * @param array $design_options Design options.
+		 */
+
+		return apply_filters(
+			'tasty_recipes_design_tab_options',
+			array(
+				'allTemplates'             => Template::get_all_templates(),
+				'recipeCardPreviewUrlBase' => $recipe_card_preview_url_base,
+				'template'                 => get_option( Tasty_Recipes::TEMPLATE_OPTION, '' ),
+				'template_parts'           => array( 'name', 'design_opts' ),
+				'customization'            => Tasty_Recipes::get_filtered_customization_settings(),
+				'locked'                   => Template::get_locked_templates(),
+			)
+		);
+	}
+
+	/**
+	 * Get the settings options for the settings page.
+	 *
+	 * @since x.x
+	 *
+	 * @return array
+	 */
+	private static function get_settings_tab_options() {
+		/**
+		 * Filters the settings options for the settings page.
+		 *
+		 * @since x.x
+		 *
+		 * @param array $settings_options Settings options.
+		 */
+		return apply_filters(
+			'tasty_recipes_settings_tab_options',
+			array(
+				'quickLinks'        => get_option( Tasty_Recipes::QUICK_LINKS_OPTION, [] ),
+				'recipeCardButtons' => get_option( 
+					Tasty_Recipes::CARD_BUTTONS_OPTION, 
+					[ 'first' => 'print' ] 
+				),
+				'defaultAuthorLink' => get_option( Tasty_Recipes::DEFAULT_AUTHOR_LINK_OPTION, '' ),
+				'enablePoweredBy'   => get_option( Tasty_Recipes::POWEREDBY_OPTION, false ),
+				'shareasaleId'      => get_option( Tasty_Recipes::SHAREASALE_OPTION, '' ),
+			)
+		);
 	}
 
 	/**

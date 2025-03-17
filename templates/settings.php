@@ -19,18 +19,25 @@ use Tasty\Framework\Utils\Common;
 
 	<?php if ( 'design' === $active_tab ) : ?>
 		<?php
-		if ( Template::has_custom_template() ) {
+		if ( Template::has_custom_template() ) :
 			?>
 			<div class="tasty-recipes-custom-template-notice tasty-tab-content"><p><?php esc_html_e( 'Looks like you\'re using a custom recipe card template. To enable design customization options, you\'ll need to remove the custom tasty-recipes.php file from your theme folder.', 'tasty-recipes-lite' ); ?></p></div>
 			<?php
-		} else {
+		else :
 			?>
 			<form method="POST" action="<?php echo esc_url( admin_url( 'options.php' ) ); ?>" class="tasty-tab-content">
 				<?php settings_fields( Tasty_Recipes\Settings::SETTINGS_SECTION_CARD_DESIGN ); ?>
-				<div id="tasty-recipes-design-settings" class="tasty-settings-main"></div>
+				<div id="tasty-recipes-design-tab" class="tasty-settings-main"></div>
 			</form>
 			<?php
-		}
+		endif;
+	elseif ( 'settings' === $active_tab ) : 
+		?>
+		<form method="POST" action="<?php echo esc_url( admin_url( 'options.php' ) ); ?>" class="tasty-tab-content">
+			<?php settings_fields( Tasty_Recipes\Settings::SETTINGS_GROUP_CARD ); ?>
+			<div id="tasty-recipes-settings-tab" class="tasty-settings-main"></div>
+		</form>
+		<?php
 	elseif ( 'about' === $active_tab ) :
 		?>
 		<?php include __DIR__ . '/about.php'; ?>
@@ -129,17 +136,6 @@ use Tasty\Framework\Utils\Common;
 			<# } #>
 
 		</script>
-	</div>
-	<?php elseif ( 'settings' === $active_tab ) : ?>
-	<div class="tasty-recipes-settings tasty-settings tasty-tab-content">
-		<form method="POST" action="<?php echo esc_url( admin_url( 'options.php' ) ); ?>">
-		<?php
-			settings_fields( Tasty_Recipes\Settings::SETTINGS_GROUP_CARD );
-			do_settings_sections( Tasty_Recipes\Settings::PAGE_SLUG );
-		?>
-		<?php submit_button(); ?>
-		</form>
-		<?php Common::affiliate_banner(); ?>
 	</div>
 	<?php elseif ( 'debug' === $active_tab ) : ?>
 	<div class="tasty-recipes-settings tasty-settings">

@@ -1,4 +1,4 @@
-#tasty-recipes-design-settings {
+#tasty-recipes-design-tab {
 	margin-bottom: 40px;
 	flex-wrap: wrap;
 
@@ -147,3 +147,12 @@
 	}
 }
 
+#tasty-recipes-settings-tab {
+	.tasty-form-helper {
+		max-width: none;
+	}
+
+	.tasty-form-field-input-wrapper {
+		width: initial !important;
+	}
+}
