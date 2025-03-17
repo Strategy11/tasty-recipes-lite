@@ -17,11 +17,14 @@ export const Design = () => {
 
 	const templateMeta = {
 		slug: selectedTemplate,
-		index: Object.keys( window.tastyRecipesSettings.allTemplates ).indexOf(
+		index: Object.keys(
+			window.tastyRecipesSettings.design.allTemplates
+		).indexOf( selectedTemplate ),
+		title: window.tastyRecipesSettings.design.allTemplates[
 			selectedTemplate
-		),
-		title: window.tastyRecipesSettings.allTemplates[ selectedTemplate ],
-		total: Object.keys( window.tastyRecipesSettings.allTemplates ).length,
+		],
+		total: Object.keys( window.tastyRecipesSettings.design.allTemplates )
+			.length,
 	};
 
 	return (

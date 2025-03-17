@@ -1,17 +1,20 @@
-const allTemplates = window.tastyRecipesSettings.allTemplates;
+import { PremiumLock } from '@library';
+
+const allTemplates = window.tastyRecipesSettings.design.allTemplates;
 
 const iterateTemplate = ( currentTemplate, operator = '+' ) => {
 	const templateKeys = Object.keys( allTemplates );
 	const totalTemplates = templateKeys.length;
 	const currentIndex = templateKeys.indexOf( currentTemplate.slug );
 
-	// Calculate new index using modulo to handle circular navigation
 	const offset = operator === '-' ? -1 : 1;
 	const newIndex =
 		( currentIndex + offset + totalTemplates ) % totalTemplates;
 
 	return templateKeys[ newIndex ];
 };
+
+const lockedTemplates = window.tastyRecipesSettings.design.locked;
 
 export const TemplateSelector = ( {
 	selectedTemplate,
@@ -44,7 +47,14 @@ export const TemplateSelector = ( {
 					/>
 				</svg>
 			</button>
-			<h3>{ `${ title } (${ index + 1 }/${ total })` }</h3>
+			<h3>
+				{ `${ title } (${ index + 1 }/${ total })` }
+				{ lockedTemplates.includes( selectedTemplate.slug ) && (
+					<PremiumLock
+						upgradeUrl={ window.tastyRecipesSettings.upgrade_url }
+					/>
+				) }
+			</h3>
 			<button
 				type="button"
 				onClick={ () =>

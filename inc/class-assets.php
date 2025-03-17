@@ -132,9 +132,9 @@ class Assets {
 					'nonce'          => $nonce,
 					'pluginUrl'      => plugins_url( '', __DIR__ ),
 					'isNutrifoxUser' => $wpdb->get_var( "SELECT meta_value FROM {$wpdb->postmeta} WHERE meta_key='nutrifox_id';" ), // phpcs:ignore WordPress.DB.DirectDatabaseQuery,
-					'allTemplates'   => Template::get_all_templates(),
 					'upgrade_url'    => Url::get_upgrade_url( 'Tasty Recipes', [ 'utm_content' => 'template' ] ),
 					'design'         => array(
+						'allTemplates'             => Template::get_all_templates(),
 						'recipeCardPreviewUrlBase' => $recipe_card_preview_url_base,
 						'template'                 => get_option( Tasty_Recipes::TEMPLATE_OPTION, '' ),
 						'template_parts'           => array( 'name', 'design_opts' ),
