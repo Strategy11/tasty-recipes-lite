@@ -11,6 +11,7 @@ import {
 	useForm,
 	useModal,
 	ShareASaleInput,
+	TabletSaveButton,
 } from '@library';
 
 const globalSettings = window.tastyRecipesSettings;
@@ -359,6 +360,7 @@ export const Settings = () => {
 					handleChange( 'shareasaleId', value );
 				} }
 			/>
+			<TabletSaveButton />
 		</div>
 	);
 };

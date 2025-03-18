@@ -1,5 +1,10 @@
 import { __ } from '@wordpress/i18n';
-import { ColorInput, SelectInput, PremiumLock } from '@library';
+import {
+	ColorInput,
+	SelectInput,
+	PremiumLock,
+	TabletSaveButton,
+} from '@library';
 import { templateFields, fieldLabels } from '../utils/templateFields.js';
 
 const imagesUrl = window.tastyRecipesSettings.pluginUrl + '/assets/images/';
@@ -302,6 +307,7 @@ export const DesignSettings = ( {
 					)
 				}
 			/>
+			<TabletSaveButton />
 		</div>
 	);
 };

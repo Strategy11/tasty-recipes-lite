@@ -127,7 +127,7 @@ class Assets {
 					'upgrade_url'    => Url::get_upgrade_url( 'Tasty Recipes', [ 'utm_content' => 'template' ] ),
 					'design'         => self::get_design_options( $nonce ),
 					'settings'       => self::get_settings_tab_options(),
-					'converters'     => Tasty_Recipes::get_converters(),
+					'converters'     => self::get_converters_data(),
 				)
 			);
 		}
@@ -202,6 +202,21 @@ class Assets {
 				'shareasaleId'      => get_option( Tasty_Recipes::SHAREASALE_OPTION, '' ),
 			)
 		);
+	}
+
+	/**
+	 * Get the converters data.
+	 *
+	 * @since x.x
+	 *
+	 * @return array
+	 */
+	private static function get_converters_data() {
+		$converters = Tasty_Recipes::get_converters();
+		foreach ( $converters as $key => $converter ) {
+			$converters[ $key ]['count'] = $converter['class']::get_count();
+		}
+		return $converters;
 	}
 
 	/**
