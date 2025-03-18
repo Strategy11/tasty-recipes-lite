@@ -1,3 +1,5 @@
+import { createInterpolateElement } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 import {
 	SettingsGroup,
 	CheckInput,
@@ -10,7 +12,6 @@ import {
 	useModal,
 	ShareASaleInput,
 } from '@library';
-import { __ } from '@wordpress/i18n';
 
 const globalSettings = window.tastyRecipesSettings;
 const { settings } = globalSettings;
@@ -333,9 +334,21 @@ export const Settings = () => {
 					handleChange( 'instacartButton', value );
 				} }
 				disabled={ ! formData.instacartButton }
-				helper={ __(
-					'By turning this on, you agree to the Instacart terms of service, available in the US only at the moment.',
-					'tasty-recipes-lite'
+				helper={ createInterpolateElement(
+					__(
+						'By turning this on, you agree to the <termsOfServiceLink>Instacart terms of service</termsOfServiceLink>, available in the US only at the moment.',
+						'tasty-recipes-lite'
+					),
+					{
+						termsOfServiceLink: (
+							// eslint-disable-next-line jsx-a11y/anchor-has-content
+							<a
+								href="https://affiliate.instacart.com/terms"
+								target="_blank"
+								rel="noreferrer"
+							/>
+						),
+					}
 				) }
 			/>
 			<ShareASaleInput

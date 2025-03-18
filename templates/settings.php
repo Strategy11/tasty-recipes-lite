@@ -40,7 +40,9 @@ use Tasty\Framework\Utils\Common;
 		<?php
 	elseif ( 'about' === $active_tab ) :
 		?>
-		<?php include __DIR__ . '/about.php'; ?>
+		<div class="tasty-tab-content">
+			<?php include __DIR__ . '/about.php'; ?>
+		</div>
 		<?php
 	elseif ( 'converters' === $active_tab ) :
 		?>
