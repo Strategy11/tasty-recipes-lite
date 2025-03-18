@@ -1,6 +1,6 @@
 import { createRoot } from '@wordpress/element';
 import domReady from '@wordpress/dom-ready';
-import { Design, Settings } from './tabs';
+import { Design, Settings, Converters } from './tabs';
 import '../scss/settings.scss';
 
 domReady( () => {
@@ -14,5 +14,13 @@ domReady( () => {
 	if ( settingsTab ) {
 		const root = createRoot( settingsTab );
 		root.render( <Settings /> );
+	}
+
+	const convertersTab = document.getElementById(
+		'tasty-recipes-converters-tab'
+	);
+	if ( convertersTab ) {
+		const root = createRoot( convertersTab );
+		root.render( <Converters /> );
 	}
 } );

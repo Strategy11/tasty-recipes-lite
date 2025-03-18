@@ -127,6 +127,7 @@ class Assets {
 					'upgrade_url'    => Url::get_upgrade_url( 'Tasty Recipes', [ 'utm_content' => 'template' ] ),
 					'design'         => self::get_design_options( $nonce ),
 					'settings'       => self::get_settings_tab_options(),
+					'converters'     => Tasty_Recipes::get_converters(),
 				)
 			);
 		}
