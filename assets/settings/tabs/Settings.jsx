@@ -67,7 +67,10 @@ export const Settings = () => {
 						'tasty-recipes-lite'
 					) }
 					value="jump"
-					isChecked={ formData.quickLinks.includes( 'jump' ) }
+					isChecked={
+						formData.quickLinks.includes( 'jump' ) ||
+						formData.quickLinks.includes( 'both' )
+					}
 					setValue={ ( checked ) =>
 						handleQuickLinksChange( checked, 'jump' )
 					}
@@ -77,7 +80,10 @@ export const Settings = () => {
 					name="tasty_recipes_quick_links[]"
 					label={ __( "'Print Recipe' link", 'tasty-recipes-lite' ) }
 					value="print"
-					isChecked={ formData.quickLinks.includes( 'print' ) }
+					isChecked={
+						formData.quickLinks.includes( 'print' ) ||
+						formData.quickLinks.includes( 'both' )
+					}
 					setValue={ ( checked ) =>
 						handleQuickLinksChange( checked, 'print' )
 					}

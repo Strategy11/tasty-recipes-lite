@@ -492,13 +492,10 @@ class Admin {
 	 *
 	 * @deprecated 1.0
 	 *
-	 * @param array $args Configuration arguments used by the input field.
-	 *
 	 * @return void
 	 */
-	public static function render_input_field( $args ) {
-		_deprecated_function( __METHOD__, '1.0', 'Settings::render_input_field' );
-		Settings::render_input_field( $args );
+	public static function render_input_field() {
+		_deprecated_function( __METHOD__, '1.0' );
 	}
 
 	/**
@@ -548,13 +545,10 @@ class Admin {
 	 *
 	 * @deprecated 1.0
 	 *
-	 * @param array $args Configuration arguments used by the select field.
-	 *
 	 * @return void
 	 */
-	public static function render_select_field( $args ) {
-		_deprecated_function( __METHOD__, '1.0', 'Settings::render_select_field' );
-		Settings::render_select_field( $args );
+	public static function render_select_field() {
+		_deprecated_function( __METHOD__, '1.0' );
 	}
 
 	/**
@@ -562,13 +556,10 @@ class Admin {
 	 *
 	 * @deprecated 1.0
 	 *
-	 * @param array $args Field args.
-	 *
 	 * @return void
 	 */
-	public static function render_multiselect_checkboxes_field( $args ) {
-		_deprecated_function( __METHOD__, '1.0', 'Settings::render_multiselect_checkboxes_field' );
-		Settings::render_multiselect_checkboxes_field( $args );
+	public static function render_multiselect_checkboxes_field() {
+		_deprecated_function( __METHOD__, '1.0' );
 	}
 
 	/**
@@ -579,8 +570,7 @@ class Admin {
 	 * @return void
 	 */
 	public static function render_card_buttons_field() {
-		_deprecated_function( __METHOD__, '1.0', 'Settings::render_card_buttons_field' );
-		Settings::render_card_buttons_field();
+		_deprecated_function( __METHOD__, '1.0' );
 	}
 
 	/**
