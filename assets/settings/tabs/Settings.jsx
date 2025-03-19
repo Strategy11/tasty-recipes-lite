@@ -1,5 +1,6 @@
 import { createInterpolateElement } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import { applyFilters } from '@wordpress/hooks';
 import {
 	SettingsGroup,
 	CheckInput,
@@ -56,6 +57,86 @@ export const Settings = () => {
 				: formData.quickLinks.filter( ( link ) => link !== value )
 		);
 	};
+
+	const unitConversion = applyFilters(
+		'tasty_recipes_settings_unit_conversion',
+		<ToggleInput
+			onClick={ () => {
+				if ( isSettingDisabled( formData.unitConversion ) ) {
+					openModal(
+						'tasty_recipes_upgrade_modal',
+						__( 'Unit Conversion', 'tasty-recipes-lite' ),
+						generateUpgradeUrl( {
+							medium: 'tasty-recipes',
+							content: 'unit-conversion',
+						} )
+					);
+				}
+			} }
+			label={ __( 'Unit Conversion', 'tasty-recipes-lite' ) }
+			id="tasty_recipes_unit_conversion"
+			name="tasty_recipes_unit_conversion"
+			value={ formData.unitConversion ?? 0 }
+			onValue="1"
+			offValue="0"
+			setValue={ ( value ) => {
+				handleChange( 'unitConversion', value );
+			} }
+			disabled={ isSettingDisabled( formData.unitConversion ) }
+			helper={ __(
+				'Allow visitors to convert between US Customary and Metric.',
+				'tasty-recipes-lite'
+			) }
+		/>,
+		formData,
+		handleChange
+	);
+
+	const instacartButton = applyFilters(
+		'tasty_recipes_settings_instacart_button',
+		<ToggleInput
+			onClick={ () => {
+				if ( isSettingDisabled( formData.instacartButton ) ) {
+					openModal(
+						'tasty_recipes_upgrade_modal',
+						__( 'Instacart Button', 'tasty-recipes-lite' ),
+						generateUpgradeUrl( {
+							medium: 'tasty-recipes',
+							content: 'instacart-button',
+						} )
+					);
+				}
+			} }
+			label={ __( 'Instacart Button', 'tasty-recipes-lite' ) }
+			id="tasty_recipes_instacart"
+			name="tasty_recipes_instacart"
+			value={ formData.instacartButton ?? 0 }
+			onValue="1"
+			offValue="0"
+			setValue={ ( value ) => {
+				handleChange( 'instacartButton', value );
+			} }
+			disabled={ isSettingDisabled( formData.instacartButton ) }
+			helper={ createInterpolateElement(
+				__(
+					'By turning this on, you agree to the <termsOfServiceLink>Instacart terms of service</termsOfServiceLink>, available in the US only at the moment.',
+					'tasty-recipes-lite'
+				),
+				{
+					termsOfServiceLink: (
+						// eslint-disable-next-line jsx-a11y/anchor-has-content
+						<a
+							href="https://affiliate.instacart.com/terms"
+							target="_blank"
+							rel="noreferrer"
+						/>
+					),
+				}
+			) }
+		/>,
+		formData,
+		handleChange
+	);
 
 	return (
 		<div>
@@ -183,34 +264,7 @@ export const Settings = () => {
 					},
 				] }
 			/>
-			<ToggleInput
-				onClick={ () => {
-					if ( isSettingDisabled( formData.unitConversion ) ) {
-						openModal(
-							'tasty_recipes_upgrade_modal',
-							__( 'Unit Conversion', 'tasty-recipes-lite' ),
-							generateUpgradeUrl( {
-								medium: 'tasty-recipes',
-								content: 'unit-conversion',
-							} )
-						);
-					}
-				} }
-				label={ __( 'Unit Conversion', 'tasty-recipes-lite' ) }
-				id="tasty_recipes_unit_conversion"
-				name="tasty_recipes_unit_conversion"
-				value={ formData.unitConversion ?? 0 }
-				onValue="1"
-				offValue="0"
-				setValue={ ( value ) => {
-					handleChange( 'unitConversion', value );
-				} }
-				disabled={ isSettingDisabled( formData.unitConversion ) }
-				helper={ __(
-					'Allow visitors to convert between US Customary and Metric.',
-					'tasty-recipes-lite'
-				) }
-			/>
+			{ unitConversion }
 			<ToggleInput
 				onClick={ () => {
 					if ( isSettingDisabled( formData.ingredientCheckboxes ) ) {
@@ -332,46 +386,7 @@ export const Settings = () => {
 					handleChange( 'defaultAuthorLink', value );
 				} }
 			/>
-			<ToggleInput
-				onClick={ () => {
-					if ( isSettingDisabled( formData.instacartButton ) ) {
-						openModal(
-							'tasty_recipes_upgrade_modal',
-							__( 'Instacart Button', 'tasty-recipes-lite' ),
-							generateUpgradeUrl( {
-								medium: 'tasty-recipes',
-								content: 'instacart-button',
-							} )
-						);
-					}
-				} }
-				label={ __( 'Instacart Button', 'tasty-recipes-lite' ) }
-				id="tasty_recipes_instacart"
-				name="tasty_recipes_instacart"
-				value={ formData.instacartButton ?? 0 }
-				onValue="1"
-				offValue="0"
-				setValue={ ( value ) => {
-					handleChange( 'instacartButton', value );
-				} }
-				disabled={ isSettingDisabled( formData.instacartButton ) }
-				helper={ createInterpolateElement(
-					__(
-						'By turning this on, you agree to the <termsOfServiceLink>Instacart terms of service</termsOfServiceLink>, available in the US only at the moment.',
-						'tasty-recipes-lite'
-					),
-					{
-						termsOfServiceLink: (
-							// eslint-disable-next-line jsx-a11y/anchor-has-content
-							<a
-								href="https://affiliate.instacart.com/terms"
-								target="_blank"
-								rel="noreferrer"
-							/>
-						),
-					}
-				) }
-			/>
+			{ instacartButton }
 			<ShareASaleInput
 				id="tasty-recipes-shareasale-affiliate-id"
 				name="tasty_recipes_shareasale"
