@@ -17,6 +17,8 @@ import {
 const globalSettings = window.tastyRecipesSettings;
 const { settings } = globalSettings;
 
+const isSettingDisabled = ( setting ) => setting === undefined;
+
 const recipeCardOptions = ( value ) => {
 	return [
 		{
@@ -107,11 +109,23 @@ export const Settings = () => {
 				/>
 			</SettingsGroup>
 			<SelectInput
+				onClick={ () => {
+					if ( isSettingDisabled( formData.quickLinksStyle ) ) {
+						openModal(
+							'tasty_recipes_upgrade_modal',
+							__( 'Quick Links Style', 'tasty-recipes-lite' ),
+							generateUpgradeUrl( {
+								medium: 'tasty-recipes',
+								content: 'quick-links-style',
+							} )
+						);
+					}
+				} }
 				label={ __( 'Quick Links Style', 'tasty-recipes-lite' ) }
 				id="tasty_recipes_quick_links_style"
 				name="tasty_recipes_quick_links_style"
 				value={ formData.quickLinksStyle }
-				disabled={ ! formData.quickLinksStyle }
+				disabled={ isSettingDisabled( formData.quickLinksStyle ) }
 				handleChange={ ( value ) => {
 					handleChange( 'quickLinksStyle', value );
 				} }
@@ -171,7 +185,7 @@ export const Settings = () => {
 			/>
 			<ToggleInput
 				onClick={ () => {
-					if ( ! formData.unitConversion ) {
+					if ( isSettingDisabled( formData.unitConversion ) ) {
 						openModal(
 							'tasty_recipes_upgrade_modal',
 							__( 'Unit Conversion', 'tasty-recipes-lite' ),
@@ -191,7 +205,7 @@ export const Settings = () => {
 				setValue={ ( value ) => {
 					handleChange( 'unitConversion', value );
 				} }
-				disabled={ ! formData.unitConversion }
+				disabled={ isSettingDisabled( formData.unitConversion ) }
 				helper={ __(
 					'Allow visitors to convert between US Customary and Metric.',
 					'tasty-recipes-lite'
@@ -199,7 +213,7 @@ export const Settings = () => {
 			/>
 			<ToggleInput
 				onClick={ () => {
-					if ( ! formData.ingredientCheckboxes ) {
+					if ( isSettingDisabled( formData.ingredientCheckboxes ) ) {
 						openModal(
 							'tasty_recipes_upgrade_modal',
 							__( 'Ingredient Checkboxes', 'tasty-recipes-lite' ),
@@ -219,7 +233,7 @@ export const Settings = () => {
 				setValue={ ( value ) => {
 					handleChange( 'ingredientCheckboxes', value );
 				} }
-				disabled={ ! formData.ingredientCheckboxes }
+				disabled={ isSettingDisabled( formData.ingredientCheckboxes ) }
 				helper={ __(
 					'Allow visitors to check off recipe ingredients.',
 					'tasty-recipes-lite'
@@ -227,7 +241,7 @@ export const Settings = () => {
 			/>
 			<ToggleInput
 				onClick={ () => {
-					if ( ! formData.cookMode ) {
+					if ( isSettingDisabled( formData.cookMode ) ) {
 						openModal(
 							'tasty_recipes_upgrade_modal',
 							__( 'Enable Cook Mode', 'tasty-recipes-lite' ),
@@ -247,7 +261,7 @@ export const Settings = () => {
 				setValue={ ( value ) => {
 					handleChange( 'cookMode', value );
 				} }
-				disabled={ ! formData.cookMode }
+				disabled={ isSettingDisabled( formData.cookMode ) }
 				helper={ __(
 					'Show Cook Mode toggle to let visitors prevent sleep mode for supported devices.',
 					'tasty-recipes-lite'
@@ -255,7 +269,7 @@ export const Settings = () => {
 			/>
 			<ToggleInput
 				onClick={ () => {
-					if ( ! formData.cookMode ) {
+					if ( isSettingDisabled( formData.scaling ) ) {
 						openModal(
 							'tasty_recipes_upgrade_modal',
 							__( 'Scaling', 'tasty-recipes-lite' ),
@@ -267,15 +281,15 @@ export const Settings = () => {
 					}
 				} }
 				label={ __( 'Scaling', 'tasty-recipes-lite' ) }
-				id="tasty_recipes_scaling"
-				name="tasty_recipes_scaling"
+				id="tasty_recipes_disable_scaling"
+				name="tasty_recipes_disable_scaling"
 				value={ formData.scaling ?? 0 }
 				onValue="1"
 				offValue="0"
 				setValue={ ( value ) => {
 					handleChange( 'scaling', value );
 				} }
-				disabled={ ! formData.scaling }
+				disabled={ isSettingDisabled( formData.scaling ) }
 				helper={ __(
 					'Allow visitors to scale the recipe 1x, 2x, or 3x.',
 					'tasty-recipes-lite'
@@ -283,7 +297,7 @@ export const Settings = () => {
 			/>
 			<ToggleInput
 				onClick={ () => {
-					if ( ! formData.copyToClipboard ) {
+					if ( isSettingDisabled( formData.copyToClipboard ) ) {
 						openModal(
 							'tasty_recipes_upgrade_modal',
 							__( 'Copy to Clipboard', 'tasty-recipes-lite' ),
@@ -303,7 +317,7 @@ export const Settings = () => {
 				setValue={ ( value ) => {
 					handleChange( 'copyToClipboard', value );
 				} }
-				disabled={ ! formData.copyToClipboard }
+				disabled={ isSettingDisabled( formData.copyToClipboard ) }
 				helper={ __(
 					'Allow visitors to copy ingredients to clipboard.',
 					'tasty-recipes-lite'
@@ -320,7 +334,7 @@ export const Settings = () => {
 			/>
 			<ToggleInput
 				onClick={ () => {
-					if ( ! formData.instacartButton ) {
+					if ( isSettingDisabled( formData.instacartButton ) ) {
 						openModal(
 							'tasty_recipes_upgrade_modal',
 							__( 'Instacart Button', 'tasty-recipes-lite' ),
@@ -332,15 +346,15 @@ export const Settings = () => {
 					}
 				} }
 				label={ __( 'Instacart Button', 'tasty-recipes-lite' ) }
-				id="tasty_recipes_instacart_button"
-				name="tasty_recipes_instacart_button"
+				id="tasty_recipes_instacart"
+				name="tasty_recipes_instacart"
 				value={ formData.instacartButton ?? 0 }
 				onValue="1"
 				offValue="0"
 				setValue={ ( value ) => {
 					handleChange( 'instacartButton', value );
 				} }
-				disabled={ ! formData.instacartButton }
+				disabled={ isSettingDisabled( formData.instacartButton ) }
 				helper={ createInterpolateElement(
 					__(
 						'By turning this on, you agree to the <termsOfServiceLink>Instacart terms of service</termsOfServiceLink>, available in the US only at the moment.',

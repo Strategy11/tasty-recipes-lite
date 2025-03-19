@@ -1,4 +1,5 @@
 import { __ } from '@wordpress/i18n';
+import { applyFilters } from '@wordpress/hooks';
 import {
 	ColorInput,
 	SelectInput,
@@ -17,6 +18,31 @@ export const DesignSettings = ( {
 	generateUpgradeUrl,
 } ) => {
 	const templateName = selectedTemplate !== '' ? selectedTemplate : 'default';
+
+	const socialFooter = applyFilters(
+		'tasty_recipes_design_social_footer',
+		// eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
+		<img
+			alt="Social Footer Preview"
+			className="tasty-social-preview tasty-recipes-disabled"
+			src={ imagesUrl + 'social-footer.png' }
+			width="550"
+			height="100"
+			onClick={ () =>
+				openModal(
+					'tasty_recipes_upgrade_modal',
+					__( 'Social Footers', 'tasty-recipes-lite' ),
+					generateUpgradeUrl( {
+						medium: 'tasty-recipes',
+						content: 'social-footer',
+					} )
+				)
+			}
+		/>,
+		formData,
+		selectedTemplate,
+		handleChange
+	);
 
 	return (
 		<div className="tasty-recipes-card-customization-container">
@@ -289,24 +315,7 @@ export const DesignSettings = ( {
 					upgradeUrl={ window.tastyRecipesSettings.upgrade_url }
 				/>
 			</h3>
-			{ /* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */ }
-			<img
-				alt="Social Footer Preview"
-				className="tasty-social-preview tasty-recipes-disabled"
-				src={ imagesUrl + 'social-footer.png' }
-				width="550"
-				height="100"
-				onClick={ () =>
-					openModal(
-						'tasty_recipes_upgrade_modal',
-						__( 'Social Footers', 'tasty-recipes-lite' ),
-						generateUpgradeUrl( {
-							medium: 'tasty-recipes',
-							content: 'social-footer',
-						} )
-					)
-				}
-			/>
+			{ socialFooter }
 			<TabletSaveButton />
 		</div>
 	);
