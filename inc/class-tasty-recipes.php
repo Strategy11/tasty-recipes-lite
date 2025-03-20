@@ -125,11 +125,9 @@ class Tasty_Recipes {
 	/**
 	 * Option name for the automatic unit conversion option.
 	 *
-	 * @deprecated 1.0
-	 *
 	 * @var string
 	 */
-	const AUTOMATIC_UNIT_CONVERSION_OPTION = '';
+	const AUTOMATIC_UNIT_CONVERSION_OPTION = 'tasty_recipes_automatic_unit_conversion';
 
 	/**
 	 * Option name for the ingredient checkboxes option.
@@ -144,15 +142,6 @@ class Tasty_Recipes {
 	 * @var string
 	 */
 	const COOK_MODE_OPTION = 'tasty_recipes_cook_mode';
-
-	/**
-	 * Option name for the cook mode helper.
-	 *
-	 * @deprecated 1.0
-	 *
-	 * @var string
-	 */
-	const COOK_MODE_HELPER_OPTION = '';
 
 	/**
 	 * Option name for the disable scaling option.

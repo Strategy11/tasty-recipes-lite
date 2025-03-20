@@ -138,6 +138,40 @@ export const Settings = () => {
 		handleChange
 	);
 
+	const cookMode = applyFilters(
+		'tasty_recipes_settings_cook_mode',
+		<ToggleInput
+			onClick={ () => {
+				if ( isSettingDisabled( formData.cookMode ) ) {
+					openModal(
+						'tasty_recipes_upgrade_modal',
+						__( 'Enable Cook Mode', 'tasty-recipes-lite' ),
+						generateUpgradeUrl( {
+							medium: 'tasty-recipes',
+							content: 'cook-mode',
+						} )
+					);
+				}
+			} }
+			label={ __( 'Enable Cook Mode', 'tasty-recipes-lite' ) }
+			id="tasty_recipes_cook_mode"
+			name="tasty_recipes_cook_mode"
+			value={ formData.cookMode ?? 0 }
+			onValue="1"
+			offValue="0"
+			setValue={ ( value ) => {
+				handleChange( 'cookMode', value );
+			} }
+			disabled={ isSettingDisabled( formData.cookMode ) }
+			helper={ __(
+				'Show Cook Mode toggle to let visitors prevent sleep mode for supported devices.',
+				'tasty-recipes-lite'
+			) }
+		/>,
+		formData,
+		handleChange
+	);
+
 	return (
 		<div>
 			<PremiumModal modalData={ modalData } closeModal={ closeModal } />
@@ -293,34 +327,7 @@ export const Settings = () => {
 					'tasty-recipes-lite'
 				) }
 			/>
-			<ToggleInput
-				onClick={ () => {
-					if ( isSettingDisabled( formData.cookMode ) ) {
-						openModal(
-							'tasty_recipes_upgrade_modal',
-							__( 'Enable Cook Mode', 'tasty-recipes-lite' ),
-							generateUpgradeUrl( {
-								medium: 'tasty-recipes',
-								content: 'cook-mode',
-							} )
-						);
-					}
-				} }
-				label={ __( 'Enable Cook Mode', 'tasty-recipes-lite' ) }
-				id="tasty_recipes_cook_mode"
-				name="tasty_recipes_cook_mode"
-				value={ formData.cookMode ?? 0 }
-				onValue="1"
-				offValue="0"
-				setValue={ ( value ) => {
-					handleChange( 'cookMode', value );
-				} }
-				disabled={ isSettingDisabled( formData.cookMode ) }
-				helper={ __(
-					'Show Cook Mode toggle to let visitors prevent sleep mode for supported devices.',
-					'tasty-recipes-lite'
-				) }
-			/>
+			{ cookMode }
 			<ToggleInput
 				onClick={ () => {
 					if ( isSettingDisabled( formData.scaling ) ) {
