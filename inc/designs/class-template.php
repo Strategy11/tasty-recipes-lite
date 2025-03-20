@@ -205,7 +205,7 @@ class Template {
 		$show_nutrifox          = ! empty( $get_nutrifox_display_style ) && in_array( $get_nutrifox_display_style, array( 'label', 'card' ), true );
 		$nutrifox_display_style = $show_nutrifox ? $get_nutrifox_display_style : null;
 
-		$styles  = Shortcodes::get_styles_as_string( $custom_design );
+		$styles  = ! empty( $custom_design ) ? Shortcodes::get_styles_as_string( $custom_design ) : '';
 		$styles .= Assets::get_css_vars();
 		$styles .= Utils::get_contents( 'assets/dist/recipe-card-preview.css', 'path' );
 

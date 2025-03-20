@@ -1,4 +1,4 @@
-import { createInterpolateElement } from '@wordpress/element';
+import { createInterpolateElement, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import {
@@ -48,6 +48,9 @@ const recipeCardOptions = ( value ) => {
 export const Settings = () => {
 	const { formData, handleChange } = useForm( settings );
 	const { modalData, openModal, closeModal, generateUpgradeUrl } = useModal();
+	const [ recipeCardButtons, setRecipeCardButtons ] = useState(
+		formData.recipeCardButtons
+	);
 
 	const handleQuickLinksChange = ( checked, value ) => {
 		handleChange(
@@ -268,32 +271,38 @@ export const Settings = () => {
 					{
 						id: 'tasty_recipes_card_buttons[first]',
 						name: 'tasty_recipes_card_buttons[first]',
-						value: formData.recipeCardButtons.first,
+						value: recipeCardButtons.first,
 						handleChange: ( value ) => {
-							handleChange( 'recipeCardButtons', value );
+							setRecipeCardButtons( ( prev ) => {
+								return {
+									...prev,
+									first: value,
+								};
+							} );
 						},
-						options: recipeCardOptions(
-							formData.recipeCardButtons.first
-						),
+						options: recipeCardOptions( recipeCardButtons.first ),
 					},
 					{
 						id: 'tasty_recipes_card_buttons[second]',
 						name: 'tasty_recipes_card_buttons[second]',
-						value: formData.recipeCardButtons.second,
+						value: recipeCardButtons.second,
 						handleChange: ( value ) => {
-							handleChange( 'recipeCardButtons', value );
+							setRecipeCardButtons( ( prev ) => {
+								return {
+									...prev,
+									second: value,
+								};
+							} );
 						},
 						options: [
 							{
 								label: __( 'Off', 'tasty-recipes-lite' ),
 								value: '',
 								selected:
-									! formData.recipeCardButtons.second ||
-									formData.recipeCardButtons.second === 'off',
+									! recipeCardButtons.second ||
+									recipeCardButtons.second === 'off',
 							},
-							...recipeCardOptions(
-								formData.recipeCardButtons.second
-							),
+							...recipeCardOptions( recipeCardButtons.second ),
 						],
 					},
 				] }
