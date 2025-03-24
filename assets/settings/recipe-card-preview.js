@@ -1,21 +1,29 @@
 const onWindowResize = function () {
-	const recipeElement = document.querySelector( '.tasty-recipes' );
-	const socialFooter = document.querySelector(
-		'.tasty-recipes-entry-footer'
-	);
+	setTimeout( () => {
+		const recipeCard = document.querySelector( '.tasty-recipes' );
+		if ( ! recipeCard ) {
+			return;
+		}
 
-	const recipeHeight = recipeElement.getBoundingClientRect().bottom;
-	const footerHeight = socialFooter ? socialFooter.offsetHeight : 0;
+		const styles = window.getComputedStyle( recipeCard );
+		const height =
+			recipeCard.offsetHeight +
+			parseInt( styles.marginTop ) +
+			parseInt( styles.marginBottom );
 
-	window.parent.postMessage(
-		JSON.stringify( {
-			event: 'setRecipeCardSize',
-			height: recipeHeight + footerHeight - 50, // We have to add the footer height and subtract 50 because some templates break the height calculation.
-		} ),
-		'*'
-	);
+		const finalHeight = height + 50;
+
+		window.parent.postMessage(
+			JSON.stringify( {
+				event: 'setRecipeCardSize',
+				height: finalHeight,
+			} ),
+			'*'
+		);
+	}, 100 );
 };
-window.addEventListener( 'load', onWindowResize );
+
+window.addEventListener( 'DOMContentLoaded', onWindowResize );
 onWindowResize();
 
 window.addEventListener( 'message', ( event ) => {

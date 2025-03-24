@@ -370,6 +370,7 @@ class Template {
 
 		self::enqueue_editor_styles();
 
+		wp_enqueue_style( 'tasty-recipes-main' );
 		wp_add_inline_style( 'tasty-recipes-main', $styles );
 
 		$ret            = '<!DOCTYPE html><html><head>' .
