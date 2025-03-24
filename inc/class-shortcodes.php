@@ -746,8 +746,7 @@ class Shortcodes {
 	 */
 	public static function nutrifox_iframe( $nutrifox_id ) {
 		if ( ! self::$js_loaded ) {
-			$nutrifox_resize_script = Utils::get_contents( 'assets/js/nutrifox-resize.js', 'path' );
-			wp_add_inline_script( 'tasty-recipes', $nutrifox_resize_script );
+			wp_enqueue_script( 'tasty-recipes-nutrifox-resize', plugins_url( 'assets/js/nutrifox-resize.js', __DIR__ ), array(), TASTY_RECIPES_LITE_VERSION, true );
 			add_filter( 'wp_inline_script_attributes', array( __CLASS__, 'set_nutrifox_js_attributes' ), 10, 2 );
 		}
 

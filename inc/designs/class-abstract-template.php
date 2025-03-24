@@ -7,8 +7,6 @@
 
 namespace Tasty_Recipes\Designs;
 
-use Tasty_Recipes;
-
 /**
  * Design template abstract class.
  *

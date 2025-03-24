@@ -160,7 +160,6 @@ class Assets {
 		 *
 		 * @param array $design_options Design options.
 		 */
-
 		return apply_filters(
 			'tasty_recipes_design_tab_options',
 			array(
