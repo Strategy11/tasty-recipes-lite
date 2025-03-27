@@ -659,9 +659,10 @@ class Tasty_Recipes {
 		/**
 		 * Filter the customization settings.
 		 * 
-		 * @param array $settings Customization settings.
 		 *
 		 * @since x.x
+		 *
+		 * @param array $settings Customization settings.
 		 */
 		return apply_filters( 'tasty_recipes_customization_settings', $settings );
 	}
