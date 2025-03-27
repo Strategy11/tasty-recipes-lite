@@ -1,4 +1,4 @@
-const {PluginDocumentSettingPanel} = wp.editPost;
+const { PluginDocumentSettingPanel } = wp.editPost;
 const { Button } = wp.components;
 const { __ } = wp.i18n;
 
@@ -9,13 +9,23 @@ const TastyRecipesMetaBox = () => {
 			name="tasty-recipes-metabox"
 			title="Tasty Recipes"
 			className="tasty-recipes-metabox-wrapper"
-			icon="tasty-recipes">
-			<p className="components-form-token-field__help">{
-				__( 'Conversion options for the following products will not be shown:', 'tasty-recipes-lite' )
-			}</p>
-			{Object.keys(converters).map(converterKey => (
-				<Button key={converterKey} variant="primary" href={converters[converterKey].url}>{converters[converterKey].title}</Button>
-			))}
+			icon="tasty-recipes"
+		>
+			<p className="components-form-token-field__help">
+				{ __(
+					'Conversion options for the following products will not be shown:',
+					'tasty-recipes-lite'
+				) }
+			</p>
+			{ Object.keys( converters ).map( ( converterKey ) => (
+				<Button
+					key={ converterKey }
+					variant="primary"
+					href={ converters[ converterKey ].url }
+				>
+					{ converters[ converterKey ].title }
+				</Button>
+			) ) }
 		</PluginDocumentSettingPanel>
 	);
 };
