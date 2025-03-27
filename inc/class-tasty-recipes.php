@@ -658,7 +658,6 @@ class Tasty_Recipes {
 
 		/**
 		 * Filter the customization settings.
-		 * 
 		 *
 		 * @since x.x
 		 *
