@@ -607,13 +607,10 @@ class Admin {
 	 *
 	 * @deprecated 1.0
 	 *
-	 * @param array $args Admin field args.
-	 *
-	 * @return array
+	 * @return void
 	 */
-	public static function filter_quick_links_backward_compatibility( $args ) {
-		_deprecated_function( __METHOD__, '1.0', 'Settings::filter_quick_links_backward_compatibility' );
-		return Settings::filter_quick_links_backward_compatibility( $args );
+	public static function filter_quick_links_backward_compatibility() {
+		_deprecated_function( __METHOD__, '1.0' );
 	}
 
 	/**

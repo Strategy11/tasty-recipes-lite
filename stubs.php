@@ -27,6 +27,9 @@ namespace {
 		public static function clear_cache( $post_id ) {
 		}
 	}
+
+	function tasty_get_asset_meta( $path ) {
+	}
 }
 
 namespace Elementor {
