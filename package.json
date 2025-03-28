@@ -36,9 +36,10 @@
     "zip": "bin/compile.sh"
   },
   "dependencies": {
+    "@wordpress/icons": "^10.20.0",
     "react-colorful": "^5.6.1",
+    "react-select": "^5.10.0",
     "vue": "^2.7",
-    "vue-color": "^2.8",
-    "@wordpress/icons": "^10.20.0"
+    "vue-color": "^2.8"
   }
 }
