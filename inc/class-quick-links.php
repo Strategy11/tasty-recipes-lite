@@ -2,7 +2,7 @@
 /**
  * Holds the Quick Links class.
  *
- * @since x.x
+ * @since 1.0
  *
  * @package Tasty_Recipes
  */
@@ -15,7 +15,7 @@ use WP_Post;
 /**
  * Manages the Quick Links and the SVG sprite.
  * 
- * @since x.x
+ * @since 1.0
  */
 class Quick_Links {
 
@@ -24,7 +24,7 @@ class Quick_Links {
 	 *
 	 * @var string
 	 * 
-	 * @since x.x
+	 * @since 1.0
 	 */
 	private static $shortcode_name = 'tasty-recipes-quick-links';
 
@@ -33,7 +33,7 @@ class Quick_Links {
 	 *
 	 * @var bool
 	 * 
-	 * @since x.x
+	 * @since 1.0
 	 */
 	private static $doing_excerpt = false;
 
@@ -79,7 +79,7 @@ class Quick_Links {
 	/**
 	 * Keeps track of when 'get_the_excerpt' is running.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @param string $excerpt Existing excerpt.
 	 *
@@ -93,7 +93,7 @@ class Quick_Links {
 	/**
 	 * Keeps track of when 'get_the_excerpt' is running.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @param string $excerpt Existing excerpt.
 	 *
@@ -107,7 +107,7 @@ class Quick_Links {
 	/**
 	 * Add "Jump to Recipe" and "Print Recipe" buttons when the post has a recipe.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @param string $content Existing post content.
 	 *
@@ -143,7 +143,7 @@ class Quick_Links {
 	 * Move SVG definitions to the top of the content to avoid
 	 * rendering issues and CLS.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @param string $content Post content.
 	 *
@@ -170,7 +170,7 @@ class Quick_Links {
 	/**
 	 * Which quick links will be prepended to the post content.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @param WP_Post $post    Post object.
 	 * @param string  $content Post content.
@@ -197,7 +197,7 @@ class Quick_Links {
 		 * Filter to allow for more granular control over whether 'Jump to'
 		 * should appear.
 		 *
-		 * @since x.x
+		 * @since 1.0
 		 *
 		 * @param array $quick_links The links to prepend.
 		 * @param int   $post_id     ID for the recipe's post.
@@ -222,7 +222,7 @@ class Quick_Links {
 	/**
 	 * Renders the Quick Links shortcode.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @param array $atts Shortcode attributes.
 	 *
@@ -255,7 +255,7 @@ class Quick_Links {
 		/**
 		 * Filter to control whether the print link opens in a new window.
 		 *
-		 * @since x.x
+		 * @since 1.0
 		 *
 		 * @param bool
 		 */
@@ -282,7 +282,7 @@ class Quick_Links {
 		/**
 		 * Filter to modify the links used in Quick Links.
 		 *
-		 * @since x.x
+		 * @since 1.0
 		 *
 		 * @param array $links Existing links.
 		 */
@@ -306,7 +306,7 @@ class Quick_Links {
 	/**
 	 * Remove the smooth scroll class if the jump link is not present.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @param array $links Links to check.
 	 *
@@ -333,7 +333,7 @@ class Quick_Links {
 	/**
 	 * Get the classes for the quick links.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @param string $classes Existing classes.
 	 *
