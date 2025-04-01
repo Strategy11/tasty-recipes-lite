@@ -25,7 +25,7 @@ if ( '.svg' === $ext ) {
 <?php } ?>
 
 <header class="tasty-recipes-entry-header">
-	<h2 class="tasty-recipes-title" data-tasty-recipes-customization="h2-color.color h2-transform.text-transform"><?php \Tasty_Recipes\Utils::kses( $recipe_title, true ); ?></h2>
+	<h2 class="tasty-recipes-title" data-tasty-recipes-customization="h2-color.color h2-transform.text-transform"><?php Utils::kses( $recipe_title, true ); ?></h2>
 	<?php
 	/**
 	 * Add more information after the title.
@@ -40,12 +40,12 @@ if ( '.svg' === $ext ) {
 	<div class="tasty-recipes-buttons">
 		<?php if ( ! empty( $first_button ) ) : ?>
 		<div class="tasty-recipes-button-wrap">
-			<?php echo $first_button; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			<?php Utils::kses( $first_button, true ); ?>
 		</div>
 		<?php endif; ?>
 		<?php if ( ! empty( $second_button ) ) : ?>
 		<div class="tasty-recipes-button-wrap">
-			<?php echo $second_button; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			<?php Utils::kses( $second_button, true ); ?>
 		</div>
 		<?php endif; ?>
 	</div>

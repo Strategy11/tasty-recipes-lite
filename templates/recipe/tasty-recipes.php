@@ -22,12 +22,12 @@ $print_view_options = tasty_recipes_get_print_view_options();
 	<div class="tasty-recipes-buttons">
 		<?php if ( ! empty( $first_button ) ) : ?>
 		<div class="tasty-recipes-button-wrap">
-			<?php echo $first_button; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			<?php Utils::kses( $first_button, true ); ?>
 		</div>
 		<?php endif; ?>
 		<?php if ( ! empty( $second_button ) ) : ?>
 		<div class="tasty-recipes-button-wrap">
-			<?php echo $second_button; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			<?php Utils::kses( $second_button, true ); ?>
 		</div>
 		<?php endif; ?>
 	</div>
@@ -75,7 +75,7 @@ do_action( 'tasty_recipes_card_after_title', $vars );
 			<?php do_action( 'tasty_recipes_card_before_ingredients', $vars ); ?>
 		</div>
 		<div class="tasty-recipes-ingredients-body" data-tasty-recipes-customization="body-color.color">
-			<?php echo $recipe_ingredients; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			<?php Utils::kses( $recipe_ingredients, true ); ?>
 		</div>
 		<?php
 		/**
