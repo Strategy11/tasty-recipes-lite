@@ -1,31 +1,19 @@
 {
     "extends": [
         "plugin:@wordpress/eslint-plugin/recommended",
-        "plugin:vue/essential",
-        "plugin:jest/all"
     ],
     "globals": {
         "lodash": true,
         "wp": true,
-        "Vue": true,
-        "require": true,
-        "tinyMCE": true,
-        "tinyMCEPreInit": true
+        "MutationObserver": true
     },
     "rules": {
-        "jest/require-hook": 0,
-        "jest/max-expects": 0,
-        "jest/unbound-method": 0,
-        "no-var": 0, // Temporary.
-        "prettier/prettier": 0,
-        "semi": [2, "always"],
         "@wordpress/i18n-text-domain": [
             "error",
             {
                 "allowedTextDomain": [ "tasty-recipes-lite" ]
             }
         ],
-        "@wordpress/no-global-event-listener": 0,
-        "vue/multi-word-component-names": 0
+        "@wordpress/no-global-event-listener": 0
     }
 }

@@ -9,6 +9,10 @@ namespace Tasty_Recipes;
 
 use Tasty_Recipes;
 use Tasty_Recipes\Objects\Recipe;
+use Tasty_Recipes\Admin;
+use Tasty_Recipes\Utils;
+use Tasty_Recipes\Designs\Template;
+use Tasty\Framework\Utils\Url;
 
 /**
  * Registers all scripts and styles.
@@ -64,7 +68,7 @@ class Assets {
 
 		wp_register_script(
 			'tasty-recipes',
-			plugins_url( '/assets/dist/recipe.js', __DIR__ ),
+			plugins_url( '/assets/dist/recipe-js.js', __DIR__ ),
 			array(),
 			TASTY_RECIPES_LITE_VERSION,
 			true
@@ -93,15 +97,7 @@ class Assets {
 				(string) $time,
 				true
 			);
-			wp_localize_script(
-				'tasty-recipes-settings',
-				'tastyRecipesSettings',
-				array(
-					'nonce'          => wp_create_nonce( Admin::NONCE_KEY ),
-					'pluginUrl'      => plugins_url( '', __DIR__ ),
-					'isNutrifoxUser' => $wpdb->get_var( "SELECT meta_value FROM {$wpdb->postmeta} WHERE meta_key='nutrifox_id';" ), // phpcs:ignore WordPress.DB.DirectDatabaseQuery
-				)
-			);
+
 			$time = filemtime( dirname( __DIR__ ) . '/assets/dist/settings.css' );
 			wp_enqueue_style(
 				'tasty-recipes-settings',
@@ -109,17 +105,117 @@ class Assets {
 				array( 'editor-buttons' ),
 				(string) $time
 			);
-			$time = filemtime( dirname( __DIR__ ) . '/assets/dist/settings.build.js' );
+			
+			$asset_meta = tasty_get_asset_meta( dirname( TASTY_RECIPES_LITE_FILE ) . '/assets/dist/settings.build.asset.php' );
 			wp_enqueue_script(
 				'tasty-recipes-settings-v2',
 				plugins_url( 'assets/dist/settings.build.js', __DIR__ ),
-				array( 'wp-i18n', 'wp-util', 'wplink' ),
-				(string) $time,
+				$asset_meta['dependencies'],
+				$asset_meta['version'],
 				true
+			);
+
+			$nonce = wp_create_nonce( Admin::NONCE_KEY );
+
+			wp_localize_script(
+				'tasty-recipes-settings-v2',
+				'tastyRecipesSettings',
+				array(
+					'nonce'          => $nonce,
+					'pluginUrl'      => plugins_url( '', __DIR__ ),
+					'isNutrifoxUser' => $wpdb->get_var( "SELECT meta_value FROM {$wpdb->postmeta} WHERE meta_key='nutrifox_id';" ), // phpcs:ignore
+					'upgrade_url'    => Url::get_upgrade_url( 'Tasty Recipes', [ 'utm_content' => 'template' ] ),
+					'design'         => self::get_design_options( $nonce ),
+					'settings'       => self::get_settings_tab_options(),
+					'converters'     => self::get_converters_data(),
+				)
 			);
 		}
 
 		self::setup_editor_screen( $screen );
+	}
+
+	/**
+	 * Get the design options for the design tab.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $nonce The nonce for the design tab.
+	 *
+	 * @return array
+	 */
+	private static function get_design_options( $nonce ) {
+		$recipe_card_preview_url_base = add_query_arg(
+			array(
+				'action' => 'tasty_recipes_preview_recipe_card',
+				'nonce'  => $nonce,
+			),
+			admin_url( 'admin-ajax.php' )
+		);
+
+		/**
+		 * Filters the design options for the design tab.
+		 *
+		 * @since x.x
+		 *
+		 * @param array $design_options Design options.
+		 */
+		return apply_filters(
+			'tasty_recipes_design_tab_options',
+			array(
+				'allTemplates'             => Template::get_all_templates(),
+				'recipeCardPreviewUrlBase' => $recipe_card_preview_url_base,
+				'template'                 => get_option( Tasty_Recipes::TEMPLATE_OPTION, '' ),
+				'template_parts'           => array( 'name', 'design_opts' ),
+				'customization'            => Tasty_Recipes::get_filtered_customization_settings(),
+				'locked'                   => Template::get_locked_templates(),
+			)
+		);
+	}
+
+	/**
+	 * Get the settings options for the settings page.
+	 *
+	 * @since x.x
+	 *
+	 * @return array
+	 */
+	private static function get_settings_tab_options() {
+		/**
+		 * Filters the settings options for the settings page.
+		 *
+		 * @since x.x
+		 *
+		 * @param array $settings_options Settings options.
+		 */
+		return apply_filters(
+			'tasty_recipes_settings_tab_options',
+			array(
+				'quickLinks'        => get_option( Tasty_Recipes::QUICK_LINKS_OPTION, [] ),
+				'recipeCardButtons' => get_option( 
+					Tasty_Recipes::CARD_BUTTONS_OPTION, 
+					[ 'first' => 'print' ] 
+				),
+				'defaultAuthorLink' => get_option( Tasty_Recipes::DEFAULT_AUTHOR_LINK_OPTION, '' ),
+				'enablePoweredBy'   => get_option( Tasty_Recipes::POWEREDBY_OPTION, false ),
+				'shareasaleId'      => get_option( Tasty_Recipes::SHAREASALE_OPTION, '' ),
+			)
+		);
+	}
+
+	/**
+	 * Get the converters data.
+	 *
+	 * @since x.x
+	 *
+	 * @return array
+	 */
+	private static function get_converters_data() {
+		$converters = Tasty_Recipes::get_converters();
+		foreach ( $converters as $key => $converter ) {
+			$converters[ $key ]['count'] = $converter['class']::get_count();
+		}
+		return $converters;
 	}
 
 	/**

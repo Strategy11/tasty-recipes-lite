@@ -1,12 +1,26 @@
-import Vue from 'vue';
+import { createRoot } from '@wordpress/element';
+import domReady from '@wordpress/dom-ready';
+import { Design, Settings, Converters } from './tabs';
+import '../scss/settings.scss';
 
-/**
- * Entire views
- */
-Vue.component('tasty-recipes-design-settings', require('./views/Design.vue').default);
+domReady( () => {
+	const designTab = document.getElementById( 'tasty-recipes-design-tab' );
+	if ( designTab ) {
+		const root = createRoot( designTab );
+		root.render( <Design /> );
+	}
 
-if (document.querySelector('.tasty-recipes-design-settings-app')) {
-	new Vue({
-		el: '.tasty-recipes-design-settings-app',
-	});
-}
+	const settingsTab = document.getElementById( 'tasty-recipes-settings-tab' );
+	if ( settingsTab ) {
+		const root = createRoot( settingsTab );
+		root.render( <Settings /> );
+	}
+
+	const convertersTab = document.getElementById(
+		'tasty-recipes-converters-tab'
+	);
+	if ( convertersTab ) {
+		const root = createRoot( convertersTab );
+		root.render( <Converters /> );
+	}
+} );

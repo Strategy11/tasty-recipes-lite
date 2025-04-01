@@ -25,7 +25,7 @@ if ( '.svg' === $ext ) {
 <?php } ?>
 
 <header class="tasty-recipes-entry-header">
-	<h2 class="tasty-recipes-title" data-tasty-recipes-customization="h2-color.color h2-transform.text-transform"><?php \Tasty_Recipes\Utils::kses( $recipe_title, true ); ?></h2>
+	<h2 class="tasty-recipes-title" data-tasty-recipes-customization="h2-color.color h2-transform.text-transform"><?php Utils::kses( $recipe_title, true ); ?></h2>
 	<?php
 	/**
 	 * Add more information after the title.

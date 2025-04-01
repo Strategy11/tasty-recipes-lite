@@ -1,40 +1,28 @@
 /**
  * WordPress dependencies
  */
-const {
-	InspectorControls,
-	BlockControls
-} = wp.blockEditor;
-
-const {
-	TextControl,
-	PanelBody,
-	ToolbarGroup,
-	ToolbarButton
-} = wp.components;
-
+const { InspectorControls, BlockControls } = wp.blockEditor;
+const { TextControl, PanelBody, ToolbarGroup, ToolbarButton } = wp.components;
 const { serverSideRender: ServerSideRender } = wp;
-
 const { Fragment } = wp.element;
-
 const { __ } = wp.i18n;
 
-const handleEditorModalUpdate = (props, response) => {
+const handleEditorModalUpdate = ( props, response ) => {
 	const date = new Date();
-	window.tastyRecipesBlockEditor.recipeDataStore[response.recipe.id] =
+	window.tastyRecipesBlockEditor.recipeDataStore[ response.recipe.id ] =
 		response.recipe;
-	props.setAttributes({
+	props.setAttributes( {
 		id: response.recipe.id,
-		lastUpdated: date.getTime()
-	});
+		lastUpdated: date.getTime(),
+	} );
 	if ( typeof wp.hooks !== 'undefined' ) {
-		wp.hooks.doAction('tasty_recipes_updated_recipe', response.recipe);
+		wp.hooks.doAction( 'tasty_recipes_updated_recipe', response.recipe );
 	}
 };
 
-const edit = props => {
-	const handleModalClose = response => {
-		handleEditorModalUpdate(props, response);
+const edit = ( props ) => {
+	const handleModalClose = ( response ) => {
+		handleEditorModalUpdate( props, response );
 	};
 
 	const defaultOnClickHandler = () => {
@@ -43,8 +31,8 @@ const edit = props => {
 				author_name:
 					window.tastyRecipesEditorModalData.defaultAuthorName,
 				title: wp.data
-						.select("core/editor")
-						.getEditedPostAttribute("title"),
+					.select( 'core/editor' )
+					.getEditedPostAttribute( 'title' ),
 				diet: '',
 			},
 			handleModalClose
@@ -58,28 +46,27 @@ const edit = props => {
 				icon="edit"
 				label={ __( 'Create Tasty Recipe', 'tasty-recipes-lite' ) }
 				onClick={ defaultOnClickHandler }
-			>
-			</ToolbarButton>
+			></ToolbarButton>
 		);
 	}
 
 	if (
-		typeof props.attributes.id === "undefined" ||
+		typeof props.attributes.id === 'undefined' ||
 		0 === props.attributes.id
 	) {
-		if (typeof props.attributes.id === "undefined") {
+		if ( typeof props.attributes.id === 'undefined' ) {
 			window.tastyRecipesEditorModal.open(
 				{
 					author_name:
 						window.tastyRecipesEditorModalData.defaultAuthorName,
 					title: wp.data
-						.select("core/editor")
-						.getEditedPostAttribute("title"),
+						.select( 'core/editor' )
+						.getEditedPostAttribute( 'title' ),
 					diet: '',
 				},
 				handleModalClose
 			);
-			props.setAttributes({ id: 0 });
+			props.setAttributes( { id: 0 } );
 		}
 		return (
 			<Fragment>
@@ -90,15 +77,15 @@ const edit = props => {
 				</BlockControls>
 				<div
 					role="button"
-					tabIndex={0}
-					onClick={defaultOnClickHandler}
-					onKeyDown={defaultOnClickHandler}
+					tabIndex={ 0 }
+					onClick={ defaultOnClickHandler }
+					onKeyDown={ defaultOnClickHandler }
 				>
 					<p>
-						{__(
+						{ __(
 							'No Tasty Recipe created yet. Click here to start one.',
 							'tasty-recipes-lite'
-						)}
+						) }
 					</p>
 				</div>
 			</Fragment>
@@ -109,12 +96,14 @@ const edit = props => {
 		if (
 			typeof window.tastyRecipesBlockEditor.recipeDataStore[
 				props.attributes.id
-			] === "undefined"
+			] === 'undefined'
 		) {
 			return;
 		}
 		window.tastyRecipesEditorModal.open(
-			window.tastyRecipesBlockEditor.recipeDataStore[props.attributes.id],
+			window.tastyRecipesBlockEditor.recipeDataStore[
+				props.attributes.id
+			],
 			handleModalClose
 		);
 	};
@@ -126,8 +115,7 @@ const edit = props => {
 				icon="edit"
 				label={ __( 'Edit Tasty Recipe', 'tasty-recipes-lite' ) }
 				onClick={ existingOnClickHandler }
-			>
-			</ToolbarButton>
+			></ToolbarButton>
 		);
 	}
 
@@ -140,28 +128,31 @@ const edit = props => {
 			</BlockControls>
 			<div
 				role="button"
-				tabIndex={0}
-				onClick={existingOnClickHandler}
-				onKeyDown={existingOnClickHandler}
+				tabIndex={ 0 }
+				onClick={ existingOnClickHandler }
+				onKeyDown={ existingOnClickHandler }
 			>
 				<ServerSideRender
 					block="wp-tasty/tasty-recipe"
-					attributes={props.attributes}
+					attributes={ props.attributes }
 				/>
 			</div>
 			<InspectorControls>
 				<PanelBody
-					title={__('Recipe options', 'tasty-recipes-lite')}
-					initialOpen={true}
+					title={ __( 'Recipe options', 'tasty-recipes-lite' ) }
+					initialOpen={ true }
 				>
 					<TextControl
-						label={__('Override Author Link', 'tasty-recipes-lite')}
-						value={props.attributes.author_link}
-						onChange={value => {
-							props.setAttributes({
-								author_link: value
-							});
-						}}
+						label={ __(
+							'Override Author Link',
+							'tasty-recipes-lite'
+						) }
+						value={ props.attributes.author_link }
+						onChange={ ( value ) => {
+							props.setAttributes( {
+								author_link: value,
+							} );
+						} }
 					/>
 				</PanelBody>
 			</InspectorControls>
@@ -178,19 +169,19 @@ const save = () => {
 
 const blockRegistration = {
 	title: window.tastyRecipesBlockEditor.recipeBlockTitle,
-	icon: "carrot",
-	category: "common",
+	icon: 'carrot',
+	category: 'common',
 	html: false,
 	attributes: {
 		id: {
-			type: "number"
+			type: 'number',
 		},
 		lastUpdated: {
-			type: "number"
+			type: 'number',
 		},
 		author_link: {
-			type: "string",
-			default: ""
+			type: 'string',
+			default: '',
 		},
 	},
 	edit,
@@ -198,22 +189,22 @@ const blockRegistration = {
 	transforms: {
 		from: [
 			{
-				type: "shortcode",
-				tag: "tasty-recipe",
+				type: 'shortcode',
+				tag: 'tasty-recipe',
 				attributes: {
 					id: {
-						type: "number",
-						shortcode: props => {
-							if (typeof props.named.id === "undefined") {
+						type: 'number',
+						shortcode: ( props ) => {
+							if ( typeof props.named.id === 'undefined' ) {
 								return 0;
 							}
-							return parseInt(props.named.id);
-						}
-					}
-				}
-			}
-		]
-	}
+							return parseInt( props.named.id );
+						},
+					},
+				},
+			},
+		],
+	},
 };
 
 export default blockRegistration;

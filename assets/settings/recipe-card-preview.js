@@ -1,54 +1,84 @@
-const onWindowResize = function() {
-	window.parent.postMessage(JSON.stringify({
-		event: 'setRecipeCardSize',
-		height: document.querySelector('.tasty-recipes').getBoundingClientRect().bottom,
-	}), '*');
+const onWindowResize = function () {
+	setTimeout( () => {
+		const recipeCard = document.querySelector( '.tasty-recipes' );
+		if ( ! recipeCard ) {
+			return;
+		}
+
+		const styles = window.getComputedStyle( recipeCard );
+		const height =
+			recipeCard.offsetHeight +
+			parseInt( styles.marginTop ) +
+			parseInt( styles.marginBottom );
+
+		const finalHeight = height + 50;
+
+		window.parent.postMessage(
+			JSON.stringify( {
+				event: 'setRecipeCardSize',
+				height: finalHeight,
+			} ),
+			'*'
+		);
+	}, 100 );
 };
-window.addEventListener('load', onWindowResize);
+
+window.addEventListener( 'DOMContentLoaded', onWindowResize );
 onWindowResize();
 
-window.addEventListener('message', (event) => {
-	if ( window.location.origin !== event.origin
-		|| typeof event.data !== 'string' ) {
+window.addEventListener( 'message', ( event ) => {
+	if (
+		window.location.origin !== event.origin ||
+		typeof event.data !== 'string'
+	) {
 		return;
 	}
 	const payload = JSON.parse( event.data );
-	switch (payload.event) {
+	switch ( payload.event ) {
 		case 'updateCustomization':
 			const settings = payload.data;
 
-			if(!settings.star_color){
-				settings.star_color = settings.detail_value_color ? settings.detail_value_color : '#F2B955';
+			if ( ! settings.star_color ) {
+				settings.star_color = settings.detail_value_color
+					? settings.detail_value_color
+					: '#F2B955';
 			}
 
-			document.querySelectorAll('[data-tasty-recipes-customization]').forEach((el) => {
-				const customizations = el.getAttribute('data-tasty-recipes-customization').split(' ');
-				customizations.forEach((customization) => {
-					if ( -1 === customization.indexOf( '.' ) ) {
-						return;
-					}
-					const bits = customization.split('.');
-					const settingsName = bits[0].replace(/-/g, '_');
-					if ( typeof settings[settingsName] === 'undefined' ) {
-						return;
-					}
-					if ( 'innerText' === bits[1] ) {
-						el.innerText = settings[settingsName];
-						return;
-					}
-					if ( 'innerHTML' === bits[1] ) {
-						el.innerHTML = settings[settingsName];
-						return;
-					}
+			document
+				.querySelectorAll( '[data-tasty-recipes-customization]' )
+				.forEach( ( el ) => {
+					const customizations = el
+						.getAttribute( 'data-tasty-recipes-customization' )
+						.split( ' ' );
+					customizations.forEach( ( customization ) => {
+						if ( -1 === customization.indexOf( '.' ) ) {
+							return;
+						}
+						const bits = customization.split( '.' );
+						const settingsName = bits[ 0 ].replace( /-/g, '_' );
+						if ( typeof settings[ settingsName ] === 'undefined' ) {
+							return;
+						}
+						if ( 'innerText' === bits[ 1 ] ) {
+							el.innerText = settings[ settingsName ];
+							return;
+						}
+						if ( 'innerHTML' === bits[ 1 ] ) {
+							el.innerHTML = settings[ settingsName ];
+							return;
+						}
 
-					if ( settings[settingsName].length ) {
-						el.style.setProperty(bits[1], settings[settingsName]);
-					} else {
-						el.style.removeProperty(bits[1]);
-					}
-				});
-			});
+						if ( settings[ settingsName ].length ) {
+							el.style.setProperty(
+								bits[ 1 ],
+								settings[ settingsName ]
+							);
+						} else {
+							el.style.removeProperty( bits[ 1 ] );
+						}
+					} );
+				} );
 			onWindowResize();
 			break;
 	}
-});
+} );

@@ -149,8 +149,8 @@ class Admin {
 		add_action( 'quick_edit_custom_box', array( __CLASS__, 'action_quick_edit_custom_box' ) );
 		add_filter( 'hidden_columns', array( __CLASS__, 'filter_hidden_columns' ) );
 
-		add_action( 'tasty_framework_admin_footer_after', array( __CLASS__, 'add_lite_upgrade_modal' ) );
 		add_filter( 'plugin_action_links_' . plugin_basename( TASTY_RECIPES_LITE_FILE ), array( __CLASS__, 'filter_plugin_action_links' ) );
+		add_filter( 'tasty_framework_admin_header_title', array( __CLASS__, 'update_admin_dashboard_title' ) );
 
 		if ( ! wp_doing_ajax() ) {
 			return;
@@ -320,6 +320,20 @@ class Admin {
 	}
 
 	/**
+	 * Update the admin dashboard title.
+	 *
+	 * @param string $title The title to update.
+	 *
+	 * @return string
+	 */
+	public static function update_admin_dashboard_title( $title ) {
+		if ( 'Tasty Recipes Lite' === $title ) {
+			$title = 'Recipes Lite';
+		}
+		return $title;
+	}
+
+	/**
 	 * Handles a request to remove the license key.
 	 *
 	 * @deprecated 3.10
@@ -478,13 +492,10 @@ class Admin {
 	 *
 	 * @deprecated 1.0
 	 *
-	 * @param array $args Configuration arguments used by the input field.
-	 *
 	 * @return void
 	 */
-	public static function render_input_field( $args ) {
-		_deprecated_function( __METHOD__, '1.0', 'Settings::render_input_field' );
-		Settings::render_input_field( $args );
+	public static function render_input_field() {
+		_deprecated_function( __METHOD__, '1.0' );
 	}
 
 	/**
@@ -534,13 +545,10 @@ class Admin {
 	 *
 	 * @deprecated 1.0
 	 *
-	 * @param array $args Configuration arguments used by the select field.
-	 *
 	 * @return void
 	 */
-	public static function render_select_field( $args ) {
-		_deprecated_function( __METHOD__, '1.0', 'Settings::render_select_field' );
-		Settings::render_select_field( $args );
+	public static function render_select_field() {
+		_deprecated_function( __METHOD__, '1.0' );
 	}
 
 	/**
@@ -548,13 +556,10 @@ class Admin {
 	 *
 	 * @deprecated 1.0
 	 *
-	 * @param array $args Field args.
-	 *
 	 * @return void
 	 */
-	public static function render_multiselect_checkboxes_field( $args ) {
-		_deprecated_function( __METHOD__, '1.0', 'Settings::render_multiselect_checkboxes_field' );
-		Settings::render_multiselect_checkboxes_field( $args );
+	public static function render_multiselect_checkboxes_field() {
+		_deprecated_function( __METHOD__, '1.0' );
 	}
 
 	/**
@@ -565,8 +570,7 @@ class Admin {
 	 * @return void
 	 */
 	public static function render_card_buttons_field() {
-		_deprecated_function( __METHOD__, '1.0', 'Settings::render_card_buttons_field' );
-		Settings::render_card_buttons_field();
+		_deprecated_function( __METHOD__, '1.0' );
 	}
 
 	/**
@@ -598,34 +602,15 @@ class Admin {
 	}
 
 	/**
-	 * Add lite update modal html.
-	 *
-	 * @return void
-	 */
-	public static function add_lite_upgrade_modal() {
-		$tasty_recipes_lite_upgrade_url = Url::get_upgrade_url(
-			'Tasty Recipes',
-			[
-				'utm_campaign' => 'modal',
-				'utm_content'  => '__setting_utm_content__',
-			]
-		);
-		Tasty_Recipes::echo_template_part( 'admin/upgrade-modal', compact( 'tasty_recipes_lite_upgrade_url' ) );
-	}
-
-	/**
 	 * Filter quick links admin field to handle the removed item "both"
 	 * and cast the string option to an array.
 	 *
 	 * @deprecated 1.0
 	 *
-	 * @param array $args Admin field args.
-	 *
-	 * @return array
+	 * @return void
 	 */
-	public static function filter_quick_links_backward_compatibility( $args ) {
-		_deprecated_function( __METHOD__, '1.0', 'Settings::filter_quick_links_backward_compatibility' );
-		return Settings::filter_quick_links_backward_compatibility( $args );
+	public static function filter_quick_links_backward_compatibility() {
+		_deprecated_function( __METHOD__, '1.0' );
 	}
 
 	/**

@@ -50,15 +50,6 @@ class Tasty_Recipes {
 	const INSTACART_OPTION = 'tasty_recipes_instacart';
 
 	/**
-	 * Option name for the Instacart affiliate ID.
-	 *
-	 * @deprecated 1.0
-	 *
-	 * @var string
-	 */
-	const INSTACART_AFFILIATE_ID_OPTION = '';
-
-	/**
 	 * Option name for the Instagram handle.
 	 *
 	 * @deprecated 1.0
@@ -134,11 +125,9 @@ class Tasty_Recipes {
 	/**
 	 * Option name for the automatic unit conversion option.
 	 *
-	 * @deprecated 1.0
-	 *
 	 * @var string
 	 */
-	const AUTOMATIC_UNIT_CONVERSION_OPTION = '';
+	const AUTOMATIC_UNIT_CONVERSION_OPTION = 'tasty_recipes_automatic_unit_conversion';
 
 	/**
 	 * Option name for the ingredient checkboxes option.
@@ -153,15 +142,6 @@ class Tasty_Recipes {
 	 * @var string
 	 */
 	const COOK_MODE_OPTION = 'tasty_recipes_cook_mode';
-
-	/**
-	 * Option name for the cook mode helper.
-	 *
-	 * @deprecated 1.0
-	 *
-	 * @var string
-	 */
-	const COOK_MODE_HELPER_OPTION = '';
 
 	/**
 	 * Option name for the disable scaling option.
@@ -644,7 +624,15 @@ class Tasty_Recipes {
 	 * @return array
 	 */
 	public static function get_customization_settings() {
-		$settings = array_merge(
+		/**
+		 * Filter the default customization settings.
+		 * 
+		 * @since x.x
+		 *
+		 * @param array $defaults Default customization settings.
+		 */
+		$defaults = apply_filters(
+			'tasty_recipes_default_customization_settings',
 			array(
 				'primary_color'          => '',
 				'secondary_color'        => '',
@@ -660,11 +648,22 @@ class Tasty_Recipes {
 				'star_ratings_style'     => 'solid',
 				'star_color'             => '',
 				'nutrifox_display_style' => 'label',
-			),
+			)
+		);
+
+		$settings = array_merge(
+			$defaults,
 			(array) get_option( self::CUSTOMIZATION_OPTION, array() )
 		);
 
-		return $settings;
+		/**
+		 * Filter the customization settings.
+		 *
+		 * @since x.x
+		 *
+		 * @param array $settings Customization settings.
+		 */
+		return apply_filters( 'tasty_recipes_customization_settings', $settings );
 	}
 
 	/**
