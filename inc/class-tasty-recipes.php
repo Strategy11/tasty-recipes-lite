@@ -627,7 +627,7 @@ class Tasty_Recipes {
 		/**
 		 * Filter the default customization settings.
 		 * 
-		 * @since x.x
+		 * @since 1.0
 		 *
 		 * @param array $defaults Default customization settings.
 		 */
@@ -659,7 +659,7 @@ class Tasty_Recipes {
 		/**
 		 * Filter the customization settings.
 		 *
-		 * @since x.x
+		 * @since 1.0
 		 *
 		 * @param array $settings Customization settings.
 		 */

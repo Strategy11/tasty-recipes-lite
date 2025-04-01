@@ -138,7 +138,7 @@ class Assets {
 	/**
 	 * Get the design options for the design tab.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @param string $nonce The nonce for the design tab.
 	 *
@@ -156,7 +156,7 @@ class Assets {
 		/**
 		 * Filters the design options for the design tab.
 		 *
-		 * @since x.x
+		 * @since 1.0
 		 *
 		 * @param array $design_options Design options.
 		 */
@@ -176,7 +176,7 @@ class Assets {
 	/**
 	 * Get the settings options for the settings page.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @return array
 	 */
@@ -184,7 +184,7 @@ class Assets {
 		/**
 		 * Filters the settings options for the settings page.
 		 *
-		 * @since x.x
+		 * @since 1.0
 		 *
 		 * @param array $settings_options Settings options.
 		 */
@@ -206,7 +206,7 @@ class Assets {
 	/**
 	 * Get the converters data.
 	 *
-	 * @since x.x
+	 * @since 1.0
 	 *
 	 * @return array
 	 */

@@ -587,7 +587,7 @@ class Ratings {
 	/**
 	 * Add the rating stars sprite to the recipe card.
 	 * 
-	 * @since x.x
+	 * @since 1.0
 	 * 
 	 * @param string $output - The output of the recipe card.
 	 *
