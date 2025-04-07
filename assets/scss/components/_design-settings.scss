@@ -36,6 +36,10 @@
 				border: 0;
 				color: #000;
 				cursor: pointer;
+				transition: background-color 0.1s ease-in-out;
+			}
+			button:hover {
+				background-color: #F5F7FA;
 			}
 			h3 {
 				min-width: 320px;
