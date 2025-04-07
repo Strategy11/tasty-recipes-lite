@@ -5,21 +5,36 @@ const onWindowResize = function () {
 			return;
 		}
 
-		const styles = window.getComputedStyle( recipeCard );
-		const height =
-			recipeCard.offsetHeight +
-			parseInt( styles.marginTop ) +
-			parseInt( styles.marginBottom );
+		const iframes = recipeCard.getElementsByTagName( 'iframe' );
+		const loadPromises = [];
 
-		const finalHeight = height + 50;
+		Array.from( iframes ).forEach( ( iframe ) => {
+			loadPromises.push(
+				new Promise( ( resolve ) => {
+					iframe.onload = () => resolve();
+				} )
+			);
+		} );
 
-		window.parent.postMessage(
-			JSON.stringify( {
-				event: 'setRecipeCardSize',
-				height: finalHeight,
-			} ),
-			'*'
-		);
+		Promise.all( loadPromises ).then( () => {
+			setTimeout( () => {
+				const styles = window.getComputedStyle( recipeCard );
+				const height =
+					recipeCard.offsetHeight +
+					parseInt( styles.marginTop ) +
+					parseInt( styles.marginBottom );
+
+				const finalHeight = height + 50;
+
+				window.parent.postMessage(
+					JSON.stringify( {
+						event: 'setRecipeCardSize',
+						height: finalHeight,
+					} ),
+					'*'
+				);
+			}, 100 );
+		} );
 	}, 100 );
 };
 
