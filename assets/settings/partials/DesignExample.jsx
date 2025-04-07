@@ -53,12 +53,14 @@ export const DesignExample = ( {
 					...formData,
 				},
 			};
-			iframeRef.current.contentWindow.postMessage(
-				JSON.stringify( data ),
-				'*'
-			);
+			setTimeout( () => {
+				iframeRef.current.contentWindow.postMessage(
+					JSON.stringify( data ),
+					'*'
+				);
+			}, 100 ); // We wait for the new template url to be loaded.
 		}
-	}, [ formData ] );
+	}, [ formData, template ] );
 
 	return (
 		<div className="tasty-recipes-card-preview-container">
