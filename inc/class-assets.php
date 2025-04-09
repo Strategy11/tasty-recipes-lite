@@ -554,7 +554,7 @@ class Assets {
 
 		wp_enqueue_script(
 			'tasty-recipes-print-controls',
-			plugins_url( 'assets/dist/recipe-print-controls.build.js', TASTY_RECIPES_LITE_FILE ),
+			plugins_url( 'assets/dist/recipe-print-controls-js.build.js', TASTY_RECIPES_LITE_FILE ),
 			array(),
 			TASTY_RECIPES_LITE_VERSION,
 			true
