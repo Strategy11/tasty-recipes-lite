@@ -18,7 +18,7 @@ if ( $current_post ) {
 }
 ?>
 
-<a class="button tasty-recipes-print-button tasty-recipes-no-print" <?php echo '#' === $print_link ? '' : 'href=' . esc_url( $print_link ); ?> target="_blank" data-tasty-recipes-customization="<?php echo esc_attr( $customization ); ?>">
+<a class="button tasty-recipes-print-button tasty-recipes-no-print" <?php echo '#' === $print_link ? '' : 'href="' . esc_url( $print_link ) . '"'; ?> target="_blank" data-tasty-recipes-customization="<?php echo esc_attr( $customization ); ?>">
 	<?php if ( '.svg' === $ext ) : ?>
 		<svg viewBox="0 0 24 24" class="svg-print" aria-hidden="true"><use xlink:href="#tasty-recipes-icon-print"></use></svg>
 	<?php else : ?>
