@@ -1,30 +1,46 @@
+const recipeCard = document.querySelector( '.tasty-recipes' );
+
 const onWindowResize = function () {
-	setTimeout( () => {
-		const recipeCard = document.querySelector( '.tasty-recipes' );
-		if ( ! recipeCard ) {
-			return;
-		}
+	if ( ! recipeCard ) {
+		return;
+	}
 
-		const styles = window.getComputedStyle( recipeCard );
-		const height =
-			recipeCard.offsetHeight +
-			parseInt( styles.marginTop ) +
-			parseInt( styles.marginBottom );
+	const styles = window.getComputedStyle( recipeCard );
+	const height =
+		recipeCard.offsetHeight +
+		parseInt( styles.marginTop ) +
+		parseInt( styles.marginBottom );
 
-		const finalHeight = height + 50;
+	const finalHeight = height + 50;
 
-		window.parent.postMessage(
-			JSON.stringify( {
-				event: 'setRecipeCardSize',
-				height: finalHeight,
-			} ),
-			'*'
-		);
-	}, 100 );
+	window.parent.postMessage(
+		JSON.stringify( {
+			event: 'setRecipeCardSize',
+			height: finalHeight,
+		} ),
+		'*'
+	);
+};
+
+const resizeAfterIframeLoad = function () {
+	if ( ! recipeCard ) {
+		return;
+	}
+
+	const iframes = recipeCard.getElementsByTagName( 'iframe' );
+
+	if ( 0 === iframes.length ) {
+		return;
+	}
+
+	Array.from( iframes ).forEach( ( iframe ) => {
+		iframe.onload = onWindowResize;
+	} );
 };
 
 window.addEventListener( 'DOMContentLoaded', onWindowResize );
 onWindowResize();
+resizeAfterIframeLoad();
 
 window.addEventListener( 'message', ( event ) => {
 	if (

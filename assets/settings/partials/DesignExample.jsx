@@ -1,19 +1,20 @@
 import { useEffect, useRef } from '@wordpress/element';
 import { TemplateSelector } from './TemplateSelector';
+import { applyFilters } from '@wordpress/hooks';
 
 const recipeCardPreviewUrlBase =
 	window.tastyRecipesSettings.design.recipeCardPreviewUrlBase;
 
-const getTemplatePreviewUrl = (
-	template,
-	settings,
-	include = [ 'nutrifox_display_style', 'star_ratings_style' ]
-) => {
-	const params = Object.entries( settings )
-		.filter( ( [ key ] ) => include.includes( key ) ) // Only include keys that are in the "include" array
-		.map(
-			( [ key, value ] ) => `${ key }=${ encodeURIComponent( value ) }`
-		)
+const getTemplatePreviewUrl = ( template, settings ) => {
+	const include = applyFilters(
+		'tasty_recipes_design_example_includes',
+		[ 'nutrifox_display_style', 'star_ratings_style' ],
+		settings
+	);
+
+	const params = include
+		.filter( ( key ) => include.includes( key ) ) // Only include keys that are in the "include" array
+		.map( ( key ) => `${ key }=${ encodeURIComponent( settings[ key ] ) }` )
 		.join( '&' );
 
 	return recipeCardPreviewUrlBase + '&template=' + template + '&' + params;
@@ -52,12 +53,14 @@ export const DesignExample = ( {
 					...formData,
 				},
 			};
-			iframeRef.current.contentWindow.postMessage(
-				JSON.stringify( data ),
-				'*'
-			);
+			setTimeout( () => {
+				iframeRef.current.contentWindow.postMessage(
+					JSON.stringify( data ),
+					'*'
+				);
+			}, 100 ); // We wait for the new template url to be loaded.
 		}
-	}, [ formData ] );
+	}, [ formData, template ] );
 
 	return (
 		<div className="tasty-recipes-card-preview-container">
