@@ -65,7 +65,7 @@ if ( ! function_exists( 'tasty_recipes_lite_activation' ) ) {
 		}
 		Tasty_Recipes::plugin_activation();
 
-		if ( ! class_exists( 'Tasty\Framework\Traits\Singleton' ) ) {
+		if ( ! trait_exists( 'Tasty\Framework\Traits\Singleton' ) ) {
 			require_once dirname( TASTY_RECIPES_LITE_FILE ) . '/inc/libs/tasty-framework/inc/Traits/Singleton.php';
 		}
 		if ( ! class_exists( 'Tasty_Recipes\Onboarding_Wizard' ) ) {
