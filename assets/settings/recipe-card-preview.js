@@ -45,7 +45,25 @@ const resizeAfterMediaLoad = function () {
 
 window.addEventListener( 'DOMContentLoaded', onWindowResize );
 onWindowResize();
-resizeAfterMediaLoad();
+
+window.addEventListener( 'DOMContentLoaded', () => {
+	resizeAfterMediaLoad();
+
+	const proImage = document.querySelector(
+		'.tasty-recipes-pro-template img'
+	);
+
+	if ( proImage ) {
+		proImage.addEventListener( 'click', () => {
+			window.parent.postMessage(
+				JSON.stringify( {
+					event: 'proImageClicked',
+				} ),
+				'*'
+			);
+		} );
+	}
+} );
 
 window.addEventListener( 'message', ( event ) => {
 	if (

@@ -36,6 +36,8 @@ export const Design = () => {
 						formData={ formData }
 						template={ templateMeta }
 						setSelectedTemplate={ setSelectedTemplate }
+						openModal={ openModal }
+						generateUpgradeUrl={ generateUpgradeUrl }
 					/>
 				</div>
 				<div className="tasty-settings-column">

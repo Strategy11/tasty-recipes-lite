@@ -1,6 +1,7 @@
 import { useEffect, useRef } from '@wordpress/element';
-import { TemplateSelector } from './TemplateSelector';
+import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
+import { TemplateSelector } from './TemplateSelector';
 
 const recipeCardPreviewUrlBase =
 	window.tastyRecipesSettings.design.recipeCardPreviewUrlBase;
@@ -24,6 +25,8 @@ export const DesignExample = ( {
 	formData,
 	template,
 	setSelectedTemplate,
+	openModal,
+	generateUpgradeUrl,
 } ) => {
 	const iframeRef = useRef( null );
 
@@ -61,6 +64,27 @@ export const DesignExample = ( {
 			}, 100 ); // We wait for the new template url to be loaded.
 		}
 	}, [ formData, template ] );
+
+	// Handle pro image clicked event.
+	useEffect( () => {
+		window.addEventListener( 'message', ( event ) => {
+			try {
+				const data = JSON.parse( event.data );
+				if ( data.event === 'proImageClicked' ) {
+					openModal(
+						'tasty_recipes_upgrade_modal',
+						__( 'Premium Template', 'tasty-recipes-lite' ),
+						generateUpgradeUrl( {
+							medium: 'tasty-recipes',
+							content: 'template',
+						} )
+					);
+				}
+			} catch ( e ) {
+				// Ignore invalid JSON messages
+			}
+		} );
+	}, [ generateUpgradeUrl, openModal ] );
 
 	return (
 		<div className="tasty-recipes-card-preview-container">
