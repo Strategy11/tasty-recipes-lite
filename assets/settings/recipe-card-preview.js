@@ -22,25 +22,30 @@ const onWindowResize = function () {
 	);
 };
 
-const resizeAfterIframeLoad = function () {
+const resizeAfterMediaLoad = function () {
 	if ( ! recipeCard ) {
 		return;
 	}
 
 	const iframes = recipeCard.getElementsByTagName( 'iframe' );
+	const images = recipeCard.getElementsByTagName( 'img' );
 
-	if ( 0 === iframes.length ) {
+	if ( 0 === iframes.length && 0 === images.length ) {
 		return;
 	}
 
 	Array.from( iframes ).forEach( ( iframe ) => {
 		iframe.onload = onWindowResize;
 	} );
+
+	Array.from( images ).forEach( ( image ) => {
+		image.onload = onWindowResize;
+	} );
 };
 
 window.addEventListener( 'DOMContentLoaded', onWindowResize );
 onWindowResize();
-resizeAfterIframeLoad();
+resizeAfterMediaLoad();
 
 window.addEventListener( 'message', ( event ) => {
 	if (
