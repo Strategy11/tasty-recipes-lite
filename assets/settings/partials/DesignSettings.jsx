@@ -43,7 +43,8 @@ export const DesignSettings = ( {
 		/>,
 		formData,
 		selectedTemplate,
-		handleChange
+		handleChange,
+		defaultColors
 	);
 
 	return (
