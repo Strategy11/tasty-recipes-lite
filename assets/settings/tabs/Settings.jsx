@@ -235,7 +235,9 @@ export const Settings = () => {
 							generateUpgradeUrl( {
 								medium: 'tasty-recipes',
 								content: 'quick-links-style',
-							} )
+							} ),
+							globalSettings.pluginUrl +
+								'/assets/images/quick-links-preview.png'
 						);
 					}
 				} }
