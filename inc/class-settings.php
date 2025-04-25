@@ -232,7 +232,7 @@ class Settings {
 			$add_link['debug'] = __( 'Debug', 'tasty-recipes-lite' );
 		}
 
-		$add_link['about'] = __( 'About', 'tasty-recipes-lite' );
+		$add_link['about'] = __( 'Get Started', 'tasty-recipes-lite' );
 
 		foreach ( $add_link as $key => $title ) {
 			$tabs[] = array(
