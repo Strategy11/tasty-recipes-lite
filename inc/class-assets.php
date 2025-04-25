@@ -124,7 +124,6 @@ class Assets {
 					'nonce'          => $nonce,
 					'pluginUrl'      => plugins_url( '', __DIR__ ),
 					'isNutrifoxUser' => $wpdb->get_var( "SELECT meta_value FROM {$wpdb->postmeta} WHERE meta_key='nutrifox_id';" ), // phpcs:ignore
-					'upgrade_url'    => Url::get_upgrade_url( 'Tasty Recipes', [ 'utm_content' => 'template' ] ),
 					'design'         => self::get_design_options( $nonce ),
 					'settings'       => self::get_settings_tab_options(),
 					'converters'     => self::get_converters_data(),

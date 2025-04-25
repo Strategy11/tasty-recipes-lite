@@ -312,7 +312,11 @@ export const DesignSettings = ( {
 			<h3>
 				{ __( 'Social Footer', 'tasty-recipes-lite' ) }
 				<PremiumLock
-					upgradeUrl={ window.tastyRecipesSettings.upgrade_url }
+					upgradeUrl={ generateUpgradeUrl( {
+						medium: 'tasty-recipes',
+						campaign: 'upgrade',
+						content: 'social-footer',
+					} ) }
 				/>
 			</h3>
 			{ socialFooter }
