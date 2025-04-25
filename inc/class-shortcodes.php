@@ -175,7 +175,7 @@ class Shortcodes {
 	 */
 	public static function render_tasty_recipe_shortcode( $atts ) { // phpcs:ignore SlevomatCodingStandard
 
-		if ( empty( $atts['id'] ) ) {
+		if ( ! is_single() || empty( $atts['id'] ) ) {
 			return '';
 		}
 
