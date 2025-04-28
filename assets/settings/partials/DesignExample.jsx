@@ -1,4 +1,4 @@
-import { useEffect, useRef } from '@wordpress/element';
+import { useCallback, useEffect, useRef } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import { TemplateSelector } from './TemplateSelector';
@@ -30,6 +30,25 @@ export const DesignExample = ( {
 } ) => {
 	const iframeRef = useRef( null );
 
+	const sendCustomizationUpdate = useCallback( () => {
+		if ( ! iframeRef.current?.contentWindow ) {
+			return;
+		}
+
+		const data = {
+			event: 'updateCustomization',
+			data: {
+				...formData,
+			},
+		};
+		setTimeout( () => {
+			iframeRef.current.contentWindow.postMessage(
+				JSON.stringify( data ),
+				'*'
+			);
+		}, 100 ); // We wait for the new template url to be loaded.
+	}, [ formData ] );
+
 	// Handle iframe resize.
 	useEffect( () => {
 		const handleMessage = ( event ) => {
@@ -49,25 +68,21 @@ export const DesignExample = ( {
 
 	// Send customization updates when formData changes
 	useEffect( () => {
-		if ( iframeRef.current?.contentWindow ) {
-			const data = {
-				event: 'updateCustomization',
-				data: {
-					...formData,
-				},
-			};
-			setTimeout( () => {
-				iframeRef.current.contentWindow.postMessage(
-					JSON.stringify( data ),
-					'*'
-				);
-			}, 100 ); // We wait for the new template url to be loaded.
+		if ( ! iframeRef.current ) {
+			return;
 		}
-	}, [ formData, template ] );
+
+		const handleLoad = () => {
+			sendCustomizationUpdate();
+		};
+
+		sendCustomizationUpdate();
+		iframeRef.current.onload = handleLoad;
+	}, [ sendCustomizationUpdate, template ] );
 
 	// Handle pro image clicked event.
 	useEffect( () => {
-		window.addEventListener( 'message', ( event ) => {
+		const handleMessage = ( event ) => {
 			try {
 				const data = JSON.parse( event.data );
 				if ( data.event === 'proImageClicked' ) {
@@ -83,7 +98,12 @@ export const DesignExample = ( {
 			} catch ( e ) {
 				// Ignore invalid JSON messages
 			}
-		} );
+		};
+
+		window.addEventListener( 'message', handleMessage );
+		return () => {
+			window.removeEventListener( 'message', handleMessage );
+		};
 	}, [ generateUpgradeUrl, openModal ] );
 
 	return (
@@ -95,6 +115,7 @@ export const DesignExample = ( {
 			<iframe
 				ref={ iframeRef }
 				title="Template Preview"
+				id="tasty-recipes-card-preview"
 				src={ getTemplatePreviewUrl( template.slug, formData ) }
 				style={ {
 					minHeight: '200px',
