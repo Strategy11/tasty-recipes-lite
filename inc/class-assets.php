@@ -190,7 +190,7 @@ class Assets {
 		return apply_filters(
 			'tasty_recipes_settings_tab_options',
 			array(
-				'quickLinks'        => get_option( Tasty_Recipes::QUICK_LINKS_OPTION, [] ),
+				'quickLinks'        => get_option( Tasty_Recipes::QUICK_LINKS_OPTION, array( 'print', 'jump' ) ),
 				'recipeCardButtons' => get_option( 
 					Tasty_Recipes::CARD_BUTTONS_OPTION, 
 					[ 'first' => 'print' ] 

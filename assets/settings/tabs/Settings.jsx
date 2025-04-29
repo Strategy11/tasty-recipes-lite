@@ -79,7 +79,7 @@ export const Settings = () => {
 			label={ __( 'Unit Conversion', 'tasty-recipes-lite' ) }
 			id="tasty_recipes_unit_conversion"
 			name="tasty_recipes_unit_conversion"
-			value={ formData.unitConversion ?? 0 }
+			value={ String( formData.unitConversion ?? 0 ) }
 			onValue="1"
 			offValue="0"
 			setValue={ ( value ) => {
@@ -113,7 +113,7 @@ export const Settings = () => {
 			label={ __( 'Instacart Button', 'tasty-recipes-lite' ) }
 			id="tasty_recipes_instacart"
 			name="tasty_recipes_instacart"
-			value={ formData.instacartButton ?? 0 }
+			value={ String( formData.instacartButton ?? 0 ) }
 			onValue="1"
 			offValue="0"
 			setValue={ ( value ) => {
@@ -159,7 +159,7 @@ export const Settings = () => {
 			label={ __( 'Enable Cook Mode', 'tasty-recipes-lite' ) }
 			id="tasty_recipes_cook_mode"
 			name="tasty_recipes_cook_mode"
-			value={ formData.cookMode ?? 0 }
+			value={ String( formData.cookMode ?? 0 ) }
 			onValue="1"
 			offValue="0"
 			setValue={ ( value ) => {
@@ -326,7 +326,7 @@ export const Settings = () => {
 				label={ __( 'Ingredient Checkboxes', 'tasty-recipes-lite' ) }
 				id="tasty_recipes_ingredient_checkboxes"
 				name="tasty_recipes_ingredient_checkboxes"
-				value={ formData.ingredientCheckboxes ?? 0 }
+				value={ String( formData.ingredientCheckboxes ?? 0 ) }
 				onValue="1"
 				offValue="0"
 				setValue={ ( value ) => {
@@ -355,9 +355,9 @@ export const Settings = () => {
 				label={ __( 'Scaling', 'tasty-recipes-lite' ) }
 				id="tasty_recipes_disable_scaling"
 				name="tasty_recipes_disable_scaling"
-				value={ formData.scaling ?? 0 }
-				onValue="1"
-				offValue="0"
+				value={ String( formData.scaling ?? 1 ) }
+				onValue="0"
+				offValue="1"
 				setValue={ ( value ) => {
 					handleChange( 'scaling', value );
 				} }
@@ -383,7 +383,7 @@ export const Settings = () => {
 				label={ __( 'Copy to Clipboard', 'tasty-recipes-lite' ) }
 				id="tasty_recipes_copy_to_clipboard"
 				name="tasty_recipes_copy_to_clipboard"
-				value={ formData.copyToClipboard ?? 0 }
+				value={ String( formData.copyToClipboard ?? 0 ) }
 				onValue="1"
 				offValue="0"
 				setValue={ ( value ) => {
