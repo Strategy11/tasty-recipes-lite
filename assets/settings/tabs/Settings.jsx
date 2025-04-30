@@ -21,6 +21,8 @@ const { settings } = globalSettings;
 const isSettingDisabled = ( setting ) => setting === undefined;
 
 const recipeCardOptions = ( value ) => {
+	const isPro = applyFilters( 'tasty_lock_is_pro', false );
+
 	return [
 		{
 			value: 'print',
@@ -31,16 +33,19 @@ const recipeCardOptions = ( value ) => {
 			value: 'pin',
 			label: __( 'Pin this recipe', 'tasty-recipes-lite' ),
 			selected: value === 'pin',
+			isDisabled: ! isPro,
 		},
 		{
 			value: 'mediavine',
 			label: __( 'Mediavine Grow.me Save', 'tasty-recipes-lite' ),
 			selected: value === 'mediavine',
+			isDisabled: ! isPro,
 		},
 		{
 			value: 'slickstream',
 			label: __( 'Slickstream Favorites', 'tasty-recipes-lite' ),
 			selected: value === 'slickstream',
+			isDisabled: ! isPro,
 		},
 	];
 };
