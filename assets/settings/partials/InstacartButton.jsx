@@ -23,7 +23,7 @@ export const InstacartButton = ( {
 	};
 
 	return (
-		<div className="tasty-recipes-pro-feature">
+		<div className="tasty-recipes-pro-feature tasty-recipes-instacart-button-wrap">
 			<ToggleInput
 				onClick={ () => {
 					triggerModal(

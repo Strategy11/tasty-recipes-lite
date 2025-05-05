@@ -12,8 +12,9 @@ import {
 	useModal,
 	ShareASaleInput,
 	TabletSaveButton,
-	TextInput,
+	TextInput
 } from '@library';
+import { UpgradeBanner } from '../partials/UpgradeBanner';
 import { CookMode } from '../partials/CookMode';
 import { InstacartButton } from '../partials/InstacartButton';
 import { UnitConversion } from '../partials/UnitConversion';
@@ -23,7 +24,7 @@ const globalSettings = window.tastyRecipesSettings;
 const { settings } = globalSettings;
 
 const recipeCardOptions = ( value ) => {
-	const isPro = applyFilters( 'tasty_lock_is_pro', false );
+	const isPro = applyFilters( 'tasty_recipes_is_pro', false );
 
 	return [
 		{
@@ -179,7 +180,7 @@ export const Settings = () => {
 					handleChange( 'shareasaleId', value );
 				} }
 			/>
-			{ /* TODO: Add Banner */ }
+			<UpgradeBanner generateUpgradeUrl={ generateUpgradeUrl } />
 			<SelectInput
 				onClick={ () => {
 					if ( isSettingDisabled( formData.quickLinksStyle ) ) {
