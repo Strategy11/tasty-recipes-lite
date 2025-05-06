@@ -27,7 +27,7 @@ use Tasty\Framework\Utils\Common;
 			?>
 			<form method="POST" action="<?php echo esc_url( admin_url( 'options.php' ) ); ?>" class="tasty-tab-content">
 				<?php settings_fields( Tasty_Recipes\Settings::SETTINGS_SECTION_CARD_DESIGN ); ?>
-				<div id="tasty-recipes-design-tab" class="tasty-settings-main"></div>
+				<div id="tasty-recipes-design-tab" class="tasty-settings-main tasty-lateral-padding"></div>
 			</form>
 			<?php
 		endif;
@@ -40,14 +40,14 @@ use Tasty\Framework\Utils\Common;
 		<?php
 	elseif ( 'about' === $active_tab ) :
 		?>
-		<div class="tasty-tab-content">
+		<div class="tasty-tab-content tasty-padding">
 			<?php include __DIR__ . '/about.php'; ?>
 		</div>
 		<?php
 	elseif ( 'converters' === $active_tab ) :
 		?>
 		<div class="tasty-tab-content">
-			<div id="tasty-recipes-converters-tab" class="tasty-settings-main"></div>
+			<div id="tasty-recipes-converters-tab" class="tasty-settings-main tasty-lateral-padding"></div>
 		</div>
 	<?php elseif ( 'debug' === $active_tab ) : ?>
 	<div class="tasty-recipes-settings tasty-settings">
