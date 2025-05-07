@@ -26,7 +26,7 @@ export const UpgradeBanner = ( { generateUpgradeUrl } ) => {
 			</div>
 			<div className="tasty-recipes-upgrade-banner-right">
 				<a
-					className="tasty-recipes-upgrade-banner-right-button tasty-upgrade-button"
+					className="tasty-upgrade-button"
 					href={ generateUpgradeUrl( {
 						medium: 'tasty-recipes',
 						content: 'banner-button',
