@@ -124,7 +124,6 @@ class Assets {
 					'nonce'          => $nonce,
 					'pluginUrl'      => plugins_url( '', __DIR__ ),
 					'isNutrifoxUser' => $wpdb->get_var( "SELECT meta_value FROM {$wpdb->postmeta} WHERE meta_key='nutrifox_id';" ), // phpcs:ignore
-					'upgrade_url'    => Url::get_upgrade_url( 'Tasty Recipes', [ 'utm_content' => 'template' ] ),
 					'design'         => self::get_design_options( $nonce ),
 					'settings'       => self::get_settings_tab_options(),
 					'converters'     => self::get_converters_data(),
@@ -191,7 +190,7 @@ class Assets {
 		return apply_filters(
 			'tasty_recipes_settings_tab_options',
 			array(
-				'quickLinks'        => get_option( Tasty_Recipes::QUICK_LINKS_OPTION, [] ),
+				'quickLinks'        => get_option( Tasty_Recipes::QUICK_LINKS_OPTION, array( 'print', 'jump' ) ),
 				'recipeCardButtons' => get_option( 
 					Tasty_Recipes::CARD_BUTTONS_OPTION, 
 					[ 'first' => 'print' ] 

@@ -1,4 +1,5 @@
 @use "components/design-settings";
+@use "components/upgrade-banner";
 
 .tasty-recipes-custom-template-notice {
 	min-height: 200px;
@@ -110,6 +111,49 @@
 	@media screen and (min-width: 700px) {
 		.first {
 			margin-top: -3rem;
+		}
+	}
+}
+
+.tasty-recipes-pro-feature {
+	padding: var(--gap-md) !important;
+
+	.tasty-form-field {
+		padding: 0 !important;
+	}
+
+	&.tasty-recipes-pro-unit-conversion-wrap {
+		border-bottom: 1px solid var(--grey-300) !important;
+		.tasty-form-field {
+			padding: 0 !important;
+			border-bottom: 0 !important;
+		}
+			
+		.tasty-form-field:has( .tasty-checkbox-container ) {
+			label {
+				font-weight: 500 !important;
+			}
+		}
+	}
+
+	&.tasty-recipes-instacart-button-wrap {
+		padding: 0 !important;
+
+		.tasty-form-field {
+			padding: var(--gap-md) !important;
+		}
+
+		.tasty-form-field:last-child {
+			padding-bottom: 0 !important;
+		}
+	}
+
+	&.tasty-recipes-pro-feature-with-error {
+		border-bottom: 1px solid var(--grey-300) !important;
+
+		.tasty-form-field {
+			padding: 0 !important;
+			border-bottom: 0 !important;
 		}
 	}
 }

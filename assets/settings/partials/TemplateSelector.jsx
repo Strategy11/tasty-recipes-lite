@@ -1,4 +1,4 @@
-import { PremiumLock } from '@library';
+import { PremiumLock, useModal } from '@library';
 
 const allTemplates = window.tastyRecipesSettings.design.allTemplates;
 
@@ -20,6 +20,7 @@ export const TemplateSelector = ( {
 	selectedTemplate,
 	setSelectedTemplate,
 } ) => {
+	const { generateUpgradeUrl } = useModal();
 	const { title, index, total } = selectedTemplate;
 
 	return (
@@ -51,7 +52,11 @@ export const TemplateSelector = ( {
 				{ `${ title } (${ index + 1 }/${ total })` }
 				{ lockedTemplates.includes( selectedTemplate.slug ) && (
 					<PremiumLock
-						upgradeUrl={ window.tastyRecipesSettings.upgrade_url }
+						upgradeUrl={ generateUpgradeUrl( {
+							medium: 'tasty-recipes',
+							campaign: 'upgrade',
+							content: 'template',
+						} ) }
 					/>
 				) }
 			</h3>

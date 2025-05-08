@@ -1,4 +1,4 @@
-import { createInterpolateElement, useState } from '@wordpress/element';
+import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import {
@@ -8,19 +8,24 @@ import {
 	SelectGroup,
 	ToggleInput,
 	PremiumModal,
-	TextInput,
 	useForm,
 	useModal,
 	ShareASaleInput,
 	TabletSaveButton,
+	TextInput
 } from '@library';
+import { UpgradeBanner } from '../partials/UpgradeBanner';
+import { CookMode } from '../partials/CookMode';
+import { InstacartButton } from '../partials/InstacartButton';
+import { UnitConversion } from '../partials/UnitConversion';
+import { isSettingDisabled } from '../utils/helpers';
 
 const globalSettings = window.tastyRecipesSettings;
 const { settings } = globalSettings;
 
-const isSettingDisabled = ( setting ) => setting === undefined;
-
 const recipeCardOptions = ( value ) => {
+	const isPro = applyFilters( 'tasty_recipes_is_pro', false );
+
 	return [
 		{
 			value: 'print',
@@ -31,16 +36,19 @@ const recipeCardOptions = ( value ) => {
 			value: 'pin',
 			label: __( 'Pin this recipe', 'tasty-recipes-lite' ),
 			selected: value === 'pin',
+			isDisabled: ! isPro,
 		},
 		{
 			value: 'mediavine',
 			label: __( 'Mediavine Grow.me Save', 'tasty-recipes-lite' ),
 			selected: value === 'mediavine',
+			isDisabled: ! isPro,
 		},
 		{
 			value: 'slickstream',
 			label: __( 'Slickstream Favorites', 'tasty-recipes-lite' ),
 			selected: value === 'slickstream',
+			isDisabled: ! isPro,
 		},
 	];
 };
@@ -60,120 +68,6 @@ export const Settings = () => {
 				: formData.quickLinks.filter( ( link ) => link !== value )
 		);
 	};
-
-	const unitConversion = applyFilters(
-		'tasty_recipes_settings_unit_conversion',
-		<ToggleInput
-			onClick={ () => {
-				if ( isSettingDisabled( formData.unitConversion ) ) {
-					openModal(
-						'tasty_recipes_upgrade_modal',
-						__( 'Unit Conversion', 'tasty-recipes-lite' ),
-						generateUpgradeUrl( {
-							medium: 'tasty-recipes',
-							content: 'unit-conversion',
-						} )
-					);
-				}
-			} }
-			label={ __( 'Unit Conversion', 'tasty-recipes-lite' ) }
-			id="tasty_recipes_unit_conversion"
-			name="tasty_recipes_unit_conversion"
-			value={ formData.unitConversion ?? 0 }
-			onValue="1"
-			offValue="0"
-			setValue={ ( value ) => {
-				handleChange( 'unitConversion', value );
-			} }
-			disabled={ isSettingDisabled( formData.unitConversion ) }
-			helper={ __(
-				'Allow visitors to convert between US Customary and Metric.',
-				'tasty-recipes-lite'
-			) }
-		/>,
-		formData,
-		handleChange
-	);
-
-	const instacartButton = applyFilters(
-		'tasty_recipes_settings_instacart_button',
-		<ToggleInput
-			onClick={ () => {
-				if ( isSettingDisabled( formData.instacartButton ) ) {
-					openModal(
-						'tasty_recipes_upgrade_modal',
-						__( 'Instacart Button', 'tasty-recipes-lite' ),
-						generateUpgradeUrl( {
-							medium: 'tasty-recipes',
-							content: 'instacart-button',
-						} )
-					);
-				}
-			} }
-			label={ __( 'Instacart Button', 'tasty-recipes-lite' ) }
-			id="tasty_recipes_instacart"
-			name="tasty_recipes_instacart"
-			value={ formData.instacartButton ?? 0 }
-			onValue="1"
-			offValue="0"
-			setValue={ ( value ) => {
-				handleChange( 'instacartButton', value );
-			} }
-			disabled={ isSettingDisabled( formData.instacartButton ) }
-			helper={ createInterpolateElement(
-				__(
-					'By turning this on, you agree to the <termsOfServiceLink>Instacart terms of service</termsOfServiceLink>, available in the US only at the moment.',
-					'tasty-recipes-lite'
-				),
-				{
-					termsOfServiceLink: (
-						// eslint-disable-next-line jsx-a11y/anchor-has-content
-						<a
-							href="https://affiliate.instacart.com/terms"
-							target="_blank"
-							rel="noreferrer"
-						/>
-					),
-				}
-			) }
-		/>,
-		formData,
-		handleChange
-	);
-
-	const cookMode = applyFilters(
-		'tasty_recipes_settings_cook_mode',
-		<ToggleInput
-			onClick={ () => {
-				if ( isSettingDisabled( formData.cookMode ) ) {
-					openModal(
-						'tasty_recipes_upgrade_modal',
-						__( 'Enable Cook Mode', 'tasty-recipes-lite' ),
-						generateUpgradeUrl( {
-							medium: 'tasty-recipes',
-							content: 'cook-mode',
-						} )
-					);
-				}
-			} }
-			label={ __( 'Enable Cook Mode', 'tasty-recipes-lite' ) }
-			id="tasty_recipes_cook_mode"
-			name="tasty_recipes_cook_mode"
-			value={ formData.cookMode ?? 0 }
-			onValue="1"
-			offValue="0"
-			setValue={ ( value ) => {
-				handleChange( 'cookMode', value );
-			} }
-			disabled={ isSettingDisabled( formData.cookMode ) }
-			helper={ __(
-				'Show Cook Mode toggle to let visitors prevent sleep mode for supported devices.',
-				'tasty-recipes-lite'
-			) }
-		/>,
-		formData,
-		handleChange
-	);
 
 	return (
 		<div>
@@ -226,44 +120,6 @@ export const Settings = () => {
 					) }
 				/>
 			</SettingsGroup>
-			<SelectInput
-				onClick={ () => {
-					if ( isSettingDisabled( formData.quickLinksStyle ) ) {
-						openModal(
-							'tasty_recipes_upgrade_modal',
-							__( 'Quick Links Style', 'tasty-recipes-lite' ),
-							generateUpgradeUrl( {
-								medium: 'tasty-recipes',
-								content: 'quick-links-style',
-							} )
-						);
-					}
-				} }
-				label={ __( 'Quick Links Style', 'tasty-recipes-lite' ) }
-				id="tasty_recipes_quick_links_style"
-				name="tasty_recipes_quick_links_style"
-				value={ formData.quickLinksStyle }
-				disabled={ isSettingDisabled( formData.quickLinksStyle ) }
-				handleChange={ ( value ) => {
-					handleChange( 'quickLinksStyle', value );
-				} }
-				options={ [
-					{
-						label: __( 'Buttons', 'tasty-recipes-lite' ),
-						value: 'buttons',
-						selected:
-							formData.quickLinksStyle &&
-							formData.quickLinksStyle === 'buttons',
-					},
-					{
-						label: __( 'Links', 'tasty-recipes-lite' ),
-						value: 'links',
-						selected:
-							! formData.quickLinksStyle ||
-							formData.quickLinksStyle === 'links',
-					},
-				] }
-			/>
 			<SelectGroup
 				groupId="tasty-recipes-card-buttons"
 				groupLabel={ __( 'Recipe Card Buttons', 'tasty-recipes-lite' ) }
@@ -307,7 +163,70 @@ export const Settings = () => {
 					},
 				] }
 			/>
-			{ unitConversion }
+			<TextInput
+				label={ __( 'Default Author Link', 'tasty-recipes-lite' ) }
+				id="tasty-recipes-default-author-link"
+				name="tasty_recipes_default_author_link"
+				value={ formData.defaultAuthorLink }
+				setValue={ ( value ) => {
+					handleChange( 'defaultAuthorLink', value );
+				} }
+			/>
+			<ShareASaleInput
+				id="tasty-recipes-shareasale-affiliate-id"
+				name="tasty_recipes_shareasale"
+				value={ formData.shareasaleId }
+				setValue={ ( value ) => {
+					handleChange( 'shareasaleId', value );
+				} }
+			/>
+			<UpgradeBanner generateUpgradeUrl={ generateUpgradeUrl } />
+			<SelectInput
+				onClick={ () => {
+					if ( isSettingDisabled( formData.quickLinksStyle ) ) {
+						openModal(
+							'tasty_recipes_upgrade_modal',
+							__( 'Quick Links Style', 'tasty-recipes-lite' ),
+							generateUpgradeUrl( {
+								medium: 'tasty-recipes',
+								content: 'quick-links-style',
+							} ),
+							globalSettings.pluginUrl +
+								'/assets/images/quick-links-preview.png'
+						);
+					}
+				} }
+				label={ __( 'Quick Links Style', 'tasty-recipes-lite' ) }
+				id="tasty_recipes_quick_links_style"
+				name="tasty_recipes_quick_links_style"
+				value={ formData.quickLinksStyle }
+				disabled={ isSettingDisabled( formData.quickLinksStyle ) }
+				handleChange={ ( value ) => {
+					handleChange( 'quickLinksStyle', value );
+				} }
+				options={ [
+					{
+						label: __( 'Buttons', 'tasty-recipes-lite' ),
+						value: 'buttons',
+						selected:
+							formData.quickLinksStyle &&
+							formData.quickLinksStyle === 'buttons',
+					},
+					{
+						label: __( 'Links', 'tasty-recipes-lite' ),
+						value: 'links',
+						selected:
+							! formData.quickLinksStyle ||
+							formData.quickLinksStyle === 'links',
+					},
+				] }
+			/>
+			<UnitConversion
+				formData={ formData }
+				handleChange={ handleChange }
+				openModal={ openModal }
+				generateUpgradeUrl={ generateUpgradeUrl }
+			/>
 			<ToggleInput
 				onClick={ () => {
 					if ( isSettingDisabled( formData.ingredientCheckboxes ) ) {
@@ -324,7 +243,7 @@ export const Settings = () => {
 				label={ __( 'Ingredient Checkboxes', 'tasty-recipes-lite' ) }
 				id="tasty_recipes_ingredient_checkboxes"
 				name="tasty_recipes_ingredient_checkboxes"
-				value={ formData.ingredientCheckboxes ?? 0 }
+				value={ String( formData.ingredientCheckboxes ?? 0 ) }
 				onValue="1"
 				offValue="0"
 				setValue={ ( value ) => {
@@ -336,7 +255,12 @@ export const Settings = () => {
 					'tasty-recipes-lite'
 				) }
 			/>
-			{ cookMode }
+			<CookMode
+				formData={ formData }
+				handleChange={ handleChange }
+				openModal={ openModal }
+				generateUpgradeUrl={ generateUpgradeUrl }
+			/>
 			<ToggleInput
 				onClick={ () => {
 					if ( isSettingDisabled( formData.scaling ) ) {
@@ -353,9 +277,9 @@ export const Settings = () => {
 				label={ __( 'Scaling', 'tasty-recipes-lite' ) }
 				id="tasty_recipes_disable_scaling"
 				name="tasty_recipes_disable_scaling"
-				value={ formData.scaling ?? 0 }
-				onValue="1"
-				offValue="0"
+				value={ String( formData.scaling ?? 1 ) }
+				onValue="0"
+				offValue="1"
 				setValue={ ( value ) => {
 					handleChange( 'scaling', value );
 				} }
@@ -381,7 +305,7 @@ export const Settings = () => {
 				label={ __( 'Copy to Clipboard', 'tasty-recipes-lite' ) }
 				id="tasty_recipes_copy_to_clipboard"
 				name="tasty_recipes_copy_to_clipboard"
-				value={ formData.copyToClipboard ?? 0 }
+				value={ String( formData.copyToClipboard ?? 0 ) }
 				onValue="1"
 				offValue="0"
 				setValue={ ( value ) => {
@@ -393,23 +317,11 @@ export const Settings = () => {
 					'tasty-recipes-lite'
 				) }
 			/>
-			<TextInput
-				label={ __( 'Default Author Link', 'tasty-recipes-lite' ) }
-				id="tasty-recipes-default-author-link"
-				name="tasty_recipes_default_author_link"
-				value={ formData.defaultAuthorLink }
-				setValue={ ( value ) => {
-					handleChange( 'defaultAuthorLink', value );
-				} }
-			/>
-			{ instacartButton }
-			<ShareASaleInput
-				id="tasty-recipes-shareasale-affiliate-id"
-				name="tasty_recipes_shareasale"
-				value={ formData.shareasaleId }
-				setValue={ ( value ) => {
-					handleChange( 'shareasaleId', value );
-				} }
+			<InstacartButton
+				formData={ formData }
+				handleChange={ handleChange }
+				openModal={ openModal }
+				generateUpgradeUrl={ generateUpgradeUrl }
 			/>
 			<TabletSaveButton />
 		</div>

@@ -7,6 +7,7 @@ import {
 	TabletSaveButton,
 } from '@library';
 import { templateFields, fieldLabels } from '../utils/templateFields.js';
+import { getDefaultColors } from '../utils/defaultColors.js';
 
 const imagesUrl = window.tastyRecipesSettings.pluginUrl + '/assets/images/';
 
@@ -18,6 +19,7 @@ export const DesignSettings = ( {
 	generateUpgradeUrl,
 } ) => {
 	const templateName = selectedTemplate !== '' ? selectedTemplate : 'default';
+	const defaultColors = getDefaultColors( templateName );
 
 	const socialFooter = applyFilters(
 		'tasty_recipes_design_social_footer',
@@ -41,7 +43,8 @@ export const DesignSettings = ( {
 		/>,
 		formData,
 		selectedTemplate,
-		handleChange
+		handleChange,
+		defaultColors
 	);
 
 	return (
@@ -58,7 +61,11 @@ export const DesignSettings = ( {
 						label={ fieldLabels[ field ] }
 						id={ 'tasty_recipes_customization-' + field }
 						name={ 'tasty_recipes_customization[' + field + ']' }
-						color={ formData[ field ] }
+						color={
+							formData[ field ]?.length > 0
+								? formData[ field ]
+								: defaultColors[ field ]
+						}
 						setColor={ ( color ) => {
 							handleChange( field, color );
 						} }
@@ -72,7 +79,11 @@ export const DesignSettings = ( {
 					label=""
 					id="tasty_recipes_customization[h2_color]"
 					name="tasty_recipes_customization[h2_color]"
-					color={ formData.h2_color }
+					color={
+						formData.h2_color?.length > 0
+							? formData.h2_color
+							: defaultColors.h2_color
+					}
 					setColor={ ( color ) => {
 						handleChange( 'h2_color', color );
 					} }
@@ -127,7 +138,11 @@ export const DesignSettings = ( {
 					label=""
 					id="tasty_recipes_customization[h3_color]"
 					name="tasty_recipes_customization[h3_color]"
-					color={ formData.h3_color }
+					color={
+						formData.h3_color?.length > 0
+							? formData.h3_color
+							: defaultColors.h3_color
+					}
 					setColor={ ( color ) => {
 						handleChange( 'h3_color', color );
 					} }
@@ -182,7 +197,11 @@ export const DesignSettings = ( {
 					label=""
 					id="tasty_recipes_customization[body_color]"
 					name="tasty_recipes_customization[body_color]"
-					color={ formData.body_color }
+					color={
+						formData.body_color?.length > 0
+							? formData.body_color
+							: defaultColors.body_color
+					}
 					setColor={ ( color ) => {
 						handleChange( 'body_color', color );
 					} }
@@ -195,7 +214,11 @@ export const DesignSettings = ( {
 						label=""
 						id="tasty_recipes_customization[star_color]"
 						name="tasty_recipes_customization[star_color]"
-						color={ formData.star_color }
+						color={
+							formData.star_color?.length > 0
+								? formData.star_color
+								: defaultColors.star_color
+						}
 						setColor={ ( color ) => {
 							handleChange( 'star_color', color );
 						} }
@@ -312,7 +335,11 @@ export const DesignSettings = ( {
 			<h3>
 				{ __( 'Social Footer', 'tasty-recipes-lite' ) }
 				<PremiumLock
-					upgradeUrl={ window.tastyRecipesSettings.upgrade_url }
+					upgradeUrl={ generateUpgradeUrl( {
+						medium: 'tasty-recipes',
+						campaign: 'upgrade',
+						content: 'social-footer',
+					} ) }
 				/>
 			</h3>
 			{ socialFooter }

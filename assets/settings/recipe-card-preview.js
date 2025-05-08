@@ -22,25 +22,48 @@ const onWindowResize = function () {
 	);
 };
 
-const resizeAfterIframeLoad = function () {
+const resizeAfterMediaLoad = function () {
 	if ( ! recipeCard ) {
 		return;
 	}
 
 	const iframes = recipeCard.getElementsByTagName( 'iframe' );
+	const images = recipeCard.getElementsByTagName( 'img' );
 
-	if ( 0 === iframes.length ) {
+	if ( 0 === iframes.length && 0 === images.length ) {
 		return;
 	}
 
 	Array.from( iframes ).forEach( ( iframe ) => {
 		iframe.onload = onWindowResize;
 	} );
+
+	Array.from( images ).forEach( ( image ) => {
+		image.onload = onWindowResize;
+	} );
 };
 
 window.addEventListener( 'DOMContentLoaded', onWindowResize );
 onWindowResize();
-resizeAfterIframeLoad();
+
+window.addEventListener( 'DOMContentLoaded', () => {
+	resizeAfterMediaLoad();
+
+	const proImage = document.querySelector(
+		'.tasty-recipes-pro-template img'
+	);
+
+	if ( proImage ) {
+		proImage.addEventListener( 'click', () => {
+			window.parent.postMessage(
+				JSON.stringify( {
+					event: 'proImageClicked',
+				} ),
+				'*'
+			);
+		} );
+	}
+} );
 
 window.addEventListener( 'message', ( event ) => {
 	if (
