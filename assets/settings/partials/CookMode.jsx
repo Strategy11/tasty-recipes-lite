@@ -14,14 +14,14 @@ export const CookMode = ( {
 } ) => {
 	const triggerModal = ( condition ) => {
 		if ( condition ) {
-			openModal(
-				'tasty_recipes_upgrade_modal',
-				__( 'Enable Cook Mode', 'tasty-recipes-lite' ),
-				generateUpgradeUrl( {
+			openModal( {
+				id: 'tasty_recipes_upgrade_modal',
+				title: __( 'Enable Cook Mode', 'tasty-recipes-lite' ),
+				upgradeUrl: generateUpgradeUrl( {
 					medium: 'tasty-recipes',
 					content: 'cook-mode',
-				} )
-			);
+				} ),
+			} );
 		}
 	};
 

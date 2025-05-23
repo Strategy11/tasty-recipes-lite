@@ -31,14 +31,14 @@ export const DesignSettings = ( {
 			width="550"
 			height="100"
 			onClick={ () =>
-				openModal(
-					'tasty_recipes_upgrade_modal',
-					__( 'Social Footers', 'tasty-recipes-lite' ),
-					generateUpgradeUrl( {
+				openModal( {
+					id: 'tasty_recipes_upgrade_modal',
+					title: __( 'Social Footers', 'tasty-recipes-lite' ),
+					upgradeUrl: generateUpgradeUrl( {
 						medium: 'tasty-recipes',
 						content: 'social-footer',
-					} )
-				)
+					} ),
+				} )
 			}
 		/>,
 		formData,
