@@ -7,6 +7,7 @@ const { TextControl, CheckboxControl, PanelBody, ToolbarGroup, ToolbarButton } =
 const { serverSideRender: ServerSideRender } = wp;
 const { Fragment } = wp.element;
 const { __ } = wp.i18n;
+const { applyFilters } = wp.hooks;
 
 const handleEditorModalUpdate = ( props, response ) => {
 	const date = new Date();
@@ -120,6 +121,42 @@ const edit = ( props ) => {
 		);
 	}
 
+	const disableJSON = applyFilters(
+		'tasty_recipes_lite_disable_json',
+		<CheckboxControl
+			label={ __(
+				'This is a non-food recipe (craft, cleaning product, etc)',
+				'tasty-recipes-lite'
+			) }
+			disabled
+			__nextHasNoMarginBottom
+		/>
+	);
+
+	const unitConversion = applyFilters(
+		'tasty_recipes_lite_conversion',
+		<CheckboxControl
+			label={ __(
+				'Disable unit conversion for this recipe',
+				'tasty-recipes-lite'
+			) }
+			disabled
+			__nextHasNoMarginBottom
+		/>
+	);
+
+	const disableScaling = applyFilters(
+		'tasty_recipes_lite_disable_scaling',
+		<CheckboxControl
+			label={ __(
+				'Disable scaling for this recipe',
+				'tasty-recipes-lite'
+			) }
+			disabled
+			__nextHasNoMarginBottom
+		/>
+	);
+
 	return (
 		<Fragment>
 			<BlockControls>
@@ -143,18 +180,9 @@ const edit = ( props ) => {
 					title={ __( 'Recipe options', 'tasty-recipes-lite' ) }
 					initialOpen={ true }
 				>
-					<CheckboxControl
-						label={ __(
-							'This is a non-food recipe (craft, cleaning product, etc)',
-							'tasty-recipes-lite'
-						) }
-						checked={ props.attributes.disableJSON }
-						onChange={ () => {
-							props.setAttributes( {
-								disableJSON: ! props.attributes.disableJSON,
-							} );
-						} }
-					/>
+					{ disableJSON }
+					{ unitConversion }
+					{ disableScaling }
 					<TextControl
 						label={ __(
 							'Override Author Link',
@@ -166,32 +194,8 @@ const edit = ( props ) => {
 								author_link: value,
 							} );
 						} }
-					/>
-					<CheckboxControl
-						label={ __(
-							'Disable unit conversion for this recipe',
-							'tasty-recipes-lite'
-						) }
-						checked={ props.attributes.disable_unit_conversion }
-						onChange={ () => {
-							props.setAttributes( {
-								disable_unit_conversion:
-									! props.attributes.disable_unit_conversion,
-							} );
-						} }
-					/>
-					<CheckboxControl
-						label={ __(
-							'Disable scaling for this recipe',
-							'tasty-recipes-lite'
-						) }
-						checked={ props.attributes.disable_scaling }
-						onChange={ () => {
-							props.setAttributes( {
-								disable_scaling:
-									! props.attributes.disable_scaling,
-							} );
-						} }
+						__next40pxDefaultSize
+						__nextHasNoMarginBottom
 					/>
 				</PanelBody>
 			</InspectorAdvancedControls>
@@ -221,18 +225,6 @@ const blockRegistration = {
 		author_link: {
 			type: 'string',
 			default: '',
-		},
-		disableJSON: {
-			type: 'boolean',
-			default: false,
-		},
-		disable_unit_conversion: {
-			type: 'boolean',
-			default: false,
-		},
-		disable_scaling: {
-			type: 'boolean',
-			default: false,
 		},
 	},
 	edit,
