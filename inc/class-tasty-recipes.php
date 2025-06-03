@@ -525,6 +525,7 @@ class Tasty_Recipes {
 				 * @param bool $disable_json Whether to disable the custom schema.
 				 */
 				$disable_json = apply_filters( 'tasty_recipes_use_custom_schema', false, compact( 'block', 'options' ) );
+
 				if ( $disable_json ) {
 					continue;
 				}

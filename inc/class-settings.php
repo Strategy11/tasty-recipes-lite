@@ -74,13 +74,30 @@ class Settings {
 	}
 
 	/**
+	 * Sanitize title.
+	 * 
+	 * @since x.x
+	 *
+	 * @param mixed $value Value to sanitize.
+	 *
+	 * @return string
+	 */
+	public static function safe_sanitize_title( $value ) {
+		if ( ! is_string( $value ) ) {
+			$value = '';
+		}
+
+		return sanitize_title( $value );
+	}
+
+	/**
 	 * Registers used settings.
 	 *
 	 * @return void
 	 */
 	public static function register_settings() {
 		$sanitize_title = [
-			'sanitize_callback' => 'sanitize_title',
+			'sanitize_callback' => array( __CLASS__, 'safe_sanitize_title' ),
 		];
 
 		$design_settings = [
@@ -107,7 +124,7 @@ class Settings {
 			);
 		}
 
-		$settings = [
+		$settings = array(
 			Tasty_Recipes::QUICK_LINKS_OPTION         => [
 				'sanitize_callback' => array( __CLASS__, 'sanitize_quick_links' ),
 			],
@@ -123,7 +140,7 @@ class Settings {
 			Tasty_Recipes::SHAREASALE_OPTION          => [
 				'sanitize_callback' => 'sanitize_text_field',
 			],
-		];
+		);
 
 		/**
 		 * Filter the settings to be registered.

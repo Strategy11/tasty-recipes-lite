@@ -130,7 +130,9 @@ const edit = ( props ) => {
 			) }
 			disabled
 			__nextHasNoMarginBottom
-		/>
+		/>,
+		props.attributes,
+		props.setAttributes
 	);
 
 	const unitConversion = applyFilters(
@@ -142,7 +144,9 @@ const edit = ( props ) => {
 			) }
 			disabled
 			__nextHasNoMarginBottom
-		/>
+		/>,
+		props.attributes,
+		props.setAttributes
 	);
 
 	const disableScaling = applyFilters(
@@ -154,7 +158,9 @@ const edit = ( props ) => {
 			) }
 			disabled
 			__nextHasNoMarginBottom
-		/>
+		/>,
+		props.attributes,
+		props.setAttributes
 	);
 
 	return (
