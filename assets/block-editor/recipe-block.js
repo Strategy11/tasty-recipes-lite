@@ -1,8 +1,9 @@
 /**
  * WordPress dependencies
  */
-const { InspectorControls, BlockControls } = wp.blockEditor;
-const { TextControl, PanelBody, ToolbarGroup, ToolbarButton } = wp.components;
+const { InspectorAdvancedControls, BlockControls } = wp.blockEditor;
+const { TextControl, CheckboxControl, PanelBody, ToolbarGroup, ToolbarButton } =
+	wp.components;
 const { serverSideRender: ServerSideRender } = wp;
 const { Fragment } = wp.element;
 const { __ } = wp.i18n;
@@ -137,11 +138,23 @@ const edit = ( props ) => {
 					attributes={ props.attributes }
 				/>
 			</div>
-			<InspectorControls>
+			<InspectorAdvancedControls>
 				<PanelBody
 					title={ __( 'Recipe options', 'tasty-recipes-lite' ) }
 					initialOpen={ true }
 				>
+					<CheckboxControl
+						label={ __(
+							'This is a non-food recipe (craft, cleaning product, etc)',
+							'tasty-recipes-lite'
+						) }
+						checked={ props.attributes.disableJSON }
+						onChange={ () => {
+							props.setAttributes( {
+								disableJSON: ! props.attributes.disableJSON,
+							} );
+						} }
+					/>
 					<TextControl
 						label={ __(
 							'Override Author Link',
@@ -154,8 +167,34 @@ const edit = ( props ) => {
 							} );
 						} }
 					/>
+					<CheckboxControl
+						label={ __(
+							'Disable unit conversion for this recipe',
+							'tasty-recipes-lite'
+						) }
+						checked={ props.attributes.disable_unit_conversion }
+						onChange={ () => {
+							props.setAttributes( {
+								disable_unit_conversion:
+									! props.attributes.disable_unit_conversion,
+							} );
+						} }
+					/>
+					<CheckboxControl
+						label={ __(
+							'Disable scaling for this recipe',
+							'tasty-recipes-lite'
+						) }
+						checked={ props.attributes.disable_scaling }
+						onChange={ () => {
+							props.setAttributes( {
+								disable_scaling:
+									! props.attributes.disable_scaling,
+							} );
+						} }
+					/>
 				</PanelBody>
-			</InspectorControls>
+			</InspectorAdvancedControls>
 		</Fragment>
 	);
 };
@@ -182,6 +221,18 @@ const blockRegistration = {
 		author_link: {
 			type: 'string',
 			default: '',
+		},
+		disableJSON: {
+			type: 'boolean',
+			default: false,
+		},
+		disable_unit_conversion: {
+			type: 'boolean',
+			default: false,
+		},
+		disable_scaling: {
+			type: 'boolean',
+			default: false,
 		},
 	},
 	edit,
