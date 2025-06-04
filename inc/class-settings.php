@@ -76,7 +76,7 @@ class Settings {
 	/**
 	 * Sanitize title.
 	 * 
-	 * @since x.x
+	 * @since 1.0.1
 	 *
 	 * @param mixed $value Value to sanitize.
 	 *
