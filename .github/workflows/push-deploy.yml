@@ -14,6 +14,8 @@ jobs:
     - uses: actions/checkout@master
     - name: Build
       run: |
+        composer config --auth github-oauth.github.com ${{ secrets.GH_TOKEN }}
+        composer install -n --prefer-dist
         npm install
         npm run build
     - name: Install SVN
