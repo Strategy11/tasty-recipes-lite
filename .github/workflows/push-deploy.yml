@@ -16,6 +16,8 @@ jobs:
       run: |
         composer config --auth github-oauth.github.com ${{ secrets.GH_TOKEN }}
         composer install -n --prefer-dist
+        composer config --auth --unset github-oauth.github.com
+        rm auth.json
         npm install
         npm run build
     - name: Install SVN
