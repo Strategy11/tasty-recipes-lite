@@ -84,7 +84,7 @@ class Settings {
 	 */
 	public static function safe_sanitize_title( $value ) {
 		if ( ! is_string( $value ) ) {
-			$value = '';
+			return '';
 		}
 
 		return sanitize_title( $value );
