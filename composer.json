@@ -69,6 +69,6 @@
     },
     "require": {
         "composer/installers": "^2.2",
-        "strategy11/tasty-framework": "1.1.5"
+        "strategy11/tasty-framework": "1.1.6"
     }
 }
