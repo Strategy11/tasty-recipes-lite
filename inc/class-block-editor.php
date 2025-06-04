@@ -65,8 +65,16 @@ class Block_Editor {
 		if ( function_exists( 'wp_set_script_translations' ) ) {
 			wp_set_script_translations( 'tasty-recipes-block-editor', 'tasty-recipes-lite' );
 		}
-		register_block_type(
-			self::RECIPE_BLOCK_TYPE,
+
+		/**
+		 * Filter the block attributes.
+		 *
+		 * @since 3.8
+		 *
+		 * @param array $attributes Block attributes.
+		 */
+		$attributes = apply_filters(
+			'tasty_recipes_lite_block_attributes',
 			array(
 				'attributes'      => array(
 					'className'   => array(
@@ -86,6 +94,11 @@ class Block_Editor {
 				'editor_style'    => array( 'tasty-framework-global-css', 'tasty-recipes-main' ),
 				'render_callback' => array( 'Tasty_Recipes\Shortcodes', 'render_tasty_recipe_shortcode' ),
 			)
+		);
+
+		register_block_type(
+			self::RECIPE_BLOCK_TYPE,
+			$attributes
 		);
 	}
 

@@ -1,11 +1,13 @@
 /**
  * WordPress dependencies
  */
-const { InspectorControls, BlockControls } = wp.blockEditor;
-const { TextControl, PanelBody, ToolbarGroup, ToolbarButton } = wp.components;
+const { InspectorAdvancedControls, BlockControls } = wp.blockEditor;
+const { TextControl, CheckboxControl, PanelBody, ToolbarGroup, ToolbarButton } =
+	wp.components;
 const { serverSideRender: ServerSideRender } = wp;
 const { Fragment } = wp.element;
 const { __ } = wp.i18n;
+const { applyFilters } = wp.hooks;
 
 const handleEditorModalUpdate = ( props, response ) => {
 	const date = new Date();
@@ -119,6 +121,48 @@ const edit = ( props ) => {
 		);
 	}
 
+	const disableJSON = applyFilters(
+		'tasty_recipes_lite_disable_json',
+		<CheckboxControl
+			label={ __(
+				'This is a non-food recipe (craft, cleaning product, etc)',
+				'tasty-recipes-lite'
+			) }
+			disabled
+			__nextHasNoMarginBottom
+		/>,
+		props.attributes,
+		props.setAttributes
+	);
+
+	const unitConversion = applyFilters(
+		'tasty_recipes_lite_conversion',
+		<CheckboxControl
+			label={ __(
+				'Disable unit conversion for this recipe',
+				'tasty-recipes-lite'
+			) }
+			disabled
+			__nextHasNoMarginBottom
+		/>,
+		props.attributes,
+		props.setAttributes
+	);
+
+	const disableScaling = applyFilters(
+		'tasty_recipes_lite_disable_scaling',
+		<CheckboxControl
+			label={ __(
+				'Disable scaling for this recipe',
+				'tasty-recipes-lite'
+			) }
+			disabled
+			__nextHasNoMarginBottom
+		/>,
+		props.attributes,
+		props.setAttributes
+	);
+
 	return (
 		<Fragment>
 			<BlockControls>
@@ -137,11 +181,14 @@ const edit = ( props ) => {
 					attributes={ props.attributes }
 				/>
 			</div>
-			<InspectorControls>
+			<InspectorAdvancedControls>
 				<PanelBody
 					title={ __( 'Recipe options', 'tasty-recipes-lite' ) }
 					initialOpen={ true }
 				>
+					{ disableJSON }
+					{ unitConversion }
+					{ disableScaling }
 					<TextControl
 						label={ __(
 							'Override Author Link',
@@ -153,9 +200,11 @@ const edit = ( props ) => {
 								author_link: value,
 							} );
 						} }
+						__next40pxDefaultSize
+						__nextHasNoMarginBottom
 					/>
 				</PanelBody>
-			</InspectorControls>
+			</InspectorAdvancedControls>
 		</Fragment>
 	);
 };

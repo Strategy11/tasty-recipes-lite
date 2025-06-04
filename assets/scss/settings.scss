@@ -131,7 +131,11 @@
 			
 		.tasty-form-field:has( .tasty-checkbox-container ) {
 			label {
-				font-weight: 500 !important;
+				font-weight: 500;
+				&:has(input:disabled) {
+					color: var(--grey-700) !important;
+					font-weight: 400 !important;
+				}
 			}
 		}
 	}

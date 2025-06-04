@@ -13,7 +13,7 @@ export const CookMode = ( {
 	generateUpgradeUrl,
 } ) => {
 	const triggerModal = ( condition ) => {
-		if ( condition ) {
+		if ( condition && isCookModeEnabled === undefined ) {
 			openModal(
 				'tasty_recipes_upgrade_modal',
 				__( 'Enable Cook Mode', 'tasty-recipes-lite' ),
@@ -51,7 +51,7 @@ export const CookMode = ( {
 						'tasty-recipes-lite'
 					) }
 				/>
-				{ ! isCookModeEnabled && (
+				{ isCookModeEnabled !== undefined && ! isCookModeEnabled && (
 					<div className="tasty-form-field tasty-recipes-error-message">
 						{ /* eslint-disable-next-line jsx-a11y/label-has-associated-control */ }
 						<label></label>
