@@ -70,6 +70,36 @@ Tasty Recipes Lite has everything you need to start sharing recipes on your Word
 * YumPrint Recipe Card
 * ZipList / Zip Recipes
 
+== Screenshots ==
+1. Color Styler
+2. Snap template
+3. Simple Template
+4. Print button
+5. Print preview
+6. In-post recipe editor
+7. Schema results
+8. Quick Links
+
+== Frequently Asked Questions ==
+
+**Is there a demo or support documentation?**
+Yes! You can [view the live demo](https://www.wptasty.com/tasty-recipes/demo) and check out our [support documentation](https://www.wptasty.com/support) for setup tips and support.
+
+---
+
+**Is Tasty Recipes SEO friendly?**
+Yes! It has built-in recipe schema (Schema.org + JSON-LD) to help your recipes show up in Google search results.
+
+---
+
+**Can I switch from another recipe plugin?**
+You can! Tasty Recipes Lite imports from WPRM, Create, EasyRecipe, and more.
+
+---
+
+**Will this work with my theme and page builder?**
+Yes, it works with nearly all themes and page builders, including Elementor, the Block Editor, and Classic Editor.
+
 == Installation ==
 
 The Tasty Recipes plugin can be installed much like any other WordPress plugin.
