@@ -1,5 +1,5 @@
 === Tasty Recipes Lite ===
-Contributors: wptasty, sswells, srwells, danielbachhuber
+Contributors: strategy11team, sswells, srwells, danielbachhuber
 Tags: recipe, recipe maker, recipe card, rating, food blogging
 Requires at least: 5.9
 Tested up to: 6.8.1
