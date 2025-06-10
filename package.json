@@ -13,7 +13,7 @@
     "ignore-emit-webpack-plugin": "^2.0.6",
     "classnames": "^2.5.1",
     "laravel-mix": "^6.0",
-    "svglint": "^3.0",
+    "svglint": "^4.1",
     "vue-html-loader": "^1.2.4",
     "vue-loader": "^15.11.1",
     "vue-template-compiler": "^2.7.16"
