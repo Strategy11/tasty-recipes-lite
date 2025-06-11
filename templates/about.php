@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 			<div class="tasty-flex tasty-about-double-row">
 				<div>
 					<h2><?php esc_html_e( 'Welcome to Tasty Recipes! 🎉', 'tasty-recipes-lite' ); ?></h2>
-					<p><?php esc_html_e( 'Tasty Recipes is a fast, simple, and SEO-optimized recipe plugin for food bloggers. By purchasing Tasty Recipes, you\'re getting access to an impecable recipe creation experience, superior code quality, and a helpful support team ready to answer all your questions.', 'tasty-recipes-lite' ); ?></p>
+					<p><?php esc_html_e( 'Tasty Recipes is a fast, simple, and SEO-optimized recipe plugin for food bloggers. By purchasing Tasty Recipes, you\'re getting access to an impeccable recipe creation experience, superior code quality, and a helpful support team ready to answer all your questions.', 'tasty-recipes-lite' ); ?></p>
 					<h2><?php esc_html_e( 'Getting Started', 'tasty-recipes-lite' ); ?></h2>
 					<p><?php esc_html_e( 'Tasty Recipes is extremely easy to configure. Visit the settings page to select a recipe card theme, add your Instagram information, and set the default Author URL.', 'tasty-recipes-lite' ); ?></p>
 					<p><a class="tasty-button" href="<?php menu_page_url( Tasty_Recipes\Settings::PAGE_SLUG, true ); ?>"><?php esc_html_e( 'Visit Settings', 'tasty-recipes-lite' ); ?></a>
