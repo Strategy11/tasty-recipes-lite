@@ -61,11 +61,8 @@ export const DesignSettings = ( {
 						label={ fieldLabels[ field ] }
 						id={ 'tasty_recipes_customization-' + field }
 						name={ 'tasty_recipes_customization[' + field + ']' }
-						color={
-							formData[ field ]?.length > 0
-								? formData[ field ]
-								: defaultColors[ field ]
-						}
+						color={ formData[ field ] }
+						defaultColor={ defaultColors[ field ] }
 						setColor={ ( color ) => {
 							handleChange( field, color );
 						} }
@@ -79,11 +76,8 @@ export const DesignSettings = ( {
 					label=""
 					id="tasty_recipes_customization[h2_color]"
 					name="tasty_recipes_customization[h2_color]"
-					color={
-						formData.h2_color?.length > 0
-							? formData.h2_color
-							: defaultColors.h2_color
-					}
+					color={ formData.h2_color }
+					defaultColor={ defaultColors.h2_color }
 					setColor={ ( color ) => {
 						handleChange( 'h2_color', color );
 					} }
@@ -138,11 +132,8 @@ export const DesignSettings = ( {
 					label=""
 					id="tasty_recipes_customization[h3_color]"
 					name="tasty_recipes_customization[h3_color]"
-					color={
-						formData.h3_color?.length > 0
-							? formData.h3_color
-							: defaultColors.h3_color
-					}
+					color={ formData.h3_color }
+					defaultColor={ defaultColors.h3_color }
 					setColor={ ( color ) => {
 						handleChange( 'h3_color', color );
 					} }
@@ -197,11 +188,8 @@ export const DesignSettings = ( {
 					label=""
 					id="tasty_recipes_customization[body_color]"
 					name="tasty_recipes_customization[body_color]"
-					color={
-						formData.body_color?.length > 0
-							? formData.body_color
-							: defaultColors.body_color
-					}
+					color={ formData.body_color }
+					defaultColor={ defaultColors.body_color }
 					setColor={ ( color ) => {
 						handleChange( 'body_color', color );
 					} }
@@ -214,11 +202,8 @@ export const DesignSettings = ( {
 						label=""
 						id="tasty_recipes_customization[star_color]"
 						name="tasty_recipes_customization[star_color]"
-						color={
-							formData.star_color?.length > 0
-								? formData.star_color
-								: defaultColors.star_color
-						}
+						color={ formData.star_color }
+						defaultColor={ defaultColors.star_color }
 						setColor={ ( color ) => {
 							handleChange( 'star_color', color );
 						} }

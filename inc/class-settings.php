@@ -10,6 +10,7 @@ namespace Tasty_Recipes;
 use Tasty\Framework\Utils\Url;
 use Tasty\Framework\Utils\Common;
 use Tasty_Recipes;
+use Tasty_Recipes\Designs\Template;
 
 /**
  * Manages interactions with the settings page.
@@ -56,6 +57,7 @@ class Settings {
 
 		add_filter( 'tasty_framework_admin_menu_items', array( __CLASS__, 'add_menu_item' ) );
 		add_action( 'admin_menu', array( __CLASS__, 'register_settings' ) );
+		add_action( 'update_option_' . Tasty_Recipes::TEMPLATE_OPTION, array( __CLASS__, 'maybe_remove_default_colors' ), 10, 2 );
 	}
 
 	/**
@@ -71,6 +73,34 @@ class Settings {
 		}
 
 		return $menu_items;
+	}
+
+	/**
+	 * Maybe remove default colors when the template is changed.
+	 * 
+	 * @since x.x
+	 *
+	 * @param string $old_value Old value.
+	 * @param string $new_value New value.
+	 * 
+	 * @return void
+	 */
+	public static function maybe_remove_default_colors( $old_value, $new_value ) {
+		$customizations = get_option( Tasty_Recipes::CUSTOMIZATION_OPTION, array() );
+
+		if ( $old_value === $new_value || empty( $customizations ) ) {
+			return;
+		}
+
+		$old_default_colors = Template::get_default_colors_for_template( $old_value );
+		
+		foreach ( $old_default_colors as $key => $value ) {
+			if ( isset( $customizations[ $key ] ) && $customizations[ $key ] === $value ) {
+				unset( $customizations[ $key ] );
+			}
+		}
+
+		update_option( Tasty_Recipes::CUSTOMIZATION_OPTION, $customizations );
 	}
 
 	/**
@@ -327,7 +357,8 @@ class Settings {
 	public static function sanitize_customization_option( $original ) {
 		$original  = stripslashes_deep( (array) $original );
 		$sanitized = array();
-		$allowed   = array(
+		
+		$allowed = array(
 			'primary_color'          => array( __CLASS__, 'sanitize_color' ),
 			'secondary_color'        => array( __CLASS__, 'sanitize_color' ),
 			'icon_color'             => array( __CLASS__, 'sanitize_color' ),
@@ -358,7 +389,7 @@ class Settings {
 				'card',
 			),
 		);
-
+	
 		/**
 		 * Filter the allowed settings.
 		 *
@@ -366,15 +397,22 @@ class Settings {
 		 *
 		 * @param array $allowed Array of allowed settings and how to sanitize them.
 		 */
-		$allowed = apply_filters( 'tasty_recipes_allowed_customization_settings', $allowed );
-
+		$allowed        = apply_filters( 'tasty_recipes_allowed_customization_settings', $allowed );
+		$default_colors = Template::get_default_colors_for_template( get_option( Tasty_Recipes::TEMPLATE_OPTION, 'default' ) );
+	
 		foreach ( $original as $key => $value ) {
 			if ( ! isset( $allowed[ $key ] ) ) {
 				continue;
 			}
-
+	
 			if ( is_callable( $allowed[ $key ] ) ) {
-				$sanitized[ $key ] = $allowed[ $key ]( $value );
+				$sanitized_value = $allowed[ $key ]( $value );
+
+				if ( isset( $default_colors[ $key ] ) && $sanitized_value === $default_colors[ $key ] ) {
+					continue;
+				}
+				
+				$sanitized[ $key ] = $sanitized_value;
 			} elseif ( is_array( $allowed[ $key ] ) ) {
 				if ( in_array( $value, $allowed[ $key ], true ) ) {
 					$sanitized[ $key ] = $value;
@@ -383,9 +421,11 @@ class Settings {
 				}
 			}
 		}
+		
 		if ( ! empty( $sanitized['footer_description'] ) ) {
 			$sanitized['footer_description'] = stripslashes( wpautop( $sanitized['footer_description'] ) );
 		}
+		
 		return $sanitized;
 	}
 
