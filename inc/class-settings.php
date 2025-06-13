@@ -86,9 +86,13 @@ class Settings {
 	 * @return void
 	 */
 	public static function maybe_remove_default_colors( $old_value, $new_value ) {
+		if ( $old_value === $new_value ) {
+			return;
+		}
+
 		$customizations = get_option( Tasty_Recipes::CUSTOMIZATION_OPTION, array() );
 
-		if ( $old_value === $new_value || empty( $customizations ) ) {
+		if ( empty( $customizations ) ) {
 			return;
 		}
 
