@@ -4,7 +4,7 @@ Tags: recipe, recipe maker, recipe card, rating, food blogging
 Requires at least: 5.9
 Tested up to: 6.8.1
 Requires PHP: 7.2
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -110,6 +110,10 @@ The Tasty Recipes plugin can be installed much like any other WordPress plugin.
 With Tasty Recipes, there aren't any confusing settings to configure or customizations you need to worry about. You can now share your favorite recipes with the world!
 
 == Changelog ==
+= 1.0.2 (June 16, 2025) =
+* Enhancement: Prevent saving default colors in the Design tab
+* Fix: Issue with print icon on archive pages
+* Fix: Typo on the Get Started page
 
 = 1.0.1 (June 4, 2025) =
 * Fix: Add changelog

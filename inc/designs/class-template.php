@@ -496,7 +496,7 @@ class Template {
 	/**
 	 * Get default colors for a specific template.
 	 * 
-	 * @since x.x
+	 * @since 1.0.2
 	 *
 	 * @param string $template Template name.
 	 * 
@@ -508,7 +508,7 @@ class Template {
 		/**
 		 * Filter the default colors for a specific template.
 		 *
-		 * @since x.x
+		 * @since 1.0.2
 		 *
 		 * @param array $colors Array of default colors.
 		 * @param string $template Template name.
