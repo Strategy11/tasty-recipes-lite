@@ -78,7 +78,7 @@ class Settings {
 	/**
 	 * Maybe remove default colors when the template is changed.
 	 * 
-	 * @since x.x
+	 * @since 1.0.2
 	 *
 	 * @param string $old_value Old value.
 	 * @param string $new_value New value.
