@@ -42,6 +42,6 @@
     "@uiw/react-color-chrome": "^2.5.1",
     "react-select": "^5.10.0",
     "vue": "^2.7",
-    "vue-color": "^2.8"
+    "vue-color": "^3.1"
   }
 }
