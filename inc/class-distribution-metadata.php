@@ -484,7 +484,7 @@ class Distribution_Metadata {
 		/**
 		 * Allow third-parties to modify the nutrition schema.
 		 *
-		 * @since x.x
+		 * @since 1.0.3
 		 *
 		 * @param array   $nutrition Nutrition schema.
 		 * @param Recipe  $recipe    Recipe object.
