@@ -1,21 +1,28 @@
 import { useState, useEffect, useRef } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 
 const RichTextarea = ({ 
 	initialValue, 
 	name, 
 	label, 
 	initialVideoSettingsValue, 
-	videoSettingsConfig,
-	onChange 
+	onChange = () => {}
 }) => {
 	const [value, setValue] = useState(initialValue);
 	const [videoSettingsValue, setVideoSettingsValue] = useState(
 		initialVideoSettingsValue ? initialVideoSettingsValue.split(' ') : []
 	);
+
+	const videoSettingsConfig = {
+		settings: {
+			autoplay: __( 'Autoplay', 'tasty-recipes-lite' ),
+			mute: __( 'Mute', 'tasty-recipes-lite' ),
+			loop: __( 'Loop', 'tasty-recipes-lite' ),
+			'hide-controls': __( 'Hide Controls', 'tasty-recipes-lite' ),
+		}
+	};
 	const textareaRef = useRef(null);
-
 	const id = `tasty-recipes-recipe-${name}`;
-
 	const showVideoSettings = videoSettingsConfig && value && 
 		(value.includes('vimeo.com') || value.includes('youtube.com') || value.includes('youtu.be'));
 
@@ -27,9 +34,7 @@ const RichTextarea = ({
 				ed.on('change', () => {
 					const content = ed.getContent();
 					setValue(content);
-					if (onChange) {
-						onChange(content);
-					}
+					onChange(content);
 				});
 			};
 			
@@ -64,14 +69,12 @@ const RichTextarea = ({
 				value={value || ''} 
 				onChange={(e) => {
 					setValue(e.target.value);
-					if (onChange) {
-						onChange(e.target.value);
-					}
+					onChange(e.target.value);
 				}}
 			/>
 			{showVideoSettings && (
 				<div className="tasty-recipes-video-settings">
-					<span>{videoSettingsConfig.label}</span>
+					<span>{__( 'Video Settings: ', 'tasty-recipes-lite' )}</span>
 					{Object.entries(videoSettingsConfig.settings).map(([key, label]) => (
 						<label key={key}>
 							<input 

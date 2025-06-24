@@ -1,4 +1,5 @@
 import { useState, useMemo } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 import FieldGroup from './FieldGroup';
 import RichTextarea from './RichTextarea';
 
@@ -8,15 +9,12 @@ const RecipeForm = ({ initialRecipe, config }) => {
 		initialRecipe.image_sizes ? initialRecipe.image_sizes.thumbnail : null
 	);
 
-	const labels = config.labels;
 	const attributes = config.attributes;
-	const videoSettingsConfig = config.video_settings;
-
 	const nutritionAttributes = useMemo(() => {
 		const nutritionAttrs = attributes.nutrition;
-		const denied = ['nutrifox_id'];
+
 		return Object.keys(nutritionAttrs)
-			.filter(key => !denied.includes(key))
+			.filter(key => 'nutrifox_id' !== key)
 			.reduce((obj, key) => {
 				obj[key] = nutritionAttrs[key];
 				return obj;
@@ -31,13 +29,13 @@ const RecipeForm = ({ initialRecipe, config }) => {
 
 	const handleClickSelectImage = () => {
 		const frame = wp.media({
-			title: window.tastyRecipesEditorModalData.i18n.frameTitle,
+			title: __( 'Media Library', 'tasty-recipes-lite' ),
 			multiple: false,
 			library: {
 				type: 'image',
 			},
 			button: {
-				text: window.tastyRecipesEditorModalData.i18n.frameButton,
+				text: __( 'Select Image', 'tasty-recipes-lite' ),
 			},
 		});
 
@@ -71,25 +69,8 @@ const RecipeForm = ({ initialRecipe, config }) => {
 		<form className="tasty-framework">
 			<input type="hidden" name="id" value={recipe.id} />
 
-			<div className={`tasty-recipes-image ${!recipeThumbnail ? 'tasty-recipes-image-with-placeholder' : ''}`}>
-				<input type="hidden" name="image_id" value={recipe.image_id} />
-				<div className="tasty-recipes-image-preview" onClick={handleClickSelectImage}>
-					{recipeThumbnail ? (
-						<img data-pin-nopin="true" src={recipeThumbnail.url} alt="" />
-					) : (
-						<div className="tasty-recipes-image-preview-placeholder"></div>
-					)}
-				</div>
-				<span className="tasty-recipes-select-image button" onClick={handleClickSelectImage}>
-					{labels.select_image}
-				</span>
-				<span className="tasty-recipes-remove-image button" onClick={handleClickRemoveImage}>
-					<span className="dashicons dashicons-no-alt"></span>
-				</span>
-			</div>
-
 			<fieldset>
-				<label htmlFor="title">{attributes.general.title.label}</label>
+				<label htmlFor="title">{__( 'Title', 'tasty-recipes-lite' )}</label>
 				<input 
 					type="text" 
 					name="title" 
@@ -100,7 +81,7 @@ const RecipeForm = ({ initialRecipe, config }) => {
 			</fieldset>
 
 			<fieldset>
-				<label htmlFor="author_name">{attributes.general.author_name.label}</label>
+				<label htmlFor="author_name">{__( 'Author Name', 'tasty-recipes-lite' )}</label>
 				<input 
 					type="text" 
 					name="author_name" 
@@ -110,55 +91,67 @@ const RecipeForm = ({ initialRecipe, config }) => {
 				/>
 			</fieldset>
 
+			<div className={`tasty-recipes-image ${!recipeThumbnail ? 'tasty-recipes-image-with-placeholder' : ''}`}>
+				<input type="hidden" name="image_id" value={recipe.image_id} />
+				<div className="tasty-recipes-image-preview" onClick={handleClickSelectImage}>
+					{recipeThumbnail ? (
+						<img data-pin-nopin="true" src={recipeThumbnail.url} alt="" />
+					) : (
+						<div className="tasty-recipes-image-preview-placeholder"></div>
+					)}
+				</div>
+				<span className="tasty-recipes-select-image button" onClick={handleClickSelectImage}>
+					{__( 'Select Image', 'tasty-recipes-lite' )}
+				</span>
+				<span className="tasty-recipes-remove-image button" onClick={handleClickRemoveImage}>
+					<span className="dashicons dashicons-no-alt"></span>
+				</span>
+			</div>
+
 			<RichTextarea
 				name="description"
-				label={attributes.general.description.label}
+				label={__( 'Description', 'tasty-recipes-lite' )}
 				initialValue={recipe.description}
-				videoSettingsConfig={videoSettingsConfig}
 				initialVideoSettingsValue={recipe.description_video_settings}
 				onChange={(value) => handleRecipeChange('description', value)}
 			/>
 
 			<RichTextarea
 				name="ingredients"
-				label={attributes.general.ingredients.label}
+				label={__( 'Ingredients', 'tasty-recipes-lite' )}
 				initialValue={recipe.ingredients}
-				videoSettingsConfig={videoSettingsConfig}
 				initialVideoSettingsValue={recipe.ingredients_video_settings}
 				onChange={(value) => handleRecipeChange('ingredients', value)}
 			/>
 
 			<RichTextarea
 				name="instructions"
-				label={attributes.general.instructions.label}
+				label={__( 'Instructions', 'tasty-recipes-lite' )}
 				initialValue={recipe.instructions}
-				videoSettingsConfig={videoSettingsConfig}
 				initialVideoSettingsValue={recipe.instructions_video_settings}
 				onChange={(value) => handleRecipeChange('instructions', value)}
 			/>
 
 			<RichTextarea
 				name="notes"
-				label={attributes.general.notes.label}
+				label={__( 'Notes', 'tasty-recipes-lite' )}
 				initialValue={recipe.notes}
-				videoSettingsConfig={videoSettingsConfig}
 				initialVideoSettingsValue={recipe.notes_video_settings}
 				onChange={(value) => handleRecipeChange('notes', value)}
 			/>
 
 			<FieldGroup
 				className="tasty-recipes-details"
-				heading={labels.details_heading}
+				heading={__( 'Details', 'tasty-recipes-lite' )}
 				fields={attributes.cooking}
-				extraLabels={labels.additional_time}
 				initialFieldValues={recipe}
 				onFieldChange={handleRecipeChange}
 			/>
 
 			<FieldGroup
 				className="tasty-recipes-video-url"
-				heading={labels.video_url_heading}
-				fields={{ 'video_url': attributes.general.video_url }}
+				heading={__( 'Video URL', 'tasty-recipes-lite' )}
+				fields={{ 'video_url': { label: __( 'Video URL', 'tasty-recipes-lite' ) } }}
 				showLabels={false}
 				initialFieldValues={recipe}
 				onFieldChange={handleRecipeChange}
@@ -171,7 +164,7 @@ const RecipeForm = ({ initialRecipe, config }) => {
 			<FieldGroup
 				className="tasty-recipes-nutrition"
 				group="nutrition"
-				heading={labels.nutrition_heading}
+				heading={__( 'Nutrition', 'tasty-recipes-lite' )}
 				fields={nutritionAttributes}
 				initialFieldValues={recipe}
 				onFieldChange={handleRecipeChange}
@@ -197,7 +190,7 @@ const RecipeForm = ({ initialRecipe, config }) => {
 								target="_blank" 
 								rel="noopener noreferrer"
 							>
-								Edit recipe in Nutrifox
+								{ __( 'Edit recipe in Nutrifox', 'tasty-recipes-lite' ) }
 								<svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="external-link-alt" className="svg-inline--fa fa-external-link-alt fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
 									<path fill="currentColor" d="M432,320H400a16,16,0,0,0-16,16V448H64V128H208a16,16,0,0,0,16-16V80a16,16,0,0,0-16-16H48A48,48,0,0,0,0,112V464a48,48,0,0,0,48,48H400a48,48,0,0,0,48-48V336A16,16,0,0,0,432,320ZM488,0h-128c-21.37,0-32.05,25.91-17,41l35.73,35.73L135,320.37a24,24,0,0,0,0,34L157.67,377a24,24,0,0,0,34,0L435.28,133.32,471,169c15,15,41,4.5,41-17V24A24,24,0,0,0,488,0Z"></path>
 								</svg>

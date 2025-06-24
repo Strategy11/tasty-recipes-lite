@@ -1,17 +1,17 @@
 import { useState, useEffect } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 
 const FieldGroup = ({ 
 	heading, 
 	group = '', 
-	extraLabels, 
 	fields, 
 	initialFieldValues, 
 	showLabels = true,
-	onFieldChange,
+	onFieldChange = () => {},
 	renderBeforeFields,
 	className = ''
 }) => {
-	const [fieldValues, setFieldValues] = useState(JSON.parse(JSON.stringify(initialFieldValues)));
+	const [fieldValues, setFieldValues] = useState(initialFieldValues);
 	const [isAdditionalTimeOpen, setIsAdditionalTimeOpen] = useState(false);
 
 	useEffect(() => {
@@ -32,11 +32,8 @@ const FieldGroup = ({
 	}, [isAdditionalTimeOpen]);
 
 	const handleFieldChange = (field, value) => {
-		const newFieldValues = { ...fieldValues, [field]: value };
-		setFieldValues(newFieldValues);
-		if (onFieldChange) {
-			onFieldChange(field, value);
-		}
+		setFieldValues(prev => ({ ...prev, [field]: value }));
+		onFieldChange(field, value);
 	};
 
 	const showField = (field) => {
@@ -45,6 +42,8 @@ const FieldGroup = ({
 		}
 		return true;
 	};
+
+	const title = !isAdditionalTimeOpen ? __( '+ Time', 'tasty-recipes-lite' ) : __( '- Time', 'tasty-recipes-lite' );
 
 	return (
 		<div className={className}>
@@ -71,9 +70,9 @@ const FieldGroup = ({
 												e.preventDefault();
 												setIsAdditionalTimeOpen(!isAdditionalTimeOpen);
 											}}
-											title={!isAdditionalTimeOpen ? extraLabels?.add_button_title : extraLabels?.remove_button_title}
+											title={ title }
 										>
-											{!isAdditionalTimeOpen ? extraLabels?.add_button_text : extraLabels?.remove_button_text}
+											{ title }
 										</a>
 									)}
 								</label>
@@ -111,7 +110,7 @@ const FieldGroup = ({
 									id="tasty-recipes-recipe-additional-time-label" 
 									type="text" 
 									name="additional_time_label" 
-									placeholder={extraLabels?.label_placeholder} 
+									placeholder={__( 'Additional Time Label', 'tasty-recipes-lite' )} 
 									className="inline-field" 
 									value={fieldValues.additional_time_label || ''} 
 									onChange={(e) => handleFieldChange('additional_time_label', e.target.value)}
@@ -121,7 +120,7 @@ const FieldGroup = ({
 									id="tasty-recipes-recipe-additional-time-value" 
 									type="text" 
 									name="additional_time_value" 
-									placeholder={extraLabels?.value_placeholder} 
+									placeholder={__( 'Additional Time Value', 'tasty-recipes-lite' )} 
 									className="inline-field" 
 									value={fieldValues.additional_time_value || ''} 
 									onChange={(e) => handleFieldChange('additional_time_value', e.target.value)}

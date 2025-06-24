@@ -12,7 +12,6 @@ use Tasty_Recipes\Objects\Recipe;
 use Tasty_Recipes\Admin;
 use Tasty_Recipes\Utils;
 use Tasty_Recipes\Designs\Template;
-use Tasty\Framework\Utils\Url;
 
 /**
  * Registers all scripts and styles.
@@ -286,10 +285,6 @@ class Assets {
 			'tasty-recipes-editor',
 			'tastyRecipesEditor',
 			array(
-				'i18n'              => array(
-					'frameTitle'  => esc_html__( 'Media Library', 'tasty-recipes-lite' ),
-					'frameButton' => esc_html__( 'Select Image', 'tasty-recipes-lite' ),
-				),
 				'currentPostId'     => 0,
 				'defaultAuthorName' => $default_author_name,
 				'parseNonce'        => wp_create_nonce( 'tasty_recipes_parse_shortcode' ),
@@ -342,10 +337,6 @@ class Assets {
 			'tasty-recipes-editor',
 			'tastyRecipesEditor',
 			array(
-				'i18n'                => array(
-					'frameTitle'  => esc_html__( 'Media Library', 'tasty-recipes-lite' ),
-					'frameButton' => esc_html__( 'Select Image', 'tasty-recipes-lite' ),
-				),
 				'currentPostId'       => self::get_current_post_id(),
 				'defaultAuthorName'   => wp_get_current_user() ? wp_get_current_user()->display_name : '',
 				'parseNonce'          => wp_create_nonce( 'tasty_recipes_parse_shortcode' ),
@@ -460,33 +451,9 @@ class Assets {
 			array(
 				'pluginURL'              => plugins_url( '', __DIR__ ),
 				'after_video_url_markup' => $after_video_url_markup,
-				'labels'                 => array(
-					'select_image'      => esc_html__( 'Select Image', 'tasty-recipes-lite' ),
-					'details_heading'   => esc_html__( 'Details', 'tasty-recipes-lite' ),
-					'video_url_heading' => esc_html__( 'Video URL', 'tasty-recipes-lite' ),
-					'nutrition_heading' => esc_html__( 'Nutrition', 'tasty-recipes-lite' ),
-					'additional_time'   => array(
-						'add_button_text'     => esc_html__( '+ Time', 'tasty-recipes-lite' ),
-						'remove_button_text'  => esc_html__( '- Time', 'tasty-recipes-lite' ),
-						'add_button_title'    => esc_html__( 'Add an additional time field', 'tasty-recipes-lite' ),
-						'remove_button_title' => esc_html__( 'Remove additional time field', 'tasty-recipes-lite' ),
-						'label_placeholder'   => esc_html__( 'Additional Time Label', 'tasty-recipes-lite' ),
-						'value_placeholder'   => esc_html__( 'Additional Time Value', 'tasty-recipes-lite' ),
-					),
-				),
 				'attributes'             => array(
-					'general'   => $general_attributes,
 					'cooking'   => $cooking_attributes,
 					'nutrition' => $nutrition_attributes,
-				),
-				'video_settings'         => array(
-					'label'    => esc_html__( 'Video Settings: ', 'tasty-recipes-lite' ),
-					'settings' => array(
-						'autoplay'      => esc_html__( 'Autoplay', 'tasty-recipes-lite' ),
-						'mute'          => esc_html__( 'Mute', 'tasty-recipes-lite' ),
-						'loop'          => esc_html__( 'Loop', 'tasty-recipes-lite' ),
-						'hide-controls' => esc_html__( 'Hide Controls', 'tasty-recipes-lite' ),
-					),
 				),
 			)
 		);
@@ -508,10 +475,6 @@ class Assets {
 			'tasty-recipes-editor-modal',
 			'tastyRecipesEditorModalData',
 			array(
-				'i18n'              => array(
-					'frameTitle'  => esc_html__( 'Media Library', 'tasty-recipes-lite' ),
-					'frameButton' => esc_html__( 'Select Image', 'tasty-recipes-lite' ),
-				),
 				'currentPostId'     => self::get_current_post_id(),
 				'defaultAuthorName' => $default_author_name,
 				'modifyNonce'       => wp_create_nonce( 'tasty_recipes_modify_recipe' ),

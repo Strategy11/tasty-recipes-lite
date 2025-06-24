@@ -232,35 +232,6 @@ class Settings {
 	}
 
 	/**
-	 * Filter field args.
-	 *
-	 * @param array $args Field args.
-	 *
-	 * @return array
-	 */
-	public static function filter_settings_args( $args ) {
-		$args = (array) apply_filters( 'tasty_recipes_admin_settings_field_args', $args );
-		if ( empty( $args['is_pro'] ) && empty( $args['pro_option'] ) ) {
-			return $args;
-		}
-
-		$args['container_class'] = 'tasty-show-modal tasty-recipes-disabled';
-		$utm_content             = str_replace( 'tasty_recipes_', '', sanitize_title( $args['name'] ) );
-		$args['tasty_dataset']   = [
-			'data-modal_id'     => 'tasty_recipes_upgrade_modal',
-			'data-modal_parent' => 'tr',
-			'data-replacements' => wp_json_encode(
-				[
-					'modal_title'         => $args['label'],
-					'setting_utm_content' => $utm_content,
-				]
-			),
-		];
-
-		return $args;
-	}
-
-	/**
 	 * Set the tab links and include the settings template.
 	 *
 	 * @since 3.11.1
