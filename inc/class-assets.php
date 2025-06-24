@@ -427,16 +427,13 @@ class Assets {
 	 * @return void
 	 */
 	public static function register_modal_editor_script() {
+		$asset_meta = tasty_get_asset_meta( dirname( TASTY_RECIPES_LITE_FILE ) . '/assets/dist/recipe-editor-js.build.asset.php' );
 
-		$time = 0;
-		if ( file_exists( dirname( __DIR__ ) . '/assets/dist/recipe-editor.build.js' ) ) {
-			$time = filemtime( dirname( __DIR__ ) . '/assets/dist/recipe-editor.build.js' );
-		}
 		wp_register_script(
 			'tasty-recipes-recipe-editor',
-			plugins_url( 'assets/dist/recipe-editor.build.js', __DIR__ ),
-			array( 'wp-util', 'wplink' ),
-			(string) $time,
+			plugins_url( 'assets/dist/recipe-editor-js.build.js', TASTY_RECIPES_LITE_FILE ),
+			$asset_meta['dependencies'],
+			$asset_meta['version'],
 			true
 		);
 

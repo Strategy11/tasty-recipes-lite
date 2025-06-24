@@ -1,25 +1,21 @@
-import Vue from "vue";
-
-window.Vue = Vue;
+import { createRoot } from '@wordpress/element';
 
 let instance;
 
 window.tastyRecipesMountRecipeEditor = (el, initialRecipe) => {
-	instance = new Vue({
-		el,
-		components: {
-			RecipeForm: require("./components/RecipeForm").default
-		},
-		data: {
-			initialRecipe,
-			config: window.tastyRecipesRecipeEditorData
-		},
-		template: `<recipe-form :initial-recipe="initialRecipe" :config="config"></recipe-form>`
-	});
+	instance = createRoot(el);
+	// instance.render(
+	// 	<RecipeForm 
+	// 		initialRecipe={initialRecipe} 
+	// 		config={window.tastyRecipesRecipeEditorData} 
+	// 	/>,
+	// 	el
+	// );
 };
 
 window.tastyRecipesDestroyRecipeEditor = () => {
-	instance.$destroy();
-	instance.$el.remove();
-	instance = null;
+	if (instance) {
+		instance.unmount();
+		instance = null;
+	}
 };
