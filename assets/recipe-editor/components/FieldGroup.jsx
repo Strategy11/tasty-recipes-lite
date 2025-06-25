@@ -1,7 +1,7 @@
 import { useState, useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
-const FieldGroup = ( {
+export const FieldGroup = ( {
 	heading,
 	group = '',
 	fields,
@@ -212,5 +212,3 @@ const FieldGroup = ( {
 		</div>
 	);
 };
-
-export default FieldGroup;

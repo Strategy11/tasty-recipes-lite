@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
-const RichTextarea = ( {
+export const RichTextarea = ( {
 	initialValue,
 	name,
 	label,
@@ -123,5 +123,3 @@ const RichTextarea = ( {
 		</fieldset>
 	);
 };
-
-export default RichTextarea;

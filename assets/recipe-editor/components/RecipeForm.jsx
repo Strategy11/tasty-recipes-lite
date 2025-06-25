@@ -1,13 +1,11 @@
 import { useState, useMemo } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import FieldGroup from './FieldGroup';
-import RichTextarea from './RichTextarea';
+import { FieldGroup } from './FieldGroup';
+import { RichTextarea } from './RichTextarea';
+import { ImageField } from './ImageField';
 
-const RecipeForm = ( { initialRecipe, config } ) => {
+export const RecipeForm = ( { initialRecipe, config } ) => {
 	const [ recipe, setRecipe ] = useState( initialRecipe );
-	const [ recipeThumbnail, setRecipeThumbnail ] = useState(
-		initialRecipe.image_sizes ? initialRecipe.image_sizes.thumbnail : null
-	);
 
 	const attributes = config.attributes;
 	const nutritionAttributes = useMemo( () => {
@@ -28,123 +26,45 @@ const RecipeForm = ( { initialRecipe, config } ) => {
 	const handleRecipeChange = ( field, value ) =>
 		setRecipe( ( prev ) => ( { ...prev, [ field ]: value } ) );
 
-	const handleClickSelectImage = () => {
-		const frame = wp.media( {
-			title: __( 'Media Library', 'tasty-recipes-lite' ),
-			multiple: false,
-			library: {
-				type: 'image',
-			},
-			button: {
-				text: __( 'Select Image', 'tasty-recipes-lite' ),
-			},
-		} );
-
-		frame.on( 'open', () => {
-			const selection = frame.state().get( 'selection' );
-			const selected = recipe.image_id;
-
-			if ( selected ) {
-				const attachment = wp.media.model.Attachment.get( selected );
-				attachment.fetch();
-				selection.add( attachment );
-			}
-		} );
-
-		frame.on( 'select', () => {
-			const attachments = frame.state().get( 'selection' ).toJSON();
-
-			if ( attachments.length ) {
-				handleRecipeChange( 'image_id', attachments[ 0 ].id );
-				setRecipeThumbnail( attachments[ 0 ].sizes.thumbnail );
-			}
-		} );
-
-		frame.open();
-	};
-
-	const handleClickRemoveImage = () => {
-		handleRecipeChange( 'image_id', 0 );
-		setRecipeThumbnail( null );
-	};
-
 	return (
 		<form className="tasty-framework">
 			<input type="hidden" name="id" value={ recipe.id } />
-
-			<fieldset>
-				<label htmlFor="title">
-					{ __( 'Title', 'tasty-recipes-lite' ) }
-				</label>
-				<input
-					type="text"
-					name="title"
-					className="regular-text"
-					value={ recipe.title || '' }
-					onChange={ ( e ) =>
-						handleRecipeChange( 'title', e.target.value )
-					}
-				/>
-			</fieldset>
-
-			<fieldset>
-				<label htmlFor="author_name">
-					{ __( 'Author Name', 'tasty-recipes-lite' ) }
-				</label>
-				<input
-					type="text"
-					name="author_name"
-					className="regular-text"
-					value={ recipe.author_name || '' }
-					onChange={ ( e ) =>
-						handleRecipeChange( 'author_name', e.target.value )
-					}
-				/>
-			</fieldset>
-
-			<div
-				className={ `tasty-recipes-image ${
-					! recipeThumbnail
-						? 'tasty-recipes-image-with-placeholder'
-						: ''
-				}` }
-			>
-				<input
-					type="hidden"
-					name="image_id"
-					value={ recipe.image_id }
-				/>
-				{ /* eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */ }
-				<div
-					className="tasty-recipes-image-preview"
-					onClick={ handleClickSelectImage }
-				>
-					{ recipeThumbnail ? (
-						<img
-							data-pin-nopin="true"
-							src={ recipeThumbnail.url }
-							alt=""
-						/>
-					) : (
-						<div className="tasty-recipes-image-preview-placeholder"></div>
-					) }
+			<fieldset className="tasty-recipes-modal-form-row">
+				<div>
+					<label htmlFor="title">
+						{ __( 'Title', 'tasty-recipes-lite' ) }
+					</label>
+					<input
+						type="text"
+						name="title"
+						id="title"
+						className="regular-text"
+						value={ recipe.title || '' }
+						onChange={ ( e ) =>
+							handleRecipeChange( 'title', e.target.value )
+						}
+					/>
 				</div>
-				{ /* eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */ }
-				<span
-					className="tasty-recipes-select-image button"
-					onClick={ handleClickSelectImage }
-				>
-					{ __( 'Select Image', 'tasty-recipes-lite' ) }
-				</span>
-				{ /* eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */ }
-				<span
-					className="tasty-recipes-remove-image button"
-					onClick={ handleClickRemoveImage }
-				>
-					<span className="dashicons dashicons-no-alt"></span>
-				</span>
-			</div>
-
+				<div>
+					<label htmlFor="author_name">
+						{ __( 'Author Name', 'tasty-recipes-lite' ) }
+					</label>
+					<input
+						type="text"
+						name="author_name"
+						id="author_name"
+						className="regular-text"
+						value={ recipe.author_name || '' }
+						onChange={ ( e ) =>
+							handleRecipeChange( 'author_name', e.target.value )
+						}
+					/>
+				</div>
+			</fieldset>
+			<ImageField
+				recipe={ recipe }
+				handleRecipeChange={ handleRecipeChange }
+			/>
 			<RichTextarea
 				name="description"
 				label={ __( 'Description', 'tasty-recipes-lite' ) }
@@ -154,7 +74,6 @@ const RecipeForm = ( { initialRecipe, config } ) => {
 					handleRecipeChange( 'description', value )
 				}
 			/>
-
 			<RichTextarea
 				name="ingredients"
 				label={ __( 'Ingredients', 'tasty-recipes-lite' ) }
@@ -164,7 +83,6 @@ const RecipeForm = ( { initialRecipe, config } ) => {
 					handleRecipeChange( 'ingredients', value )
 				}
 			/>
-
 			<RichTextarea
 				name="instructions"
 				label={ __( 'Instructions', 'tasty-recipes-lite' ) }
@@ -174,7 +92,6 @@ const RecipeForm = ( { initialRecipe, config } ) => {
 					handleRecipeChange( 'instructions', value )
 				}
 			/>
-
 			<RichTextarea
 				name="notes"
 				label={ __( 'Notes', 'tasty-recipes-lite' ) }
@@ -182,7 +99,6 @@ const RecipeForm = ( { initialRecipe, config } ) => {
 				initialVideoSettingsValue={ recipe.notes_video_settings }
 				onChange={ ( value ) => handleRecipeChange( 'notes', value ) }
 			/>
-
 			<FieldGroup
 				className="tasty-recipes-details"
 				heading={ __( 'Details', 'tasty-recipes-lite' ) }
@@ -190,7 +106,6 @@ const RecipeForm = ( { initialRecipe, config } ) => {
 				initialFieldValues={ recipe }
 				onFieldChange={ handleRecipeChange }
 			/>
-
 			<FieldGroup
 				className="tasty-recipes-video-url"
 				heading={ __( 'Video URL', 'tasty-recipes-lite' ) }
@@ -203,7 +118,6 @@ const RecipeForm = ( { initialRecipe, config } ) => {
 				initialFieldValues={ recipe }
 				onFieldChange={ handleRecipeChange }
 			/>
-
 			{ config.after_video_url_markup && (
 				<div
 					dangerouslySetInnerHTML={ {
@@ -211,7 +125,6 @@ const RecipeForm = ( { initialRecipe, config } ) => {
 					} }
 				/>
 			) }
-
 			<FieldGroup
 				className="tasty-recipes-nutrition"
 				group="nutrition"
@@ -288,5 +201,3 @@ const RecipeForm = ( { initialRecipe, config } ) => {
 		</form>
 	);
 };
-
-export default RecipeForm;
