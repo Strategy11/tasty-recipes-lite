@@ -23,8 +23,8 @@ defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 				<div class="tasty-recipes-frame-toolbar">
 					<div class="tasty-recipes-toolbar">
 						<div class="tasty-recipes-toolbar-primary search-form">
-							<button type="button" class="button tasty-recipes-button tasty-recipes-state-creating button-primary button-large tasty-recipes-button-insert"><?php esc_html_e( 'Insert', 'tasty-recipes-lite' ); ?></button>
-							<button type="button" class="button tasty-recipes-button tasty-recipes-state-editing button-primary button-large tasty-recipes-button-update"><?php esc_html_e( 'Update', 'tasty-recipes-lite' ); ?></button>
+							<button type="button" class="tasty-button tasty-recipes-button tasty-recipes-state-creating tasty-recipes-button-insert"><?php esc_html_e( 'Insert Recipe', 'tasty-recipes-lite' ); ?></button>
+							<button type="button" class=" tasty-button tasty-recipes-button tasty-recipes-state-editing tasty-recipes-button-update"><?php esc_html_e( 'Update Recipe', 'tasty-recipes-lite' ); ?></button>
 						</div>
 					</div>
 				</div>

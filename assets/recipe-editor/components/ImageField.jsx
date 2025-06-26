@@ -94,7 +94,7 @@ const ImagePreview = ( { recipeThumbnail, handleClickRemoveImage } ) => {
 				<p> { getFileName( recipeThumbnail.url ) } </p>
 			</div>
 			<button
-				className="tasty-remove-button"
+				className="tasty-secondary-button"
 				onClick={ handleClickRemoveImage }
 			>
 				<Icon icon={ TrashIcon } width={ 24 } />
@@ -117,7 +117,10 @@ const Placeholder = ( { handleClickSelectImage } ) => {
 					'tasty-recipes-lite'
 				) }
 			</p>
-			<button className="tasty-button" onClick={ handleClickSelectImage }>
+			<button
+				className="tasty-secondary-button"
+				onClick={ handleClickSelectImage }
+			>
 				{ __( 'Select Image', 'tasty-recipes-lite' ) }
 			</button>
 		</>

@@ -40,6 +40,7 @@ export const RichTextarea = ( {
 			window.tinyMCEPreInit.mceInit[ 'tasty-recipes-editor' ]
 		);
 		settings.selector = `#${ id }`;
+		settings.statusbar = false;
 		settings.setup = ( ed ) => {
 			ed.on( 'change', () => {
 				const content = ed.getContent();
