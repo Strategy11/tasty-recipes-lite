@@ -12,6 +12,7 @@ use Tasty_Recipes\Objects\Recipe;
 use Tasty_Recipes\Admin;
 use Tasty_Recipes\Utils;
 use Tasty_Recipes\Designs\Template;
+use Tasty_Recipes\Block_Editor;
 
 /**
  * Registers all scripts and styles.
@@ -366,6 +367,7 @@ class Assets {
 			'recipeBlockTitle' => 'Tasty Recipe',
 			'recipeDataStore'  => array(),
 			'editorNotices'    => array(),
+			'recipeIds'        => Block_Editor::get_formatted_recipes_without_parents(),
 		);
 		$post_id     = self::get_current_post_id();
 		if ( $post_id ) {
@@ -390,6 +392,7 @@ class Assets {
 			}
 			$blocks_data['editorNotices'] = Editor::get_converter_messages( $post_id );
 		}
+
 		wp_localize_script( 'tasty-recipes-block-editor', 'tastyRecipesBlockEditor', $blocks_data );
 
 		self::action_wp_head();

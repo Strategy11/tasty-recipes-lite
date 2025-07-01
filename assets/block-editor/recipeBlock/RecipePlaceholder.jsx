@@ -4,9 +4,9 @@ import { __ } from '@wordpress/i18n';
 import { Icon } from '@wordpress/icons';
 import { useState } from '@wordpress/element';
 import { RecipeIcon } from '../icons';
-import AsyncSelect from 'react-select/async';
+import Select from 'react-select';
 
-export const RecipePlaceholder = ( { handleModalClose } ) => {
+export const RecipePlaceholder = ( { handleModalClose, setAttributes } ) => {
 	const [ pageState, setPageState ] = useState( 'placeholder' );
 	const blockProps = useBlockProps();
 
@@ -75,11 +75,21 @@ export const RecipePlaceholder = ( { handleModalClose } ) => {
 					) }
 					{ pageState === 'embed' && (
 						<div className="tasty-recipes-block-placeholder-embed">
-							<AsyncSelect
+							<Select
 								placeholder={ __(
 									'Select existing recipe',
 									'tasty-recipes-lite'
 								) }
+								options={
+									window.tastyRecipesBlockEditor.recipeIds
+								}
+								onChange={ ( selectedOption ) => {
+									if ( selectedOption ) {
+										setAttributes( {
+											id: Number( selectedOption.value ),
+										} );
+									}
+								} }
 							/>
 						</div>
 					) }

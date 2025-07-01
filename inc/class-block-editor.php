@@ -96,6 +96,40 @@ class Block_Editor {
 	}
 
 	/**
+	 * Get recipes without parents.
+	 * 
+	 * @since x.x
+	 *
+	 * @return array
+	 */
+	public static function get_formatted_recipes_without_parents() {
+		global $wpdb;
+
+		// phpcs:ignore
+		$recipes = $wpdb->get_results(
+			"SELECT post.ID, post.post_title 
+			FROM $wpdb->posts post 
+			LEFT JOIN $wpdb->postmeta postmeta ON post.ID = postmeta.post_id AND postmeta.meta_key = '_tasty_recipe_parents'
+			WHERE post.post_type = 'tasty_recipe' 
+			AND postmeta.meta_id IS NULL"
+		);
+
+		if ( empty( $recipes ) ) {
+			return array();
+		}
+
+		$returnable = array();
+		foreach ( $recipes as $recipe ) {
+			$returnable[] = array(
+				'value' => $recipe->ID,
+				'label' => $recipe->post_title,
+			);
+		}
+
+		return $returnable;
+	}
+
+	/**
 	 * Get the block for a given recipe.
 	 *
 	 * @param Recipe $recipe Recipe instance.

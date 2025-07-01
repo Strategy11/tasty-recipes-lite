@@ -27,7 +27,12 @@ export const Edit = ( { attributes, setAttributes } ) => {
 	};
 
 	if ( typeof attributes.id === 'undefined' || 0 === attributes.id ) {
-		return <RecipePlaceholder handleModalClose={ handleModalClose } />;
+		return (
+			<RecipePlaceholder
+				handleModalClose={ handleModalClose }
+				setAttributes={ setAttributes }
+			/>
+		);
 	}
 
 	return (
