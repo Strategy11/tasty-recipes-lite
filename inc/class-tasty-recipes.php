@@ -285,6 +285,7 @@ class Tasty_Recipes {
 
 		add_action( 'wp_insert_post', array( 'Tasty_Recipes\Editor', 'handle_add_new_post' ), 10, 3 );
 		add_action( 'post_updated', array( 'Tasty_Recipes\Editor', 'handle_edit_post' ), 10, 3 );
+		add_action( 'deleted_post', array( __CLASS__, 'handle_delete_post' ) );
 
 		if ( is_admin() ) {
 			Tasty_Recipes\MetaBox::get_instance();
@@ -422,6 +423,30 @@ class Tasty_Recipes {
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Delete recipe parents when a post is deleted. This is needed to free recipes when the parent posts are deleted.
+	 * 
+	 * @since x.x
+	 *
+	 * @param int $post_id The post id of the recipe that was deleted.
+	 *
+	 * @return void
+	 */
+	public static function handle_delete_post( $post_id ) {
+		global $wpdb;
+
+		// phpcs:ignore
+		$wpdb->delete(
+			$wpdb->postmeta,
+			array(
+				// phpcs:ignore
+				'meta_key'   => '_tasty_recipe_parents',
+				// phpcs:ignore
+				'meta_value' => $post_id,
+			)
+		);
 	}
 
 	/**
