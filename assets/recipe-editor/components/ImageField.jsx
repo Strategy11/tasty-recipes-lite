@@ -11,7 +11,6 @@ const getFileName = ( url ) =>
 		.replace( /-\d+x\d+(?=\.[a-zA-Z0-9]+$)/, '' );
 
 export const ImageField = ( { recipe, handleRecipeChange } ) => {
-	console.log( recipe );
 	const [ recipeThumbnail, setRecipeThumbnail ] = useState(
 		recipe?.image_sizes?.thumbnail
 	);

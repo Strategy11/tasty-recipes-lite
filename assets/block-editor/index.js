@@ -1,11 +1,11 @@
-const { registerBlockType } = wp.blocks;
-const { registerPlugin } = wp.plugins;
+import { registerBlockType } from '@wordpress/blocks';
+import { registerPlugin } from '@wordpress/plugins';
 
 /**
  * Internal dependencies
  */
 import generateNotices from './admin-notices';
-import blockRegistration from './recipe-block';
+import blockRegistration from './recipeBlock';
 import TastyRecipesMetaBox from './metabox';
 
 registerBlockType( 'wp-tasty/tasty-recipe', blockRegistration );
