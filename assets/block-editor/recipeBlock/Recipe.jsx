@@ -10,12 +10,15 @@ import { __ } from '@wordpress/i18n';
 import {
 	BlockControls,
 	InspectorAdvancedControls,
+	useBlockProps,
 } from '@wordpress/block-editor';
 
 // We use the wp global object because the NPM package is crashing the build.
 const { serverSideRender: ServerSideRender } = wp;
 
 export const Recipe = ( { attributes, setAttributes, handleModalClose } ) => {
+	const blockProps = useBlockProps();
+
 	const existingOnClickHandler = () => {
 		if (
 			typeof window.tastyRecipesBlockEditor.recipeDataStore[
@@ -73,7 +76,7 @@ export const Recipe = ( { attributes, setAttributes, handleModalClose } ) => {
 	);
 
 	return (
-		<>
+		<div { ...blockProps }>
 			<BlockControls>
 				<ToolbarGroup>
 					<ToolbarButton
@@ -122,6 +125,6 @@ export const Recipe = ( { attributes, setAttributes, handleModalClose } ) => {
 					/>
 				</PanelBody>
 			</InspectorAdvancedControls>
-		</>
+		</div>
 	);
 };

@@ -7,6 +7,7 @@ import { Edit } from './recipeBlock';
 import '../scss/block-editor.scss';
 
 registerBlockType( 'wp-tasty/tasty-recipe', {
+	apiVersion: 3,
 	title: window.tastyRecipesBlockEditor.recipeBlockTitle,
 	icon: RecipeIcon,
 	category: 'common',
