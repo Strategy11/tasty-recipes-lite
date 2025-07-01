@@ -1,0 +1,30 @@
+.tasty-recipes-block {
+	&-placeholder {
+		padding: 20px 24px;
+
+		&-heading {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			margin-bottom: 15px;
+
+			h2 {
+				font-size: 24px;
+				font-weight: 600;
+				color: #1E1E1E;
+				margin-bottom: 0;
+			}
+		}
+
+		p {
+			font-size: 13px;
+			color: #1E1E1E;
+			margin-bottom: 15px;
+		}
+		
+		&-buttons {
+			display: flex;
+			gap: 15px;
+		}
+	}
+}

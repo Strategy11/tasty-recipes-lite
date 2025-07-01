@@ -4,6 +4,7 @@ import generateNotices from './admin-notices';
 import TastyRecipesMetaBox from './metabox';
 import { RecipeIcon } from './icons';
 import { Edit } from './recipeBlock';
+import '../scss/block-editor.scss';
 
 registerBlockType( 'wp-tasty/tasty-recipe', {
 	title: window.tastyRecipesBlockEditor.recipeBlockTitle,

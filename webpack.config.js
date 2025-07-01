@@ -62,7 +62,10 @@ module.exports = {
 			__dirname,
 			'assets/scss/recipe-print-controls.scss'
 		),
-		'recipe-editor-js': resolve( __dirname, 'assets/recipe-editor/index.js' ),
+		'recipe-editor-js': resolve(
+			__dirname,
+			'assets/recipe-editor/index.js'
+		),
 	},
 	output: {
 		filename: '[name].build.js',
