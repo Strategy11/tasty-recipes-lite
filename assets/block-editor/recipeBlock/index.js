@@ -1,5 +1,6 @@
 import { useEffect } from '@wordpress/element';
 import { RecipePlaceholder } from './RecipePlaceholder';
+import { Recipe } from './Recipe';
 
 const handleEditorModalUpdate = ( { setAttributes }, response ) => {
 	const date = new Date();
@@ -14,7 +15,7 @@ const handleEditorModalUpdate = ( { setAttributes }, response ) => {
 	}
 };
 
-const Edit = ( { attributes, setAttributes } ) => {
+export const Edit = ( { attributes, setAttributes } ) => {
 	useEffect( () => {
 		if ( 'undefined' === typeof attributes.id ) {
 			setAttributes( { id: 0 } );
@@ -29,60 +30,11 @@ const Edit = ( { attributes, setAttributes } ) => {
 		return <RecipePlaceholder handleModalClose={ handleModalClose } />;
 	}
 
-	// return (
-	// 	<Recipe
-	// 		attributes={ attributes }
-	// 		setAttributes={ setAttributes }
-	// 		handleModalClose={ handleModalClose }
-	// 	/>
-	// );
+	return (
+		<Recipe
+			attributes={ attributes }
+			setAttributes={ setAttributes }
+			handleModalClose={ handleModalClose }
+		/>
+	);
 };
-
-/**
- * Renders dynamically on the frontend.
- */
-const save = () => {
-	return null;
-};
-
-const blockRegistration = {
-	title: window.tastyRecipesBlockEditor.recipeBlockTitle,
-	icon: 'carrot',
-	category: 'common',
-	html: false,
-	attributes: {
-		id: {
-			type: 'number',
-		},
-		lastUpdated: {
-			type: 'number',
-		},
-		author_link: {
-			type: 'string',
-			default: '',
-		},
-	},
-	edit: Edit,
-	save,
-	transforms: {
-		from: [
-			{
-				type: 'shortcode',
-				tag: 'tasty-recipe',
-				attributes: {
-					id: {
-						type: 'number',
-						shortcode: ( props ) => {
-							if ( typeof props.named.id === 'undefined' ) {
-								return 0;
-							}
-							return parseInt( props.named.id );
-						},
-					},
-				},
-			},
-		],
-	},
-};
-
-export default blockRegistration;

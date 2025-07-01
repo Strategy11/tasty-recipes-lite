@@ -2,16 +2,20 @@ import { applyFilters } from '@wordpress/hooks';
 import {
 	CheckboxControl,
 	PanelBody,
-	InspectorAdvancedControls,
 	TextControl,
 	ToolbarGroup,
 	ToolbarButton,
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { BlockControls } from '@wordpress/block-editor';
-import { serverSideRender as ServerSideRender } from '@wordpress/server-side-render';
+import {
+	BlockControls,
+	InspectorAdvancedControls,
+} from '@wordpress/block-editor';
 
-export const Recipe = ( attributes, setAttributes, handleModalClose ) => {
+// We use the wp global object because the NPM package is crashing the build.
+const { serverSideRender: ServerSideRender } = wp;
+
+export const Recipe = ( { attributes, setAttributes, handleModalClose } ) => {
 	const existingOnClickHandler = () => {
 		if (
 			typeof window.tastyRecipesBlockEditor.recipeDataStore[
