@@ -70,20 +70,20 @@ class Block_Editor {
 			'tasty_recipes_lite_block_attributes',
 			array(
 				'attributes'      => array(
-					'className'   => array(
+					'className'            => array(
 						'type' => 'string',
 					),
-					'id'          => array(
+					'id'                   => array(
 						'type' => 'number',
 					),
-					'lastUpdated' => array(
+					'lastUpdated'          => array(
 						'type' => 'number',
 					),
-					'author_link' => array(
+					'author_link'          => array(
 						'type' => 'string',
 					),
 					'override_author_link' => array(
-						'type' => 'boolean',
+						'type'    => 'boolean',
 						'default' => false,
 					),
 				),

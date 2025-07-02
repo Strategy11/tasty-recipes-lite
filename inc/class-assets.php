@@ -13,6 +13,7 @@ use Tasty_Recipes\Admin;
 use Tasty_Recipes\Utils;
 use Tasty_Recipes\Designs\Template;
 use Tasty_Recipes\Block_Editor;
+use Tasty_Recipes\Settings;
 
 /**
  * Registers all scripts and styles.
@@ -47,6 +48,27 @@ class Assets {
 		add_action( 'wp_enqueue_editor', array( __CLASS__, 'action_wp_enqueue_editor' ) );
 		add_action( 'enqueue_block_editor_assets', array( __CLASS__, 'action_enqueue_block_editor_assets' ) );
 		add_action( 'tcb_editor_enqueue_scripts', array( __CLASS__, 'action_enqueue_tcb_frame_styles' ) );
+		add_action( 'tasty_framework_admin_enqueue_assets_after', array( __CLASS__, 'enqueue_common_styles' ) );
+	}
+
+	/**
+	 * Enqueue common styles.
+	 * 
+	 * @since x.x
+	 *
+	 * @return void
+	 */
+	public static function enqueue_common_styles() {
+		if ( ! Settings::is_recipes_admin() ) {
+			return;
+		}
+
+		wp_enqueue_style(
+			'tasty-recipes-common',
+			plugins_url( 'assets/dist/common.css', __DIR__ ),
+			array(),
+			TASTY_RECIPES_LITE_VERSION
+		);
 	}
 
 	/**

@@ -7,10 +7,10 @@
 
 namespace Tasty_Recipes;
 
-use Tasty\Framework\Utils\Url;
 use Tasty\Framework\Utils\Common;
 use Tasty_Recipes;
 use Tasty_Recipes\Designs\Template;
+use Tasty_Recipes\Admin;
 
 /**
  * Manages interactions with the settings page.
@@ -58,6 +58,38 @@ class Settings {
 		add_filter( 'tasty_framework_admin_menu_items', array( __CLASS__, 'add_menu_item' ) );
 		add_action( 'admin_menu', array( __CLASS__, 'register_settings' ) );
 		add_action( 'update_option_' . Tasty_Recipes::TEMPLATE_OPTION, array( __CLASS__, 'maybe_remove_default_colors' ), 10, 2 );
+		add_action( 'pre_get_posts', array( __CLASS__, 'action_pre_get_posts' ) );
+		add_action( 'tasty_after_remove_admin_notices', array( __CLASS__, 'register_tabs_hook' ) );
+	}
+
+	/**
+	 * Register tabs hook.
+	 * 
+	 * @since x.x
+	 *
+	 * @return void
+	 */
+	public static function register_tabs_hook() {
+		add_action( 'all_admin_notices', array( __CLASS__, 'add_admin_header' ) );
+	}
+
+	/**
+	 * Modifications to the main query.
+	 * 
+	 * @since x.x
+	 *
+	 * @param WP_Query $query WP_Query object.
+	 */
+	public static function action_pre_get_posts( $query ) {
+		if ( ! is_admin() || ! $query->is_main_query() ) {
+			return;
+		}
+		if ( 'tasty_recipe' !== $query->get( 'post_type' ) ) {
+			return;
+		}
+
+		$query->set( 'orderby', 'title' );
+		$query->set( 'order', 'ASC' );
 	}
 
 	/**
@@ -232,19 +264,54 @@ class Settings {
 	}
 
 	/**
-	 * Set the tab links and include the settings template.
-	 *
-	 * @since 3.11.1
+	 * Add admin tabs to the head of all links admin pages.
+	 * 
+	 * @since x.x
 	 *
 	 * @return void
 	 */
-	private static function show_settings() {
+	public static function add_admin_header() {
+		if ( ! self::is_recipes_admin() ) {
+			return;
+		}
+
+		$tabs = self::get_all_tabs();
+		Tasty_Recipes::echo_template_part( 'admin/admin-header', compact( 'tabs' ) );
+
+		do_action( 'tasty_recipes_admin_header' );
+	}
+
+	/**
+	 * Check if we're on the recipes admin page.
+	 * 
+	 * @since x.x
+	 *
+	 * @return bool
+	 */
+	public static function is_recipes_admin() {
+		$our_page_ids = array(
+			'wp-tasty_page_tasty-recipes',
+			'edit-tasty_recipe',
+			'tasty_recipe',
+		);
+		return in_array( get_current_screen()->id, $our_page_ids, true );
+	}
+
+	/**
+	 * Get all tabs.
+	 * 
+	 * @since x.x
+	 *
+	 * @return array
+	 */
+	private static function get_all_tabs() {
 		$active_tab = Utils::sanitize_get_key( 'tab', 'design' );
 		$base_url   = menu_page_url( self::PAGE_SLUG, false );
 		$debug      = Utils::sanitize_get_key( 'debug' );
 		$tabs       = array();
 
 		$add_link = array(
+			'recipes'    => __( 'Recipes', 'tasty-recipes-lite' ),
 			'design'     => __( 'Design', 'tasty-recipes-lite' ),
 			'settings'   => __( 'Settings', 'tasty-recipes-lite' ),
 			'converters' => __( 'Converters', 'tasty-recipes-lite' ),
@@ -257,14 +324,34 @@ class Settings {
 		$add_link['about'] = __( 'Get Started', 'tasty-recipes-lite' );
 
 		foreach ( $add_link as $key => $title ) {
+			$url = add_query_arg( array( 'tab' => $key ), $base_url );
+
+			if ( 'recipes' === $key ) {
+				$url = admin_url( 'edit.php?post_type=tasty_recipe' );
+				$key = 'tasty_recipe';
+			}
+
 			$tabs[] = array(
 				'title'  => $title,
-				'url'    => add_query_arg( array( 'tab' => $key ), $base_url ),
-				'active' => $key === $active_tab,
+				'url'    => $url,
+				'active' => Admin::is_current_page( $key ),
 			);
 		}
 
-		Tasty_Recipes::echo_template_part( 'settings', compact( 'tabs', 'active_tab' ) );
+		return $tabs;
+	}
+
+	/**
+	 * Set the tab links and include the settings template.
+	 *
+	 * @since 3.11.1
+	 *
+	 * @return void
+	 */
+	private static function show_settings() {
+		$active_tab = Utils::sanitize_get_key( 'tab', 'design' );
+
+		Tasty_Recipes::echo_template_part( 'settings', compact( 'active_tab' ) );
 	}
 
 	/**

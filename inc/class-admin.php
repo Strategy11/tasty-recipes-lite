@@ -10,6 +10,7 @@ namespace Tasty_Recipes;
 use Tasty\Framework\Utils\Url;
 use Tasty_Recipes\Settings;
 use Tasty_Recipes;
+use Tasty\Framework\Utils\Vars;
 
 /**
  * Manages interactions with the admin.
@@ -151,6 +152,9 @@ class Admin {
 
 		add_filter( 'plugin_action_links_' . plugin_basename( TASTY_RECIPES_LITE_FILE ), array( __CLASS__, 'filter_plugin_action_links' ) );
 		add_filter( 'tasty_framework_admin_header_title', array( __CLASS__, 'update_admin_dashboard_title' ) );
+		add_filter( 'tasty_framework_admin_page_ours', array( __CLASS__, 'make_recipes_cpt_menu_item_ours' ) );
+		add_filter( 'tasty_framework_show_license_notice', array( __CLASS__, 'show_notice_in_recipes_cpt' ), 10, 2 );
+		add_action( 'admin_head', array( __CLASS__, 'handle_cpt_menu_item_classes' ) );
 
 		if ( ! wp_doing_ajax() ) {
 			return;
@@ -158,6 +162,86 @@ class Admin {
 
 		add_action( 'wp_ajax_tasty_recipes_get_count', array( __CLASS__, 'handle_wp_ajax_get_count' ) );
 		add_action( 'wp_ajax_tasty_recipes_convert', array( __CLASS__, 'handle_wp_ajax_convert' ) );
+	}
+
+	/**
+	 * Workaround to make CPT pages act as tasty menu active items.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
+	 */
+	public static function handle_cpt_menu_item_classes() {
+		global $menu, $submenu;
+
+		if ( ! isset( $submenu['tasty'] ) ) {
+			return;
+		}
+
+		foreach ( $menu as $cur_menu_key => $cur_menu ) {
+			if ( 'tasty' !== $cur_menu[2] || 'tasty_recipe' !== get_current_screen()->post_type ) {
+				continue;
+			}
+
+			// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+			$menu[ $cur_menu_key ][4] = 'wp-has-current-submenu';
+		}
+
+		foreach ( $submenu['tasty'] as $sub_key => $sub_item ) {
+			if ( 'tasty-recipes' !== $sub_item[2] || 'tasty_recipe' !== get_current_screen()->post_type ) {
+				continue;
+			}
+
+			// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+			$submenu['tasty'][ $sub_key ][4] = 'current';
+		}
+	}
+
+	/**
+	 * Show license notice in tasty recipes custom post type page.
+	 * 
+	 * @since x.x
+	 *
+	 * @param bool   $show_notice Show notice status.
+	 * @param object $plugin Current plugin.
+	 *
+	 * @return bool|mixed
+	 */
+	public static function show_notice_in_recipes_cpt( $show_notice, $plugin ) {
+		if ( $show_notice || 'tasty-recipes' !== $plugin->get_plugin_slug() ) {
+			return $show_notice;
+		}
+
+		return 'edit-tasty_recipe' === get_current_screen()->id;
+	}
+
+	/**
+	 * Make recipes custom post type pages act as ours.
+	 * 
+	 * @since x.x
+	 *
+	 * @param bool $is_ours Current page is ours or not.
+	 *
+	 * @return bool
+	 */
+	public static function make_recipes_cpt_menu_item_ours( $is_ours ) {
+		return self::is_current_page( 'tasty_recipe' ) || $is_ours;
+	}
+
+	/**
+	 * Check if current page is the one mentioned.
+	 *
+	 * @param string $id Page id to check over (about, settings, tasty_recipe).
+	 *
+	 * @return bool
+	 */
+	public static function is_current_page( $id ) {
+		if ( 'tasty_recipe' === $id ) {
+			return isset( get_current_screen()->id ) && in_array( get_current_screen()->id, array( 'edit-tasty_recipe', 'tasty_recipe' ), true );
+		}
+
+		return 'wp-tasty_page_tasty-recipes' === get_current_screen()->id
+					&& Vars::get_param( 'tab', 'sanitize_text_field', 'settings' ) === $id;
 	}
 
 	/**
