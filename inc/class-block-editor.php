@@ -82,6 +82,10 @@ class Block_Editor {
 					'author_link' => array(
 						'type' => 'string',
 					),
+					'override_author_link' => array(
+						'type' => 'boolean',
+						'default' => false,
+					),
 				),
 				'editor_script'   => 'tasty-recipes-block-editor',
 				'editor_style'    => array( 'tasty-framework-global-css', 'tasty-recipes-main', 'tasty-recipes-block-editor' ),

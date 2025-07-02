@@ -23,6 +23,10 @@ registerBlockType( 'wp-tasty/tasty-recipe', {
 			type: 'string',
 			default: '',
 		},
+		override_author_link: {
+			type: 'boolean',
+			default: false,
+		},
 	},
 	edit: Edit,
 	save: () => null,

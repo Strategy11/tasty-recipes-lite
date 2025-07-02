@@ -30,5 +30,11 @@
 			display: flex;
 			gap: 15px;
 		}
+
+		&-select {
+			input[type='text']:focus {
+				box-shadow: none;
+			}
+		}
 	}
 }

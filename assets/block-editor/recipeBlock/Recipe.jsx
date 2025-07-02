@@ -1,15 +1,16 @@
 import { applyFilters } from '@wordpress/hooks';
 import {
-	CheckboxControl,
+	ToggleControl,
 	PanelBody,
 	TextControl,
 	ToolbarGroup,
 	ToolbarButton,
+	SelectControl,
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import {
 	BlockControls,
-	InspectorAdvancedControls,
+	InspectorControls,
 	useBlockProps,
 } from '@wordpress/block-editor';
 
@@ -35,7 +36,7 @@ export const Recipe = ( { attributes, setAttributes, handleModalClose } ) => {
 
 	const disableJSON = applyFilters(
 		'tasty_recipes_lite_disable_json',
-		<CheckboxControl
+		<ToggleControl
 			label={ __(
 				'This is a non-food recipe (craft, cleaning product, etc)',
 				'tasty-recipes-lite'
@@ -49,7 +50,7 @@ export const Recipe = ( { attributes, setAttributes, handleModalClose } ) => {
 
 	const unitConversion = applyFilters(
 		'tasty_recipes_lite_conversion',
-		<CheckboxControl
+		<ToggleControl
 			label={ __(
 				'Disable unit conversion for this recipe',
 				'tasty-recipes-lite'
@@ -63,7 +64,7 @@ export const Recipe = ( { attributes, setAttributes, handleModalClose } ) => {
 
 	const disableScaling = applyFilters(
 		'tasty_recipes_lite_disable_scaling',
-		<CheckboxControl
+		<ToggleControl
 			label={ __(
 				'Disable scaling for this recipe',
 				'tasty-recipes-lite'
@@ -101,7 +102,19 @@ export const Recipe = ( { attributes, setAttributes, handleModalClose } ) => {
 					attributes={ attributes }
 				/>
 			</div>
-			<InspectorAdvancedControls>
+			<InspectorControls>
+				<PanelBody
+					title={ __( 'Select Recipe', 'tasty-recipes-lite' ) }
+					initialOpen={ true }
+				>
+					<SelectControl
+						options={ window.tastyRecipesBlockEditor.recipeIds }
+						value={ attributes.id }
+						onChange={ ( value ) => {
+							setAttributes( { id: value } );
+						} }
+					/>
+				</PanelBody>
 				<PanelBody
 					title={ __( 'Recipe options', 'tasty-recipes-lite' ) }
 					initialOpen={ true }
@@ -109,22 +122,33 @@ export const Recipe = ( { attributes, setAttributes, handleModalClose } ) => {
 					{ disableJSON }
 					{ unitConversion }
 					{ disableScaling }
-					<TextControl
+					<ToggleControl
 						label={ __(
-							'Override Author Link',
+							'Override author link',
 							'tasty-recipes-lite'
 						) }
-						value={ attributes.author_link }
-						onChange={ ( value ) => {
+						checked={ attributes.override_author_link }
+						onChange={ ( checked ) =>
 							setAttributes( {
-								author_link: value,
-							} );
-						} }
-						__next40pxDefaultSize
+								override_author_link: checked,
+							} )
+						}
 						__nextHasNoMarginBottom
 					/>
+					{ attributes.override_author_link && (
+						<TextControl
+							value={ attributes.author_link }
+							onChange={ ( value ) => {
+								setAttributes( {
+									author_link: value,
+								} );
+							} }
+							__next40pxDefaultSize
+							__nextHasNoMarginBottom
+						/>
+					) }
 				</PanelBody>
-			</InspectorAdvancedControls>
+			</InspectorControls>
 		</div>
 	);
 };
