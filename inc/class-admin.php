@@ -155,6 +155,7 @@ class Admin {
 		add_filter( 'tasty_framework_admin_page_ours', array( __CLASS__, 'make_recipes_cpt_menu_item_ours' ) );
 		add_filter( 'tasty_framework_show_license_notice', array( __CLASS__, 'show_notice_in_recipes_cpt' ), 10, 2 );
 		add_action( 'admin_head', array( __CLASS__, 'handle_cpt_menu_item_classes' ) );
+		add_action( 'tasty_tabs_buttons', array( __CLASS__, 'filter_tab_buttons' ) );
 
 		if ( ! wp_doing_ajax() ) {
 			return;
@@ -162,6 +163,19 @@ class Admin {
 
 		add_action( 'wp_ajax_tasty_recipes_get_count', array( __CLASS__, 'handle_wp_ajax_get_count' ) );
 		add_action( 'wp_ajax_tasty_recipes_convert', array( __CLASS__, 'handle_wp_ajax_convert' ) );
+	}
+
+	public static function filter_tab_buttons( $html ) {
+		global $post_type;
+
+		if ( 'tasty_recipe' !== $post_type || 'edit' !== get_current_screen()->base ) {
+			return $html;
+		}
+
+		$html  = '<p class="tasty-tabs-buttons">';
+		$html .= '<a class="tasty-button tasty-button-pink" href="#">' . __( 'Create Recipe', 'tasty-recipes-lite' ) . '</a>';
+
+		return $html;
 	}
 
 	/**

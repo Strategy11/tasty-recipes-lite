@@ -65,10 +65,28 @@ class Assets {
 
 		wp_enqueue_style(
 			'tasty-recipes-common',
-			plugins_url( 'assets/dist/common.css', __DIR__ ),
+			plugins_url( 'assets/dist/common.css', TASTY_RECIPES_LITE_FILE ),
 			array(),
 			TASTY_RECIPES_LITE_VERSION
 		);
+
+		if ( Admin::is_current_page( 'tasty_recipe' ) && 'edit' === get_current_screen()->base ) {
+			$asset_meta = tasty_get_asset_meta( dirname( TASTY_RECIPES_LITE_FILE ) . '/assets/dist/explorer-page.build.asset.php' );
+			wp_enqueue_script(
+				'tasty-recipes-explorer-page',
+				plugins_url( 'assets/dist/explorer-page.build.js', TASTY_RECIPES_LITE_FILE ),
+				$asset_meta['dependencies'],
+				$asset_meta['version'],
+				true
+			);
+
+			wp_enqueue_style(
+				'tasty-recipes-explorer-page',
+				plugins_url( 'assets/dist/explorer-page.css', TASTY_RECIPES_LITE_FILE ),
+				array(),
+				$asset_meta['version']
+			);
+		}
 	}
 
 	/**

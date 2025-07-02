@@ -11,6 +11,8 @@ const cssOnlyEntries = [
 	'recipe',
 	'reset',
 	'common',
+	'edit-page',
+	'index-page',
 ];
 
 module.exports = {
@@ -52,6 +54,10 @@ module.exports = {
 		recipe: resolve( __dirname, 'assets/scss/recipe.scss' ),
 		reset: resolve( __dirname, 'assets/scss/reset.scss' ),
 		common: resolve( __dirname, 'assets/scss/common.scss' ),
+		'explorer-page': resolve(
+			__dirname,
+			'assets/js/recipe-explorer/explorer-page.js'
+		),
 		'recipe-card-preview': resolve(
 			__dirname,
 			'assets/scss/recipe-card-preview.scss'

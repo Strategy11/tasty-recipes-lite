@@ -1,0 +1,108 @@
+.tasty-recipes-nav-content {
+	.wrap {
+		padding: 0 var(--gap-md);
+	}
+}
+
+.page-title-action {
+	display: none !important;
+}
+
+.tasty-tab-content {
+	.wrap {
+		padding: 0 var(--gap-md);
+
+		.displaying-num {
+			display: none;
+		}
+
+		.subsubsub {
+			margin-top: 0;
+			margin-bottom: -15px;
+			line-height: 1;
+		}
+
+		.tablenav {
+			height: auto;
+			margin: 10px 0;
+
+			&.top {
+				margin-top: 0;
+				padding-top: 0;
+
+				.tablenav-pages {
+					display: none;
+				}
+			}
+
+			.tasty-tablenav-container {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+
+				.search-box {
+					position: relative;
+
+					#post-search-input {
+						min-width: 300px;
+						padding-left: 33px;
+					}
+
+					#search-submit {
+						position: absolute;
+						left: 5px;
+						top: 13px;
+						background: transparent;
+						border: 0;
+						font-size: 16px;
+					}
+				}
+			}
+		}
+
+		#bulk-action-selector-top {
+			min-width: 120px;
+		}
+
+		#filter-by-date {
+			min-width: 180px;
+		}
+
+		.tasty-actions-container {
+			input, select, button {
+				line-height: 1.5;
+			}
+		}
+
+		input, select, .button {
+			padding: 8px 10px;
+			background-color: #fff;
+			border: 1px solid #c3c4c7;
+			border-radius: 8px;
+			color: var(--grey-700);
+			font-size: 14px;
+			line-height: 2;
+		}
+
+		input[type="checkbox"] {
+			border-radius: 4px;
+		}
+
+		.button:hover {
+			background-color: #f0f0f1;
+			border-color: #0a4b78;
+			color: #0a4b78;
+		}
+
+		.wp-list-table {
+			margin: 10px 0;
+		}
+
+		.pagination-links {
+			.button {
+				padding: 0;
+				border: 1px solid #056AAB;
+			}
+		}
+	}
+}
