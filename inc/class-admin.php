@@ -241,7 +241,7 @@ class Admin {
 		}
 
 		return 'wp-tasty_page_tasty-recipes' === get_current_screen()->id
-					&& Vars::get_param( 'tab', 'sanitize_text_field', 'settings' ) === $id;
+					&& Vars::get_param( 'tab', 'sanitize_text_field', 'design' ) === $id;
 	}
 
 	/**
