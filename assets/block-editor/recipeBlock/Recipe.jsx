@@ -113,6 +113,8 @@ export const Recipe = ( { attributes, setAttributes, handleModalClose } ) => {
 						onChange={ ( value ) => {
 							setAttributes( { id: value } );
 						} }
+						__nextHasNoMarginBottom
+						__next40pxDefaultSize
 					/>
 				</PanelBody>
 				<PanelBody

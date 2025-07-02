@@ -103,7 +103,9 @@ export const RecipePlaceholder = ( { handleModalClose, setAttributes } ) => {
 										fontSize: '16px',
 										padding: '0',
 										width: '70%',
-										borderColor: state.isFocused ? '#888' : '#ccc',
+										borderColor: state.isFocused
+											? '#888'
+											: '#ccc',
 									} ),
 									input: ( provided ) => ( {
 										...provided,
