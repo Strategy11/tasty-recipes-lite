@@ -30,6 +30,7 @@ class Recipe_Explorer {
 		add_action( 'pre_get_posts', array( __CLASS__, 'action_pre_get_posts' ) );
 		add_action( 'manage_posts_columns', array( __CLASS__, 'action_manage_posts_columns' ) );
 		add_action( 'manage_posts_custom_column', array( __CLASS__, 'action_manage_posts_custom_column' ), 10, 2 );
+		add_filter( 'manage_edit-tasty_recipe_sortable_columns', array( __CLASS__, 'action_manage_sortable_columns' ) );
 	}
 
 	/**
@@ -272,5 +273,16 @@ class Recipe_Explorer {
 		);
 
 		echo wp_kses( Ratings::get_rendered_rating( $recipe->get_average_rating() ), $allowed_html );
+	}
+
+	/**
+	 * Remove all sortable columns.
+	 * 
+	 * @since x.x
+	 *
+	 * @return array
+	 */
+	public static function action_manage_sortable_columns() {
+		return array();
 	}
 }

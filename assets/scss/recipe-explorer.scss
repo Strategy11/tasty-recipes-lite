@@ -24,6 +24,20 @@
 	.wrap {
 		padding: 0 var(--gap-md);
 	}
+
+	.wp-list-table {
+		.column-columns {
+			width: 100px;
+		}
+
+		.column-rating {
+			width: 12%;
+		}
+
+		.column-last-updated {
+			width: 14%;
+		}
+	}
 }
 
 .page-title-action {
