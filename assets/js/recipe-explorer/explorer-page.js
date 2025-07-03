@@ -57,5 +57,5 @@ const formatSearchBox = ( searchBox ) => {
 	newSearchButton.classList.add( 'dashicons', 'dashicons-search' );
 
 	searchSubmit.parentNode.replaceChild( newSearchButton, searchSubmit );
-	searchInput.placeholder = __( 'Search links', 'tasty-recipes-lite' );
+	searchInput.placeholder = __( 'Search recipes', 'tasty-recipes-lite' );
 };

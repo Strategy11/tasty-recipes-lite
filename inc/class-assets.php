@@ -14,6 +14,7 @@ use Tasty_Recipes\Utils;
 use Tasty_Recipes\Designs\Template;
 use Tasty_Recipes\Block_Editor;
 use Tasty_Recipes\Settings;
+use Tasty_Recipes\Recipe_Explorer;
 
 /**
  * Registers all scripts and styles.
@@ -70,7 +71,7 @@ class Assets {
 			TASTY_RECIPES_LITE_VERSION
 		);
 
-		if ( Admin::is_current_page( 'tasty_recipe' ) && 'edit' === get_current_screen()->base ) {
+		if ( Recipe_Explorer::is_current_page( 'tasty_recipe' ) && 'edit' === get_current_screen()->base ) {
 			$asset_meta = tasty_get_asset_meta( dirname( TASTY_RECIPES_LITE_FILE ) . '/assets/dist/explorer-page.build.asset.php' );
 			wp_enqueue_script(
 				'tasty-recipes-explorer-page',

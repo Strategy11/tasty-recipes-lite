@@ -10,7 +10,7 @@ namespace Tasty_Recipes;
 use Tasty\Framework\Utils\Common;
 use Tasty_Recipes;
 use Tasty_Recipes\Designs\Template;
-use Tasty_Recipes\Admin;
+use Tasty_Recipes\Recipe_Explorer;
 
 /**
  * Manages interactions with the settings page.
@@ -58,7 +58,6 @@ class Settings {
 		add_filter( 'tasty_framework_admin_menu_items', array( __CLASS__, 'add_menu_item' ) );
 		add_action( 'admin_menu', array( __CLASS__, 'register_settings' ) );
 		add_action( 'update_option_' . Tasty_Recipes::TEMPLATE_OPTION, array( __CLASS__, 'maybe_remove_default_colors' ), 10, 2 );
-		add_action( 'pre_get_posts', array( __CLASS__, 'action_pre_get_posts' ) );
 		add_action( 'tasty_after_remove_admin_notices', array( __CLASS__, 'register_tabs_hook' ) );
 	}
 
@@ -71,25 +70,6 @@ class Settings {
 	 */
 	public static function register_tabs_hook() {
 		add_action( 'all_admin_notices', array( __CLASS__, 'add_admin_header' ) );
-	}
-
-	/**
-	 * Modifications to the main query.
-	 * 
-	 * @since x.x
-	 *
-	 * @param WP_Query $query WP_Query object.
-	 */
-	public static function action_pre_get_posts( $query ) {
-		if ( ! is_admin() || ! $query->is_main_query() ) {
-			return;
-		}
-		if ( 'tasty_recipe' !== $query->get( 'post_type' ) ) {
-			return;
-		}
-
-		$query->set( 'orderby', 'title' );
-		$query->set( 'order', 'ASC' );
 	}
 
 	/**
@@ -334,7 +314,7 @@ class Settings {
 			$tabs[] = array(
 				'title'  => $title,
 				'url'    => $url,
-				'active' => Admin::is_current_page( $key ),
+				'active' => Recipe_Explorer::is_current_page( $key ),
 			);
 		}
 

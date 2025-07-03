@@ -1,3 +1,25 @@
+.post-type-tasty_recipe #contextual-help-wrap,.post-type-tasty_recipe #screen-meta-links .screen-meta-toggle,.post-type-tasty_recipe #screen-options-wrap {
+    top: -24px
+}
+
+.post-type-tasty_recipe {
+	#titlewrap {
+		line-height: 1
+	}
+
+	h3~#poststuff {
+		padding-top: 0
+	}
+
+	.postbox {
+		border-radius: var(--radius-sm)
+	}
+}
+
+.tasty-framework h1.wp-heading-inline {
+    display: none!important
+}
+
 .tasty-recipes-nav-content {
 	.wrap {
 		padding: 0 var(--gap-md);

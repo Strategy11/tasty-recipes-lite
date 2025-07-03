@@ -5,7 +5,9 @@
  * @package Tasty_Recipes
  */
 
+use Tasty_Recipes\MetaBox;
 use Tasty_Recipes\Onboarding_Wizard;
+use Tasty_Recipes\Recipe_Explorer;
 
 /**
  * Base controller class for the plugin.
@@ -288,8 +290,9 @@ class Tasty_Recipes {
 		add_action( 'deleted_post', array( __CLASS__, 'handle_delete_post' ) );
 
 		if ( is_admin() ) {
-			Tasty_Recipes\MetaBox::get_instance();
+			MetaBox::get_instance();
 			Onboarding_Wizard::instance()->load_hooks();
+			Recipe_Explorer::load_hooks();
 		}
 	}
 
