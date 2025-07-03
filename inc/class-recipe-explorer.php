@@ -8,6 +8,8 @@
 namespace Tasty_Recipes;
 
 use Tasty\Framework\Utils\Vars;
+use Tasty_Recipes\Objects\Recipe;
+use Tasty_Recipes\Ratings;
 
 /**
  * Manages interactions with the recipe explorer page.
@@ -26,6 +28,8 @@ class Recipe_Explorer {
 		add_action( 'admin_head', array( __CLASS__, 'handle_cpt_menu_item_classes' ) );
 		add_action( 'tasty_tabs_buttons', array( __CLASS__, 'filter_tab_buttons' ) );
 		add_action( 'pre_get_posts', array( __CLASS__, 'action_pre_get_posts' ) );
+		add_action( 'manage_posts_columns', array( __CLASS__, 'action_manage_posts_columns' ) );
+		add_action( 'manage_posts_custom_column', array( __CLASS__, 'action_manage_posts_custom_column' ), 10, 2 );
 	}
 
 	/**
@@ -135,7 +139,9 @@ class Recipe_Explorer {
 	 * 
 	 * @since x.x
 	 *
-	 * @param WP_Query $query WP_Query object.
+	 * @param object $query WP_Query object.
+	 * 
+	 * @return void
 	 */
 	public static function action_pre_get_posts( $query ) {
 		if ( ! is_admin() || ! $query->is_main_query() ) {
@@ -147,5 +153,124 @@ class Recipe_Explorer {
 
 		$query->set( 'orderby', 'title' );
 		$query->set( 'order', 'ASC' );
+	}
+
+	/**
+	 * Registers the new custom columns for Tasty Recipes.
+	 * 
+	 * @since x.x
+	 *
+	 * @param array $columns Existing column names.
+	 *
+	 * @return array
+	 */
+	public static function action_manage_posts_columns( $columns ) {
+		global $post_type;
+
+		if ( 'tasty_recipe' !== $post_type ) {
+			return $columns;
+		}
+	
+		$columns['title']        = esc_html__( 'Recipe Title', 'tasty-recipes-lite' );
+		$columns['rating']       = esc_html__( 'Rating', 'tasty-recipes-lite' );
+		$columns['recipe-post']  = esc_html__( "Recipe's post", 'tasty-recipes-lite' );
+		$columns['last-updated'] = esc_html__( 'Last updated', 'tasty-recipes-lite' );
+		$columns['columns']      = esc_html__( 'Columns', 'tasty-recipes-lite' );
+
+		if ( isset( $columns['date'] ) ) {
+			unset( $columns['date'] );
+		}
+
+		return $columns;
+	}
+
+	/**
+	 * Renders custom column content for the tasty_recipe post type.
+	 * 
+	 * @since x.x
+	 *
+	 * @param string $column_name Name of the column.
+	 * @param int    $recipe_id   ID of the recipe being displayed.
+	 *
+	 * @return void
+	 */
+	public static function action_manage_posts_custom_column( $column_name, $recipe_id ) {
+		global $post_type;
+
+		if ( 'tasty_recipe' !== $post_type ) {
+			return;
+		}
+
+		$post           = get_post( $recipe_id );
+		$parent_post_id = get_post_meta( $recipe_id, '_tasty_recipe_parents', true );
+		$parent_post    = get_post( $parent_post_id ) ?? false;
+	
+		switch ( $column_name ) {
+			case 'rating':
+				self::render_rating( $recipe_id );
+				break;
+			case 'recipe-post':
+				echo '<a href="' . esc_url( get_edit_post_link( $parent_post_id ) ) . '">' . esc_html( $parent_post->post_title ) . '</a>';
+				break;
+			
+			case 'last-updated':
+				echo esc_html( $post->post_modified );
+				break;
+			
+			case 'columns':
+				echo '';
+				break;
+		}
+	}
+
+	/**
+	 * Render the rating for the recipe.
+	 * 
+	 * @since x.x
+	 *
+	 * @param int $recipe_id The ID of the recipe.
+	 *
+	 * @return void
+	 */
+	public static function render_rating( $recipe_id ) {
+		wp_enqueue_style(
+			'tasty-recipes-ratings',
+			plugin_dir_url( TASTY_RECIPES_LITE_FILE ) . 'assets/dist/ratings.css',
+			array(),
+			TASTY_RECIPES_LITE_VERSION
+		);
+
+		$recipe = Recipe::get_by_id( $recipe_id );
+
+		$allowed_html = array(
+			'span'   => array(
+				'class'        => array(),
+				'data-tr-clip' => array(),
+				'data-rating'  => array(),
+			),
+			'svg'    => array(
+				'class'       => array(),
+				'fill'        => array(),
+				'height'      => array(),
+				'width'       => array(),
+				'viewbox'     => array(),
+				'xmlns'       => array(),
+				'xmlns:xlink' => array(),
+				'style'       => array(),
+				'aria-hidden' => array(),
+			),
+			'use'    => array(
+				'href' => array(),
+			),
+			'symbol' => array(
+				'id'      => array(),
+				'viewbox' => array(),
+			),
+			'path'   => array(
+				'd' => array(),
+			),
+		);
+
+		echo wp_kses( Ratings::get_rendered_rating( $recipe->get_average_rating() ), $allowed_html );
 	}
 }
