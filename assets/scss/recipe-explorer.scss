@@ -16,6 +16,14 @@
 	}
 }
 
+.post-type-tasty_recipe #screen-options-wrap {
+	top: 0;
+}
+
+#screen-meta {
+	top: -24px;
+}
+
 .tasty-framework h1.wp-heading-inline {
     display: none!important
 }
@@ -27,7 +35,23 @@
 
 	.wp-list-table {
 		.column-columns {
-			width: 100px;
+			width: 80px;
+
+			div {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				gap: 10px;
+
+				#tasty-columns-icon {
+					line-height: 1;
+					background: transparent;
+					border: 0;
+					padding: 0;
+					cursor: pointer;
+					color: #99A0AE;
+				}
+			}
 		}
 
 		.column-rating {
@@ -38,6 +62,11 @@
 			width: 14%;
 		}
 	}
+}
+
+#tasty-create-recipe {
+	line-height: 2.15384615;
+	min-height: 30px;
 }
 
 .page-title-action {

@@ -50,7 +50,7 @@ class Recipe_Explorer {
 		}
 
 		$html  = '<p class="tasty-tabs-buttons">';
-		$html .= '<a class="tasty-button tasty-button-pink" href="#">' . __( 'Create Recipe', 'tasty-recipes-lite' ) . '</a>';
+		$html .= '<a class="tasty-button tasty-button-pink" id="tasty-create-recipe" href="#">' . __( 'Create Recipe', 'tasty-recipes-lite' ) . '</a>';
 
 		return $html;
 	}

@@ -1,10 +1,14 @@
 import domReady from '@wordpress/dom-ready';
 import { __ } from '@wordpress/i18n';
+import { columnsIcon } from './icons';
 import '../../scss/recipe-explorer.scss';
+import { columnsIconListener } from './listeners';
 
 domReady( () => {
 	cleanElements();
 	rearrangeTopNav();
+	addColumnsButton();
+	registerEvents();
 } );
 
 const cleanElements = () => {
@@ -58,4 +62,27 @@ const formatSearchBox = ( searchBox ) => {
 
 	searchSubmit.parentNode.replaceChild( newSearchButton, searchSubmit );
 	searchInput.placeholder = __( 'Search recipes', 'tasty-recipes-lite' );
+};
+
+const addColumnsButton = () => {
+	const columnsElement = document.querySelector( 'thead th.column-columns' );
+	columnsElement.innerHTML = '';
+
+	const columnsInnerWrapper = document.createElement( 'div' );
+	columnsElement.appendChild( columnsInnerWrapper );
+
+	const columnsText = document.createElement( 'span' );
+	columnsText.innerHTML = __( 'Columns', 'tasty-recipes-lite' );
+	columnsText.id = 'tasty-columns-text';
+	columnsInnerWrapper.appendChild( columnsText );
+
+	const icon = document.createElement( 'button' );
+	icon.innerHTML = columnsIcon;
+	icon.id = 'tasty-columns-icon';
+	columnsInnerWrapper.appendChild( icon );
+};
+
+const registerEvents = () => {
+	const columnsIconElement = document.querySelector( '#tasty-columns-icon' );
+	columnsIconElement.addEventListener( 'click', columnsIconListener );
 };
