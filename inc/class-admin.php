@@ -225,7 +225,14 @@ class Admin {
 	 * @return array
 	 */
 	public static function action_manage_posts_columns( $columns ) {
+		global $post_type;
+		
+		if ( 'tasty_recipe' === $post_type ) {
+			return $columns;
+		}
+
 		$columns['tasty_recipe'] = esc_html__( 'Tasty Recipe', 'tasty-recipes-lite' );
+
 		return $columns;
 	}
 

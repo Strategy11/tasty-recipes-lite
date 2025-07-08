@@ -65,24 +65,33 @@ const formatSearchBox = ( searchBox ) => {
 };
 
 const addColumnsButton = () => {
-	const columnsElement = document.querySelector( 'thead th.column-columns' );
-	columnsElement.innerHTML = '';
+	const columnsElements = document.querySelectorAll( 'th.column-columns' );
 
-	const columnsInnerWrapper = document.createElement( 'div' );
-	columnsElement.appendChild( columnsInnerWrapper );
+	columnsElements.forEach( ( element ) => {
+		element.innerHTML = '';
 
-	const columnsText = document.createElement( 'span' );
-	columnsText.innerHTML = __( 'Columns', 'tasty-recipes-lite' );
-	columnsText.id = 'tasty-columns-text';
-	columnsInnerWrapper.appendChild( columnsText );
+		const columnsInnerWrapper = document.createElement( 'div' );
 
-	const icon = document.createElement( 'button' );
-	icon.innerHTML = columnsIcon;
-	icon.id = 'tasty-columns-icon';
-	columnsInnerWrapper.appendChild( icon );
+		const columnsText = document.createElement( 'span' );
+		columnsText.innerHTML = __( 'Columns', 'tasty-recipes-lite' );
+		columnsText.classList.add( 'tasty-columns-text' );
+		columnsInnerWrapper.appendChild( columnsText );
+
+		const icon = document.createElement( 'button' );
+		icon.innerHTML = columnsIcon;
+		icon.classList.add( 'tasty-columns-icon' );
+		columnsInnerWrapper.appendChild( icon );
+
+		element.appendChild( columnsInnerWrapper );
+	} );
 };
 
 const registerEvents = () => {
-	const columnsIconElement = document.querySelector( '#tasty-columns-icon' );
-	columnsIconElement.addEventListener( 'click', columnsIconListener );
+	const columnsIconElements = document.querySelectorAll(
+		'.tasty-columns-icon'
+	);
+
+	columnsIconElements.forEach( ( element ) => {
+		element.addEventListener( 'click', columnsIconListener );
+	} );
 };
