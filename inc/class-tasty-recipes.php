@@ -519,6 +519,7 @@ class Tasty_Recipes {
 				}
 			}
 		}
+
 		if ( function_exists( 'parse_blocks' ) ) {
 			self::recursively_search_blocks( parse_blocks( $content ), $options, $recipes );
 		}
@@ -554,7 +555,7 @@ class Tasty_Recipes {
 				 */
 				$disable_json = apply_filters( 'tasty_recipes_use_custom_schema', false, compact( 'block', 'options' ) );
 
-				if ( $disable_json ) {
+				if ( false === $options['disable-json-ld'] && $disable_json ) {
 					continue;
 				}
 				if ( ! empty( $block['attrs']['id'] ) ) {
