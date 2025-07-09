@@ -28,6 +28,11 @@ const rearrangeTopNav = () => {
 	const tableNav = document.querySelector( '.tablenav.top' );
 	const actions = document.querySelectorAll( '.tablenav.top .actions' );
 	const searchBox = document.querySelector( '.search-box' );
+
+	if ( ! tableNav || ! actions || ! searchBox ) {
+		return;
+	}
+
 	const newSearchBox = document.createElement( 'div' );
 
 	newSearchBox.className = searchBox.className;
