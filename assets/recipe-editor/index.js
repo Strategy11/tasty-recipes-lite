@@ -9,8 +9,7 @@ window.tastyRecipesMountRecipeEditor = ( el, initialRecipe ) => {
 		<RecipeForm
 			initialRecipe={ initialRecipe }
 			config={ window.tastyRecipesRecipeEditorData }
-		/>,
-		el
+		/>
 	);
 };
 

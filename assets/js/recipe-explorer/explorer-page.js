@@ -2,7 +2,7 @@ import domReady from '@wordpress/dom-ready';
 import { __ } from '@wordpress/i18n';
 import { columnsIcon } from './icons';
 import '../../scss/recipe-explorer.scss';
-import { columnsIconListener } from './listeners';
+import { registerEvents } from './listeners';
 
 domReady( () => {
 	cleanElements();
@@ -83,15 +83,5 @@ const addColumnsButton = () => {
 		columnsInnerWrapper.appendChild( icon );
 
 		element.appendChild( columnsInnerWrapper );
-	} );
-};
-
-const registerEvents = () => {
-	const columnsIconElements = document.querySelectorAll(
-		'.tasty-columns-icon'
-	);
-
-	columnsIconElements.forEach( ( element ) => {
-		element.addEventListener( 'click', columnsIconListener );
 	} );
 };
