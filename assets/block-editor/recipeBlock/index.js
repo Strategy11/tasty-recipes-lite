@@ -1,4 +1,5 @@
 import { useEffect } from '@wordpress/element';
+import { doAction } from '@wordpress/hooks';
 import { RecipePlaceholder } from './RecipePlaceholder';
 import { Recipe } from './Recipe';
 
@@ -10,9 +11,8 @@ const handleEditorModalUpdate = ( { setAttributes }, response ) => {
 		id: response.recipe.id,
 		lastUpdated: date.getTime(),
 	} );
-	if ( typeof wp.hooks !== 'undefined' ) {
-		wp.hooks.doAction( 'tasty_recipes_updated_recipe', response.recipe );
-	}
+
+	doAction( 'tasty_recipes_updated_recipe', response.recipe );
 };
 
 export const Edit = ( { attributes, setAttributes } ) => {
