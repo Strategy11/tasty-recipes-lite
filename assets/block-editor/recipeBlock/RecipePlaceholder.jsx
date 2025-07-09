@@ -3,6 +3,7 @@ import { ToolbarGroup, ToolbarButton, Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { Icon } from '@wordpress/icons';
 import { useState } from '@wordpress/element';
+import { select } from '@wordpress/data';
 import { RecipeIcon } from '../icons';
 import Select from 'react-select';
 
@@ -15,9 +16,9 @@ export const RecipePlaceholder = ( { handleModalClose, setAttributes } ) => {
 			{
 				author_name:
 					window.tastyRecipesEditorModalData.defaultAuthorName,
-				title: wp.data
-					.select( 'core/editor' )
-					.getEditedPostAttribute( 'title' ),
+				title: select( 'core/editor' ).getEditedPostAttribute(
+					'title'
+				),
 				diet: '',
 			},
 			handleModalClose
