@@ -197,6 +197,10 @@ class Shortcodes {
 			return '';
 		}
 
+		if ( ! wp_style_is( 'tasty-recipes-main' ) ) {
+			Assets::action_wp_head();
+		}
+
 		$wrapper_classes = array(
 			'tasty-recipes',
 			'tasty-recipes-' . $recipe->get_id(),
