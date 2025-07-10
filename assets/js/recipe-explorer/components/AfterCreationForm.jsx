@@ -1,9 +1,9 @@
 import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { Modal, useModal } from '@library';
 import { SelectPage } from './pages/SelectPage';
 import { EmbedPage } from './pages/EmbedPage';
 import { CreatePage } from './pages/CreatePage';
+import { Modal, useModal } from '@library';
 
 export const AfterCreationForm = ( { recipe, closeEditorExtension } ) => {
 	const [ pageState, setPageState ] = useState( {

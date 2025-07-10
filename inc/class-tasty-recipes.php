@@ -251,6 +251,7 @@ class Tasty_Recipes {
 		add_action( 'init', array( 'Tasty_Recipes\Block_Editor', 'action_init_register' ) );
 		add_action( 'init', array( 'Tasty_Recipes\Content_Model', 'init_post_type' ) );
 		add_action( 'tasty_recipes_process_thumbnails', array( 'Tasty_Recipes\Content_Model', 'action_tasty_recipes_process_thumbnails' ) );
+		add_action( 'rest_api_init', array( 'Tasty_Recipes\Recipe_Explorer', 'action_rest_api_init' ) );
 
 		// Frontend.
 		add_action( 'body_class', array( 'Tasty_Recipes\Content_Model', 'filter_body_class' ) );

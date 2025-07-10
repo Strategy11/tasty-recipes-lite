@@ -1,3 +1,9 @@
+import { Breadcrumbs } from '../Breadcrumbs';
+
 export const EmbedPage = () => {
-	return <div>EmbedPage</div>;
+	return (
+		<div>
+			<Breadcrumbs step="embed" />
+		</div>
+	);
 };

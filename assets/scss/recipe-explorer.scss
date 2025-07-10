@@ -292,3 +292,37 @@
 		cursor: pointer;
 	}
 }
+
+.tasty-recipes-modal-embed-step-footer {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-top: 20px;
+}
+
+.tasty-recipes-modal-with-form-content {
+	margin-top: 15px;
+
+	label {
+		display: block;
+		font-size: 14px;
+		color: #181B25;
+		margin-bottom: 8px;
+	}
+
+	input {
+		width: 100%;
+		border-radius: 8px;
+		border: 1px solid #CACFD8;
+		color: #181B25;
+		font-size: 16px;
+		outline: none;
+		height: 44px;
+
+		&:focus {
+			border-color: #ED4996;
+			outline: none;
+			box-shadow: none;
+		}
+	}
+}

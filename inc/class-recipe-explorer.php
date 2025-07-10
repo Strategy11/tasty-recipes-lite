@@ -211,6 +211,11 @@ class Recipe_Explorer {
 				self::render_rating( $recipe_id );
 				break;
 			case 'recipe-post':
+				if ( empty( $parent_post_id ) ) {
+					echo '';
+					break;
+				}
+
 				echo '<a href="' . esc_url( get_edit_post_link( $parent_post_id ) ) . '">' . esc_html( $parent_post->post_title ) . '</a>';
 				break;
 			
@@ -284,5 +289,103 @@ class Recipe_Explorer {
 	 */
 	public static function action_manage_sortable_columns() {
 		return array();
+	}
+
+	/**
+	 * Register the rest api endpoints.
+	 * 
+	 * @since x.x
+	 *
+	 * @return void
+	 */
+	public static function action_rest_api_init() {
+		register_rest_route(
+			'tasty-recipes/v1',
+			'/recipe-explorer/create',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( __CLASS__, 'create_post' ),
+				'permission_callback' => array( __CLASS__, 'api_check_permission' ),
+			)
+		);
+	}
+
+	/**
+	 * Create a post and append the recipe to it.
+	 * 
+	 * @since x.x
+	 * 
+	 * @param object $request The request object.
+	 *
+	 * @return void
+	 */
+	public static function create_post( $request ) {
+		$params = $request->get_params();
+		$title  = $params['title'] ?? '';
+		$recipe = Recipe::get_by_id( $params['recipe_id'] );
+
+		if ( ! $recipe ) {
+			wp_send_json_error( __( 'Recipe not found', 'tasty-recipes-lite' ) );
+		}
+
+		$post_id = wp_insert_post(
+			array(
+				'post_title'   => $title,
+				'post_content' => self::generate_recipe_content( $params['recipe_id'] ),
+				'post_status'  => 'draft',
+				'post_type'    => 'post',
+			)
+		);
+
+		$js_messagebox = \Tasty\Framework\Admin\JSMessageBox::instance()->init( get_current_user_id() );
+
+		if ( is_wp_error( $post_id ) ) {
+			$message  = '<h3>' . __( 'Error!', 'tasty-recipes-lite' ) . '</h3>';
+			$message .= '<p>' . $post_id->get_error_message() . '</p>';
+
+			$js_messagebox->add( 'error', $message );
+
+			wp_send_json_error( $post_id->get_error_message() );
+		}
+
+		$recipe_title = ! empty( $recipe->get_title() ) ? $recipe->get_title() : __( 'The', 'tasty-recipes-lite' );
+
+		$message  = '<h3>' . __( 'Post created!', 'tasty-recipes-lite' ) . '</h3>';
+		$message .= '<p>' . $recipe_title . __( ' recipe has been embedded successfully.', 'tasty-recipes-lite' ) . '</p>';
+		$message .= '<p><a style="color: #ED4996;" href="' . get_edit_post_link( $post_id ) . '">' . __( 'Go to Post', 'tasty-recipes-lite' ) . '</a></p>';
+		
+		$js_messagebox->add( 'success', $message );
+
+		wp_send_json_success();
+	}
+
+	/**
+	 * Generate the recipe content.
+	 * 
+	 * @since x.x
+	 *
+	 * @param int $recipe_id The ID of the recipe.
+	 *
+	 * @return string
+	 */
+	private static function generate_recipe_content( $recipe_id ) {
+		$content = '[wp-tasty id="' . $recipe_id . '"]';
+
+		if ( function_exists( 'use_block_editor_for_post_type' ) && use_block_editor_for_post_type( 'post' ) ) {
+			$content = '<!-- wp:wp-tasty/tasty-recipe {"id":' . $recipe_id . ',"lastUpdated":' . time() . '} /-->';
+		}
+
+		return $content;
+	}
+
+	/**
+	 * Check if the user has permission to access the api.
+	 * 
+	 * @since x.x
+	 *
+	 * @return bool
+	 */
+	public static function api_check_permission() {
+		return current_user_can( 'edit_posts' );
 	}
 }
