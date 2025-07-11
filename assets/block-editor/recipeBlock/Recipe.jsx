@@ -111,7 +111,7 @@ export const Recipe = ( { attributes, setAttributes, handleModalClose } ) => {
 						options={ window.tastyRecipesBlockEditor.recipeIds }
 						value={ attributes.id }
 						onChange={ ( value ) => {
-							setAttributes( { id: value } );
+							setAttributes( { id: Number( value ) } );
 						} }
 						__nextHasNoMarginBottom
 						__next40pxDefaultSize

@@ -11,6 +11,7 @@ use Tasty_Recipes;
 use Tasty_Recipes\Objects\Recipe;
 use Tasty_Recipes\Designs\Template;
 use Tasty\Framework\Utils\Url;
+use Tasty_Recipes\Assets;
 
 /**
  * Registers shortcodes used by the plugin.
@@ -84,6 +85,8 @@ class Shortcodes {
 	 */
 	public static function action_init_register_shortcode() {
 		add_shortcode( self::RECIPE_SHORTCODE, array( __CLASS__, 'render_tasty_recipe_shortcode' ) );
+
+		add_action( 'wp_head', array( Assets::class, 'action_wp_head' ), 7 );
 	}
 
 	/**
@@ -195,10 +198,6 @@ class Shortcodes {
 		self::set_template_info();
 		if ( empty( self::$template['php'] ) ) {
 			return '';
-		}
-
-		if ( ! wp_style_is( 'tasty-recipes-main' ) ) {
-			Assets::action_wp_head();
 		}
 
 		$wrapper_classes = array(

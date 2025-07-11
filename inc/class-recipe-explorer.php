@@ -11,6 +11,7 @@ use Tasty\Framework\Utils\Vars;
 use Tasty\Framework\Admin\JSMessageBox;
 use Tasty_Recipes\Objects\Recipe;
 use Tasty_Recipes\Ratings;
+use Tasty_Recipes\Block_Editor;
 
 /**
  * Manages interactions with the recipe explorer page.
@@ -443,10 +444,12 @@ class Recipe_Explorer {
 	 * @return string
 	 */
 	private static function generate_recipe_content( $recipe_id ) {
+		$recipe = Recipe::get_by_id( $recipe_id );
+
 		$content = '[wp-tasty id="' . $recipe_id . '"]';
 
 		if ( function_exists( 'use_block_editor_for_post_type' ) && use_block_editor_for_post_type( 'post' ) ) {
-			$content = '<!-- wp:wp-tasty/tasty-recipe {"id":' . $recipe_id . ',"lastUpdated":' . time() . '} /-->';
+			$content = Block_Editor::get_block_for_recipe( $recipe );
 		}
 
 		return $content;
