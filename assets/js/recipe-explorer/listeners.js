@@ -1,6 +1,7 @@
 import { doAction } from '@wordpress/hooks';
 import apiFetch from '@wordpress/api-fetch';
 import { openEditorExtension } from './editor-extension';
+import { openTrashModal } from './trash-modal';
 
 export const registerEvents = () => {
 	const addRecipeButton = document.getElementById( 'tasty-create-recipe' );
@@ -90,5 +91,5 @@ const editModalClose = ( response ) => {
 const trashListener = ( e ) => {
 	e.preventDefault();
 
-	console.log( 'go to trash' );
+	openTrashModal();
 };
