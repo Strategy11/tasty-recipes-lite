@@ -1,7 +1,7 @@
 import domReady from '@wordpress/dom-ready';
 import { __ } from '@wordpress/i18n';
 import { columnsIcon } from './icons';
-import '../../scss/recipe-explorer.scss';
+import '../../scss/recipe-explorer/index.scss';
 import { registerEvents } from './listeners';
 
 domReady( () => {

@@ -1,0 +1,47 @@
+.tasty-recipes-modal-breadcrumbs {
+	display: flex;
+	align-items: center;
+	width: 100%;
+
+	p {
+		font-size: 12px;
+		color: #181B25;
+		font-weight: 500;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		span {
+			font-size: 10px;
+			color: #99A0AE;
+			border: 1px solid #99A0AE;
+			border-radius: 50%;
+			width: 16px;
+			height: 16px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			margin-right: 10px;
+		}
+
+		&.tasty-recipes-modal-breadcrumbs-complete {
+			span {
+				background-color: #12B76A;
+				color: #fff;
+				border-color: #12B76A;
+			}
+		}
+
+		&.tasty-recipes-modal-breadcrumbs-active {
+			span {
+				color: #12B76A;
+				border-color: #12B76A;
+			}
+		}
+	}
+
+	.tasty-recipes-modal-breadcrumbs-separator {
+		margin: 0 7px;
+		color: #99A0AE;
+	}
+}
