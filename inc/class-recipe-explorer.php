@@ -8,6 +8,7 @@
 namespace Tasty_Recipes;
 
 use Tasty\Framework\Utils\Vars;
+use Tasty\Framework\Admin\JSMessageBox;
 use Tasty_Recipes\Objects\Recipe;
 use Tasty_Recipes\Ratings;
 
@@ -304,7 +305,17 @@ class Recipe_Explorer {
 			'/recipe-explorer/create',
 			array(
 				'methods'             => 'POST',
-				'callback'            => array( __CLASS__, 'create_post' ),
+				'callback'            => array( __CLASS__, 'create_post_endpoint' ),
+				'permission_callback' => array( __CLASS__, 'api_check_permission' ),
+			)
+		);
+
+		register_rest_route(
+			'tasty-recipes/v1',
+			'/recipe-explorer/embed',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( __CLASS__, 'embed_in_post_endpoint' ),
 				'permission_callback' => array( __CLASS__, 'api_check_permission' ),
 			)
 		);
@@ -319,7 +330,7 @@ class Recipe_Explorer {
 	 *
 	 * @return void
 	 */
-	public static function create_post( $request ) {
+	public static function create_post_endpoint( $request ) {
 		$params = $request->get_params();
 		$title  = $params['title'] ?? '';
 		$recipe = Recipe::get_by_id( $params['recipe_id'] );
@@ -337,7 +348,7 @@ class Recipe_Explorer {
 			)
 		);
 
-		$js_messagebox = \Tasty\Framework\Admin\JSMessageBox::instance()->init( get_current_user_id() );
+		$js_messagebox = JSMessageBox::instance()->init( get_current_user_id() );
 
 		if ( is_wp_error( $post_id ) ) {
 			$message  = '<h3>' . __( 'Error!', 'tasty-recipes-lite' ) . '</h3>';
@@ -345,7 +356,7 @@ class Recipe_Explorer {
 
 			$js_messagebox->add( 'error', $message );
 
-			wp_send_json_error( $post_id->get_error_message() );
+			wp_send_json_error();
 		}
 
 		$recipe_title = ! empty( $recipe->get_title() ) ? $recipe->get_title() : __( 'The', 'tasty-recipes-lite' );
@@ -353,6 +364,69 @@ class Recipe_Explorer {
 		$message  = '<h3>' . __( 'Post created!', 'tasty-recipes-lite' ) . '</h3>';
 		$message .= '<p>' . $recipe_title . __( ' recipe has been embedded successfully.', 'tasty-recipes-lite' ) . '</p>';
 		$message .= '<p><a style="color: #ED4996;" href="' . get_edit_post_link( $post_id ) . '">' . __( 'Go to Post', 'tasty-recipes-lite' ) . '</a></p>';
+		
+		$js_messagebox->add( 'success', $message );
+
+		wp_send_json_success();
+	}
+
+	/**
+	 * Embed the recipe in the post.
+	 * 
+	 * @since x.x
+	 * 
+	 * @param WP_REST_Request $request The request object.
+	 *
+	 * @return void
+	 */
+	public static function embed_in_post_endpoint( $request ) {
+		$params        = $request->get_params();
+		$post_id       = $params['post_id'] ?? '';
+		$js_messagebox = JSMessageBox::instance()->init( get_current_user_id() );
+
+		if ( empty( $post_id ) ) {
+			$js_messagebox->add( 'error', __( 'You need to select a post to embed the recipe in.', 'tasty-recipes-lite' ) );
+
+			wp_send_json_error();
+		}
+
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			$js_messagebox->add( 'error', __( 'You do not have permission to edit this post.', 'tasty-recipes-lite' ) );
+
+			wp_send_json_error();
+		}
+
+		$recipe = Recipe::get_by_id( $params['recipe_id'] );
+
+		if ( ! $recipe ) {
+			$js_messagebox->add( 'error', __( 'Recipe not found', 'tasty-recipes-lite' ) );
+
+			wp_send_json_error();
+		}
+		
+		$post = get_post( $post_id );
+
+		if ( ! $post ) {
+			$js_messagebox->add( 'error', __( 'Post not found', 'tasty-recipes-lite' ) );
+
+			wp_send_json_error();
+		}
+
+		$recipe_content  = self::generate_recipe_content( $params['recipe_id'] );
+		$updated_content = $post->post_content . "\n\n" . $recipe_content;
+
+		wp_update_post(
+			array(
+				'ID'           => $post_id,
+				'post_content' => $updated_content,
+			)
+		);
+
+		$recipe_title = ! empty( $recipe->get_title() ) ? $recipe->get_title() : __( 'The recipe', 'tasty-recipes-lite' );
+
+		$message  = '<h3>' . __( 'Recipe embedded!', 'tasty-recipes-lite' ) . '</h3>';
+		$message .= '<p>' . $recipe_title . __( ' has been embedded successfully.', 'tasty-recipes-lite' ) . '</p>';
+		$message .= '<p><a style="color: #ED4996;" href="' . get_edit_post_link( $post_id ) . '">' . __( 'Go to Recipe', 'tasty-recipes-lite' ) . '</a></p>';
 		
 		$js_messagebox->add( 'success', $message );
 

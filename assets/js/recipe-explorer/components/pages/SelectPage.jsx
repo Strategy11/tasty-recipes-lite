@@ -1,8 +1,8 @@
 import { __ } from '@wordpress/i18n';
 import { Icon } from '@wordpress/icons';
 import { createInterpolateElement } from '@wordpress/element';
-import { Breadcrumbs } from '../Breadcrumbs';
-import { SelectOption } from '../SelectOption';
+import { Breadcrumbs } from '../partials/Breadcrumbs';
+import { SelectOption } from '../partials/SelectOption';
 import { embedPostIcon, newPostIcon } from '../../icons';
 
 export const SelectPage = ( { setPage } ) => {

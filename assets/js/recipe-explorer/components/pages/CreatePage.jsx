@@ -1,14 +1,14 @@
 import { __ } from '@wordpress/i18n';
 import { useState } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
-import { Breadcrumbs } from '../Breadcrumbs';
-import { EmbedStepFooter } from '../EmbedStepFooter';
+import { Breadcrumbs } from '../partials/Breadcrumbs';
+import { EmbedStepFooter } from '../partials/EmbedStepFooter';
 
 export const CreatePage = ( { recipe, setPage } ) => {
 	const [ postName, setPostName ] = useState( recipe.post_title );
 
 	const embedClick = async () => {
-		const response = await apiFetch( {
+		await apiFetch( {
 			path: '/tasty-recipes/v1/recipe-explorer/create',
 			method: 'POST',
 			data: {
@@ -17,9 +17,7 @@ export const CreatePage = ( { recipe, setPage } ) => {
 			},
 		} );
 
-		if ( response.success ) {
-			window.location.reload();
-		}
+		window.location.reload();
 	};
 
 	return (

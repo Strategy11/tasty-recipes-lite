@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { Icon } from '@wordpress/icons';
-import { checkMarkIcon, separatorIcon as rawSeparatorIcon } from '../icons';
+import { checkMarkIcon, separatorIcon as rawSeparatorIcon } from '../../icons';
 import classNames from 'classnames';
 
 const completeIcon = <Icon icon={ checkMarkIcon } width="8" height="7" />;

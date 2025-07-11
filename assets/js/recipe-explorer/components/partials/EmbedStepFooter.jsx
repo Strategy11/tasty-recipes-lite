@@ -1,6 +1,11 @@
 import { __ } from '@wordpress/i18n';
 
-export const EmbedStepFooter = ( { setPage, embedClick, embedLabel } ) => {
+export const EmbedStepFooter = ( {
+	setPage,
+	embedClick,
+	embedLabel,
+	disabledContinue = false,
+} ) => {
 	return (
 		<div className="tasty-recipes-modal-embed-step-footer">
 			<button
@@ -9,7 +14,11 @@ export const EmbedStepFooter = ( { setPage, embedClick, embedLabel } ) => {
 			>
 				{ __( 'Back', 'tasty-recipes-lite' ) }
 			</button>
-			<button className="tasty-button-primary" onClick={ embedClick }>
+			<button
+				className="tasty-button-primary"
+				onClick={ embedClick }
+				disabled={ disabledContinue }
+			>
 				{ embedLabel }
 			</button>
 		</div>
