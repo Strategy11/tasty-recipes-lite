@@ -33,6 +33,7 @@ class Recipe_Explorer {
 		add_action( 'manage_posts_columns', array( __CLASS__, 'action_manage_posts_columns' ) );
 		add_action( 'manage_posts_custom_column', array( __CLASS__, 'action_manage_posts_custom_column' ), 10, 2 );
 		add_filter( 'manage_edit-tasty_recipe_sortable_columns', array( __CLASS__, 'action_manage_sortable_columns' ) );
+		add_filter( 'post_row_actions', array( __CLASS__, 'filter_post_row_actions' ), 10, 2 );
 	}
 
 	/**
@@ -303,6 +304,15 @@ class Recipe_Explorer {
 	public static function action_rest_api_init() {
 		register_rest_route(
 			'tasty-recipes/v1',
+			'/recipe-explorer/recipe/(?P<id>\d+)',
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( __CLASS__, 'retrieve_recipe_endpoint' ),
+				'permission_callback' => array( __CLASS__, 'api_check_permission' ),
+			)
+		);
+		register_rest_route(
+			'tasty-recipes/v1',
 			'/recipe-explorer/create',
 			array(
 				'methods'             => 'POST',
@@ -320,6 +330,26 @@ class Recipe_Explorer {
 				'permission_callback' => array( __CLASS__, 'api_check_permission' ),
 			)
 		);
+	}
+
+	/**
+	 * Retrieve a recipe.
+	 * 
+	 * @since x.x
+	 * 
+	 * @param object $request The request object.
+	 * 
+	 * @return void
+	 */
+	public static function retrieve_recipe_endpoint( $request ) {
+		$params = $request->get_params();
+		$recipe = Recipe::get_by_id( $params['id'] );
+
+		if ( ! $recipe ) {
+			wp_send_json_error( __( 'Recipe not found', 'tasty-recipes-lite' ) );
+		}
+
+		wp_send_json_success( $recipe->to_json() );
 	}
 
 	/**
@@ -464,5 +494,31 @@ class Recipe_Explorer {
 	 */
 	public static function api_check_permission() {
 		return current_user_can( 'edit_posts' );
+	}
+
+	/**
+	 * Filter the post row actions.
+	 * 
+	 * @since x.x
+	 * 
+	 * @param array  $actions The actions array.
+	 * @param object $post The post object.
+	 * 
+	 * @return array
+	 */
+	public static function filter_post_row_actions( $actions, $post ) {
+		if ( 'tasty_recipe' !== $post->post_type ) {
+			return $actions;
+		}
+
+		unset( $actions['inline hide-if-no-js'] );
+
+		$actions['edit'] = '<a href="#" data-recipe-id="' . $post->ID . '" class="tasty-recipes-edit-recipe">' . __( 'Edit', 'tasty-recipes-lite' ) . '</a>';
+
+		if ( get_post_meta( $post->ID, '_tasty_recipe_parents', true ) ) {
+			$actions['trash'] = '<a class="tasty-recipes-no-delete" href="#" class="submitdelete">' . __( 'Trash', 'tasty-recipes-lite' ) . '</a>';
+		}
+
+		return $actions;
 	}
 }
