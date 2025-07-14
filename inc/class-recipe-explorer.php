@@ -511,12 +511,14 @@ class Recipe_Explorer {
 			return $actions;
 		}
 
+		$post_id_param = 'data-recipe-id="' . $post->ID . '"';
+
 		unset( $actions['inline hide-if-no-js'] );
 
-		$actions['edit'] = '<a href="#" data-recipe-id="' . $post->ID . '" class="tasty-recipes-edit-recipe">' . __( 'Edit', 'tasty-recipes-lite' ) . '</a>';
+		$actions['edit'] = '<a href="#" ' . $post_id_param . ' class="tasty-recipes-edit-recipe">' . __( 'Edit', 'tasty-recipes-lite' ) . '</a>';
 
 		if ( get_post_meta( $post->ID, '_tasty_recipe_parents', true ) ) {
-			$actions['trash'] = '<a class="tasty-recipes-no-delete" href="#" class="submitdelete">' . __( 'Trash', 'tasty-recipes-lite' ) . '</a>';
+			$actions['trash'] = '<a class="tasty-recipes-no-delete" href="#" ' . $post_id_param . ' class="submitdelete">' . __( 'Trash', 'tasty-recipes-lite' ) . '</a>';
 		}
 
 		return $actions;
