@@ -5,7 +5,13 @@ let isOpen = false;
 let instance = null;
 const body = document.querySelector( 'body' );
 
-export const openTrashModal = () => {
+const closeTrashModal = () => {
+	isOpen = false;
+	instance.remove();
+	instance = null;
+};
+
+export const openTrashModal = ( postUrl ) => {
 	if ( isOpen ) {
 		return;
 	}
@@ -15,5 +21,7 @@ export const openTrashModal = () => {
 	instance = document.createElement( 'div' );
 	body.appendChild( instance );
 
-	createRoot( instance ).render( <TrashModal /> );
+	createRoot( instance ).render(
+		<TrashModal postUrl={ postUrl } closeTrashModal={ closeTrashModal } />
+	);
 };

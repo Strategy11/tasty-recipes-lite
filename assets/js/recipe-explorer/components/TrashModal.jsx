@@ -2,7 +2,7 @@ import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { Modal, useModal } from '@library';
 
-export const TrashModal = () => {
+export const TrashModal = ( { postUrl, closeTrashModal } ) => {
 	const { openModal, modalData, closeModal } = useModal();
 	const [ pageState, setPageState ] = useState( {
 		initialOpen: false,
@@ -17,7 +17,11 @@ export const TrashModal = () => {
 				initialOpen: true,
 			} );
 		}
-	}, [ openModal, pageState.initialOpen ] );
+
+		if ( pageState.initialOpen && ! modalData.open ) {
+			closeTrashModal();
+		}
+	}, [ closeTrashModal, modalData.open, openModal, pageState.initialOpen ] );
 
 	return (
 		<Modal modalData={ modalData } closeModal={ closeModal }>
@@ -27,8 +31,16 @@ export const TrashModal = () => {
 					'tasty-recipes-lite'
 				) }
 			</p>
-			<div>
-				<button></button>
+			<div className="tasty-recipes-modal-actions">
+				<button
+					className="tasty-secondary-button"
+					onClick={ () => closeModal() }
+				>
+					{ __( 'Close', 'tasty-recipes-lite' ) }
+				</button>
+				<a className="tasty-button-primary" href={ postUrl }>
+					{ __( 'Go to Post', 'tasty-recipes-lite' ) }
+				</a>
 			</div>
 		</Modal>
 	);

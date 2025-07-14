@@ -91,5 +91,6 @@ const editModalClose = ( response ) => {
 const trashListener = ( e ) => {
 	e.preventDefault();
 
-	openTrashModal();
+	const postUrl = e.target.dataset.postUrl;
+	openTrashModal( postUrl );
 };
