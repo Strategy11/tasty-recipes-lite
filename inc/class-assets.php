@@ -81,6 +81,28 @@ class Assets {
 				true
 			);
 
+			$users = get_users(
+				array(
+					'fields'  => array( 'user_login' ),
+					'orderby' => 'user_login',
+					'order'   => 'ASC',
+				) 
+			);
+
+			wp_localize_script(
+				'tasty-recipes-explorer-page',
+				'tastyRecipesExplorerPage',
+				array(
+					'filters' => array(
+						'rating'         => Recipe_Explorer::get_unique_filter_values( 'rating' ),
+						'cuisine'        => Recipe_Explorer::get_unique_filter_values( 'cuisine' ),
+						'cooking_method' => Recipe_Explorer::get_unique_filter_values( 'cooking_method' ),
+						'category'       => Recipe_Explorer::get_unique_filter_values( 'category' ),
+						'author'         => wp_list_pluck( $users, 'user_login' ),
+					),
+				)
+			);
+
 			wp_enqueue_style(
 				'tasty-recipes-explorer-page',
 				plugins_url( 'assets/dist/explorer-page.css', TASTY_RECIPES_LITE_FILE ),

@@ -25,15 +25,18 @@ class Recipe_Explorer {
 	 * @return void
 	 */
 	public static function load_hooks() {
-		add_filter( 'tasty_framework_admin_page_ours', array( __CLASS__, 'make_recipes_cpt_menu_item_ours' ) );
-		add_filter( 'tasty_framework_show_license_notice', array( __CLASS__, 'show_notice_in_recipes_cpt' ), 10, 2 );
 		add_action( 'admin_head', array( __CLASS__, 'handle_cpt_menu_item_classes' ) );
 		add_action( 'tasty_tabs_buttons', array( __CLASS__, 'filter_tab_buttons' ) );
 		add_action( 'pre_get_posts', array( __CLASS__, 'action_pre_get_posts' ) );
 		add_action( 'manage_posts_columns', array( __CLASS__, 'action_manage_posts_columns' ) );
 		add_action( 'manage_posts_custom_column', array( __CLASS__, 'action_manage_posts_custom_column' ), 10, 2 );
+		add_action( 'restrict_manage_posts', array( __CLASS__, 'add_filters_button' ) );
+
 		add_filter( 'manage_edit-tasty_recipe_sortable_columns', array( __CLASS__, 'action_manage_sortable_columns' ) );
 		add_filter( 'post_row_actions', array( __CLASS__, 'filter_post_row_actions' ), 10, 2 );
+		add_filter( 'tasty_framework_admin_page_ours', array( __CLASS__, 'make_recipes_cpt_menu_item_ours' ) );
+		add_filter( 'tasty_framework_show_license_notice', array( __CLASS__, 'show_notice_in_recipes_cpt' ), 10, 2 );
+		add_filter( 'pre_get_posts', array( __CLASS__, 'filter_recipes_by_params' ), 10, 1 );
 	}
 
 	/**
@@ -579,5 +582,135 @@ class Recipe_Explorer {
 		}
 
 		return $actions;
+	}
+
+	/**
+	 * Add the filters button.
+	 * 
+	 * @since x.x
+	 * 
+	 * @return void
+	 */
+	public static function add_filters_button() {
+		if ( 'tasty_recipe' !== get_current_screen()->post_type ) {
+			return;
+		}
+		?>
+			<div id="tasty-recipes-filters-button-container">
+				<button class="button" id="tasty-recipes-filters-button">
+					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none">
+						<?php // phpcs:ignore ?>
+						<path fill="#353547" d="M3.958 5.833a.625.625 0 1 0 0 1.25v-1.25Zm12.083 1.25a.625.625 0 1 0 0-1.25v1.25Zm-12.083 0h12.083v-1.25H3.958v1.25ZM5.625 9.167a.625.625 0 0 0 0 1.25v-1.25Zm8.75 1.25a.625.625 0 1 0 0-1.25v1.25Zm-8.75 0h8.75v-1.25h-8.75v1.25ZM7.292 12.5a.625.625 0 1 0 0 1.25V12.5Zm5.417 1.25a.625.625 0 0 0 0-1.25v1.25Zm-5.417 0h5.417V12.5H7.292v1.25Z"/>
+					</svg>
+					<?php esc_html_e( 'Filters', 'tasty-recipes-lite' ); ?>
+				</button>
+			</div>
+		<?php
+	}
+
+	/**
+	 * Get the unique filter values.
+	 * 
+	 * @since x.x
+	 * 
+	 * @param string $field The field to get the unique values for.
+	 * 
+	 * @return array
+	 */
+	public static function get_unique_filter_values( $field ) {
+		global $wpdb;
+
+		$query = $wpdb->prepare(
+			"SELECT DISTINCT pm.meta_value 
+			FROM {$wpdb->postmeta} pm 
+			INNER JOIN {$wpdb->posts} p ON pm.post_id = p.ID 
+			WHERE p.post_type = %s 
+			AND p.post_status = 'publish' 
+			AND pm.meta_key = %s 
+			AND pm.meta_value != ''",
+			'tasty_recipe',
+			$field
+		);
+
+		// phpcs:ignore
+		return $wpdb->get_col( $query );
+	}
+
+	/**
+	 * Filter the recipes by params.
+	 * 
+	 * @since x.x
+	 * 
+	 * @param WP_Query $query The query object.
+	 * 
+	 * @return void
+	 */
+	public static function filter_recipes_by_params( $query ) {
+		global $post_type, $pagenow;
+
+		if ( 'tasty_recipe' !== $post_type || 'edit.php' !== $pagenow ) {
+			return;
+		}
+
+		if ( Utils::get_param( 'rating' ) ) {
+			$query->set(
+				'meta_query',
+				array(
+					array(
+						'key'     => 'rating',
+						'value'   => Utils::get_param( 'rating' ),
+						'compare' => '=',
+					),
+				) 
+			);
+		}
+
+		if ( Utils::get_param( 'cuisine' ) ) {
+			$query->set(
+				'meta_query',
+				array(
+					array(
+						'key'     => 'cuisine',
+						'value'   => Utils::get_param( 'cuisine' ),
+						'compare' => '=',
+					),
+				) 
+			);
+		}
+
+		if ( Utils::get_param( 'cookingMethod' ) ) {
+			$query->set(
+				'meta_query',
+				array(
+					array(
+						'key'     => 'cooking_method',
+						'value'   => Utils::get_param( 'cookingMethod' ),
+						'compare' => '=',
+					),
+				) 
+			);
+		}
+
+		if ( Utils::get_param( 'category' ) ) {
+			$query->set(
+				'meta_query',
+				array(
+					array(
+						'key'     => 'category',
+						'value'   => Utils::get_param( 'category' ),
+						'compare' => '=',
+					),
+				) 
+			);
+		}
+
+		if ( Utils::get_param( 'author' ) ) {
+			$query->set(
+				'author_name',
+				Utils::get_param( 'author' )
+			);
+		}
+
+		return $query;
 	}
 }

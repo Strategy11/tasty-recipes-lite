@@ -3,6 +3,7 @@ import apiFetch from '@wordpress/api-fetch';
 import { openEditorExtension } from './modals/editorExtensionModal';
 import { openTrashModal } from './modals/trashModal';
 import { openPermanentDeleteModal } from './modals/permanentDeleteModal';
+import { toggleFiltersForm } from './manageFiltersForm';
 
 export const registerEvents = () => {
 	const addRecipeButton = document.getElementById( 'tasty-create-recipe' );
@@ -17,6 +18,9 @@ export const registerEvents = () => {
 	);
 	const permanentDeleteButtons = document.querySelectorAll(
 		'.tasty-recipes-permanent-delete'
+	);
+	const filtersButton = document.getElementById(
+		'tasty-recipes-filters-button'
 	);
 
 	if ( addRecipeButton ) {
@@ -45,6 +49,10 @@ export const registerEvents = () => {
 		permanentDeleteButtons.forEach( ( button ) => {
 			button.addEventListener( 'click', permanentDeleteListener );
 		} );
+	}
+
+	if ( filtersButton ) {
+		filtersButton.addEventListener( 'click', filtersListener );
 	}
 };
 
@@ -112,4 +120,10 @@ const permanentDeleteListener = ( e ) => {
 	const name = e.target.dataset.name;
 
 	openPermanentDeleteModal( postId, name );
+};
+
+const filtersListener = ( e ) => {
+	e.preventDefault();
+
+	toggleFiltersForm();
 };

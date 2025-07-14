@@ -9,8 +9,15 @@ domReady( () => {
 	cleanElements();
 	rearrangeTopNav();
 	addColumnsButton();
-	maybeFixBulkActions();
 	registerEvents();
+
+	const isPro = applyFilters( 'tasty_recipes_is_pro', false );
+
+	if ( isPro ) {
+		return;
+	}
+
+	maybeFixBulkActions();
 } );
 
 const cleanElements = () => {
@@ -94,17 +101,15 @@ const addColumnsButton = () => {
 };
 
 const maybeFixBulkActions = () => {
-	const isPro = applyFilters( 'tasty_recipes_is_pro', false );
-
-	if ( isPro ) {
-		return;
-	}
-
 	const bulkActions = document.querySelectorAll( '.bulkactions' );
 
 	bulkActions.forEach( ( element ) => {
-		const select = element.querySelector( 'select' );
 		const button = element.querySelector( 'input[type="submit"]' );
+		const select = element.querySelector( 'select' );
+
+		if ( button ) {
+			button.setAttribute( 'disabled', '' );
+		}
 
 		if ( select ) {
 			select.setAttribute( 'disabled', '' );
@@ -128,10 +133,6 @@ const maybeFixBulkActions = () => {
 			wrapper.addEventListener( 'mouseleave', () => {
 				tooltip.style.display = 'none';
 			} );
-		}
-
-		if ( button ) {
-			button.setAttribute( 'disabled', '' );
 		}
 	} );
 };

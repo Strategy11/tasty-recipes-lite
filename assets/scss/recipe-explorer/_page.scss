@@ -91,6 +91,10 @@
 			height: auto;
 			margin: 10px 0;
 
+			.bulkactions + .actions select[name="m"], .bulkactions + .actions input[type="submit"] {
+                display: none;
+            }
+
 			&.top {
 				margin-top: 0;
 				padding-top: 0;
@@ -215,4 +219,10 @@
 		border-style: solid;
 		border-color: #fff transparent transparent transparent;
 	}
+}
+
+#tasty-recipes-filters-button {
+	display: flex;
+	align-items: center;
+	gap: 5px;
 }
