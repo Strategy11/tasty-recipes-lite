@@ -2,7 +2,12 @@ import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { Modal, useModal } from '@library';
 
-export const TrashModal = ( { postUrl, closeTrashModal } ) => {
+export const MessageModal = ( {
+	closeMessageModal,
+	title,
+	description,
+	button,
+} ) => {
 	const { openModal, modalData, closeModal } = useModal();
 	const [ pageState, setPageState ] = useState( {
 		initialOpen: false,
@@ -10,27 +15,26 @@ export const TrashModal = ( { postUrl, closeTrashModal } ) => {
 
 	useEffect( () => {
 		if ( ! pageState.initialOpen ) {
-			openModal( {
-				title: __( 'Recipe Can’t be Deleted', 'tasty-recipes-lite' ),
-			} );
+			openModal( { title } );
 			setPageState( {
 				initialOpen: true,
 			} );
 		}
 
 		if ( pageState.initialOpen && ! modalData.open ) {
-			closeTrashModal();
+			closeMessageModal();
 		}
-	}, [ closeTrashModal, modalData.open, openModal, pageState.initialOpen ] );
+	}, [
+		closeMessageModal,
+		modalData.open,
+		openModal,
+		pageState.initialOpen,
+		title,
+	] );
 
 	return (
 		<Modal modalData={ modalData } closeModal={ closeModal }>
-			<p>
-				{ __(
-					"This recipe can't be deleted since it is embedded in your site. Please remove the recipe from your page first.",
-					'tasty-recipes-lite'
-				) }
-			</p>
+			<p>{ description }</p>
 			<div className="tasty-recipes-modal-actions">
 				<button
 					className="tasty-secondary-button"
@@ -38,9 +42,7 @@ export const TrashModal = ( { postUrl, closeTrashModal } ) => {
 				>
 					{ __( 'Close', 'tasty-recipes-lite' ) }
 				</button>
-				<a className="tasty-button-primary" href={ postUrl }>
-					{ __( 'Go to Post', 'tasty-recipes-lite' ) }
-				</a>
+				{ button }
 			</div>
 		</Modal>
 	);
