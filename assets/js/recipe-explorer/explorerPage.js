@@ -1,5 +1,6 @@
 import domReady from '@wordpress/dom-ready';
 import { __ } from '@wordpress/i18n';
+import { applyFilters } from '@wordpress/hooks';
 import { columnsIcon } from './icons';
 import '../../scss/recipe-explorer/index.scss';
 import { registerEvents } from './listeners';
@@ -8,6 +9,7 @@ domReady( () => {
 	cleanElements();
 	rearrangeTopNav();
 	addColumnsButton();
+	maybeFixBulkActions();
 	registerEvents();
 } );
 
@@ -88,5 +90,48 @@ const addColumnsButton = () => {
 		columnsInnerWrapper.appendChild( icon );
 
 		element.appendChild( columnsInnerWrapper );
+	} );
+};
+
+const maybeFixBulkActions = () => {
+	const isPro = applyFilters( 'tasty_recipes_is_pro', false );
+
+	if ( isPro ) {
+		return;
+	}
+
+	const bulkActions = document.querySelectorAll( '.bulkactions' );
+
+	bulkActions.forEach( ( element ) => {
+		const select = element.querySelector( 'select' );
+		const button = element.querySelector( 'input[type="submit"]' );
+
+		if ( select ) {
+			select.setAttribute( 'disabled', '' );
+
+			const wrapper = document.createElement( 'div' );
+			wrapper.className = 'tasty-recipes-tooltip-wrapper';
+			select.parentNode.insertBefore( wrapper, select );
+			wrapper.appendChild( select );
+
+			const tooltip = document.createElement( 'span' );
+			tooltip.className = 'tasty-recipes-tooltip';
+			tooltip.innerText = __(
+				'Not available on Lite plan',
+				'tasty-recipes-lite'
+			);
+			wrapper.appendChild( tooltip );
+
+			wrapper.addEventListener( 'mouseenter', () => {
+				tooltip.style.display = 'block';
+			} );
+			wrapper.addEventListener( 'mouseleave', () => {
+				tooltip.style.display = 'none';
+			} );
+		}
+
+		if ( button ) {
+			button.setAttribute( 'disabled', '' );
+		}
 	} );
 };

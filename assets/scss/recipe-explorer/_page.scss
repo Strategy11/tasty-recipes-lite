@@ -171,3 +171,48 @@
 		}
 	}
 }
+
+.tasty-recipes-tooltip-wrapper {
+	position: relative;
+	display: inline-block;
+}
+
+.tasty-recipes-tooltip {
+	display: none;
+	position: absolute;
+	top: -48px;
+	left: 50%;
+	transform: translateX(-50%);
+	background: #fff;
+	color: #222;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	padding: 6px 12px;
+	font-size: 13px;
+	white-space: nowrap;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+	z-index: 100;
+	pointer-events: none;
+
+	&::before {
+		content: '';
+		position: absolute;
+		top: 100%;
+		left: 50%;
+		transform: translateX(-50%);
+		border-width: 7px;
+		border-style: solid;
+		border-color: #ccc transparent transparent transparent;
+	}
+
+	&::after {
+		content: '';
+		position: absolute;
+		top: calc(100% - 1px);
+		left: 50%;
+		transform: translateX(-50%);
+		border-width: 6px;
+		border-style: solid;
+		border-color: #fff transparent transparent transparent;
+	}
+}
