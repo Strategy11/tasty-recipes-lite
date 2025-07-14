@@ -56,7 +56,7 @@ module.exports = {
 		common: resolve( __dirname, 'assets/scss/common.scss' ),
 		'explorer-page': resolve(
 			__dirname,
-			'assets/js/recipe-explorer/explorer-page.js'
+			'assets/js/recipe-explorer/explorerPage.js'
 		),
 		'recipe-card-preview': resolve(
 			__dirname,

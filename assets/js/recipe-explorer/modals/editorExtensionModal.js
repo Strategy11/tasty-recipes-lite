@@ -1,5 +1,5 @@
 import { createRoot } from '@wordpress/element';
-import { AfterCreationForm } from './components/AfterCreationForm';
+import { AfterCreationForm } from '../components/AfterCreationForm';
 
 let isOpen = false;
 let instance = null;

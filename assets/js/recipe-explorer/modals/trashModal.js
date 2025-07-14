@@ -1,6 +1,6 @@
 import { createRoot } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { MessageModal } from './components/MessageModal';
+import { MessageModal } from '../components/MessageModal';
 
 let isOpen = false;
 let instance = null;

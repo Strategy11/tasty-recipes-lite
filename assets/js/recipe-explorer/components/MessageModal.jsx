@@ -7,6 +7,7 @@ export const MessageModal = ( {
 	title,
 	description,
 	button,
+	closeLabel = __( 'Close', 'tasty-recipes-lite' ),
 } ) => {
 	const { openModal, modalData, closeModal } = useModal();
 	const [ pageState, setPageState ] = useState( {
@@ -40,7 +41,7 @@ export const MessageModal = ( {
 					className="tasty-secondary-button"
 					onClick={ () => closeModal() }
 				>
-					{ __( 'Close', 'tasty-recipes-lite' ) }
+					{ closeLabel }
 				</button>
 				{ button }
 			</div>

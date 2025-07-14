@@ -1,7 +1,8 @@
 import { doAction } from '@wordpress/hooks';
 import apiFetch from '@wordpress/api-fetch';
-import { openEditorExtension } from './editor-extension';
-import { openTrashModal } from './trash-modal';
+import { openEditorExtension } from './modals/editorExtensionModal';
+import { openTrashModal } from './modals/trashModal';
+import { openPermanentDeleteModal } from './modals/permanentDeleteModal';
 
 export const registerEvents = () => {
 	const addRecipeButton = document.getElementById( 'tasty-create-recipe' );
@@ -13,6 +14,9 @@ export const registerEvents = () => {
 	);
 	const columnsIconElements = document.querySelectorAll(
 		'.tasty-columns-icon'
+	);
+	const permanentDeleteButtons = document.querySelectorAll(
+		'.tasty-recipes-permanent-delete'
 	);
 
 	if ( addRecipeButton ) {
@@ -34,6 +38,12 @@ export const registerEvents = () => {
 	if ( editButtons.length > 0 ) {
 		editButtons.forEach( ( button ) => {
 			button.addEventListener( 'click', editListener );
+		} );
+	}
+
+	if ( permanentDeleteButtons.length > 0 ) {
+		permanentDeleteButtons.forEach( ( button ) => {
+			button.addEventListener( 'click', permanentDeleteListener );
 		} );
 	}
 };
@@ -93,4 +103,13 @@ const trashListener = ( e ) => {
 
 	const postUrl = e.target.dataset.postUrl;
 	openTrashModal( postUrl );
+};
+
+const permanentDeleteListener = ( e ) => {
+	e.preventDefault();
+
+	const postId = e.target.dataset.postId;
+	const name = e.target.dataset.name;
+
+	openPermanentDeleteModal( postId, name );
 };

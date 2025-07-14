@@ -304,6 +304,15 @@ class Recipe_Explorer {
 	public static function action_rest_api_init() {
 		register_rest_route(
 			'tasty-recipes/v1',
+			'/recipe-explorer/create',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( __CLASS__, 'create_post_endpoint' ),
+				'permission_callback' => array( __CLASS__, 'api_check_permission' ),
+			)
+		);
+		register_rest_route(
+			'tasty-recipes/v1',
 			'/recipe-explorer/recipe/(?P<id>\d+)',
 			array(
 				'methods'             => 'GET',
@@ -313,14 +322,13 @@ class Recipe_Explorer {
 		);
 		register_rest_route(
 			'tasty-recipes/v1',
-			'/recipe-explorer/create',
+			'/recipe-explorer/delete/(?P<id>\d+)',
 			array(
 				'methods'             => 'POST',
-				'callback'            => array( __CLASS__, 'create_post_endpoint' ),
+				'callback'            => array( __CLASS__, 'delete_recipe_endpoint' ),
 				'permission_callback' => array( __CLASS__, 'api_check_permission' ),
 			)
 		);
-
 		register_rest_route(
 			'tasty-recipes/v1',
 			'/recipe-explorer/embed',
@@ -330,26 +338,6 @@ class Recipe_Explorer {
 				'permission_callback' => array( __CLASS__, 'api_check_permission' ),
 			)
 		);
-	}
-
-	/**
-	 * Retrieve a recipe.
-	 * 
-	 * @since x.x
-	 * 
-	 * @param object $request The request object.
-	 * 
-	 * @return void
-	 */
-	public static function retrieve_recipe_endpoint( $request ) {
-		$params = $request->get_params();
-		$recipe = Recipe::get_by_id( $params['id'] );
-
-		if ( ! $recipe ) {
-			wp_send_json_error( __( 'Recipe not found', 'tasty-recipes-lite' ) );
-		}
-
-		wp_send_json_success( $recipe->to_json() );
 	}
 
 	/**
@@ -395,6 +383,61 @@ class Recipe_Explorer {
 		$message  = '<h3>' . __( 'Post created!', 'tasty-recipes-lite' ) . '</h3>';
 		$message .= '<p>' . $recipe_title . __( ' recipe has been embedded successfully.', 'tasty-recipes-lite' ) . '</p>';
 		$message .= '<p><a style="color: #ED4996;" href="' . get_edit_post_link( $post_id ) . '">' . __( 'Go to Post', 'tasty-recipes-lite' ) . '</a></p>';
+		
+		$js_messagebox->add( 'success', $message );
+
+		wp_send_json_success();
+	}
+
+	/**
+	 * Retrieve a recipe.
+	 * 
+	 * @since x.x
+	 * 
+	 * @param object $request The request object.
+	 * 
+	 * @return void
+	 */
+	public static function retrieve_recipe_endpoint( $request ) {
+		$params = $request->get_params();
+		$recipe = Recipe::get_by_id( $params['id'] );
+
+		if ( ! $recipe ) {
+			wp_send_json_error( __( 'Recipe not found', 'tasty-recipes-lite' ) );
+		}
+
+		wp_send_json_success( $recipe->to_json() );
+	}
+
+	/**
+	 * Delete a recipe.
+	 * 
+	 * @since x.x
+	 * 
+	 * @param object $request The request object.
+	 * 
+	 * @return void
+	 */
+	public static function delete_recipe_endpoint( $request ) {
+		$params = $request->get_params();
+		$recipe = Recipe::get_by_id( $params['id'] );
+
+		$js_messagebox = JSMessageBox::instance()->init( get_current_user_id() );
+
+		if ( ! $recipe ) {
+			$js_messagebox->add( 'error', __( 'Recipe not found', 'tasty-recipes-lite' ) );
+
+			wp_send_json_error();
+		}
+
+		wp_delete_post( $params['id'], true );
+
+		$message  = '<h3>' . __( 'Recipe deleted!', 'tasty-recipes-lite' ) . '</h3>';
+		$message .= '<p>' . sprintf(
+			/* translators: %s: recipe title */
+			__( '%s has been deleted successfully.', 'tasty-recipes-lite' ),
+			$recipe->get_title()
+		) . '</p>';
 		
 		$js_messagebox->add( 'success', $message );
 
@@ -513,12 +556,26 @@ class Recipe_Explorer {
 
 		unset( $actions['inline hide-if-no-js'] );
 
-		$actions['edit'] = '<a href="#" data-recipe-id="' . $post->ID . '" class="tasty-recipes-edit-recipe">' . __( 'Edit', 'tasty-recipes-lite' ) . '</a>';
+		if ( isset( $actions['edit'] ) ) {
+			$actions['edit'] = '<a href="#" data-recipe-id="' . $post->ID . '" class="tasty-recipes-edit-recipe">' . __( 'Edit', 'tasty-recipes-lite' ) . '</a>';
+		}
 
-		if ( get_post_meta( $post->ID, '_tasty_recipe_parents', true ) ) {
+		if ( isset( $actions['trash'] ) && get_post_meta( $post->ID, '_tasty_recipe_parents', true ) ) {
 			$parent_post_id = get_post_meta( $post->ID, '_tasty_recipe_parents', true );
 
-			$actions['trash'] = '<a class="tasty-recipes-no-delete submitdelete" href="#" data-post-url="' . get_edit_post_link( $parent_post_id ) . '">' . __( 'Trash', 'tasty-recipes-lite' ) . '</a>';
+			$button  = '<a class="tasty-recipes-no-delete submitdelete" href="#" data-post-url="' . get_edit_post_link( $parent_post_id ) . '">';
+			$button .= __( 'Trash', 'tasty-recipes-lite' );
+			$button .= '</a>';
+
+			$actions['trash'] = $button;
+		}
+
+		if ( isset( $actions['delete'] ) ) {
+			$button  = '<a class="tasty-recipes-permanent-delete submitdelete" href="#" data-post-id="' . $post->ID . '" data-name="' . $post->post_title . '">';
+			$button .= __( 'Delete Permanently', 'tasty-recipes-lite' );
+			$button .= '</a>';
+
+			$actions['delete'] = $button;
 		}
 
 		return $actions;
