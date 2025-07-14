@@ -18,6 +18,8 @@ assets/block-editor
 assets/recipe-editor
 assets/scss
 assets/settings
+assets/js/onboarding-wizard
+assets/js/recipe-explorer
 assets/js/smooth-scroll.js
 assets/js/ratings.js
 assets/js/video-toggle.js
