@@ -9,6 +9,7 @@ import { registerEvents } from './listeners';
 import { EmptyState } from './components/EmptyState';
 
 domReady( () => {
+	fixTitles();
 	cleanElements();
 	rearrangeTopNav();
 	addColumnsButton();
@@ -23,6 +24,19 @@ domReady( () => {
 
 	maybeFixBulkActions();
 } );
+
+const fixTitles = () => {
+	const titles = document.querySelectorAll( '.row-title' );
+
+	titles.forEach( ( title ) => {
+		const url = new URL( title.href );
+		const postId = url.searchParams.get( 'post' );
+
+		title.href = '#';
+		title.classList.add( 'tasty-recipes-edit-recipe' );
+		title.dataset.recipeId = postId;
+	} );
+};
 
 const cleanElements = () => {
 	const removable = [

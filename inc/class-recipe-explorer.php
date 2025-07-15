@@ -45,6 +45,7 @@ class Recipe_Explorer {
 		add_filter( 'tasty_framework_show_license_notice', array( __CLASS__, 'show_notice_in_recipes_cpt' ), 10, 2 );
 		add_filter( 'pre_get_posts', array( __CLASS__, 'filter_recipes_by_params' ), 10, 1 );
 		add_filter( 'disable_months_dropdown', array( __CLASS__, 'disable_months_dropdown' ), 10, 2 );
+		add_action( 'untrashed_post', array( __CLASS__, 'restore_recipe_as_published' ) );
 
 		add_action( 'save_post_tasty_recipe', array( __CLASS__, 'clear_filter_cache' ) );
 		add_action( 'deleted_post', array( __CLASS__, 'clear_filter_cache' ) );
@@ -821,5 +822,31 @@ class Recipe_Explorer {
 		}
 
 		return $disable;
+	}
+
+	/**
+	 * Restore tasty_recipe posts as published instead of draft.
+	 * 
+	 * @since x.x
+	 * 
+	 * @param int $post_id The post ID that was restored.
+	 * 
+	 * @return void
+	 */
+	public static function restore_recipe_as_published( $post_id ) {
+		$post = get_post( $post_id );
+		
+		if ( ! $post || 'tasty_recipe' !== $post->post_type ) {
+			return;
+		}
+
+		if ( 'draft' === $post->post_status ) {
+			wp_update_post(
+				array(
+					'ID'          => $post_id,
+					'post_status' => 'publish',
+				)
+			);
+		}
 	}
 }
