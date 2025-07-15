@@ -94,11 +94,11 @@ class Assets {
 				'tastyRecipesExplorerPage',
 				array(
 					'filters' => array(
-						'rating'         => Recipe_Explorer::get_unique_filter_values( 'rating' ),
-						'cuisine'        => Recipe_Explorer::get_unique_filter_values( 'cuisine' ),
-						'cooking_method' => Recipe_Explorer::get_unique_filter_values( 'cooking_method' ),
-						'category'       => Recipe_Explorer::get_unique_filter_values( 'category' ),
-						'author'         => wp_list_pluck( $users, 'user_login' ),
+						'rating'   => Recipe_Explorer::get_unique_filter_values( 'rating' ),
+						'cuisine'  => Recipe_Explorer::get_unique_filter_values( 'cuisine' ),
+						'method'   => Recipe_Explorer::get_unique_filter_values( 'method' ),
+						'category' => Recipe_Explorer::get_unique_filter_values( 'category' ),
+						'author'   => wp_list_pluck( $users, 'user_login' ),
 					),
 				)
 			);

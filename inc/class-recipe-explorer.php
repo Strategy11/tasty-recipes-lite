@@ -18,6 +18,13 @@ use Tasty_Recipes\Block_Editor;
  */
 class Recipe_Explorer {
 	/**
+	 * Filter fields.
+	 * 
+	 * @var array
+	 */
+	private static $filter_fields = array( 'rating', 'cuisine', 'method', 'category', 'author' );
+
+	/**
 	 * Load hooks.
 	 * 
 	 * @since x.x
@@ -37,6 +44,11 @@ class Recipe_Explorer {
 		add_filter( 'tasty_framework_admin_page_ours', array( __CLASS__, 'make_recipes_cpt_menu_item_ours' ) );
 		add_filter( 'tasty_framework_show_license_notice', array( __CLASS__, 'show_notice_in_recipes_cpt' ), 10, 2 );
 		add_filter( 'pre_get_posts', array( __CLASS__, 'filter_recipes_by_params' ), 10, 1 );
+
+		add_action( 'save_post_tasty_recipe', array( __CLASS__, 'clear_filter_cache' ) );
+		add_action( 'deleted_post', array( __CLASS__, 'clear_filter_cache' ) );
+		add_action( 'wp_trash_post', array( __CLASS__, 'clear_filter_cache' ) );
+		add_action( 'untrashed_post', array( __CLASS__, 'clear_filter_cache' ) );
 	}
 
 	/**
@@ -452,7 +464,7 @@ class Recipe_Explorer {
 	 * 
 	 * @since x.x
 	 * 
-	 * @param WP_REST_Request $request The request object.
+	 * @param object $request The request object.
 	 *
 	 * @return void
 	 */
@@ -603,9 +615,31 @@ class Recipe_Explorer {
 						<path fill="#353547" d="M3.958 5.833a.625.625 0 1 0 0 1.25v-1.25Zm12.083 1.25a.625.625 0 1 0 0-1.25v1.25Zm-12.083 0h12.083v-1.25H3.958v1.25ZM5.625 9.167a.625.625 0 0 0 0 1.25v-1.25Zm8.75 1.25a.625.625 0 1 0 0-1.25v1.25Zm-8.75 0h8.75v-1.25h-8.75v1.25ZM7.292 12.5a.625.625 0 1 0 0 1.25V12.5Zm5.417 1.25a.625.625 0 0 0 0-1.25v1.25Zm-5.417 0h5.417V12.5H7.292v1.25Z"/>
 					</svg>
 					<?php esc_html_e( 'Filters', 'tasty-recipes-lite' ); ?>
+					<?php self::maybe_show_filter_count(); ?>
 				</button>
 			</div>
 		<?php
+	}
+
+	/**
+	 * Maybe show the filter count.
+	 * 
+	 * @since x.x
+	 * 
+	 * @return void
+	 */
+	private static function maybe_show_filter_count() {
+		$filter_count = 0;
+
+		foreach ( self::$filter_fields as $field ) {
+			if ( Utils::get_param( $field ) ) {
+				++$filter_count;
+			}
+		}
+
+		if ( $filter_count > 0 ) {
+			echo '<span class="tasty-recipes-filters-active-count">' . esc_html( number_format_i18n( $filter_count ) ) . '</span>';
+		}
 	}
 
 	/**
@@ -618,6 +652,12 @@ class Recipe_Explorer {
 	 * @return array
 	 */
 	public static function get_unique_filter_values( $field ) {
+		$cache_key = 'tasty_recipes_unique_filter_values_' . $field;
+
+		if ( wp_cache_get( $cache_key, 'tasty_recipes' ) ) {
+			return wp_cache_get( $cache_key, 'tasty_recipes' );
+		}
+
 		global $wpdb;
 
 		$query = $wpdb->prepare(
@@ -633,7 +673,11 @@ class Recipe_Explorer {
 		);
 
 		// phpcs:ignore
-		return $wpdb->get_col( $query );
+		$values = $wpdb->get_col( $query );
+
+		wp_cache_set( $cache_key, $values, 'tasty_recipes', 3600 );
+
+		return $values;
 	}
 
 	/**
@@ -641,27 +685,31 @@ class Recipe_Explorer {
 	 * 
 	 * @since x.x
 	 * 
-	 * @param WP_Query $query The query object.
+	 * @param \WP_Query $query The query object.
 	 * 
-	 * @return void
+	 * @return \WP_Query
 	 */
 	public static function filter_recipes_by_params( $query ) {
 		global $post_type, $pagenow;
 
 		if ( 'tasty_recipe' !== $post_type || 'edit.php' !== $pagenow ) {
-			return;
+			return $query;
 		}
 
 		if ( Utils::get_param( 'rating' ) ) {
-			$query->set(
-				'meta_query',
-				array(
-					array(
-						'key'     => 'rating',
-						'value'   => Utils::get_param( 'rating' ),
-						'compare' => '=',
-					),
-				) 
+			$rating_filter = Utils::get_param( 'rating' );
+			
+			// We run this custom query because sometimes the ratings are floats and we should round them to the nearest integer.
+			add_filter(
+				'posts_clauses',
+				function ( $clauses ) use ( $rating_filter ) {
+					global $wpdb;
+				
+					$clauses['join']  .= " INNER JOIN {$wpdb->postmeta} rating_meta ON ({$wpdb->posts}.ID = rating_meta.post_id AND rating_meta.meta_key = 'average_rating')";
+					$clauses['where'] .= $wpdb->prepare( ' AND ROUND(CAST(rating_meta.meta_value AS DECIMAL(3,2))) = %d', $rating_filter );
+				
+					return $clauses;
+				}
 			);
 		}
 
@@ -678,13 +726,13 @@ class Recipe_Explorer {
 			);
 		}
 
-		if ( Utils::get_param( 'cookingMethod' ) ) {
+		if ( Utils::get_param( 'method' ) ) {
 			$query->set(
 				'meta_query',
 				array(
 					array(
-						'key'     => 'cooking_method',
-						'value'   => Utils::get_param( 'cookingMethod' ),
+						'key'     => 'method',
+						'value'   => Utils::get_param( 'method' ),
 						'compare' => '=',
 					),
 				) 
@@ -712,5 +760,26 @@ class Recipe_Explorer {
 		}
 
 		return $query;
+	}
+
+	/**
+	 * Clear filter cache when a tasty_recipe post is created or updated.
+	 * 
+	 * @since x.x
+	 * 
+	 * @return void
+	 */
+	public static function clear_filter_cache() {
+		global $post_type;
+
+		if ( 'tasty_recipe' !== $post_type ) {
+			return;
+		}
+		
+		foreach ( self::$filter_fields as $field ) {
+			$cache_key = 'tasty_recipes_unique_filter_values_' . $field;
+
+			wp_cache_delete( $cache_key, 'tasty_recipes' );
+		}
 	}
 }

@@ -1,5 +1,18 @@
 #tasty-recipes-filters-button-container {
 	position: relative;
+
+	.tasty-recipes-filters-active-count {
+		color: #fff;
+		background-color: #ED4996;
+		height: 18px;
+		width: 18px;
+		border-radius: 50%;
+		font-size: 9px;
+		font-weight: 700;
+		position: relative;
+		text-align: center;
+		line-height: 18px;
+	}
 }
 
 .tasty-recipes-filters-form {

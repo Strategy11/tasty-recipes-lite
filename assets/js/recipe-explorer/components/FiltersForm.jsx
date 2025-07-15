@@ -6,7 +6,7 @@ const { filters } = window.tastyRecipesExplorerPage;
 const emptyFormData = {
 	rating: '',
 	cuisine: '',
-	cookingMethod: '',
+	method: '',
 	category: '',
 	author: '',
 };
@@ -112,22 +112,20 @@ export const FiltersForm = () => {
 				</label>
 				<select
 					id="filter-cooking-method"
-					name="cookingMethod"
+					name="method"
 					onChange={ handleChange }
-					value={ formData.cookingMethod }
+					value={ formData.method }
 				>
 					<option value="" selected={ ! formData.cookingMethod }>
 						{ __( 'Select cooking method', 'tasty-recipes-lite' ) }
 					</option>
-					{ filters.cooking_method.map( ( cookingMethod ) => (
+					{ filters.method.map( ( method ) => (
 						<option
-							value={ cookingMethod }
-							key={ cookingMethod }
-							selected={
-								formData.cookingMethod === cookingMethod
-							}
+							value={ method }
+							key={ method }
+							selected={ formData.method === method }
 						>
-							{ cookingMethod }
+							{ method }
 						</option>
 					) ) }
 				</select>
