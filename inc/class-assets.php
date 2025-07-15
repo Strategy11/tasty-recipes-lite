@@ -93,7 +93,8 @@ class Assets {
 				'tasty-recipes-explorer-page',
 				'tastyRecipesExplorerPage',
 				array(
-					'filters' => array(
+					'emptyStateImage' => plugins_url( 'assets/images/empty-state-image.png', TASTY_RECIPES_LITE_FILE ),
+					'filters'         => array(
 						'rating'   => Recipe_Explorer::get_unique_filter_values( 'rating' ),
 						'cuisine'  => Recipe_Explorer::get_unique_filter_values( 'cuisine' ),
 						'method'   => Recipe_Explorer::get_unique_filter_values( 'method' ),

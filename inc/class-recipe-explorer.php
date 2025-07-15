@@ -44,11 +44,29 @@ class Recipe_Explorer {
 		add_filter( 'tasty_framework_admin_page_ours', array( __CLASS__, 'make_recipes_cpt_menu_item_ours' ) );
 		add_filter( 'tasty_framework_show_license_notice', array( __CLASS__, 'show_notice_in_recipes_cpt' ), 10, 2 );
 		add_filter( 'pre_get_posts', array( __CLASS__, 'filter_recipes_by_params' ), 10, 1 );
+		add_filter( 'disable_months_dropdown', array( __CLASS__, 'disable_months_dropdown' ), 10, 2 );
 
 		add_action( 'save_post_tasty_recipe', array( __CLASS__, 'clear_filter_cache' ) );
 		add_action( 'deleted_post', array( __CLASS__, 'clear_filter_cache' ) );
 		add_action( 'wp_trash_post', array( __CLASS__, 'clear_filter_cache' ) );
 		add_action( 'untrashed_post', array( __CLASS__, 'clear_filter_cache' ) );
+	}
+
+	/**
+	 * Check if any filters are applied.
+	 * 
+	 * @since x.x
+	 * 
+	 * @return bool
+	 */
+	private static function has_any_filters_applied() {
+		foreach ( self::$filter_fields as $field ) {
+			if ( Utils::get_param( $field ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -61,10 +79,14 @@ class Recipe_Explorer {
 	 * @return string
 	 */
 	public static function filter_tab_buttons( $html ) {
-		global $post_type;
+		global $post_type, $wp_query;
 
-		if ( 'tasty_recipe' !== $post_type || 'edit' !== get_current_screen()->base ) {
-			return $html;
+		if (
+			'tasty_recipe' !== $post_type ||
+			'edit' !== get_current_screen()->base ||
+			( ! self::has_any_filters_applied() && ! $wp_query->have_posts() )
+		) {
+			return '';
 		}
 
 		$html  = '<p class="tasty-tabs-buttons">';
@@ -781,5 +803,23 @@ class Recipe_Explorer {
 
 			wp_cache_delete( $cache_key, 'tasty_recipes' );
 		}
+	}
+
+	/**
+	 * Disable the months dropdown.
+	 * 
+	 * @since x.x
+	 * 
+	 * @param bool   $disable Whether to disable the months dropdown.
+	 * @param string $post_type The post type.
+	 * 
+	 * @return bool
+	 */
+	public static function disable_months_dropdown( $disable, $post_type ) {
+		if ( 'tasty_recipe' === $post_type ) {
+			return true;
+		}
+
+		return $disable;
 	}
 }

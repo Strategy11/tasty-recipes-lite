@@ -1,15 +1,19 @@
+/* eslint-disable prettier/prettier */
 import domReady from '@wordpress/dom-ready';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
+import { createRoot } from '@wordpress/element';
 import { columnsIcon } from './icons';
 import '../../scss/recipe-explorer/index.scss';
 import { registerEvents } from './listeners';
+import { EmptyState } from './components/EmptyState';
 
 domReady( () => {
 	cleanElements();
 	rearrangeTopNav();
 	addColumnsButton();
 	registerEvents();
+	showEmptyStateIfNeeded();
 
 	const isPro = applyFilters( 'tasty_recipes_is_pro', false );
 
@@ -135,4 +139,44 @@ const maybeFixBulkActions = () => {
 			} );
 		}
 	} );
+};
+
+const showEmptyStateIfNeeded = () => {
+	const table = document.querySelector( '.wp-list-table' );
+
+	if ( ! table ) {
+		return;
+	}
+
+	const tbody = table.querySelector( 'tbody' );
+	const hasRows = !! tbody.querySelector( 'tr:not(.no-items)' );
+	const noItemsRow = tbody.querySelector( '.no-items' );
+	const filtersButton = document.getElementById( 'tasty-recipes-filters-button' );
+	const filters = [
+		'rating',
+		'cuisine',
+		'method',
+		'category',
+		'author',
+	];
+	
+	const currentParams = new URLSearchParams( window.location.search );
+	const hasActiveFilters = filters.some( filter => currentParams.has( filter ) );
+
+	if ( ! hasRows && noItemsRow ) {
+		filtersButton.style.marginTop = '20px';
+	}
+
+	if ( ! hasRows && noItemsRow && ! hasActiveFilters ) {
+		filtersButton.style.display = 'none';
+		noItemsRow.style.display = 'none';
+		table.style.display = 'none';
+
+		const emptyDiv = document.createElement( 'div' );
+		table.parentNode.insertBefore( emptyDiv, table.nextSibling );
+
+		createRoot( emptyDiv ).render(
+			<EmptyState />
+		);
+	}
 };
