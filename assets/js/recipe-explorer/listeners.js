@@ -7,50 +7,49 @@ import { toggleFiltersForm } from './manageFiltersForm';
 
 export const registerEvents = () => {
 	const addRecipeButton = document.getElementById( 'tasty-create-recipe' );
-	const trashButtons = document.querySelectorAll(
-		'.tasty-recipes-no-delete'
-	);
-	const editButtons = document.querySelectorAll(
-		'.tasty-recipes-edit-recipe'
-	);
-	const columnsIconElements = document.querySelectorAll(
-		'.tasty-columns-icon'
-	);
-	const permanentDeleteButtons = document.querySelectorAll(
-		'.tasty-recipes-permanent-delete'
-	);
-	const filtersButton = document.getElementById(
-		'tasty-recipes-filters-button'
-	);
-
 	if ( addRecipeButton ) {
 		addRecipeButton.addEventListener( 'click', addRecipeListener );
 	}
 
+	const columnsIconElements = document.querySelectorAll(
+		'.tasty-columns-icon'
+	);
 	if ( columnsIconElements.length > 0 ) {
 		columnsIconElements.forEach( ( element ) => {
 			element.addEventListener( 'click', columnsIconListener );
 		} );
 	}
 
+	const trashButtons = document.querySelectorAll(
+		'.tasty-recipes-no-delete'
+	);
 	if ( trashButtons.length > 0 ) {
 		trashButtons.forEach( ( button ) => {
 			button.addEventListener( 'click', trashListener );
 		} );
 	}
 
+	const editButtons = document.querySelectorAll(
+		'.tasty-recipes-edit-recipe'
+	);
 	if ( editButtons.length > 0 ) {
 		editButtons.forEach( ( button ) => {
 			button.addEventListener( 'click', editListener );
 		} );
 	}
 
+	const permanentDeleteButtons = document.querySelectorAll(
+		'.tasty-recipes-permanent-delete'
+	);
 	if ( permanentDeleteButtons.length > 0 ) {
 		permanentDeleteButtons.forEach( ( button ) => {
 			button.addEventListener( 'click', permanentDeleteListener );
 		} );
 	}
 
+	const filtersButton = document.getElementById(
+		'tasty-recipes-filters-button'
+	);
 	if ( filtersButton ) {
 		filtersButton.addEventListener( 'click', filtersListener );
 	}

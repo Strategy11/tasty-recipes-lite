@@ -40,6 +40,16 @@ export const SearchComponent = ( { setPostId } ) => {
 		};
 	}, [ innerValue ] );
 
+	const decodeHtmlEntities = ( text ) => {
+		if ( ! text ) {
+			return text;
+		}
+
+		const textarea = document.createElement( 'textarea' );
+		textarea.innerHTML = text;
+		return textarea.value;
+	};
+
 	const handlePostClick = ( post ) => {
 		setPostId( post.id );
 		setSelectedValue( post.title.rendered );
@@ -64,7 +74,7 @@ export const SearchComponent = ( { setPostId } ) => {
 
 						setInnerValue( e.target.value );
 					} }
-					value={ selectedValue || innerValue }
+					value={ decodeHtmlEntities( selectedValue ) || innerValue }
 					placeholder={ __(
 						'Start typing to search…',
 						'tasty-recipes-lite'
@@ -82,7 +92,10 @@ export const SearchComponent = ( { setPostId } ) => {
 								<button
 									onClick={ () => handlePostClick( post ) }
 								>
-									{ post.title.rendered } | ID: { post.id }
+									{ decodeHtmlEntities(
+										post.title.rendered
+									) }{ ' ' }
+									| ID: { post.id }
 								</button>
 							</div>
 						);

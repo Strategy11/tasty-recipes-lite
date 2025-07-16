@@ -20,18 +20,15 @@ const { serverSideRender: ServerSideRender } = wp;
 export const Recipe = ( { attributes, setAttributes, handleModalClose } ) => {
 	const blockProps = useBlockProps();
 
+	const existingRecipe =
+		window.tastyRecipesBlockEditor.recipeDataStore[ attributes.id ];
+
 	const existingOnClickHandler = () => {
-		if (
-			typeof window.tastyRecipesBlockEditor.recipeDataStore[
-				attributes.id
-			] === 'undefined'
-		) {
+		if ( typeof existingRecipe === 'undefined' ) {
 			return;
 		}
-		window.tastyRecipesEditorModal.open(
-			window.tastyRecipesBlockEditor.recipeDataStore[ attributes.id ],
-			handleModalClose
-		);
+
+		window.tastyRecipesEditorModal.open( existingRecipe, handleModalClose );
 	};
 
 	const disableJSON = applyFilters(
