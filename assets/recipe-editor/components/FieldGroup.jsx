@@ -47,6 +47,15 @@ export const FieldGroup = ( {
 		? __( '+ Time', 'tasty-recipes-lite' )
 		: __( '- Time', 'tasty-recipes-lite' );
 
+	if ( group === 'nutrition' && initialFieldValues.nutrifox_id.length > 1 ) {
+		return (
+			<div className={ className }>
+				{ heading && <h3>{ heading }</h3> }
+				{ renderBeforeFields && renderBeforeFields( { fieldValues } ) }
+			</div>
+		);
+	}
+
 	return (
 		<div className={ className }>
 			{ heading && <h3>{ heading }</h3> }
