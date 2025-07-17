@@ -253,7 +253,6 @@ class Recipe_Explorer {
 				break;
 			case 'recipe-post':
 				if ( empty( $parent_post_id ) ) {
-					echo '';
 					break;
 				}
 
@@ -265,7 +264,6 @@ class Recipe_Explorer {
 				break;
 			
 			case 'columns':
-				echo '';
 				break;
 		}
 	}
