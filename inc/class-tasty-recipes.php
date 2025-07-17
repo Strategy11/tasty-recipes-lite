@@ -441,13 +441,13 @@ class Tasty_Recipes {
 	public static function handle_delete_post( $post_id ) {
 		global $wpdb;
 
-		// phpcs:ignore
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$wpdb->delete(
 			$wpdb->postmeta,
 			array(
-				// phpcs:ignore
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
 				'meta_key'   => '_tasty_recipe_parents',
-				// phpcs:ignore
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
 				'meta_value' => $post_id,
 			)
 		);

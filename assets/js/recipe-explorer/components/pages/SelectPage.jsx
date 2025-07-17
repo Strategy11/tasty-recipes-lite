@@ -54,7 +54,7 @@ export const SelectPage = ( { setPage } ) => {
 								className="tasty-recipes-modal-select-skip-link"
 								onClick={ handleSkipStep }
 							>
-								post or page
+								Skip this step
 							</button>
 						),
 					}

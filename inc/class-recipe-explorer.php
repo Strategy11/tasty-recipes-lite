@@ -91,7 +91,7 @@ class Recipe_Explorer {
 		}
 
 		$html  = '<p class="tasty-tabs-buttons">';
-		$html .= '<a class="tasty-button tasty-button-pink" id="tasty-create-recipe" href="#">' . __( 'Create Recipe', 'tasty-recipes-lite' ) . '</a>';
+		$html .= '<a class="tasty-button tasty-button-pink" id="tasty-create-recipe" href="#">' . esc_html__( 'Create Recipe', 'tasty-recipes-lite' ) . '</a>';
 
 		return $html;
 	}
@@ -418,9 +418,15 @@ class Recipe_Explorer {
 
 		$recipe_title = ! empty( $recipe->get_title() ) ? $recipe->get_title() : __( 'The', 'tasty-recipes-lite' );
 
-		$message  = '<h3>' . __( 'Post created!', 'tasty-recipes-lite' ) . '</h3>';
-		$message .= '<p>' . $recipe_title . __( ' recipe has been embedded successfully.', 'tasty-recipes-lite' ) . '</p>';
-		$message .= '<p><a style="color: #ED4996;" href="' . get_edit_post_link( $post_id ) . '">' . __( 'Go to Post', 'tasty-recipes-lite' ) . '</a></p>';
+		$message  = '<h3>' . esc_html__( 'Post created!', 'tasty-recipes-lite' ) . '</h3>';
+		$message .= '<p>';
+		$message .= sprintf(
+			/* translators: %s: recipe title */
+			__( '%s recipe has been embedded successfully.', 'tasty-recipes-lite' ),
+			esc_html( $recipe_title )
+		);
+		$message .= '</p>';
+		$message .= '<p><a style="color: #ED4996;" href="' . esc_url( get_edit_post_link( $post_id ) ) . '">' . esc_html__( 'Go to Post', 'tasty-recipes-lite' ) . '</a></p>';
 		
 		$js_messagebox->add( 'success', $message );
 
@@ -470,12 +476,14 @@ class Recipe_Explorer {
 
 		wp_delete_post( $params['id'], true );
 
-		$message  = '<h3>' . __( 'Recipe deleted!', 'tasty-recipes-lite' ) . '</h3>';
-		$message .= '<p>' . sprintf(
+		$message  = '<h3>' . esc_html__( 'Recipe deleted!', 'tasty-recipes-lite' ) . '</h3>';
+		$message .= '<p>';
+		$message .= sprintf(
 			/* translators: %s: recipe title */
 			__( '%s has been deleted successfully.', 'tasty-recipes-lite' ),
-			$recipe->get_title()
-		) . '</p>';
+			esc_html( $recipe->get_title() )
+		);
+		$message .= '</p>';
 		
 		$js_messagebox->add( 'success', $message );
 
@@ -536,9 +544,15 @@ class Recipe_Explorer {
 
 		$recipe_title = ! empty( $recipe->get_title() ) ? $recipe->get_title() : __( 'The recipe', 'tasty-recipes-lite' );
 
-		$message  = '<h3>' . __( 'Recipe embedded!', 'tasty-recipes-lite' ) . '</h3>';
-		$message .= '<p>' . $recipe_title . __( ' has been embedded successfully.', 'tasty-recipes-lite' ) . '</p>';
-		$message .= '<p><a style="color: #ED4996;" href="' . get_edit_post_link( $post_id ) . '">' . __( 'Go to Recipe', 'tasty-recipes-lite' ) . '</a></p>';
+		$message  = '<h3>' . esc_html__( 'Recipe embedded!', 'tasty-recipes-lite' ) . '</h3>';
+		$message .= '<p>';
+		$message .= sprintf(
+			/* translators: %s: recipe title */
+			__( '%s recipe has been embedded successfully.', 'tasty-recipes-lite' ),
+			esc_html( $recipe_title )
+		);
+		$message .= '</p>';
+		$message .= '<p><a style="color: #ED4996;" href="' . get_edit_post_link( $post_id ) . '">' . esc_html__( 'Go to Recipe', 'tasty-recipes-lite' ) . '</a></p>';
 		
 		$js_messagebox->add( 'success', $message );
 
@@ -595,22 +609,22 @@ class Recipe_Explorer {
 		unset( $actions['inline hide-if-no-js'] );
 
 		if ( isset( $actions['edit'] ) ) {
-			$actions['edit'] = '<a href="#" data-recipe-id="' . $post->ID . '" class="tasty-recipes-edit-recipe">' . __( 'Edit', 'tasty-recipes-lite' ) . '</a>';
+			$actions['edit'] = '<a href="#" data-recipe-id="' . $post->ID . '" class="tasty-recipes-edit-recipe">' . esc_html__( 'Edit', 'tasty-recipes-lite' ) . '</a>';
 		}
 
 		if ( isset( $actions['trash'] ) && get_post_meta( $post->ID, '_tasty_recipe_parents', true ) ) {
 			$parent_post_id = get_post_meta( $post->ID, '_tasty_recipe_parents', true );
 
-			$button  = '<a class="tasty-recipes-no-delete submitdelete" href="#" data-post-url="' . get_edit_post_link( $parent_post_id ) . '">';
-			$button .= __( 'Trash', 'tasty-recipes-lite' );
+			$button  = '<a class="tasty-recipes-no-delete submitdelete" href="#" data-post-url="' . esc_url( get_edit_post_link( $parent_post_id ) ) . '">';
+			$button .= esc_html__( 'Trash', 'tasty-recipes-lite' );
 			$button .= '</a>';
 
 			$actions['trash'] = $button;
 		}
 
 		if ( isset( $actions['delete'] ) ) {
-			$button  = '<a class="tasty-recipes-permanent-delete submitdelete" href="#" data-post-id="' . $post->ID . '" data-name="' . $post->post_title . '">';
-			$button .= __( 'Delete Permanently', 'tasty-recipes-lite' );
+			$button  = '<a class="tasty-recipes-permanent-delete submitdelete" href="#" data-post-id="' . $post->ID . '" data-name="' . esc_attr( $post->post_title ) . '">';
+			$button .= esc_html__( 'Delete Permanently', 'tasty-recipes-lite' );
 			$button .= '</a>';
 
 			$actions['delete'] = $button;

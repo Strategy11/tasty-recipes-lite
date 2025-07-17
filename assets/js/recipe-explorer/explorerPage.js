@@ -45,8 +45,10 @@ const cleanElements = () => {
 	];
 
 	removable.forEach( ( selector ) => {
-		if ( document.querySelector( selector ) ) {
-			document.querySelector( selector ).remove();
+		const element = document.querySelector( selector );
+
+		if ( element ) {
+			element.remove();
 		}
 	} );
 };
@@ -56,7 +58,7 @@ const rearrangeTopNav = () => {
 	const actions = document.querySelectorAll( '.tablenav.top .actions' );
 	const searchBox = document.querySelector( '.search-box' );
 
-	if ( ! tableNav || ! actions || ! searchBox ) {
+	if ( ! tableNav || ! actions.length || ! searchBox ) {
 		return;
 	}
 

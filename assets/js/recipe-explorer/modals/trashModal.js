@@ -4,7 +4,7 @@ import { MessageModal } from '../components/MessageModal';
 
 let isOpen = false;
 let instance = null;
-const body = document.querySelector( 'body' );
+const body = document.body;
 
 const closeTrashModal = () => {
 	isOpen = false;

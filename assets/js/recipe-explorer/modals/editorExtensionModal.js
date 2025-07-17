@@ -3,7 +3,7 @@ import { AfterCreationForm } from '../components/AfterCreationForm';
 
 let isOpen = false;
 let instance = null;
-const body = document.querySelector( 'body' );
+const body = document.body;
 
 const closeEditorExtension = () => {
 	isOpen = false;
