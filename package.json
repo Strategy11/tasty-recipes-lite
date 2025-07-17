@@ -41,7 +41,7 @@
     "@wordpress/icons": "^10.26.0",
     "@uiw/react-color-chrome": "^2.7.1",
     "react-select": "^5.10.2",
-    "vue": "^2.7",
+    "vue": "^3.5",
     "vue-color": "^2.8"
   }
 }
