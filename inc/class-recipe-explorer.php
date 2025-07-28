@@ -285,36 +285,8 @@ class Recipe_Explorer {
 			TASTY_RECIPES_LITE_VERSION
 		);
 
-		$recipe = Recipe::get_by_id( $recipe_id );
-
-		$allowed_html = array(
-			'span'   => array(
-				'class'        => array(),
-				'data-tr-clip' => array(),
-				'data-rating'  => array(),
-			),
-			'svg'    => array(
-				'class'       => array(),
-				'fill'        => array(),
-				'height'      => array(),
-				'width'       => array(),
-				'viewbox'     => array(),
-				'xmlns'       => array(),
-				'xmlns:xlink' => array(),
-				'style'       => array(),
-				'aria-hidden' => array(),
-			),
-			'use'    => array(
-				'href' => array(),
-			),
-			'symbol' => array(
-				'id'      => array(),
-				'viewbox' => array(),
-			),
-			'path'   => array(
-				'd' => array(),
-			),
-		);
+		$recipe       = Recipe::get_by_id( $recipe_id );
+		$allowed_html = Utils::get_allowed_html();
 
 		echo wp_kses( Ratings::get_rendered_rating( $recipe->get_average_rating() ), $allowed_html );
 	}

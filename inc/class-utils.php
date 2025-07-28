@@ -456,7 +456,7 @@ class Utils {
 	 *
 	 * @return array
 	 */
-	private static function get_allowed_html() {
+	public static function get_allowed_html() {
 		$allowed_html = wp_kses_allowed_html( 'post' );
 
 		$add_html = array(
