@@ -20,8 +20,8 @@ export const CookMode = ( {
 				generateUpgradeUrl( {
 					medium: 'tasty-recipes',
 					content: 'cook-mode',
-				} ),
-			} );
+				} )
+			);
 		}
 	};
 
