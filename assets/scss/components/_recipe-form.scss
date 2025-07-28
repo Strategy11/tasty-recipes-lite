@@ -1,7 +1,12 @@
 .tasty-recipes-modal-container {
+	.tasty-framework {
+		padding-bottom: 20px;
+	}
+
 	.tasty-recipes-frame-title {
 		box-shadow: 0px 2px 0px 0px #0000000D;
 	}
+
 	form {
 		margin-left: auto;
 		margin-right: auto;
@@ -10,28 +15,93 @@
 		padding-right: 30px;
 	}
 
+	.tasty-recipes-video-settings {
+		input {
+			width: initial;
+		}
+	}
+
+	.tasty-button {
+		background-color: #ED4996;
+		border: 1px solid #ED4996;
+		color: #fff;
+		font-size: 14px;
+		font-weight: 500;
+		font-family: 'Inter', sans-serif;
+		padding: 8px;
+		border-radius: 8px;
+		cursor: pointer;
+		transition: all 0.1s ease-in-out;
+
+		&:hover {
+			border: 1px solid #D93A84;
+			background-color: #D93A84;
+		}
+	}
+
+	.tasty-secondary-button {
+		background-color: transparent;
+		border: 1px solid #ED4996;
+		border-radius: 8px;
+		color: #ED4996;
+		font-size: 14px;
+		font-weight: 500;
+		padding: 6px 8px;
+		cursor: pointer;
+		transition: all 0.1s ease-in-out;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		&:hover {
+			background-color: #ED4996;
+			color: #fff;
+		}
+	}
+
 	fieldset {
 		margin-top: 10px;
 		margin-bottom: 20px;
 		border: none;
+
+		&.tasty-recipes-modal-form-row {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			gap: 20px;
+
+			div {
+				width: 50%;
+
+				input {
+					width: 100%;
+				}
+			}
+		}
 	}
 
-	label,
-	h3,
-	.tasty-recipes-nutrition h3,
-	.tasty-recipes-details .tasty-recipes-recipe-keywords-container label {
+	h3 {
+		font-family: 'Inter', sans-serif;
+		font-weight: 500;
+		font-size: 20px;
+		color: #181B25;
+		margin: 10px 0;
+		padding-top: 15px;
+		padding-bottom: 10px;
+	}
+
+	label {
 		display: block;
-		font-size: 15px;
-		font-weight: bold;
+		font-family: 'Inter', sans-serif;
+		font-weight: 500;
+		font-size: 14px;
 		margin-bottom: 6px;
 		text-align: left;
-		color: #3c434a;
+		color: #181B25;
 		text-transform: none;
 	}
 
 	.tasty-recipes-nutrition {
-		padding: 15px 0 0 0;
-		border-top: 1px solid #ededed;
 		label {
 			font-size: 13px;
 			font-weight: 400;
@@ -40,62 +110,74 @@
 
 	input,
 	textarea,
+	select,
 	.select2-container--default .select2-selection--multiple {
-		border: 1px solid #ddd;
-		box-shadow: inset 0 1px 2px rgba( 0, 0, 0, 0.07 );
+		border: 1px solid #CACFD8;
+		border-radius: 10px;
+		box-shadow: 0px 1px 2px 0px rgba(10, 13, 20, 0.03);
 		background-color: #fff;
-		color: #333;
+		color: #0E121B;
 		outline: none;
 		transition: 0.05s border-color ease-in-out;
 		max-width: 100%;
-		min-height: 34px;
+		min-height: 40px;
+		font-size: 14px;
+		font-family: 'Inter', sans-serif;
+		width: 100%;
 	}
 
 	.tasty-recipes-image {
-		float: right;
-		position: relative;
-		img {
-			border-radius: 4px;
-		}
-		.tasty-recipes-image-preview:hover,
-		.tasty-recipes-remove-image:hover {
-			cursor: pointer;
-		}
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		border: 1px solid #CACFD8;
+		padding: 20px;
+		border-radius: 12px;
 
-		.tasty-recipes-remove-image {
-			position: absolute;
-			top: 5px;
-			right: 5px;
-			padding-left: 0;
-			padding-right: 0;
-			height: 22px;
-			z-index: 1;
-			min-height: 20px;
-		}
+		div.tasty-image-preview {
+			display: flex;
+			align-items: center;
+			gap: 15px;
 
-		.tasty-recipes-image-preview-placeholder {
-			border: 1px solid #ddd;
-			border-radius: 4px;
-			width: 150px;
-			height: 150px;
-		}
-		.tasty-recipes-select-image {
-			display: none;
-			position: absolute;
-			top: 50%;
-			left: 50%;
-			margin-top: -14px;
-			margin-left: -50px;
-		}
-		&.tasty-recipes-image-with-placeholder,
-		&:hover {
-			.tasty-recipes-select-image {
-				display: block;
+			img {
+				border-radius: 8px;
+			}
+
+			p {
+				font-family: 'Inter', sans-serif;
+				font-size: 14px;
+				color: #000;
+				font-weight: 500;
 			}
 		}
-		&.tasty-recipes-image-with-placeholder {
-			.tasty-recipes-remove-image {
-				display: none;
+
+		&-placeholder {
+			border: 1px dashed #CACFD8;
+			border-radius: 12px;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			padding: 20px;
+			gap: 10px;
+
+			svg {
+				color: #525866;
+			}
+
+			p {
+				margin: 0;
+				font-family: 'Inter', sans-serif;
+			}
+
+			&-title {
+				font-size: 14px;
+				font-weight: 500;
+				color: #0E121B;
+			}
+
+			&-subtitle {
+				font-size: 12px;
+				color: #525866;
 			}
 		}
 	}
@@ -130,6 +212,17 @@
 	.mce-tinymce {
 		border: 1px solid #ddd;
 		box-shadow: inset 0 1px 2px rgba( 0, 0, 0, 0.07 );
+		border-radius: 8px;
+
+		.mce-toolbar, .mce-toolbar-grp {
+			border-top-left-radius: 8px;
+			border-top-right-radius: 8px;
+		}
+
+		iframe, .mce-edit-area {
+			border-bottom-left-radius: 8px;
+			border-bottom-right-radius: 8px;
+		}
 	}
 
 	textarea {
@@ -138,9 +231,35 @@
 		min-height: 100px;
 	}
 
-	.tasty-recipes-details fieldset,
-	.tasty-recipes-video-url fieldset,
-	.tasty-recipes-nutrition fieldset {
+	.tasty-recipes-details {
+		.tasty-recipes-fields-container {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 15px;
+
+			fieldset {
+				margin-top: 0;
+				margin-bottom: 0;
+			}
+
+			.tasty-recipes-recipe-keywords-container {
+				grid-column: 1 / -1;
+				width: 100%;
+			}
+
+			.tasty-recipes-additional-time-container {
+				grid-column: 1 / -1;
+				grid-row: 2;
+				width: 100%;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				gap: 15px;
+			}
+		}
+	}
+
+	.tasty-recipes-video-url fieldset {
 		display: inline-block;
 		margin-right: 2px;
 		margin-bottom: 10px;
@@ -158,13 +277,15 @@
 		}
 	}
 
-	.tasty-recipes-details fieldset span {
-		display: inline-block;
-	}
+	.tasty-recipes-nutrition .tasty-recipes-fields-container {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: 15px;
 
-	.tasty-recipes-details label {
-		font-weight: 400;
-		font-size: 13px;
+		fieldset {
+			margin-top: 0;
+			margin-bottom: 0;
+		}
 	}
 
 	.tasty-recipes-entry-header .tasty-recipes-details ul li {
@@ -176,13 +297,14 @@
 	}
 
 	.tasty-recipes-add-additional-time {
-		font-size: 12px;
-		min-height: 0px;
 		float: right;
-		line-height: 1.5;
-		padding-left: 5px;
-		padding-right: 5px;
-		margin-right: 8px;
+		background-color: transparent;
+		border: 0;
+		color: #ED4996;
+		font-size: 14px;
+		font-family: 'Inter', sans-serif;
+		font-weight: 500;
+		cursor: pointer;
 	}
 
 	.tasty-recipes-recipe-prep_time-container input[name="additional_time_label"] {
@@ -209,22 +331,33 @@
 	}
 
 	.tasty-recipes-nutrition fieldset.tasty-recipes-nutrifox-container {
-		background-color: #F2F2F2;
-		border: 1px solid #E0E0E0;
-		border-radius: 6px;
-		padding: 8px;
+		background-color: #F2F5F8;
+		border-radius: 8px;
+		padding: 15px;
 		display: flex;
+		justify-content: space-between;
 		align-items: center;
 		margin-right: 0;
-		span {
+
+		.tasty-recipes-nutrifox-id-container {
 			display: flex;
 			align-items: center;
-			margin-right: 5px;
+			gap: 10px;
+			width: 80%;
+
+			label {
+				min-width: 65px;
+			}
+
+			input{
+				width: 50%;
+			}
 		}
-		label {
-			margin-bottom: 0;
-			margin-right: 5px;
+
+		.tasty-recipes-nutrifox-logo-container {
+			width: 100px;
 		}
+
 		a.nutrifox-edit {
 			text-decoration: none;
 			&:hover {
@@ -236,6 +369,7 @@
 				margin-left: 4px;
 			}
 		}
+
 		a.nutrifox-logo {
 			margin-left: auto;
 		}

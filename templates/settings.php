@@ -8,14 +8,11 @@
 defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 
 use Tasty_Recipes\Designs\Template;
-use Tasty\Framework\Utils\Common;
 
 ?>
 
 <div class="wrap">
 	<div class="wp-header-end"></div>
-	<?php Common::show_tabs( $tabs ); ?>
-
 
 	<?php if ( 'design' === $active_tab ) : ?>
 		<?php

@@ -10,6 +10,9 @@ const cssOnlyEntries = [
 	'recipe-card-preview',
 	'recipe',
 	'reset',
+	'common',
+	'edit-page',
+	'index-page',
 ];
 
 module.exports = {
@@ -50,6 +53,11 @@ module.exports = {
 		ratings: resolve( __dirname, 'assets/scss/ratings.scss' ),
 		recipe: resolve( __dirname, 'assets/scss/recipe.scss' ),
 		reset: resolve( __dirname, 'assets/scss/reset.scss' ),
+		common: resolve( __dirname, 'assets/scss/common.scss' ),
+		'explorer-page': resolve(
+			__dirname,
+			'assets/js/recipe-explorer/explorerPage.js'
+		),
 		'recipe-card-preview': resolve(
 			__dirname,
 			'assets/scss/recipe-card-preview.scss'
@@ -61,6 +69,10 @@ module.exports = {
 		'recipe-print-controls': resolve(
 			__dirname,
 			'assets/scss/recipe-print-controls.scss'
+		),
+		'recipe-editor-js': resolve(
+			__dirname,
+			'assets/recipe-editor/index.js'
 		),
 	},
 	output: {

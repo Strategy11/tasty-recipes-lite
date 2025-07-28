@@ -12,7 +12,9 @@ use Tasty_Recipes\Objects\Recipe;
 use Tasty_Recipes\Admin;
 use Tasty_Recipes\Utils;
 use Tasty_Recipes\Designs\Template;
-use Tasty\Framework\Utils\Url;
+use Tasty_Recipes\Block_Editor;
+use Tasty_Recipes\Settings;
+use Tasty_Recipes\Recipe_Explorer;
 
 /**
  * Registers all scripts and styles.
@@ -47,6 +49,68 @@ class Assets {
 		add_action( 'wp_enqueue_editor', array( __CLASS__, 'action_wp_enqueue_editor' ) );
 		add_action( 'enqueue_block_editor_assets', array( __CLASS__, 'action_enqueue_block_editor_assets' ) );
 		add_action( 'tcb_editor_enqueue_scripts', array( __CLASS__, 'action_enqueue_tcb_frame_styles' ) );
+		add_action( 'tasty_framework_admin_enqueue_assets_after', array( __CLASS__, 'enqueue_common_styles' ) );
+	}
+
+	/**
+	 * Enqueue common styles.
+	 * 
+	 * @since x.x
+	 *
+	 * @return void
+	 */
+	public static function enqueue_common_styles() {
+		if ( ! Settings::is_recipes_admin() ) {
+			return;
+		}
+
+		wp_enqueue_style(
+			'tasty-recipes-common',
+			plugins_url( 'assets/dist/common.css', TASTY_RECIPES_LITE_FILE ),
+			array(),
+			TASTY_RECIPES_LITE_VERSION
+		);
+
+		if ( Recipe_Explorer::is_current_page( 'tasty_recipe' ) && 'edit' === get_current_screen()->base ) {
+			$asset_meta = tasty_get_asset_meta( dirname( TASTY_RECIPES_LITE_FILE ) . '/assets/dist/explorer-page.build.asset.php' );
+			wp_enqueue_script(
+				'tasty-recipes-explorer-page',
+				plugins_url( 'assets/dist/explorer-page.build.js', TASTY_RECIPES_LITE_FILE ),
+				$asset_meta['dependencies'],
+				$asset_meta['version'],
+				true
+			);
+
+			$users = get_users(
+				array(
+					'fields'  => array( 'user_login' ),
+					'orderby' => 'user_login',
+					'order'   => 'ASC',
+				) 
+			);
+
+			wp_localize_script(
+				'tasty-recipes-explorer-page',
+				'tastyRecipesExplorerPage',
+				array(
+					'emptyStateImage' => plugins_url( 'assets/images/empty-state-image.png', TASTY_RECIPES_LITE_FILE ),
+					'filters'         => array(
+						'rating'   => Recipe_Explorer::get_unique_filter_values( 'rating' ),
+						'cuisine'  => Recipe_Explorer::get_unique_filter_values( 'cuisine' ),
+						'method'   => Recipe_Explorer::get_unique_filter_values( 'method' ),
+						'category' => Recipe_Explorer::get_unique_filter_values( 'category' ),
+						'author'   => wp_list_pluck( $users, 'user_login' ),
+					),
+				)
+			);
+
+			wp_enqueue_style(
+				'tasty-recipes-explorer-page',
+				plugins_url( 'assets/dist/explorer-page.css', TASTY_RECIPES_LITE_FILE ),
+				array(),
+				$asset_meta['version']
+			);
+		}
 	}
 
 	/**
@@ -286,10 +350,6 @@ class Assets {
 			'tasty-recipes-editor',
 			'tastyRecipesEditor',
 			array(
-				'i18n'              => array(
-					'frameTitle'  => esc_html__( 'Media Library', 'tasty-recipes-lite' ),
-					'frameButton' => esc_html__( 'Select Image', 'tasty-recipes-lite' ),
-				),
 				'currentPostId'     => 0,
 				'defaultAuthorName' => $default_author_name,
 				'parseNonce'        => wp_create_nonce( 'tasty_recipes_parse_shortcode' ),
@@ -342,10 +402,6 @@ class Assets {
 			'tasty-recipes-editor',
 			'tastyRecipesEditor',
 			array(
-				'i18n'                => array(
-					'frameTitle'  => esc_html__( 'Media Library', 'tasty-recipes-lite' ),
-					'frameButton' => esc_html__( 'Select Image', 'tasty-recipes-lite' ),
-				),
 				'currentPostId'       => self::get_current_post_id(),
 				'defaultAuthorName'   => wp_get_current_user() ? wp_get_current_user()->display_name : '',
 				'parseNonce'          => wp_create_nonce( 'tasty_recipes_parse_shortcode' ),
@@ -375,6 +431,7 @@ class Assets {
 			'recipeBlockTitle' => 'Tasty Recipe',
 			'recipeDataStore'  => array(),
 			'editorNotices'    => array(),
+			'recipeIds'        => Block_Editor::get_formatted_recipes_without_parents(),
 		);
 		$post_id     = self::get_current_post_id();
 		if ( $post_id ) {
@@ -399,6 +456,7 @@ class Assets {
 			}
 			$blocks_data['editorNotices'] = Editor::get_converter_messages( $post_id );
 		}
+
 		wp_localize_script( 'tasty-recipes-block-editor', 'tastyRecipesBlockEditor', $blocks_data );
 
 		self::action_wp_head();
@@ -427,16 +485,13 @@ class Assets {
 	 * @return void
 	 */
 	public static function register_modal_editor_script() {
+		$asset_meta = tasty_get_asset_meta( dirname( TASTY_RECIPES_LITE_FILE ) . '/assets/dist/recipe-editor-js.build.asset.php' );
 
-		$time = 0;
-		if ( file_exists( dirname( __DIR__ ) . '/assets/dist/recipe-editor.build.js' ) ) {
-			$time = filemtime( dirname( __DIR__ ) . '/assets/dist/recipe-editor.build.js' );
-		}
 		wp_register_script(
 			'tasty-recipes-recipe-editor',
-			plugins_url( 'assets/dist/recipe-editor.build.js', __DIR__ ),
-			array( 'wp-util', 'wplink' ),
-			(string) $time,
+			plugins_url( 'assets/dist/recipe-editor-js.build.js', TASTY_RECIPES_LITE_FILE ),
+			$asset_meta['dependencies'],
+			$asset_meta['version'],
 			true
 		);
 
@@ -463,33 +518,9 @@ class Assets {
 			array(
 				'pluginURL'              => plugins_url( '', __DIR__ ),
 				'after_video_url_markup' => $after_video_url_markup,
-				'labels'                 => array(
-					'select_image'      => esc_html__( 'Select Image', 'tasty-recipes-lite' ),
-					'details_heading'   => esc_html__( 'Details', 'tasty-recipes-lite' ),
-					'video_url_heading' => esc_html__( 'Video URL', 'tasty-recipes-lite' ),
-					'nutrition_heading' => esc_html__( 'Nutrition', 'tasty-recipes-lite' ),
-					'additional_time'   => array(
-						'add_button_text'     => esc_html__( '+ Time', 'tasty-recipes-lite' ),
-						'remove_button_text'  => esc_html__( '- Time', 'tasty-recipes-lite' ),
-						'add_button_title'    => esc_html__( 'Add an additional time field', 'tasty-recipes-lite' ),
-						'remove_button_title' => esc_html__( 'Remove additional time field', 'tasty-recipes-lite' ),
-						'label_placeholder'   => esc_html__( 'Additional Time Label', 'tasty-recipes-lite' ),
-						'value_placeholder'   => esc_html__( 'Additional Time Value', 'tasty-recipes-lite' ),
-					),
-				),
 				'attributes'             => array(
-					'general'   => $general_attributes,
 					'cooking'   => $cooking_attributes,
 					'nutrition' => $nutrition_attributes,
-				),
-				'video_settings'         => array(
-					'label'    => esc_html__( 'Video Settings: ', 'tasty-recipes-lite' ),
-					'settings' => array(
-						'autoplay'      => esc_html__( 'Autoplay', 'tasty-recipes-lite' ),
-						'mute'          => esc_html__( 'Mute', 'tasty-recipes-lite' ),
-						'loop'          => esc_html__( 'Loop', 'tasty-recipes-lite' ),
-						'hide-controls' => esc_html__( 'Hide Controls', 'tasty-recipes-lite' ),
-					),
 				),
 			)
 		);
@@ -511,10 +542,6 @@ class Assets {
 			'tasty-recipes-editor-modal',
 			'tastyRecipesEditorModalData',
 			array(
-				'i18n'              => array(
-					'frameTitle'  => esc_html__( 'Media Library', 'tasty-recipes-lite' ),
-					'frameButton' => esc_html__( 'Select Image', 'tasty-recipes-lite' ),
-				),
 				'currentPostId'     => self::get_current_post_id(),
 				'defaultAuthorName' => $default_author_name,
 				'modifyNonce'       => wp_create_nonce( 'tasty_recipes_modify_recipe' ),

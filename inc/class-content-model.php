@@ -57,9 +57,10 @@ class Content_Model {
 		$args           = array(
 			'hierarchical' => false,
 			'public'       => false,
-			'show_ui'      => false,
+			'show_ui'      => true,
 			'rewrite'      => false,
 			'supports'     => array(),
+			'show_in_menu' => false,
 		);
 		$args['labels'] = array(
 			'name'               => __( 'Recipes', 'tasty-recipes-lite' ),

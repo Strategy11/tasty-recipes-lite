@@ -10,6 +10,7 @@ namespace Tasty_Recipes;
 use Tasty\Framework\Utils\Url;
 use Tasty_Recipes\Settings;
 use Tasty_Recipes;
+use Tasty\Framework\Utils\Vars;
 
 /**
  * Manages interactions with the admin.
@@ -148,7 +149,6 @@ class Admin {
 		add_action( 'manage_pages_custom_column', array( __CLASS__, 'action_manage_posts_custom_column' ), 10, 2 );
 		add_action( 'quick_edit_custom_box', array( __CLASS__, 'action_quick_edit_custom_box' ) );
 		add_filter( 'hidden_columns', array( __CLASS__, 'filter_hidden_columns' ) );
-
 		add_filter( 'plugin_action_links_' . plugin_basename( TASTY_RECIPES_LITE_FILE ), array( __CLASS__, 'filter_plugin_action_links' ) );
 		add_filter( 'tasty_framework_admin_header_title', array( __CLASS__, 'update_admin_dashboard_title' ) );
 
@@ -225,7 +225,14 @@ class Admin {
 	 * @return array
 	 */
 	public static function action_manage_posts_columns( $columns ) {
+		global $post_type;
+		
+		if ( 'tasty_recipe' === $post_type ) {
+			return $columns;
+		}
+
 		$columns['tasty_recipe'] = esc_html__( 'Tasty Recipe', 'tasty-recipes-lite' );
+
 		return $columns;
 	}
 
