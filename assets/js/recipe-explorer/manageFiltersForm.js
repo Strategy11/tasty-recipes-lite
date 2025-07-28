@@ -3,15 +3,18 @@ import { FiltersForm } from './components/FiltersForm';
 
 let isOpen = false;
 let instance = null;
+let root = null;
 const parentElement = document.getElementById(
 	'tasty-recipes-filters-button-container'
 );
 
 const closeFiltersForm = () => {
-	if ( instance ) {
+	if ( instance && root ) {
 		isOpen = false;
+		root.unmount();
 		instance.remove();
 		instance = null;
+		root = null;
 	}
 };
 
@@ -26,5 +29,6 @@ export const toggleFiltersForm = () => {
 	instance = document.createElement( 'div' );
 	parentElement.appendChild( instance );
 
-	createRoot( instance ).render( <FiltersForm /> );
+	root = createRoot( instance );
+	root.render( <FiltersForm closeFiltersForm={ closeFiltersForm } /> );
 };

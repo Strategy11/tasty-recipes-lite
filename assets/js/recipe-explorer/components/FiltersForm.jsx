@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { useState, useRef } from '@wordpress/element';
+import { useState, useRef, useEffect } from '@wordpress/element';
 
 const { filters } = window.tastyRecipesExplorerPage;
 
@@ -11,13 +11,30 @@ const emptyFormData = {
 	author: '',
 };
 
-export const FiltersForm = () => {
+export const FiltersForm = ( { closeFiltersForm } ) => {
 	const formRef = useRef( null );
 	const [ formData, setFormData ] = useState( () => {
 		const currentParams = new URLSearchParams( window.location.search );
 
 		return Object.fromEntries( currentParams.entries() );
 	} );
+
+	useEffect( () => {
+		const handleClickOutside = ( event ) => {
+			if (
+				formRef.current &&
+				! formRef.current.contains( event.target )
+			) {
+				closeFiltersForm();
+			}
+		};
+
+		document.addEventListener( 'mousedown', handleClickOutside );
+
+		return () => {
+			document.removeEventListener( 'mousedown', handleClickOutside );
+		};
+	}, [ closeFiltersForm ] );
 
 	const handleSubmit = ( e ) => {
 		e.preventDefault();
@@ -30,6 +47,24 @@ export const FiltersForm = () => {
 				: currentParams.delete( key )
 		);
 
+		setUrlParamsAndRefresh( currentParams );
+	};
+
+	const handleReset = ( e ) => {
+		e.preventDefault();
+
+		setFormData( emptyFormData );
+
+		const currentParams = new URLSearchParams( window.location.search );
+
+		Object.keys( emptyFormData ).forEach( ( key ) => {
+			currentParams.delete( key );
+		} );
+
+		setUrlParamsAndRefresh( currentParams );
+	};
+
+	const setUrlParamsAndRefresh = ( currentParams ) => {
 		window.history.pushState(
 			{},
 			'',
@@ -182,7 +217,7 @@ export const FiltersForm = () => {
 				<button
 					type="reset"
 					className="tasty-secondary-button"
-					onClick={ () => setFormData( emptyFormData ) }
+					onClick={ handleReset }
 				>
 					{ __( 'Reset', 'tasty-recipes-lite' ) }
 				</button>
