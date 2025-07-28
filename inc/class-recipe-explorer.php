@@ -261,7 +261,9 @@ class Recipe_Explorer {
 					break;
 				}
 
-				echo '<a href="' . esc_url( get_edit_post_link( $parent_post_id ) ) . '">' . esc_html( $parent_post->post_title ) . '</a>';
+				$post_title = ! empty( $parent_post->post_title ) ? $parent_post->post_title : __( '(no title)', 'tasty-recipes-lite' );
+
+				echo '<a href="' . esc_url( get_edit_post_link( $parent_post_id ) ) . '">' . esc_html( $post_title ) . '</a>';
 				break;
 			
 			case 'last-updated':
