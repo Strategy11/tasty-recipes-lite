@@ -11,14 +11,14 @@ export const InstacartButton = ( {
 } ) => {
 	const triggerModal = ( condition ) => {
 		if ( condition ) {
-			openModal(
-				'tasty_recipes_upgrade_modal',
-				__( 'Instacart Button', 'tasty-recipes-lite' ),
-				generateUpgradeUrl( {
+			openModal( {
+				id: 'tasty_recipes_upgrade_modal',
+				title: __( 'Instacart Button', 'tasty-recipes-lite' ),
+				upgradeUrl: generateUpgradeUrl( {
 					medium: 'tasty-recipes',
 					content: 'instacart-button',
-				} )
-			);
+				} ),
+			} );
 		}
 	};
 

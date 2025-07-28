@@ -184,16 +184,20 @@ export const Settings = () => {
 			<SelectInput
 				onClick={ () => {
 					if ( isSettingDisabled( formData.quickLinksStyle ) ) {
-						openModal(
-							'tasty_recipes_upgrade_modal',
-							__( 'Quick Links Style', 'tasty-recipes-lite' ),
-							generateUpgradeUrl( {
+						openModal( {
+							id: 'tasty_recipes_upgrade_modal',
+							title: __(
+								'Quick Links Style',
+								'tasty-recipes-lite'
+							),
+							upgradeUrl: generateUpgradeUrl( {
 								medium: 'tasty-recipes',
 								content: 'quick-links-style',
 							} ),
-							globalSettings.pluginUrl +
-								'/assets/images/quick-links-preview.png'
-						);
+							previewImage:
+								globalSettings.pluginUrl +
+								'/assets/images/quick-links-preview.png',
+						} );
 					}
 				} }
 				label={ __( 'Quick Links Style', 'tasty-recipes-lite' ) }
@@ -230,14 +234,17 @@ export const Settings = () => {
 			<ToggleInput
 				onClick={ () => {
 					if ( isSettingDisabled( formData.ingredientCheckboxes ) ) {
-						openModal(
-							'tasty_recipes_upgrade_modal',
-							__( 'Ingredient Checkboxes', 'tasty-recipes-lite' ),
-							generateUpgradeUrl( {
+						openModal( {
+							id: 'tasty_recipes_upgrade_modal',
+							title: __(
+								'Ingredient Checkboxes',
+								'tasty-recipes-lite'
+							),
+							upgradeUrl: generateUpgradeUrl( {
 								medium: 'tasty-recipes',
 								content: 'ingredient-checkboxes',
-							} )
-						);
+							} ),
+						} );
 					}
 				} }
 				label={ __( 'Ingredient Checkboxes', 'tasty-recipes-lite' ) }
@@ -264,14 +271,14 @@ export const Settings = () => {
 			<ToggleInput
 				onClick={ () => {
 					if ( isSettingDisabled( formData.scaling ) ) {
-						openModal(
-							'tasty_recipes_upgrade_modal',
-							__( 'Scaling', 'tasty-recipes-lite' ),
-							generateUpgradeUrl( {
+						openModal( {
+							id: 'tasty_recipes_upgrade_modal',
+							title: __( 'Scaling', 'tasty-recipes-lite' ),
+							upgradeUrl: generateUpgradeUrl( {
 								medium: 'tasty-recipes',
 								content: 'scaling',
-							} )
-						);
+							} ),
+						} );
 					}
 				} }
 				label={ __( 'Scaling', 'tasty-recipes-lite' ) }
@@ -292,14 +299,17 @@ export const Settings = () => {
 			<ToggleInput
 				onClick={ () => {
 					if ( isSettingDisabled( formData.copyToClipboard ) ) {
-						openModal(
-							'tasty_recipes_upgrade_modal',
-							__( 'Copy to Clipboard', 'tasty-recipes-lite' ),
-							generateUpgradeUrl( {
+						openModal( {
+							id: 'tasty_recipes_upgrade_modal',
+							title: __(
+								'Copy to Clipboard',
+								'tasty-recipes-lite'
+							),
+							upgradeUrl: generateUpgradeUrl( {
 								medium: 'tasty-recipes',
 								content: 'copy-to-clipboard',
-							} )
-						);
+							} ),
+						} );
 					}
 				} }
 				label={ __( 'Copy to Clipboard', 'tasty-recipes-lite' ) }

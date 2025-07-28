@@ -86,14 +86,14 @@ export const DesignExample = ( {
 			try {
 				const data = JSON.parse( event.data );
 				if ( data.event === 'proImageClicked' ) {
-					openModal(
-						'tasty_recipes_upgrade_modal',
-						__( 'Premium Template', 'tasty-recipes-lite' ),
-						generateUpgradeUrl( {
+					openModal( {
+						id: 'tasty_recipes_upgrade_modal',
+						title: __( 'Premium Template', 'tasty-recipes-lite' ),
+						upgradeUrl: generateUpgradeUrl( {
 							medium: 'tasty-recipes',
 							content: 'template',
-						} )
-					);
+						} ),
+					} );
 				}
 			} catch ( e ) {
 				// Ignore invalid JSON messages
