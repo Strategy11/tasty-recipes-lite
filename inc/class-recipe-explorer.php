@@ -703,6 +703,9 @@ class Recipe_Explorer {
 			return $query;
 		}
 
+		$meta_queries = array();
+		$relation     = 'AND';
+
 		if ( Utils::get_param( 'rating' ) ) {
 			$rating_filter = Utils::get_param( 'rating' );
 			
@@ -721,42 +724,32 @@ class Recipe_Explorer {
 		}
 
 		if ( Utils::get_param( 'cuisine' ) ) {
-			$query->set(
-				'meta_query',
-				array(
-					array(
-						'key'     => 'cuisine',
-						'value'   => Utils::get_param( 'cuisine' ),
-						'compare' => '=',
-					),
-				) 
+			$meta_queries[] = array(
+				'key'     => 'cuisine',
+				'value'   => Utils::get_param( 'cuisine' ),
+				'compare' => '=',
 			);
 		}
 
 		if ( Utils::get_param( 'method' ) ) {
-			$query->set(
-				'meta_query',
-				array(
-					array(
-						'key'     => 'method',
-						'value'   => Utils::get_param( 'method' ),
-						'compare' => '=',
-					),
-				) 
+			$meta_queries[] = array(
+				'key'     => 'method',
+				'value'   => Utils::get_param( 'method' ),
+				'compare' => '=',
 			);
 		}
 
 		if ( Utils::get_param( 'category' ) ) {
-			$query->set(
-				'meta_query',
-				array(
-					array(
-						'key'     => 'category',
-						'value'   => Utils::get_param( 'category' ),
-						'compare' => '=',
-					),
-				) 
+			$meta_queries[] = array(
+				'key'     => 'category',
+				'value'   => Utils::get_param( 'category' ),
+				'compare' => '=',
 			);
+		}
+
+		if ( ! empty( $meta_queries ) ) {
+			$meta_queries['relation'] = $relation;
+			$query->set( 'meta_query', $meta_queries );
 		}
 
 		if ( Utils::get_param( 'author' ) ) {
