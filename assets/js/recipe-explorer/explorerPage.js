@@ -11,6 +11,7 @@ import { EmptyState } from './components/EmptyState';
 domReady( () => {
 	fixTitles();
 	cleanElements();
+	removeColumnsScreenOption();
 	rearrangeTopNav();
 	addColumnsButton();
 	registerEvents();
@@ -52,6 +53,20 @@ const cleanElements = () => {
 		}
 	} );
 };
+
+const removeColumnsScreenOption = () => {
+	const columnsCheckbox = document.querySelector('#screen-options-wrap input[name="columns-hide"]');
+	if (columnsCheckbox) {
+		columnsCheckbox.closest('label').style.display = 'none';
+	}
+	
+	const screenOptionsLabels = document.querySelectorAll('#screen-options-wrap .metabox-prefs label');
+	screenOptionsLabels.forEach(label => {
+		if (label.textContent.includes('Columns')) {
+			label.style.display = 'none';
+		}
+	});
+}
 
 const rearrangeTopNav = () => {
 	const tableNav = document.querySelector( '.tablenav.top' );
