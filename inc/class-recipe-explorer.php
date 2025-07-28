@@ -761,7 +761,7 @@ class Recipe_Explorer {
 
 		if ( Utils::get_param( 'author' ) ) {
 			$query->set(
-				'author_name',
+				'author',
 				Utils::get_param( 'author' )
 			);
 		}

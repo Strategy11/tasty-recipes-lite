@@ -204,11 +204,11 @@ export const FiltersForm = ( { closeFiltersForm } ) => {
 					</option>
 					{ filters.author.map( ( author ) => (
 						<option
-							value={ author }
-							key={ author }
-							selected={ formData.author === author }
+							value={ author.id }
+							key={ author.id }
+							selected={ formData.author === author.id }
 						>
-							{ author }
+							{ author.name }
 						</option>
 					) ) }
 				</select>

@@ -81,13 +81,21 @@ class Assets {
 				true
 			);
 
-			$users = get_users(
+			$raw_users = get_users(
 				array(
-					'fields'  => array( 'user_login' ),
+					'fields'  => array( 'user_login', 'ID' ),
 					'orderby' => 'user_login',
 					'order'   => 'ASC',
 				) 
 			);
+
+			$users = array();
+			foreach ( $raw_users as $user ) {
+				$users[] = array(
+					'id'   => $user->id,
+					'name' => $user->user_login,
+				);
+			}
 
 			wp_localize_script(
 				'tasty-recipes-explorer-page',
@@ -99,7 +107,7 @@ class Assets {
 						'cuisine'  => Recipe_Explorer::get_unique_filter_values( 'cuisine' ),
 						'method'   => Recipe_Explorer::get_unique_filter_values( 'method' ),
 						'category' => Recipe_Explorer::get_unique_filter_values( 'category' ),
-						'author'   => wp_list_pluck( $users, 'user_login' ),
+						'author'   => $users,
 					),
 				)
 			);
