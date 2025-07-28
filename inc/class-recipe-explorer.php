@@ -456,12 +456,14 @@ class Recipe_Explorer {
 
 		wp_delete_post( $params['id'], true );
 
+		$recipe_title = ! empty( $recipe->get_title() ) ? $recipe->get_title() : __( 'The recipe', 'tasty-recipes-lite' );
+
 		$message  = '<h3>' . esc_html__( 'Recipe deleted!', 'tasty-recipes-lite' ) . '</h3>';
 		$message .= '<p>';
 		$message .= sprintf(
 			/* translators: %s: recipe title */
 			__( '%s has been deleted successfully.', 'tasty-recipes-lite' ),
-			esc_html( $recipe->get_title() )
+			esc_html( $recipe_title )
 		);
 		$message .= '</p>';
 		
