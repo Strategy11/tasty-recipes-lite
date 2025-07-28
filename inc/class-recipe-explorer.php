@@ -193,8 +193,13 @@ class Recipe_Explorer {
 			return;
 		}
 
-		$query->set( 'orderby', 'title' );
-		$query->set( 'order', 'ASC' );
+		if ( Utils::get_param( 'orderby' ) ) {
+			$query->set( 'orderby', Utils::get_param( 'orderby' ) );
+		}
+
+		if ( Utils::get_param( 'order' ) ) {
+			$query->set( 'order', Utils::get_param( 'order' ) );
+		}
 	}
 
 	/**
@@ -299,7 +304,12 @@ class Recipe_Explorer {
 	 * @return array
 	 */
 	public static function action_manage_sortable_columns() {
-		return array();
+		return array(
+			'title'        => 'title',
+			'rating'       => 'rating',
+			'recipe-post'  => 'recipe-post',
+			'last-updated' => 'last-updated',
+		);
 	}
 
 	/**
