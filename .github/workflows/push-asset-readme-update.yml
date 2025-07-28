@@ -2,12 +2,15 @@ name: Plugin asset/readme update
 on:
   push:
     branches:
-    - master
+    - main
 jobs:
-  master:
-    name: Push to master
+  main:
+    name: Push to main
     runs-on: ubuntu-latest
     steps:
+    - name: Install Subversion
+      run: sudo apt-get update && sudo apt-get install -y subversion
+
     - uses: actions/checkout@master
     - name: WordPress.org plugin asset/readme update
       uses: 10up/action-wordpress-plugin-asset-update@2.1.3

@@ -1,0 +1,55 @@
+#tasty-recipes-filters-button-container {
+	position: relative;
+
+	.tasty-recipes-filters-active-count {
+		color: #fff;
+		background-color: #ED4996;
+		height: 18px;
+		width: 18px;
+		border-radius: 50%;
+		font-size: 9px;
+		font-weight: 700;
+		position: relative;
+		text-align: center;
+		line-height: 18px;
+	}
+}
+
+.tasty-recipes-filters-form {
+	position: absolute;
+	top: 50px;
+	left: 0;
+	width: 210px;
+	background-color: #fff;
+	border: 1px solid #F2F4F7;
+	border-radius: 8px;
+	box-shadow: 0px 4px 6px -2px rgba(16, 24, 40, 0.03);
+	box-shadow: 0px 12px 16px -4px rgba(16, 24, 40, 0.08);
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+	z-index: 10;
+	padding: 15px;
+
+	.tasty-recipes-filter-group {
+		label {
+			display: block;
+			font-size: 13px;
+			font-weight: 500;
+			color: #181B25;
+		}
+
+		select {
+			width: 100%;
+			max-width: 100%;
+			font-size: 13px;
+			color: #717784;
+		}
+	}
+
+	.tasty-recipes-filter-actions {
+		display: flex;
+		gap: 10px;
+		justify-content: flex-end;
+	}
+}

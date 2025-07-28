@@ -5,7 +5,9 @@
  * @package Tasty_Recipes
  */
 
+use Tasty_Recipes\MetaBox;
 use Tasty_Recipes\Onboarding_Wizard;
+use Tasty_Recipes\Recipe_Explorer;
 
 /**
  * Base controller class for the plugin.
@@ -249,6 +251,7 @@ class Tasty_Recipes {
 		add_action( 'init', array( 'Tasty_Recipes\Block_Editor', 'action_init_register' ) );
 		add_action( 'init', array( 'Tasty_Recipes\Content_Model', 'init_post_type' ) );
 		add_action( 'tasty_recipes_process_thumbnails', array( 'Tasty_Recipes\Content_Model', 'action_tasty_recipes_process_thumbnails' ) );
+		add_action( 'rest_api_init', array( 'Tasty_Recipes\Recipe_Explorer', 'action_rest_api_init' ) );
 
 		// Frontend.
 		add_action( 'body_class', array( 'Tasty_Recipes\Content_Model', 'filter_body_class' ) );
@@ -285,10 +288,12 @@ class Tasty_Recipes {
 
 		add_action( 'wp_insert_post', array( 'Tasty_Recipes\Editor', 'handle_add_new_post' ), 10, 3 );
 		add_action( 'post_updated', array( 'Tasty_Recipes\Editor', 'handle_edit_post' ), 10, 3 );
+		add_action( 'deleted_post', array( __CLASS__, 'handle_delete_post' ) );
 
 		if ( is_admin() ) {
-			Tasty_Recipes\MetaBox::get_instance();
+			MetaBox::get_instance();
 			Onboarding_Wizard::instance()->load_hooks();
+			Recipe_Explorer::load_hooks();
 		}
 	}
 
@@ -425,6 +430,30 @@ class Tasty_Recipes {
 	}
 
 	/**
+	 * Delete recipe parents when a post is deleted. This is needed to free recipes when the parent posts are deleted.
+	 * 
+	 * @since x.x
+	 *
+	 * @param int $post_id The post id of the recipe that was deleted.
+	 *
+	 * @return void
+	 */
+	public static function handle_delete_post( $post_id ) {
+		global $wpdb;
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$wpdb->delete(
+			$wpdb->postmeta,
+			array(
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+				'meta_key'   => '_tasty_recipe_parents',
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+				'meta_value' => $post_id,
+			)
+		);
+	}
+
+	/**
 	 * Get the Nutrifox url. If it's missing https, add it.
 	 *
 	 * @since 3.7.4
@@ -491,6 +520,7 @@ class Tasty_Recipes {
 				}
 			}
 		}
+
 		if ( function_exists( 'parse_blocks' ) ) {
 			self::recursively_search_blocks( parse_blocks( $content ), $options, $recipes );
 		}
@@ -525,7 +555,8 @@ class Tasty_Recipes {
 				 * @param bool $disable_json Whether to disable the custom schema.
 				 */
 				$disable_json = apply_filters( 'tasty_recipes_use_custom_schema', false, compact( 'block', 'options' ) );
-				if ( $disable_json ) {
+
+				if ( false === $options['disable-json-ld'] && $disable_json ) {
 					continue;
 				}
 				if ( ! empty( $block['attrs']['id'] ) ) {

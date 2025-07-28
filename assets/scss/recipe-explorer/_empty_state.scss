@@ -1,0 +1,33 @@
+.tasty-recipes-empty-state {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 40px;
+
+	h2, p {
+		text-align: center;
+	}
+
+	h2 {
+		font-size: 24px;
+		font-weight: 600;
+		color: #181B25;
+		margin-bottom: 10px;
+	}
+
+	p {
+		font-size: 16px;
+		color: #525866;
+		margin:0;
+
+		a {
+			color: #ED4996;
+			text-decoration: none;
+		}
+	}
+
+	button {
+		margin-top: 20px;
+	}
+}

@@ -7,9 +7,10 @@
 
 namespace Tasty_Recipes;
 
-use Tasty\Framework\Utils\Url;
 use Tasty\Framework\Utils\Common;
 use Tasty_Recipes;
+use Tasty_Recipes\Designs\Template;
+use Tasty_Recipes\Recipe_Explorer;
 
 /**
  * Manages interactions with the settings page.
@@ -56,6 +57,19 @@ class Settings {
 
 		add_filter( 'tasty_framework_admin_menu_items', array( __CLASS__, 'add_menu_item' ) );
 		add_action( 'admin_menu', array( __CLASS__, 'register_settings' ) );
+		add_action( 'update_option_' . Tasty_Recipes::TEMPLATE_OPTION, array( __CLASS__, 'maybe_remove_default_colors' ), 10, 2 );
+		add_action( 'tasty_after_remove_admin_notices', array( __CLASS__, 'register_tabs_hook' ) );
+	}
+
+	/**
+	 * Register tabs hook.
+	 * 
+	 * @since x.x
+	 *
+	 * @return void
+	 */
+	public static function register_tabs_hook() {
+		add_action( 'all_admin_notices', array( __CLASS__, 'add_admin_header' ) );
 	}
 
 	/**
@@ -74,13 +88,62 @@ class Settings {
 	}
 
 	/**
+	 * Maybe remove default colors when the template is changed.
+	 * 
+	 * @since 1.0.2
+	 *
+	 * @param string $old_value Old value.
+	 * @param string $new_value New value.
+	 * 
+	 * @return void
+	 */
+	public static function maybe_remove_default_colors( $old_value, $new_value ) {
+		if ( $old_value === $new_value ) {
+			return;
+		}
+
+		$customizations = get_option( Tasty_Recipes::CUSTOMIZATION_OPTION, array() );
+
+		if ( empty( $customizations ) ) {
+			return;
+		}
+
+		$old_default_colors = Template::get_default_colors_for_template( $old_value );
+		
+		foreach ( $old_default_colors as $key => $value ) {
+			if ( isset( $customizations[ $key ] ) && $customizations[ $key ] === $value ) {
+				unset( $customizations[ $key ] );
+			}
+		}
+
+		update_option( Tasty_Recipes::CUSTOMIZATION_OPTION, $customizations );
+	}
+
+	/**
+	 * Sanitize title.
+	 * 
+	 * @since 1.0.1
+	 *
+	 * @param mixed $value Value to sanitize.
+	 *
+	 * @return string
+	 */
+	public static function safe_sanitize_title( $value ) {
+		if ( ! is_string( $value ) ) {
+			return '';
+		}
+
+		return sanitize_title( $value );
+	}
+
+	/**
 	 * Registers used settings.
 	 *
 	 * @return void
 	 */
 	public static function register_settings() {
 		$sanitize_title = [
-			'sanitize_callback' => 'sanitize_title',
+			'sanitize_callback' => array( __CLASS__, 'safe_sanitize_title' ),
 		];
 
 		$design_settings = [
@@ -107,7 +170,7 @@ class Settings {
 			);
 		}
 
-		$settings = [
+		$settings = array(
 			Tasty_Recipes::QUICK_LINKS_OPTION         => [
 				'sanitize_callback' => array( __CLASS__, 'sanitize_quick_links' ),
 			],
@@ -123,7 +186,7 @@ class Settings {
 			Tasty_Recipes::SHAREASALE_OPTION          => [
 				'sanitize_callback' => 'sanitize_text_field',
 			],
-		];
+		);
 
 		/**
 		 * Filter the settings to be registered.
@@ -181,48 +244,54 @@ class Settings {
 	}
 
 	/**
-	 * Filter field args.
-	 *
-	 * @param array $args Field args.
-	 *
-	 * @return array
-	 */
-	public static function filter_settings_args( $args ) {
-		$args = (array) apply_filters( 'tasty_recipes_admin_settings_field_args', $args );
-		if ( empty( $args['is_pro'] ) && empty( $args['pro_option'] ) ) {
-			return $args;
-		}
-
-		$args['container_class'] = 'tasty-show-modal tasty-recipes-disabled';
-		$utm_content             = str_replace( 'tasty_recipes_', '', sanitize_title( $args['name'] ) );
-		$args['tasty_dataset']   = [
-			'data-modal_id'     => 'tasty_recipes_upgrade_modal',
-			'data-modal_parent' => 'tr',
-			'data-replacements' => wp_json_encode(
-				[
-					'modal_title'         => $args['label'],
-					'setting_utm_content' => $utm_content,
-				]
-			),
-		];
-
-		return $args;
-	}
-
-	/**
-	 * Set the tab links and include the settings template.
-	 *
-	 * @since 3.11.1
+	 * Add admin tabs to the head of all links admin pages.
+	 * 
+	 * @since x.x
 	 *
 	 * @return void
 	 */
-	private static function show_settings() {
+	public static function add_admin_header() {
+		if ( ! self::is_recipes_admin() ) {
+			return;
+		}
+
+		$tabs = self::get_all_tabs();
+		Tasty_Recipes::echo_template_part( 'admin/admin-header', compact( 'tabs' ) );
+
+		do_action( 'tasty_recipes_admin_header' );
+	}
+
+	/**
+	 * Check if we're on the recipes admin page.
+	 * 
+	 * @since x.x
+	 *
+	 * @return bool
+	 */
+	public static function is_recipes_admin() {
+		$our_page_ids = array(
+			'wp-tasty_page_tasty-recipes',
+			'edit-tasty_recipe',
+			'tasty_recipe',
+		);
+		return in_array( get_current_screen()->id, $our_page_ids, true );
+	}
+
+	/**
+	 * Get all tabs.
+	 * 
+	 * @since x.x
+	 *
+	 * @return array
+	 */
+	private static function get_all_tabs() {
 		$active_tab = Utils::sanitize_get_key( 'tab', 'design' );
 		$base_url   = menu_page_url( self::PAGE_SLUG, false );
 		$debug      = Utils::sanitize_get_key( 'debug' );
 		$tabs       = array();
 
 		$add_link = array(
+			'recipes'    => __( 'Recipes', 'tasty-recipes-lite' ),
 			'design'     => __( 'Design', 'tasty-recipes-lite' ),
 			'settings'   => __( 'Settings', 'tasty-recipes-lite' ),
 			'converters' => __( 'Converters', 'tasty-recipes-lite' ),
@@ -235,14 +304,34 @@ class Settings {
 		$add_link['about'] = __( 'Get Started', 'tasty-recipes-lite' );
 
 		foreach ( $add_link as $key => $title ) {
+			$url = add_query_arg( array( 'tab' => $key ), $base_url );
+
+			if ( 'recipes' === $key ) {
+				$url = admin_url( 'edit.php?post_type=tasty_recipe' );
+				$key = 'tasty_recipe';
+			}
+
 			$tabs[] = array(
 				'title'  => $title,
-				'url'    => add_query_arg( array( 'tab' => $key ), $base_url ),
-				'active' => $key === $active_tab,
+				'url'    => $url,
+				'active' => Recipe_Explorer::is_current_page( $key ),
 			);
 		}
 
-		Tasty_Recipes::echo_template_part( 'settings', compact( 'tabs', 'active_tab' ) );
+		return $tabs;
+	}
+
+	/**
+	 * Set the tab links and include the settings template.
+	 *
+	 * @since 3.11.1
+	 *
+	 * @return void
+	 */
+	private static function show_settings() {
+		$active_tab = Utils::sanitize_get_key( 'tab', 'design' );
+
+		Tasty_Recipes::echo_template_part( 'settings', compact( 'active_tab' ) );
 	}
 
 	/**
@@ -310,7 +399,8 @@ class Settings {
 	public static function sanitize_customization_option( $original ) {
 		$original  = stripslashes_deep( (array) $original );
 		$sanitized = array();
-		$allowed   = array(
+		
+		$allowed = array(
 			'primary_color'          => array( __CLASS__, 'sanitize_color' ),
 			'secondary_color'        => array( __CLASS__, 'sanitize_color' ),
 			'icon_color'             => array( __CLASS__, 'sanitize_color' ),
@@ -341,7 +431,7 @@ class Settings {
 				'card',
 			),
 		);
-
+	
 		/**
 		 * Filter the allowed settings.
 		 *
@@ -349,15 +439,22 @@ class Settings {
 		 *
 		 * @param array $allowed Array of allowed settings and how to sanitize them.
 		 */
-		$allowed = apply_filters( 'tasty_recipes_allowed_customization_settings', $allowed );
-
+		$allowed        = apply_filters( 'tasty_recipes_allowed_customization_settings', $allowed );
+		$default_colors = Template::get_default_colors_for_template( get_option( Tasty_Recipes::TEMPLATE_OPTION, 'default' ) );
+	
 		foreach ( $original as $key => $value ) {
 			if ( ! isset( $allowed[ $key ] ) ) {
 				continue;
 			}
-
+	
 			if ( is_callable( $allowed[ $key ] ) ) {
-				$sanitized[ $key ] = $allowed[ $key ]( $value );
+				$sanitized_value = $allowed[ $key ]( $value );
+
+				if ( isset( $default_colors[ $key ] ) && $sanitized_value === $default_colors[ $key ] ) {
+					continue;
+				}
+				
+				$sanitized[ $key ] = $sanitized_value;
 			} elseif ( is_array( $allowed[ $key ] ) ) {
 				if ( in_array( $value, $allowed[ $key ], true ) ) {
 					$sanitized[ $key ] = $value;
@@ -366,9 +463,11 @@ class Settings {
 				}
 			}
 		}
+		
 		if ( ! empty( $sanitized['footer_description'] ) ) {
 			$sanitized['footer_description'] = stripslashes( wpautop( $sanitized['footer_description'] ) );
 		}
+		
 		return $sanitized;
 	}
 

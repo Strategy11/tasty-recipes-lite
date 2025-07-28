@@ -162,3 +162,9 @@ namespace Tasty\Framework\Admin\Plugins {
 		}
 	}
 }
+
+namespace Tasty\Framework\Admin {
+	class JSMessageBox {
+		public static function instance() {}
+	}
+}

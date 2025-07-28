@@ -8,15 +8,18 @@ jobs:
     name: New tag
     runs-on: ubuntu-latest
     steps:
+    - name: Install Subversion
+      run: sudo apt-get update && sudo apt-get install -y subversion
+
     - uses: actions/checkout@master
     - name: Build
       run: |
+        composer config --auth github-oauth.github.com ${{ secrets.GH_TOKEN }}
+        composer install -n --prefer-dist
+        composer config --auth --unset github-oauth.github.com
+        rm auth.json
         npm install
         npm run build
-    - name: Install SVN
-      run: |
-        sudo apt-get update
-        sudo apt-get install subversion
     - name: WordPress Plugin Deploy
       uses: 10up/action-wordpress-plugin-deploy@2.2.2
       env:

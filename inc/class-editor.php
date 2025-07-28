@@ -510,22 +510,29 @@ class Editor {
 		$post_id     = Utils::post_param( 'post_id', 'intval', 0 );
 		$nonce       = Utils::post_param( 'nonce' );
 
-		if ( empty( $post_recipe ) || empty( $post_id ) || empty( $nonce ) ) {
+		if ( empty( $post_recipe ) || empty( $nonce ) ) {
 			wp_send_json_error();
 		}
 
-		$post = get_post( $post_id );
-		if ( empty( $post ) ) {
-			wp_send_json_error();
+		$post = false;
+
+		if ( ! empty( $post_id ) ) {
+			$post = get_post( $post_id );
+
+			if ( empty( $post ) ) {
+				wp_send_json_error();
+			}
 		}
 
-		$post_type_object = get_post_type_object( $post->post_type );
-		if (
-			! current_user_can( $post_type_object->cap->edit_post, $post->ID )
-			||
-			! wp_verify_nonce( $nonce, 'tasty_recipes_modify_recipe' )
-		) {
-			wp_send_json_error();
+		if ( $post ) {
+			$post_type_object = get_post_type_object( $post->post_type );
+			if (
+				! current_user_can( $post_type_object->cap->edit_post, $post->ID )
+				||
+				! wp_verify_nonce( $nonce, 'tasty_recipes_modify_recipe' )
+			) {
+				wp_send_json_error();
+			}
 		}
 
 		if ( ! empty( $post_recipe['id'] ) ) {
@@ -584,6 +591,14 @@ class Editor {
 		$image_id = $recipe->get_image_id();
 		if ( $image_id ) {
 			Content_Model::generate_attachment_image_sizes( $image_id );
+		}
+
+		if ( ! $post ) {
+			wp_send_json_success(
+				array(
+					'recipe' => get_post( $recipe->get_id() ),
+				)
+			);
 		}
 
 		$shortcode = Shortcodes::get_shortcode_for_recipe( $recipe );

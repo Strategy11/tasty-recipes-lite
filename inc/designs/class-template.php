@@ -492,4 +492,43 @@ class Template {
 
 		return $assets;
 	}
+
+	/**
+	 * Get default colors for a specific template.
+	 * 
+	 * @since 1.0.2
+	 *
+	 * @param string $template Template name.
+	 * 
+	 * @return array
+	 */
+	public static function get_default_colors_for_template( $template ) {
+		$is_snap = $template === 'snap';
+		
+		/**
+		 * Filter the default colors for a specific template.
+		 *
+		 * @since 1.0.2
+		 *
+		 * @param array $colors Array of default colors.
+		 * @param string $template Template name.
+		 */
+		return apply_filters(
+			'tasty_recipes_default_colors_for_template',
+			array(
+				'primary_color'      => $is_snap ? '#000000' : '#FFFFFF',
+				'secondary_color'    => '#FFFFFF',
+				'icon_color'         => '#000000',
+				'button_color'       => $is_snap ? '#000000' : '#F9F9F9',
+				'button_text_color'  => $is_snap ? '#FFFFFF' : '#AAAAAA',
+				'detail_label_color' => '#000000',
+				'detail_value_color' => '#000000',
+				'h2_color'           => '#000000',
+				'h3_color'           => '#000000',
+				'body_color'         => '#000000',
+				'star_color'         => '#F2B955',
+			),
+			$template
+		);
+	}
 }

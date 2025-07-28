@@ -481,6 +481,17 @@ class Distribution_Metadata {
 			}
 		}
 
+		/**
+		 * Allow third-parties to modify the nutrition schema.
+		 *
+		 * @since 1.0.3
+		 *
+		 * @param array   $nutrition Nutrition schema.
+		 * @param Recipe  $recipe    Recipe object.
+		 * @param array   $recipe_json Recipe JSON data.
+		 */
+		$nutrition = apply_filters( 'tasty_recipes_nutrition_schema', $nutrition, $recipe, $recipe_json );
+
 		if ( empty( $nutrition ) ) {
 			return;
 		}

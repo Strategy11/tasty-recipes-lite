@@ -1,10 +1,10 @@
 === Tasty Recipes Lite ===
-Contributors: wptasty, sswells, srwells, danielbachhuber
+Contributors: strategy11team, sswells, srwells, danielbachhuber
 Tags: recipe, recipe maker, recipe card, rating, food blogging
-Requires at least: 5.8
-Tested up to: 6.7.1
+Requires at least: 5.9
+Tested up to: 6.8.1
 Requires PHP: 7.2
-Stable tag: 1.0
+Stable tag: 1.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,40 +12,93 @@ The easiest recipe plugin to get your food blog up and running fast.
 
 == Description ==
 
-[Tasty Recipes](https://www.wptasty.com/tasty-recipes) makes it possible for anyone to publish their favorite recipes to the world. Your recipes will automatically be optimized for search engines and match your theme's design.
+=== Tasty Recipes Lite ===
 
-= Optimized for humans and machines =
+Tasty Recipes Lite is a free WordPress recipe plugin made for food bloggers and creators who want simple, beautiful recipe cards that show up in search. It has recipe schema baked in for SEO, a clean design, and all the essentials for publishing your recipes and getting them noticed!
 
-In the WordPress editor, embed a recipe into a post, page or custom post type by using the "Add Recipe" button. When the recipe is inserted into the content, you'll see a preview of the rendered recipe so you know exactly what it's going to look like when published.
+**Get a feel for the full flavor. Try the **[**Tasty Recipes live demo**](https://www.wptasty.com/tasty-recipes/demo)** or** check out the full suite of [WP Tasty's plugins for food bloggers](https://www.wptasty.com/).
 
-On the frontend of your website, your published recipe uses standard markup to fit in naturally with the design of your theme. Readers can click the "Print" button to open a version of the recipe formatted specifically for print.
+📬 [Join our email list](https://www.wptasty.com/newsletter) for food blogging tips, plugin updates, and content creator inspiration.
 
-= Schema.org microdata and JSON+LD =
+Tasty Recipes Lite has everything you need to start sharing recipes on your WordPress site without the overwhelm.
 
-Tasty Recipes automatically includes Schema.org microdata and JSON+LD to make it easy for Google and other search engines to read your recipes. When entering in your recipe's ingredients or instructions, make sure to create an ordered or unordered list. The list will signal to Tasty Recipes that these items should be marked up with Schema.org microdata and JSON+LD.
+=== Tasty Recipes Lite Features ===
 
-= Earn revenue with ads =
+* Works with the WordPress **Block Editor**, **Classic Editor**, and **Elementor**
+* **Easily add recipe cards** to any post or page
+* **Clean, modern interface** that works with your theme
+* **Fully responsive** for mobile and desktop
+* Choose from **3 beautiful recipe card templates**
+* Built-in **recipe schema** (Schema.org + JSON-LD) for better SEO
+* **Print Recipe** button and a **Jump to Recipe** button
+* Add **recipe videos** directly to the card
+* Show **basic star ratings** pulled from comments
+* **Import recipes** from other plugins
+* Works with **Nutrifox** to add nutrition info
+* Create and edit recipes with an easy-to-use **template editor**
+* **Google AMP** compatible
+* Works with your **ShareASale affiliate ID**
 
-You're most likely creating a recipe blog because you'd like some extra revenue. In Tasty Recipes Lite you can insert ads and videos into recipe cards from [Mediavine](https://vault.pactsafe.io/s/9cf003f8-52ba-4f99-af33-f4edb31f1d1a/privacy.html) or [Raptive](https://raptive.com/raptive-service-agreement/) (previously AdThrive). Or display a "powered by" affiliate link if you love Tasty Recipes and would like to share it. Each of these options requires an account with each service in order to start earning revenue.
+=== Tasty Recipes Premium Features ===
 
-Get more ways of generating revenue in the [premium version](https://www.wptasty.com/pricing-recipes), including adding links to ingredients and an Instacart integration.
+* **4 more** beautiful recipe card templates
+* Add **Instacart integration** so readers can shop your ingredients instantly 
+* Let readers **share recipes** with a branded social footer or built-in Pin recipe button
+* Give readers the ability to **scale recipes** (2x, 3x — no math required!)
+* Allow star ratings **without requiring a comment**
+* Add a **custom CTA** below your recipe (like “Tag me on Instagram!”)
+* The option to turn on **Cook Mode** to keep screens on while cooking
+* **Add links to ingredients** for affiliate or internal links
+* Choose from multiple **Quick Links styles** for easier navigation
+* Link to tools and appliances with **equipment links** powered by Tasty Links
+* Add a **manual nutrition label** (in addition to Nutrifox)
+* Optimize for **Pinterest Rich Pins** and control exactly what gets shared
+* Let readers **check off ingredients** as they go
+* Automatically **convert measurements** to metric and vice-versa
+* **Copy ingredients to the clipboard** with one click
+* Add **YouTube videos** with enhanced embeds via the Tasty API
 
-= Pain-free switching from other WordPress recipe plugins =
+=== Import and convert recipes from ===
 
-Tasty Recipes can fully convert from your existing recipe plugin into the Tasty Recipes format. First, perform a couple of test conversions on existing posts. If your posts support revisions, Tasty Recipes creates new revisions so you can safely roll back to the previous markup. Once you've verified your recipes convert as expected, use the batch conversion tool in "Settings" -> "Tasty Recipes" to migrate any remaining existing recipes.
-
-The following recipe plugin conversions are supported:
 * WP Recipe Maker
 * Mediavine Create
-* Cookbook
 * EasyRecipe
 * Meal Planner Pro
-* Simple Recipe Pro
 * WordPress.com
 * WP Ultimate Recipe
 * Yummly
 * YumPrint Recipe Card
 * ZipList / Zip Recipes
+
+== Screenshots ==
+1. Color Styler
+2. Snap template
+3. Simple Template
+4. Print button
+5. Print preview
+6. In-post recipe editor
+7. Schema results
+8. Quick Links
+
+== Frequently Asked Questions ==
+
+**Is there a demo or support documentation?**
+Yes! You can [view the live demo](https://www.wptasty.com/tasty-recipes/demo) and check out our [support documentation](https://www.wptasty.com/support) for setup tips and support.
+
+---
+
+**Is Tasty Recipes SEO friendly?**
+Yes! It has built-in recipe schema (Schema.org + JSON-LD) to help your recipes show up in Google search results.
+
+---
+
+**Can I switch from another recipe plugin?**
+You can! Tasty Recipes Lite imports from WPRM, Create, EasyRecipe, and more.
+
+---
+
+**Will this work with my theme and page builder?**
+Yes, it works with nearly all themes and page builders, including Elementor, the Block Editor, and Classic Editor.
 
 == Installation ==
 
@@ -57,3 +110,16 @@ The Tasty Recipes plugin can be installed much like any other WordPress plugin.
 With Tasty Recipes, there aren't any confusing settings to configure or customizations you need to worry about. You can now share your favorite recipes with the world!
 
 == Changelog ==
+= 1.0.3 (June 23, 2025) =
+* Fix: Bug with nutrition schema
+
+= 1.0.2 (June 16, 2025) =
+* Enhancement: Prevent saving default colors in the Design tab
+* Fix: Issue with print icon on archive pages
+* Fix: Typo on the Get Started page
+
+= 1.0.1 (June 4, 2025) =
+* Fix: Add changelog
+
+= 1.0.0 (June 4, 2025) =
+* New: The initial release!
