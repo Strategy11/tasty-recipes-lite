@@ -5,12 +5,15 @@ import { MessageModal } from '../components/MessageModal';
 
 let isOpen = false;
 let instance = null;
+let root = null;
 const body = document.body;
 
 const closePermanentDeleteModal = () => {
 	isOpen = false;
 	instance.remove();
+	root.unmount();
 	instance = null;
+	root = null;
 };
 
 export const openPermanentDeleteModal = ( postId, name ) => {

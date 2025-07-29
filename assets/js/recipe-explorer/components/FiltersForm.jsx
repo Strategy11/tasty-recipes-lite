@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import { useState, useRef } from '@wordpress/element';
+import { useState, useRef, useEffect } from '@wordpress/element';
 
 const { filters } = window.tastyRecipesExplorerPage;
 
@@ -9,15 +9,33 @@ const emptyFormData = {
 	method: '',
 	category: '',
 	author: '',
+	diet: '',
 };
 
-export const FiltersForm = () => {
+export const FiltersForm = ( { closeFiltersForm } ) => {
 	const formRef = useRef( null );
 	const [ formData, setFormData ] = useState( () => {
 		const currentParams = new URLSearchParams( window.location.search );
 
 		return Object.fromEntries( currentParams.entries() );
 	} );
+
+	useEffect( () => {
+		const handleClickOutside = ( event ) => {
+			if (
+				formRef.current &&
+				! formRef.current.contains( event.target )
+			) {
+				closeFiltersForm();
+			}
+		};
+
+		document.addEventListener( 'mousedown', handleClickOutside );
+
+		return () => {
+			document.removeEventListener( 'mousedown', handleClickOutside );
+		};
+	}, [ closeFiltersForm ] );
 
 	const handleSubmit = ( e ) => {
 		e.preventDefault();
@@ -30,6 +48,24 @@ export const FiltersForm = () => {
 				: currentParams.delete( key )
 		);
 
+		setUrlParamsAndRefresh( currentParams );
+	};
+
+	const handleReset = ( e ) => {
+		e.preventDefault();
+
+		setFormData( emptyFormData );
+
+		const currentParams = new URLSearchParams( window.location.search );
+
+		Object.keys( emptyFormData ).forEach( ( key ) => {
+			currentParams.delete( key );
+		} );
+
+		setUrlParamsAndRefresh( currentParams );
+	};
+
+	const setUrlParamsAndRefresh = ( currentParams ) => {
 		window.history.pushState(
 			{},
 			'',
@@ -169,11 +205,35 @@ export const FiltersForm = () => {
 					</option>
 					{ filters.author.map( ( author ) => (
 						<option
-							value={ author }
-							key={ author }
-							selected={ formData.author === author }
+							value={ author.id }
+							key={ author.id }
+							selected={ formData.author === author.id }
 						>
-							{ author }
+							{ author.name }
+						</option>
+					) ) }
+				</select>
+			</div>
+			<div className="tasty-recipes-filter-group">
+				<label htmlFor="filter-diet">
+					{ __( 'Diet', 'tasty-recipes-lite' ) }
+				</label>
+				<select
+					id="filter-diet"
+					name="diet"
+					onChange={ handleChange }
+					value={ formData.diet }
+				>
+					<option value="" selected={ ! formData.diet }>
+						{ __( 'Select diet', 'tasty-recipes-lite' ) }
+					</option>
+					{ filters.diet.map( ( diet ) => (
+						<option
+							value={ diet }
+							key={ diet }
+							selected={ formData.diet === diet }
+						>
+							{ diet }
 						</option>
 					) ) }
 				</select>
@@ -182,7 +242,7 @@ export const FiltersForm = () => {
 				<button
 					type="reset"
 					className="tasty-secondary-button"
-					onClick={ () => setFormData( emptyFormData ) }
+					onClick={ handleReset }
 				>
 					{ __( 'Reset', 'tasty-recipes-lite' ) }
 				</button>

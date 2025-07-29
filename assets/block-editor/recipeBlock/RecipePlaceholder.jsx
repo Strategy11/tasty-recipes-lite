@@ -78,6 +78,7 @@ export const RecipePlaceholder = ( { handleModalClose, setAttributes } ) => {
 						<div className="tasty-recipes-block-placeholder-embed">
 							<Select
 								className="tasty-recipes-block-placeholder-select"
+								classNamePrefix="tasty-recipes-select"
 								placeholder={ __(
 									'Select existing recipe',
 									'tasty-recipes-lite'

@@ -22,7 +22,7 @@ class Recipe_Explorer {
 	 * 
 	 * @var array
 	 */
-	private static $filter_fields = array( 'rating', 'cuisine', 'method', 'category', 'author' );
+	private static $filter_fields = array( 'rating', 'cuisine', 'method', 'category', 'author', 'diet' );
 
 	/**
 	 * Load hooks.
@@ -38,6 +38,9 @@ class Recipe_Explorer {
 		add_action( 'manage_posts_columns', array( __CLASS__, 'action_manage_posts_columns' ) );
 		add_action( 'manage_posts_custom_column', array( __CLASS__, 'action_manage_posts_custom_column' ), 10, 2 );
 		add_action( 'restrict_manage_posts', array( __CLASS__, 'add_filters_button' ) );
+
+		// We intercept the user meta because the default_hidden_columns isn't always called.
+		add_filter( 'get_user_option_manageedit-tasty_recipecolumnshidden', array( __CLASS__, 'set_default_hidden_columns' ) );
 
 		add_filter( 'manage_edit-tasty_recipe_sortable_columns', array( __CLASS__, 'action_manage_sortable_columns' ) );
 		add_filter( 'post_row_actions', array( __CLASS__, 'filter_post_row_actions' ), 10, 2 );
@@ -193,8 +196,13 @@ class Recipe_Explorer {
 			return;
 		}
 
-		$query->set( 'orderby', 'title' );
-		$query->set( 'order', 'ASC' );
+		if ( Utils::get_param( 'orderby' ) ) {
+			$query->set( 'orderby', Utils::get_param( 'orderby' ) );
+		}
+
+		if ( Utils::get_param( 'order' ) ) {
+			$query->set( 'order', Utils::get_param( 'order' ) );
+		}
 	}
 
 	/**
@@ -217,7 +225,15 @@ class Recipe_Explorer {
 		$columns['rating']       = esc_html__( 'Rating', 'tasty-recipes-lite' );
 		$columns['recipe-post']  = esc_html__( "Recipe's post", 'tasty-recipes-lite' );
 		$columns['last-updated'] = esc_html__( 'Last updated', 'tasty-recipes-lite' );
-		$columns['columns']      = esc_html__( 'Columns', 'tasty-recipes-lite' );
+
+		// Hidden columns by default.
+		$columns['cuisine']  = esc_html__( 'Cuisine', 'tasty-recipes-lite' );
+		$columns['method']   = esc_html__( 'Cooking Method', 'tasty-recipes-lite' );
+		$columns['category'] = esc_html__( 'Category', 'tasty-recipes-lite' );
+		$columns['diet']     = esc_html__( 'Diet', 'tasty-recipes-lite' );
+		$columns['author']   = esc_html__( 'Author', 'tasty-recipes-lite' );
+
+		$columns['columns'] = esc_html__( 'Columns', 'tasty-recipes-lite' );
 
 		if ( isset( $columns['date'] ) ) {
 			unset( $columns['date'] );
@@ -256,7 +272,9 @@ class Recipe_Explorer {
 					break;
 				}
 
-				echo '<a href="' . esc_url( get_edit_post_link( $parent_post_id ) ) . '">' . esc_html( $parent_post->post_title ) . '</a>';
+				$post_title = ! empty( $parent_post->post_title ) ? $parent_post->post_title : __( '(no title)', 'tasty-recipes-lite' );
+
+				echo '<a href="' . esc_url( get_edit_post_link( $parent_post_id ) ) . '">' . esc_html( $post_title ) . '</a>';
 				break;
 			
 			case 'last-updated':
@@ -265,7 +283,59 @@ class Recipe_Explorer {
 			
 			case 'columns':
 				break;
+				
+			// Handle hidden columns content.
+			case 'cuisine':
+				$cuisine = get_post_meta( $recipe_id, 'cuisine', true );
+				echo esc_html( ! empty( $cuisine ) ? $cuisine : '' );
+				break;
+				
+			case 'method':
+				$method = get_post_meta( $recipe_id, 'method', true );
+				echo esc_html( ! empty( $method ) ? $method : '' );
+				break;
+				
+			case 'category':
+				$category = get_post_meta( $recipe_id, 'category', true );
+				echo esc_html( ! empty( $category ) ? $category : '' );
+				break;
+				
+			case 'diet':
+				$diet = get_post_meta( $recipe_id, 'diet', true );
+				echo esc_html( ! empty( $diet ) ? $diet : '' );
+				break;
+				
+			case 'author':
+				$author_id = $post->post_author;
+				$author    = get_userdata( (int) $author_id );
+				echo esc_html( $author ? $author->display_name : '—' );
+				break;
 		}
+	}
+
+	/**
+	 * Set default hidden columns for new users or when no preference is saved.
+	 * 
+	 * @since x.x
+	 *
+	 * @param mixed $result The user option value.
+	 *
+	 * @return mixed
+	 */
+	public static function set_default_hidden_columns( $result ) {
+		if ( ! empty( $result ) ) {
+			return $result;
+		}
+
+		$result = array(
+			'cuisine'  => 'cuisine',
+			'method'   => 'method',
+			'category' => 'category',
+			'diet'     => 'diet',
+			'author'   => 'author',
+		);
+		
+		return $result;
 	}
 
 	/**
@@ -285,36 +355,8 @@ class Recipe_Explorer {
 			TASTY_RECIPES_LITE_VERSION
 		);
 
-		$recipe = Recipe::get_by_id( $recipe_id );
-
-		$allowed_html = array(
-			'span'   => array(
-				'class'        => array(),
-				'data-tr-clip' => array(),
-				'data-rating'  => array(),
-			),
-			'svg'    => array(
-				'class'       => array(),
-				'fill'        => array(),
-				'height'      => array(),
-				'width'       => array(),
-				'viewbox'     => array(),
-				'xmlns'       => array(),
-				'xmlns:xlink' => array(),
-				'style'       => array(),
-				'aria-hidden' => array(),
-			),
-			'use'    => array(
-				'href' => array(),
-			),
-			'symbol' => array(
-				'id'      => array(),
-				'viewbox' => array(),
-			),
-			'path'   => array(
-				'd' => array(),
-			),
-		);
+		$recipe       = Recipe::get_by_id( $recipe_id );
+		$allowed_html = Utils::get_allowed_html();
 
 		echo wp_kses( Ratings::get_rendered_rating( $recipe->get_average_rating() ), $allowed_html );
 	}
@@ -327,7 +369,17 @@ class Recipe_Explorer {
 	 * @return array
 	 */
 	public static function action_manage_sortable_columns() {
-		return array();
+		return array(
+			'title'        => 'title',
+			'rating'       => 'rating',
+			'recipe-post'  => 'recipe-post',
+			'last-updated' => 'last-updated',
+			'cuisine'      => 'cuisine',
+			'method'       => 'method',
+			'category'     => 'category',
+			'diet'         => 'diet',
+			'author'       => 'author',
+		);
 	}
 
 	/**
@@ -474,12 +526,14 @@ class Recipe_Explorer {
 
 		wp_delete_post( $params['id'], true );
 
+		$recipe_title = ! empty( $recipe->get_title() ) ? $recipe->get_title() : __( 'The recipe', 'tasty-recipes-lite' );
+
 		$message  = '<h3>' . esc_html__( 'Recipe deleted!', 'tasty-recipes-lite' ) . '</h3>';
 		$message .= '<p>';
 		$message .= sprintf(
 			/* translators: %s: recipe title */
 			__( '%s has been deleted successfully.', 'tasty-recipes-lite' ),
-			esc_html( $recipe->get_title() )
+			esc_html( $recipe_title )
 		);
 		$message .= '</p>';
 		
@@ -731,6 +785,9 @@ class Recipe_Explorer {
 			return $query;
 		}
 
+		$meta_queries = array();
+		$relation     = 'AND';
+
 		if ( Utils::get_param( 'rating' ) ) {
 			$rating_filter = Utils::get_param( 'rating' );
 			
@@ -749,47 +806,45 @@ class Recipe_Explorer {
 		}
 
 		if ( Utils::get_param( 'cuisine' ) ) {
-			$query->set(
-				'meta_query',
-				array(
-					array(
-						'key'     => 'cuisine',
-						'value'   => Utils::get_param( 'cuisine' ),
-						'compare' => '=',
-					),
-				) 
+			$meta_queries[] = array(
+				'key'     => 'cuisine',
+				'value'   => Utils::get_param( 'cuisine' ),
+				'compare' => '=',
 			);
 		}
 
 		if ( Utils::get_param( 'method' ) ) {
-			$query->set(
-				'meta_query',
-				array(
-					array(
-						'key'     => 'method',
-						'value'   => Utils::get_param( 'method' ),
-						'compare' => '=',
-					),
-				) 
+			$meta_queries[] = array(
+				'key'     => 'method',
+				'value'   => Utils::get_param( 'method' ),
+				'compare' => '=',
 			);
 		}
 
 		if ( Utils::get_param( 'category' ) ) {
-			$query->set(
-				'meta_query',
-				array(
-					array(
-						'key'     => 'category',
-						'value'   => Utils::get_param( 'category' ),
-						'compare' => '=',
-					),
-				) 
+			$meta_queries[] = array(
+				'key'     => 'category',
+				'value'   => Utils::get_param( 'category' ),
+				'compare' => '=',
 			);
+		}
+
+		if ( Utils::get_param( 'diet' ) ) {
+			$meta_queries[] = array(
+				'key'     => 'diet',
+				'value'   => Utils::get_param( 'diet' ),
+				'compare' => '=',
+			);
+		}
+
+		if ( ! empty( $meta_queries ) ) {
+			$meta_queries['relation'] = $relation;
+			$query->set( 'meta_query', $meta_queries );
 		}
 
 		if ( Utils::get_param( 'author' ) ) {
 			$query->set(
-				'author_name',
+				'author',
 				Utils::get_param( 'author' )
 			);
 		}
