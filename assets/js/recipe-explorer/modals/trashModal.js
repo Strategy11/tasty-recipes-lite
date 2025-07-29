@@ -4,12 +4,15 @@ import { MessageModal } from '../components/MessageModal';
 
 let isOpen = false;
 let instance = null;
+let root = null;
 const body = document.body;
 
 const closeTrashModal = () => {
 	isOpen = false;
 	instance.remove();
+	root.unmount();
 	instance = null;
+	root = null;
 };
 
 export const openTrashModal = ( postUrl ) => {
@@ -28,7 +31,7 @@ export const openTrashModal = ( postUrl ) => {
 		</a>
 	);
 
-	createRoot( instance ).render(
+	root = createRoot( instance ).render(
 		<MessageModal
 			title={ __( 'Recipe Can’t be Deleted', 'tasty-recipes-lite' ) }
 			description={ __(
