@@ -39,6 +39,9 @@ class Recipe_Explorer {
 		add_action( 'manage_posts_custom_column', array( __CLASS__, 'action_manage_posts_custom_column' ), 10, 2 );
 		add_action( 'restrict_manage_posts', array( __CLASS__, 'add_filters_button' ) );
 
+		// We intercept the user meta because the default_hidden_columns isn't always called.
+		add_filter( 'get_user_option_manageedit-tasty_recipecolumnshidden', array( __CLASS__, 'set_default_hidden_columns' ) );
+
 		add_filter( 'manage_edit-tasty_recipe_sortable_columns', array( __CLASS__, 'action_manage_sortable_columns' ) );
 		add_filter( 'post_row_actions', array( __CLASS__, 'filter_post_row_actions' ), 10, 2 );
 		add_filter( 'tasty_framework_admin_page_ours', array( __CLASS__, 'make_recipes_cpt_menu_item_ours' ) );
@@ -222,6 +225,14 @@ class Recipe_Explorer {
 		$columns['rating']       = esc_html__( 'Rating', 'tasty-recipes-lite' );
 		$columns['recipe-post']  = esc_html__( "Recipe's post", 'tasty-recipes-lite' );
 		$columns['last-updated'] = esc_html__( 'Last updated', 'tasty-recipes-lite' );
+
+		// Hidden columns by default.
+		$columns['cuisine']  = esc_html__( 'Cuisine', 'tasty-recipes-lite' );
+		$columns['method']   = esc_html__( 'Cooking Method', 'tasty-recipes-lite' );
+		$columns['category'] = esc_html__( 'Category', 'tasty-recipes-lite' );
+		$columns['diet']     = esc_html__( 'Diet', 'tasty-recipes-lite' );
+		$columns['author']   = esc_html__( 'Author', 'tasty-recipes-lite' );
+
 		$columns['columns']      = esc_html__( 'Columns', 'tasty-recipes-lite' );
 
 		if ( isset( $columns['date'] ) ) {
@@ -272,7 +283,59 @@ class Recipe_Explorer {
 			
 			case 'columns':
 				break;
+				
+			// Handle hidden columns content.
+			case 'cuisine':
+				$cuisine = get_post_meta( $recipe_id, 'cuisine', true );
+				echo esc_html( ! empty( $cuisine ) ? $cuisine : '' );
+				break;
+				
+			case 'method':
+				$method = get_post_meta( $recipe_id, 'method', true );
+				echo esc_html( ! empty( $method ) ? $method : '' );
+				break;
+				
+			case 'category':
+				$category = get_post_meta( $recipe_id, 'category', true );
+				echo esc_html( ! empty( $category ) ? $category : '' );
+				break;
+				
+			case 'diet':
+				$diet = get_post_meta( $recipe_id, 'diet', true );
+				echo esc_html( ! empty( $diet ) ? $diet : '' );
+				break;
+				
+			case 'author':
+				$author_id = $post->post_author;
+				$author    = get_userdata( $author_id );
+				echo esc_html( $author ? $author->display_name : '—' );
+				break;
 		}
+	}
+
+	/**
+	 * Set default hidden columns for new users or when no preference is saved.
+	 * 
+	 * @since x.x
+	 *
+	 * @param mixed $result The user option value.
+	 *
+	 * @return mixed
+	 */
+	public static function set_default_hidden_columns( $result ) {
+		if ( ! empty( $result ) ) {
+			return $result;
+		}
+
+		$result = array(
+			'cuisine'  => 'cuisine',
+			'method'   => 'method',
+			'category' => 'category',
+			'diet'     => 'diet',
+			'author'   => 'author',
+		);
+		
+		return $result;
 	}
 
 	/**
@@ -311,6 +374,11 @@ class Recipe_Explorer {
 			'rating'       => 'rating',
 			'recipe-post'  => 'recipe-post',
 			'last-updated' => 'last-updated',
+			'cuisine'      => 'cuisine',
+			'method'       => 'method',
+			'category'     => 'category',
+			'diet'         => 'diet',
+			'author'       => 'author',
 		);
 	}
 
