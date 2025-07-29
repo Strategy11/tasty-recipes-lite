@@ -4,7 +4,7 @@
   "main": "Gruntfile.js",
   "author": "WP Tasty",
   "devDependencies": {
-    "@wordpress/scripts": "^30.19.0",
+    "@wordpress/scripts": "^30.20.0",
     "cross-env": "^7.0.3",
     "grunt": "^1.6.1",
     "grunt-contrib-compress": "^2.0.0",
