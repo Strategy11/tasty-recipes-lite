@@ -126,7 +126,7 @@ class Block_Editor {
 		foreach ( $recipes as $recipe ) {
 			$returnable[] = array(
 				'value' => $recipe->ID,
-				'label' => $recipe->post_title,
+				'label' => ! empty( $recipe->post_title ) ? $recipe->post_title : __( '(no title)', 'tasty-recipes-lite' ),
 			);
 		}
 
