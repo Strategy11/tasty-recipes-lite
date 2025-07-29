@@ -1,5 +1,6 @@
 import { registerBlockType } from '@wordpress/blocks';
 import { registerPlugin } from '@wordpress/plugins';
+import { __ } from '@wordpress/i18n';
 import generateNotices from './admin-notices';
 import TastyRecipesMetaBox from './metabox';
 import { RecipeIcon } from './icons';
@@ -12,6 +13,7 @@ registerBlockType( 'wp-tasty/tasty-recipe', {
 	icon: RecipeIcon,
 	category: 'common',
 	html: false,
+	keywords: [ __( 'recipe', 'tasty-recipes-lite' ) ],
 	attributes: {
 		id: {
 			type: 'number',
