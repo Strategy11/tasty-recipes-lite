@@ -233,7 +233,7 @@ class Recipe_Explorer {
 		$columns['diet']     = esc_html__( 'Diet', 'tasty-recipes-lite' );
 		$columns['author']   = esc_html__( 'Author', 'tasty-recipes-lite' );
 
-		$columns['columns']      = esc_html__( 'Columns', 'tasty-recipes-lite' );
+		$columns['columns'] = esc_html__( 'Columns', 'tasty-recipes-lite' );
 
 		if ( isset( $columns['date'] ) ) {
 			unset( $columns['date'] );
@@ -307,7 +307,7 @@ class Recipe_Explorer {
 				
 			case 'author':
 				$author_id = $post->post_author;
-				$author    = get_userdata( $author_id );
+				$author    = get_userdata( (int) $author_id );
 				echo esc_html( $author ? $author->display_name : '—' );
 				break;
 		}

@@ -81,7 +81,7 @@ class Settings {
 	 */
 	public static function add_menu_item( $menu_items ) {
 		if ( ! empty( $menu_items['tasty-recipes'] ) ) {
-			$menu_items['tasty-recipes']['callback'] = array( __CLASS__, 'handle_settings_page' );
+			$menu_items['tasty-recipes']['callback']      = array( __CLASS__, 'handle_settings_page' );
 			$menu_items['tasty-recipes']['load_callback'] = array( __CLASS__, 'mabybe_redirect_to_recipes' );
 		}
 
