@@ -115,6 +115,7 @@ class Block_Editor {
 			FROM $wpdb->posts post 
 			LEFT JOIN $wpdb->postmeta postmeta ON post.ID = postmeta.post_id AND postmeta.meta_key = '_tasty_recipe_parents'
 			WHERE post.post_type = 'tasty_recipe' 
+			AND post.post_status = 'publish'
 			AND postmeta.meta_id IS NULL"
 		);
 
