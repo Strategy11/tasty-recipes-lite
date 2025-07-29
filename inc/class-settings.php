@@ -82,9 +82,26 @@ class Settings {
 	public static function add_menu_item( $menu_items ) {
 		if ( ! empty( $menu_items['tasty-recipes'] ) ) {
 			$menu_items['tasty-recipes']['callback'] = array( __CLASS__, 'handle_settings_page' );
+			$menu_items['tasty-recipes']['load_callback'] = array( __CLASS__, 'mabybe_redirect_to_recipes' );
 		}
 
 		return $menu_items;
+	}
+
+	/**
+	 * Maybe redirect to the recipes page if no tab is set.
+	 * 
+	 * @since x.x
+	 *
+	 * @return void
+	 */
+	public static function mabybe_redirect_to_recipes() {
+		if ( ! Utils::get_param( 'page' ) || ! empty( Utils::get_param( 'tab' ) ) ) {
+			return;
+		}
+		
+		wp_safe_redirect( admin_url( 'edit.php?post_type=tasty_recipe' ) );
+		exit;
 	}
 
 	/**
