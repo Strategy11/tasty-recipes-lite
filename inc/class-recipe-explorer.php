@@ -22,7 +22,7 @@ class Recipe_Explorer {
 	 * 
 	 * @var array
 	 */
-	private static $filter_fields = array( 'rating', 'cuisine', 'method', 'category', 'author' );
+	private static $filter_fields = array( 'rating', 'cuisine', 'method', 'category', 'author', 'diet' );
 
 	/**
 	 * Load hooks.
@@ -757,6 +757,14 @@ class Recipe_Explorer {
 			$meta_queries[] = array(
 				'key'     => 'category',
 				'value'   => Utils::get_param( 'category' ),
+				'compare' => '=',
+			);
+		}
+
+		if ( Utils::get_param( 'diet' ) ) {
+			$meta_queries[] = array(
+				'key'     => 'diet',
+				'value'   => Utils::get_param( 'diet' ),
 				'compare' => '=',
 			);
 		}

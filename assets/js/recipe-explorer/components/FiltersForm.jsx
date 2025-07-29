@@ -9,6 +9,7 @@ const emptyFormData = {
 	method: '',
 	category: '',
 	author: '',
+	diet: '',
 };
 
 export const FiltersForm = ( { closeFiltersForm } ) => {
@@ -209,6 +210,30 @@ export const FiltersForm = ( { closeFiltersForm } ) => {
 							selected={ formData.author === author.id }
 						>
 							{ author.name }
+						</option>
+					) ) }
+				</select>
+			</div>
+			<div className="tasty-recipes-filter-group">
+				<label htmlFor="filter-diet">
+					{ __( 'Diet', 'tasty-recipes-lite' ) }
+				</label>
+				<select
+					id="filter-diet"
+					name="diet"
+					onChange={ handleChange }
+					value={ formData.diet }
+				>
+					<option value="" selected={ ! formData.diet }>
+						{ __( 'Select diet', 'tasty-recipes-lite' ) }
+					</option>
+					{ filters.diet.map( ( diet ) => (
+						<option
+							value={ diet }
+							key={ diet }
+							selected={ formData.diet === diet }
+						>
+							{ diet }
 						</option>
 					) ) }
 				</select>

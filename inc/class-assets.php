@@ -107,6 +107,7 @@ class Assets {
 						'cuisine'  => Recipe_Explorer::get_unique_filter_values( 'cuisine' ),
 						'method'   => Recipe_Explorer::get_unique_filter_values( 'method' ),
 						'category' => Recipe_Explorer::get_unique_filter_values( 'category' ),
+						'diet'     => Recipe_Explorer::get_unique_filter_values( 'diet' ),
 						'author'   => $users,
 					),
 				)
