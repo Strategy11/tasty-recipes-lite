@@ -258,9 +258,7 @@ class Onboarding_Wizard {
 		check_ajax_referer( 'tasty_recipes_onboarding_nonce', 'nonce' );
 		Admin::validate_ajax_capability();
 
-		// TODO: Enable tracking setting here after adding tracking setting.
 		add_option( self::USAGE_DATA_OPTION, true );
-
 		$this->subscribe_to_active_campaign();
 
 		// Send response.
