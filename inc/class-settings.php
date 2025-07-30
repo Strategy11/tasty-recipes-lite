@@ -596,12 +596,14 @@ class Settings {
 
 		if ( ! wp_verify_nonce( $nonce, 'tasty_recipes_onboarding_consent_tracking' ) ) {
 			$js_messagebox->add( 'error', esc_html__( 'Security check failed', 'tasty-recipes-lite' ) );
+
 			wp_safe_redirect( admin_url( 'admin.php?page=tasty-recipes&tab=about' ) );
 			exit;
 		}
 
 		if ( ! current_user_can( 'manage_options' ) ) {
 			$js_messagebox->add( 'error', esc_html__( 'You do not have sufficient permissions to access this page.', 'tasty-recipes-lite' ) );
+
 			wp_safe_redirect( admin_url( 'admin.php?page=tasty-recipes&tab=about' ) );
 			exit;
 		}
