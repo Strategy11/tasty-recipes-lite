@@ -73,6 +73,13 @@ class Onboarding_Wizard {
 	const INITIAL_STEP = 'consent-tracking';
 
 	/**
+	 * Option name to store usage data.
+	 *
+	 * @var string
+	 */
+	const USAGE_DATA_OPTION = 'tasty_recipes_onboarding_usage_data';
+
+	/**
 	 * Holds the URL to access the Onboarding Wizard's page.
 	 *
 	 * @var string
@@ -252,6 +259,7 @@ class Onboarding_Wizard {
 		Admin::validate_ajax_capability();
 
 		// TODO: Enable tracking setting here after adding tracking setting.
+		add_option( self::USAGE_DATA_OPTION, true );
 
 		$this->subscribe_to_active_campaign();
 
