@@ -12,6 +12,7 @@ use Tasty_Recipes;
 use Tasty_Recipes\Designs\Template;
 use Tasty_Recipes\Recipe_Explorer;
 use Tasty\Framework\Admin\JSMessageBox;
+use Tasty_Recipes\Onboarding_Wizard;
 
 /**
  * Manages interactions with the settings page.
@@ -610,7 +611,7 @@ class Settings {
 
 		$consent_tracking = Utils::post_param( 'tasty_recipes_onboarding_consent_tracking' );
 
-		update_option( 'tasty_recipes_onboarding_usage_data', $consent_tracking === '1' );
+		update_option( Onboarding_Wizard::USAGE_DATA_OPTION, $consent_tracking === '1' );
 
 		$js_messagebox->add( 'success', esc_html__( 'Settings saved', 'tasty-recipes-lite' ) );
 

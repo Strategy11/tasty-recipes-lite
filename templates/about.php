@@ -66,7 +66,7 @@ defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 						type="checkbox"
 						name="tasty_recipes_onboarding_consent_tracking"
 						value="1"
-						<?php checked( get_option( 'tasty_recipes_onboarding_usage_data', false ) ); ?>
+						<?php checked( get_option( Tasty_Recipes\Onboarding_Wizard::USAGE_DATA_OPTION, false ) ); ?>
 					>
 					<?php esc_html_e( 'Allow WP Tasty to track plugin usage to help us ensure compatibility and simplify our settings.', 'tasty-recipes-lite' ); ?>
 				</label>
