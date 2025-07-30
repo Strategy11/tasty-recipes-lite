@@ -603,7 +603,7 @@ class Settings {
 		}
 
 		if ( ! current_user_can( 'manage_options' ) ) {
-			$js_messagebox->add( 'error', esc_html__( 'You do not have sufficient permissions to access this page.', 'tasty-recipes-lite' ) );
+			$js_messagebox->add( 'error', esc_html__( 'You do not have sufficient permissions to do that.', 'tasty-recipes-lite' ) );
 
 			wp_safe_redirect( admin_url( 'admin.php?page=tasty-recipes&tab=about' ) );
 			exit;
