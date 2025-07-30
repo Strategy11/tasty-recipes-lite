@@ -57,5 +57,21 @@ defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 				</div>
 			</div>
 		</section>
+		<div>
+			<form id="tasty-recipes-onboarding-consent-tracking" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+				<input type="hidden" name="action" value="tasty_recipes_onboarding_consent_tracking">
+				<input type="hidden" name="nonce" value="<?php echo esc_attr( wp_create_nonce( 'tasty_recipes_onboarding_consent_tracking' ) ); ?>">
+				<label>
+					<input
+						type="checkbox"
+						name="tasty_recipes_onboarding_consent_tracking"
+						value="1"
+						<?php checked( get_option( 'tasty_recipes_onboarding_usage_data', false ) ); ?>
+					>
+					<?php esc_html_e( 'Allow WP Tasty to track plugin usage to help us ensure compatibility and simplify our settings.', 'tasty-recipes-lite' ); ?>
+				</label>
+				<button style="margin-top: 15px;" class="tasty-button-primary" type="submit"><?php esc_html_e( 'Save', 'tasty-recipes-lite' ); ?></button>
+			</form>
+		</div>
 	</main>
 </div>

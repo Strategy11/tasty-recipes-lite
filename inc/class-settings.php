@@ -11,6 +11,7 @@ use Tasty\Framework\Utils\Common;
 use Tasty_Recipes;
 use Tasty_Recipes\Designs\Template;
 use Tasty_Recipes\Recipe_Explorer;
+use Tasty\Framework\Admin\JSMessageBox;
 
 /**
  * Manages interactions with the settings page.
@@ -59,6 +60,7 @@ class Settings {
 		add_action( 'admin_menu', array( __CLASS__, 'register_settings' ) );
 		add_action( 'update_option_' . Tasty_Recipes::TEMPLATE_OPTION, array( __CLASS__, 'maybe_remove_default_colors' ), 10, 2 );
 		add_action( 'tasty_after_remove_admin_notices', array( __CLASS__, 'register_tabs_hook' ) );
+		add_action( 'admin_post_tasty_recipes_onboarding_consent_tracking', array( __CLASS__, 'handle_onboarding_consent_tracking' ) );
 	}
 
 	/**
@@ -579,5 +581,38 @@ class Settings {
 		}
 
 		return (array) $option_value;
+	}
+
+	/**
+	 * Handle the onboarding consent tracking form submission.
+	 * 
+	 * @since x.x
+	 *
+	 * @return void
+	 */
+	public static function handle_onboarding_consent_tracking() {
+		$nonce         = Utils::post_param( 'nonce' );
+		$js_messagebox = JSMessageBox::instance()->init( get_current_user_id() );
+
+		if ( ! wp_verify_nonce( $nonce, 'tasty_recipes_onboarding_consent_tracking' ) ) {
+			$js_messagebox->add( 'error', esc_html__( 'Security check failed', 'tasty-recipes-lite' ) );
+			wp_safe_redirect( admin_url( 'admin.php?page=tasty-recipes&tab=about' ) );
+			exit;
+		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			$js_messagebox->add( 'error', esc_html__( 'You do not have sufficient permissions to access this page.', 'tasty-recipes-lite' ) );
+			wp_safe_redirect( admin_url( 'admin.php?page=tasty-recipes&tab=about' ) );
+			exit;
+		}
+
+		$consent_tracking = Utils::post_param( 'tasty_recipes_onboarding_consent_tracking' );
+
+		update_option( 'tasty_recipes_onboarding_usage_data', $consent_tracking === '1' );
+
+		$js_messagebox->add( 'success', esc_html__( 'Settings saved', 'tasty-recipes-lite' ) );
+
+		wp_safe_redirect( admin_url( 'admin.php?page=tasty-recipes&tab=about' ) );
+		exit;
 	}
 }
