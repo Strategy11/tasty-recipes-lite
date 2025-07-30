@@ -65,7 +65,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</div>
 			</div>
 
-			<!--
 			<div class="tasty-recipes-card-box-permission-item">
 				<span>
 					<?php
@@ -104,7 +103,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 					<span><?php esc_html_e( 'Names, slugs, versions, and if active or not', 'tasty-recipes-lite' ); ?></span>
 				</div>
 			</div>
-			-->
+			
 		</div>
 	</div>
 </section>
