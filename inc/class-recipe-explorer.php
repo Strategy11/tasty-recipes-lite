@@ -85,8 +85,11 @@ class Recipe_Explorer {
 	public static function filter_tab_buttons( $html ) {
 		global $post_type, $wp_query;
 
+		if ( 'tasty_recipe' !== $post_type ) {
+			return $html;
+		}
+
 		if (
-			'tasty_recipe' !== $post_type ||
 			'edit' !== get_current_screen()->base ||
 			( ! self::has_any_filters_applied() && ! $wp_query->have_posts() )
 		) {
