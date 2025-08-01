@@ -274,7 +274,7 @@ class Quick_Links {
 		}
 		if ( in_array( 'print', $should_prepend_jump_to, true ) ) {
 			$links['print'] = '<a class="tasty-recipes-print-link' . esc_attr( $btn_class ) . '" ' .
-				'href="' . esc_url( tasty_recipes_get_print_url( $post->ID, $recipe_id ) ) . '"' . $open_new . '>' .
+				'href="' . esc_url( tasty_recipes_get_print_url( $post->ID, $recipe_id ) ) . '"' . $open_new . ' target="_blank">' .
 				esc_html__( 'Print Recipe', 'tasty-recipes-lite' ) .
 				'</a>';
 		}
