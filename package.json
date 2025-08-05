@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "@wordpress/icons": "^10.26.0",
-    "@uiw/react-color-chrome": "^2.7.1",
+    "@uiw/react-color-chrome": "^2.7.3",
     "react-select": "^5.10.2"
   }
 }
