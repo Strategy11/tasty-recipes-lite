@@ -943,4 +943,56 @@ class Assets {
 
 		return $template_vars;
 	}
+
+	/**
+	 * Dequeue all assets except those with 'tasty' prefix.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
+	 */
+	public static function dequeue_non_tasty_assets() {
+		global $wp_styles, $wp_scripts;
+
+		if ( isset( $wp_styles->queue ) && is_array( $wp_styles->queue ) ) {
+			foreach ( $wp_styles->queue as $handle ) {
+				if ( ! self::is_tasty_asset( $handle ) ) {
+					wp_dequeue_style( $handle );
+				}
+			}
+		}
+
+		if ( isset( $wp_scripts->queue ) && is_array( $wp_scripts->queue ) ) {
+			foreach ( $wp_scripts->queue as $handle ) {
+				if ( ! self::is_tasty_asset( $handle ) ) {
+					wp_dequeue_script( $handle );
+				}
+			}
+		}
+	}
+
+	/**
+	 * Check if an asset handle has a 'tasty' prefix.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $handle The asset handle to check.
+	 *
+	 * @return bool True if the asset has a 'tasty' prefix, false otherwise.
+	 */
+	private static function is_tasty_asset( $handle ) {
+		if ( str_contains( $handle, 'tasty' ) ) {
+			return true;
+		}
+		
+		/**
+		 * Filter to allow additional assets to be kept when all non-tasty assets are dequeued.
+		 *
+		 * @since x.x
+		 *
+		 * @param bool   $keep   Whether to keep the asset.
+		 * @param string $handle The asset handle.
+		 */
+		return apply_filters( 'tasty_recipes_keep_asset', false, $handle );
+	}
 }
