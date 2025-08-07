@@ -977,6 +977,7 @@ class Assets {
 	 * @since x.x
 	 *
 	 * @param string $handle The asset handle to check.
+	 *
 	 * @return bool True if the asset has a 'tasty' prefix, false otherwise.
 	 */
 	private static function is_tasty_asset( $handle ) {
