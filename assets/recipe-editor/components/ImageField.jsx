@@ -45,7 +45,10 @@ export const ImageField = ( { recipe, handleRecipeChange } ) => {
 
 			if ( attachments.length ) {
 				handleRecipeChange( 'image_id', attachments[ 0 ].id );
-				setRecipeThumbnail( attachments[ 0 ].sizes.thumbnail );
+				setRecipeThumbnail(
+					attachments[ 0 ].sizes.thumbnail ??
+						attachments[ 0 ].sizes.full
+				);
 			}
 		} );
 
