@@ -191,7 +191,7 @@ class Template {
 			'tasty-recipes-has-image',
 		);
 
-		// Assets::dequeue_non_tasty_assets();
+		Assets::dequeue_non_tasty_assets();
 
 		$show_plug = get_option( Tasty_Recipes::SHAREASALE_OPTION ) || get_option( Tasty_Recipes::POWEREDBY_OPTION );
 		if ( $show_plug ) {
