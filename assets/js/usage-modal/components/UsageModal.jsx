@@ -20,6 +20,11 @@ export const UsageModal = ( { closeUsageModal } ) => {
 		}
 	}, [] );
 
+	const handleAllowTracking = useCallback( () => {
+		updateUsageConsent( 'yes' );
+		closeModal();
+	}, [ closeModal, updateUsageConsent ] );
+
 	useEffect( () => {
 		openModal( {
 			title: __( 'Help Us to Improve WP Tasty', 'tasty-recipes-lite' ),
@@ -39,10 +44,7 @@ export const UsageModal = ( { closeUsageModal } ) => {
 			<div className="tasty-recipes-modal-actions">
 				<button
 					className="tasty-button-primary"
-					onClick={ () => {
-						updateUsageConsent( 'yes' );
-						closeModal();
-					} }
+					onClick={ handleAllowTracking }
 				>
 					{ __( 'Allow Tracking', 'tasty-recipes-lite' ) }
 				</button>
