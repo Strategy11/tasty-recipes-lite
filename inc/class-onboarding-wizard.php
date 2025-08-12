@@ -111,7 +111,7 @@ class Onboarding_Wizard {
 	 *
 	 * @since x.x
 	 *
-	 * @param WP_REST_Request $request The request object.
+	 * @param object $request The request object.
 	 *
 	 * @return void
 	 */
