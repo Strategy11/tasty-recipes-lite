@@ -520,7 +520,7 @@ class Onboarding_Wizard {
 		);
 
 		?>
-		<div id="tasty-recipes-usage-modal"></div>
+		<div id="tasty-recipes-usage-modal" class="hide-if-no-js"></div>
 		<?php
 	}
 }
