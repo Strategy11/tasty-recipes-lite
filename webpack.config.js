@@ -74,6 +74,7 @@ module.exports = {
 			__dirname,
 			'assets/recipe-editor/index.js'
 		),
+		'usage-modal': resolve( __dirname, 'assets/js/usage-modal/index.js' ),
 	},
 	output: {
 		filename: '[name].build.js',
