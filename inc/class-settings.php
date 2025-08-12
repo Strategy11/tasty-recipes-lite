@@ -610,8 +610,9 @@ class Settings {
 		}
 
 		$consent_tracking = Utils::post_param( 'tasty_recipes_onboarding_consent_tracking' );
+		$option_value     = $consent_tracking === '1' ? 'yes' : 'no';
 
-		update_option( Onboarding_Wizard::USAGE_DATA_OPTION, $consent_tracking === '1' );
+		update_option( Onboarding_Wizard::USAGE_DATA_OPTION, $option_value );
 
 		$js_messagebox->add( 'success', esc_html__( 'Settings saved', 'tasty-recipes-lite' ) );
 

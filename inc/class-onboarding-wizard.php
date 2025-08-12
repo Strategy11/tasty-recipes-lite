@@ -8,7 +8,6 @@
 namespace Tasty_Recipes;
 
 use Tasty\Framework\Admin\Menu;
-use Tasty\Framework\Admin\Plugins\Recipes;
 use Tasty\Framework\Traits\Singleton;
 use Tasty\Framework\Utils\Url;
 use Tasty_Recipes;
@@ -87,6 +86,42 @@ class Onboarding_Wizard {
 	private static $page_url = '';
 
 	/**
+	 * Register the API routes.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
+	 */
+	public static function register_api_routes() {
+		register_rest_route(
+			'tasty-recipes-lite/v1',
+			'/usage-consent',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( __CLASS__, 'rest_update_usage_consent' ),
+				'permission_callback' => function () {
+					return current_user_can( 'manage_options' );
+				},
+			) 
+		);
+	}
+
+	/**
+	 * Update usage consent.
+	 *
+	 * @since x.x
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 *
+	 * @return void
+	 */
+	public static function rest_update_usage_consent( $request ) {
+		$consent = $request->get_param( 'consent' );
+		update_option( self::USAGE_DATA_OPTION, $consent );
+		wp_send_json_success();
+	}
+
+	/**
 	 * Initialize hooks for template page only.
 	 *
 	 * @since 1.0
@@ -97,6 +132,7 @@ class Onboarding_Wizard {
 		$this->set_page_url();
 
 		add_action( 'admin_init', array( $this, 'do_admin_redirects' ) );
+		add_action( 'admin_notices', array( $this, 'maybe_show_consent_modal' ) );
 
 		// Load page if admin page is Onboarding Wizard.
 		$this->maybe_load_page();
@@ -258,7 +294,7 @@ class Onboarding_Wizard {
 		check_ajax_referer( 'tasty_recipes_onboarding_nonce', 'nonce' );
 		Admin::validate_ajax_capability();
 
-		add_option( self::USAGE_DATA_OPTION, true );
+		add_option( self::USAGE_DATA_OPTION, 'yes' );
 		$this->subscribe_to_active_campaign();
 
 		// Send response.
@@ -442,5 +478,46 @@ class Onboarding_Wizard {
 	 */
 	private function set_page_url() {
 		self::$page_url = admin_url( 'admin.php?page=' . self::PAGE_SLUG );
+	}
+
+	/**
+	 * Maybe show the consent modal.
+	 * 
+	 * @since x.x
+	 *
+	 * @return void
+	 */
+	public function maybe_show_consent_modal() {
+		if ( $this->is_onboarding_wizard_page() || get_option( self::USAGE_DATA_OPTION ) ) {
+			return;
+		}
+
+		$onboarding_version = get_option( 'tasty_recipes_welcome_redirect' );
+
+		// We return if the redirect version is greater than or equal to 1.0.4 because the usage consent was added in 1.0.4.
+		if ( $onboarding_version && version_compare( $onboarding_version, '1.0.4', '>=' ) ) {
+			return;
+		}
+
+		$asset_meta = tasty_get_asset_meta( dirname( TASTY_RECIPES_LITE_FILE ) . '/assets/dist/usage-modal.build.asset.php' );
+
+		wp_enqueue_style(
+			'tasty-recipes-usage-modal',
+			plugins_url( 'assets/dist/usage-modal.css', TASTY_RECIPES_LITE_FILE ),
+			array(),
+			$asset_meta['version']
+		);
+
+		wp_enqueue_script(
+			'usage-modal',
+			plugins_url( 'assets/dist/usage-modal.build.js', TASTY_RECIPES_LITE_FILE ),
+			$asset_meta['dependencies'],
+			$asset_meta['version'],
+			true
+		);
+
+		?>
+		<div id="tasty-recipes-usage-modal"></div>
+		<?php
 	}
 }

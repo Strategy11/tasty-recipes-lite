@@ -1,0 +1,79 @@
+.tasty-framework-modal {
+	position: fixed;
+	z-index: 9999;
+	left: 0;
+	top: 0;
+	width: 100% !important;
+	height: 100% !important;
+	overflow: auto;
+	background-color: rgba(0,0,0,0.4);
+	backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+
+	&-container {
+		width: 480px !important;
+		margin: 96px auto 0;
+		background-color: #fff;
+		border-radius: 16px;
+		position: relative;
+	}
+
+	&-x {
+		position: absolute;
+		right: 25px;
+		top: 25px;
+		width: 9.5px;
+		height: 9.5px;
+		display: block;
+		background: url("../../../inc/libs/tasty-framework/assets/images/modal-close.svg") no-repeat center center;
+	}
+
+	&-header {
+		padding: 24px 24px 0;
+		width: initial !important;
+
+		h2 {
+			color: #181B25;
+			margin-bottom: 12px;
+			margin-top: 0;
+			font-size: 18px;
+			font-weight: 500;
+			font-size: 18px;
+		}
+	}
+
+	&-body {
+		padding: 0 24px 24px;
+		width: initial !important;
+
+		p {
+			font-size: 16px;
+			color: #666677;
+		}
+
+		.tasty-recipes-modal-actions {
+			display: flex;
+			justify-content: flex-end;
+
+			button {
+				background-color: #ED4996;
+				color: #fff;
+				border-radius: 8px;
+				padding: 10px 14px;
+				font-size: 14px;
+				font-weight: 500;
+				border: none;
+				cursor: pointer;
+
+				&:hover {
+					background-color: #ec599e;
+				}
+
+				&:focus {
+					box-shadow: 0px 0px 0px 4px #f5a3ca;
+				}
+			}
+		}
+	}
+}
+
