@@ -4,12 +4,8 @@ import '../../scss/usage-modal/index.scss';
 
 const modal = document.getElementById( 'tasty-recipes-usage-modal' );
 
-const closeUsageModal = () => {
-	modal.remove();
-};
-
 if ( modal ) {
 	createRoot( modal ).render(
-		<UsageModal closeUsageModal={ closeUsageModal } />
+		<UsageModal closeUsageModal={ () => modal.remove() } />
 	);
 }
