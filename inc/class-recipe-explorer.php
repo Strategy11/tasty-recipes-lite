@@ -643,7 +643,9 @@ class Recipe_Explorer {
 	 * @return bool
 	 */
 	public static function api_check_permission() {
-		return current_user_can( 'edit_posts' );
+		$nonce = Utils::server_param( 'HTTP_X_WP_NONCE' );
+
+		return current_user_can( 'edit_posts' ) && wp_verify_nonce( $nonce, 'wp_rest' );
 	}
 
 	/**
