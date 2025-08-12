@@ -119,7 +119,12 @@ class Onboarding_Wizard {
 	 * @return void
 	 */
 	public static function rest_update_usage_consent( $request ) {
-		$consent = $request->get_param( 'consent' );
+		$consent = sanitize_text_field( $request->get_param( 'consent' ) );
+
+		if ( ! in_array( $consent, array( 'yes', 'no' ), true ) ) {
+			wp_send_json_error();
+		}
+
 		update_option( self::USAGE_DATA_OPTION, $consent );
 		wp_send_json_success();
 	}
