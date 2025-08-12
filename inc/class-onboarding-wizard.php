@@ -11,6 +11,7 @@ use Tasty\Framework\Admin\Menu;
 use Tasty\Framework\Traits\Singleton;
 use Tasty\Framework\Utils\Url;
 use Tasty_Recipes;
+use Tasty_Recipes\Utils;
 
 /**
  * Handles the Onboarding Wizard page in the admin area.
@@ -100,7 +101,9 @@ class Onboarding_Wizard {
 				'methods'             => 'POST',
 				'callback'            => array( __CLASS__, 'rest_update_usage_consent' ),
 				'permission_callback' => function () {
-					return current_user_can( 'manage_options' );
+					$nonce = Utils::server_param( 'HTTP_X_WP_NONCE' );
+
+					return current_user_can( 'manage_options' ) && wp_verify_nonce( $nonce, 'wp_rest' );
 				},
 			) 
 		);
