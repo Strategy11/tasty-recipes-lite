@@ -43,6 +43,9 @@ jobs:
             memory_limit=512M
           coverage: none
 
+      - name: Install Subversion
+        run: sudo apt-get update && sudo apt-get install -y subversion
+
       - name: Start WordPress Environment
         run: |
           curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
