@@ -271,7 +271,7 @@ class Recipe_Explorer {
 				self::render_rating( $recipe_id );
 				break;
 			case 'recipe-post':
-				if ( empty( $parent_post_id ) ) {
+				if ( ! $parent_post_id || ! $parent_post ) {
 					break;
 				}
 
@@ -669,9 +669,9 @@ class Recipe_Explorer {
 			$actions['edit'] = '<a href="#" data-recipe-id="' . $post->ID . '" class="tasty-recipes-edit-recipe">' . esc_html__( 'Edit', 'tasty-recipes-lite' ) . '</a>';
 		}
 
-		if ( isset( $actions['trash'] ) && get_post_meta( $post->ID, '_tasty_recipe_parents', true ) ) {
-			$parent_post_id = get_post_meta( $post->ID, '_tasty_recipe_parents', true );
+		$parent_post_id = get_post_meta( $post->ID, '_tasty_recipe_parents', true );
 
+		if ( isset( $actions['trash'] ) && $parent_post_id && get_post( $parent_post_id ) ) {
 			$button  = '<a class="tasty-recipes-no-delete submitdelete" href="#" data-post-url="' . esc_url( get_edit_post_link( $parent_post_id ) ) . '">';
 			$button .= esc_html__( 'Trash', 'tasty-recipes-lite' );
 			$button .= '</a>';
