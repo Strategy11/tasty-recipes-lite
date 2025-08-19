@@ -433,7 +433,7 @@ class Tasty_Recipes {
 	/**
 	 * Delete recipe parents when a post is deleted. This is needed to free recipes when the parent posts are deleted.
 	 * 
-	 * @since x.x
+	 * @since 1.1
 	 *
 	 * @param int $post_id The post id of the recipe that was deleted.
 	 *
