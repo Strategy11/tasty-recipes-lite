@@ -89,7 +89,7 @@ class Onboarding_Wizard {
 	/**
 	 * Register the API routes.
 	 *
-	 * @since x.x
+	 * @since 1.1
 	 *
 	 * @return void
 	 */
@@ -112,7 +112,7 @@ class Onboarding_Wizard {
 	/**
 	 * Update usage consent.
 	 *
-	 * @since x.x
+	 * @since 1.1
 	 *
 	 * @param object $request The request object.
 	 *
@@ -491,7 +491,7 @@ class Onboarding_Wizard {
 	/**
 	 * Maybe show the consent modal.
 	 * 
-	 * @since x.x
+	 * @since 1.1
 	 *
 	 * @return void
 	 */

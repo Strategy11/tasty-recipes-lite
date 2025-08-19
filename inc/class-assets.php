@@ -55,7 +55,7 @@ class Assets {
 	/**
 	 * Enqueue common styles.
 	 * 
-	 * @since x.x
+	 * @since 1.1
 	 *
 	 * @return void
 	 */
@@ -947,7 +947,7 @@ class Assets {
 	/**
 	 * Dequeue all assets except those with 'tasty' prefix.
 	 *
-	 * @since x.x
+	 * @since 1.1
 	 *
 	 * @return void
 	 */
@@ -974,7 +974,7 @@ class Assets {
 	/**
 	 * Check if an asset handle has a 'tasty' prefix.
 	 *
-	 * @since x.x
+	 * @since 1.1
 	 *
 	 * @param string $handle The asset handle to check.
 	 *
@@ -988,7 +988,7 @@ class Assets {
 		/**
 		 * Filter to allow additional assets to be kept when all non-tasty assets are dequeued.
 		 *
-		 * @since x.x
+		 * @since 1.1
 		 *
 		 * @param bool   $keep   Whether to keep the asset.
 		 * @param string $handle The asset handle.

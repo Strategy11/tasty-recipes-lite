@@ -27,7 +27,7 @@ class Recipe_Explorer {
 	/**
 	 * Load hooks.
 	 * 
-	 * @since x.x
+	 * @since 1.1
 	 *
 	 * @return void
 	 */
@@ -59,7 +59,7 @@ class Recipe_Explorer {
 	/**
 	 * Check if any filters are applied.
 	 * 
-	 * @since x.x
+	 * @since 1.1
 	 * 
 	 * @return bool
 	 */
@@ -76,7 +76,7 @@ class Recipe_Explorer {
 	/**
 	 * Filter the tab buttons.
 	 * 
-	 * @since x.x
+	 * @since 1.1
 	 *
 	 * @param string $html The HTML of the tab buttons.
 	 *
@@ -105,7 +105,7 @@ class Recipe_Explorer {
 	/**
 	 * Workaround to make CPT pages act as tasty menu active items.
 	 *
-	 * @since x.x
+	 * @since 1.1
 	 *
 	 * @return void
 	 */
@@ -138,7 +138,7 @@ class Recipe_Explorer {
 	/**
 	 * Show license notice in tasty recipes custom post type page.
 	 * 
-	 * @since x.x
+	 * @since 1.1
 	 *
 	 * @param bool   $show_notice Show notice status.
 	 * @param object $plugin Current plugin.
@@ -156,7 +156,7 @@ class Recipe_Explorer {
 	/**
 	 * Make recipes custom post type pages act as ours.
 	 * 
-	 * @since x.x
+	 * @since 1.1
 	 *
 	 * @param bool $is_ours Current page is ours or not.
 	 *
@@ -185,7 +185,7 @@ class Recipe_Explorer {
 	/**
 	 * Modifications to the main query.
 	 * 
-	 * @since x.x
+	 * @since 1.1
 	 *
 	 * @param object $query WP_Query object.
 	 * 
@@ -211,7 +211,7 @@ class Recipe_Explorer {
 	/**
 	 * Registers the new custom columns for Tasty Recipes.
 	 * 
-	 * @since x.x
+	 * @since 1.1
 	 *
 	 * @param array $columns Existing column names.
 	 *
@@ -248,7 +248,7 @@ class Recipe_Explorer {
 	/**
 	 * Renders custom column content for the tasty_recipe post type.
 	 * 
-	 * @since x.x
+	 * @since 1.1
 	 *
 	 * @param string $column_name Name of the column.
 	 * @param int    $recipe_id   ID of the recipe being displayed.
@@ -319,7 +319,7 @@ class Recipe_Explorer {
 	/**
 	 * Set default hidden columns for new users or when no preference is saved.
 	 * 
-	 * @since x.x
+	 * @since 1.1
 	 *
 	 * @param mixed $result The user option value.
 	 *
@@ -344,7 +344,7 @@ class Recipe_Explorer {
 	/**
 	 * Render the rating for the recipe.
 	 * 
-	 * @since x.x
+	 * @since 1.1
 	 *
 	 * @param int $recipe_id The ID of the recipe.
 	 *
@@ -367,7 +367,7 @@ class Recipe_Explorer {
 	/**
 	 * Remove all sortable columns.
 	 * 
-	 * @since x.x
+	 * @since 1.1
 	 *
 	 * @return array
 	 */
@@ -388,7 +388,7 @@ class Recipe_Explorer {
 	/**
 	 * Register the rest api endpoints.
 	 * 
-	 * @since x.x
+	 * @since 1.1
 	 *
 	 * @return void
 	 */
@@ -434,7 +434,7 @@ class Recipe_Explorer {
 	/**
 	 * Create a post and append the recipe to it.
 	 * 
-	 * @since x.x
+	 * @since 1.1
 	 * 
 	 * @param object $request The request object.
 	 *
@@ -489,7 +489,7 @@ class Recipe_Explorer {
 	/**
 	 * Retrieve a recipe.
 	 * 
-	 * @since x.x
+	 * @since 1.1
 	 * 
 	 * @param object $request The request object.
 	 * 
@@ -509,7 +509,7 @@ class Recipe_Explorer {
 	/**
 	 * Delete a recipe.
 	 * 
-	 * @since x.x
+	 * @since 1.1
 	 * 
 	 * @param object $request The request object.
 	 * 
@@ -548,7 +548,7 @@ class Recipe_Explorer {
 	/**
 	 * Embed the recipe in the post.
 	 * 
-	 * @since x.x
+	 * @since 1.1
 	 * 
 	 * @param object $request The request object.
 	 *
@@ -617,7 +617,7 @@ class Recipe_Explorer {
 	/**
 	 * Generate the recipe content.
 	 * 
-	 * @since x.x
+	 * @since 1.1
 	 *
 	 * @param int $recipe_id The ID of the recipe.
 	 *
@@ -638,7 +638,7 @@ class Recipe_Explorer {
 	/**
 	 * Check if the user has permission to access the api.
 	 * 
-	 * @since x.x
+	 * @since 1.1
 	 *
 	 * @return bool
 	 */
@@ -651,7 +651,7 @@ class Recipe_Explorer {
 	/**
 	 * Filter the post row actions.
 	 * 
-	 * @since x.x
+	 * @since 1.1
 	 * 
 	 * @param array  $actions The actions array.
 	 * @param object $post The post object.
@@ -693,7 +693,7 @@ class Recipe_Explorer {
 	/**
 	 * Add the filters button.
 	 * 
-	 * @since x.x
+	 * @since 1.1
 	 * 
 	 * @return void
 	 */
@@ -718,7 +718,7 @@ class Recipe_Explorer {
 	/**
 	 * Maybe show the filter count.
 	 * 
-	 * @since x.x
+	 * @since 1.1
 	 * 
 	 * @return void
 	 */
@@ -739,7 +739,7 @@ class Recipe_Explorer {
 	/**
 	 * Get the unique filter values.
 	 * 
-	 * @since x.x
+	 * @since 1.1
 	 * 
 	 * @param string $field The field to get the unique values for.
 	 * 
@@ -777,7 +777,7 @@ class Recipe_Explorer {
 	/**
 	 * Filter the recipes by params.
 	 * 
-	 * @since x.x
+	 * @since 1.1
 	 * 
 	 * @param \WP_Query $query The query object.
 	 * 
@@ -860,7 +860,7 @@ class Recipe_Explorer {
 	/**
 	 * Clear filter cache when a tasty_recipe post is created or updated.
 	 * 
-	 * @since x.x
+	 * @since 1.1
 	 * 
 	 * @return void
 	 */
@@ -881,7 +881,7 @@ class Recipe_Explorer {
 	/**
 	 * Disable the months dropdown.
 	 * 
-	 * @since x.x
+	 * @since 1.1
 	 * 
 	 * @param bool   $disable Whether to disable the months dropdown.
 	 * @param string $post_type The post type.
@@ -899,7 +899,7 @@ class Recipe_Explorer {
 	/**
 	 * Restore tasty_recipe posts as published instead of draft.
 	 * 
-	 * @since x.x
+	 * @since 1.1
 	 * 
 	 * @param int $post_id The post ID that was restored.
 	 * 

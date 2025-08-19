@@ -67,7 +67,7 @@ class Settings {
 	/**
 	 * Register tabs hook.
 	 * 
-	 * @since x.x
+	 * @since 1.1
 	 *
 	 * @return void
 	 */
@@ -94,7 +94,7 @@ class Settings {
 	/**
 	 * Maybe redirect to the recipes page if no tab is set.
 	 * 
-	 * @since x.x
+	 * @since 1.1
 	 *
 	 * @return void
 	 */
@@ -266,7 +266,7 @@ class Settings {
 	/**
 	 * Add admin tabs to the head of all links admin pages.
 	 * 
-	 * @since x.x
+	 * @since 1.1
 	 *
 	 * @return void
 	 */
@@ -284,7 +284,7 @@ class Settings {
 	/**
 	 * Check if we're on the recipes admin page.
 	 * 
-	 * @since x.x
+	 * @since 1.1
 	 *
 	 * @return bool
 	 */
@@ -300,7 +300,7 @@ class Settings {
 	/**
 	 * Get all tabs.
 	 * 
-	 * @since x.x
+	 * @since 1.1
 	 *
 	 * @return array
 	 */
@@ -587,7 +587,7 @@ class Settings {
 	/**
 	 * Handle the onboarding consent tracking form submission.
 	 * 
-	 * @since x.x
+	 * @since 1.1
 	 *
 	 * @return void
 	 */

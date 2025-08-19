@@ -102,7 +102,7 @@ class Block_Editor {
 	/**
 	 * Get recipes without parents.
 	 * 
-	 * @since x.x
+	 * @since 1.1
 	 *
 	 * @return array
 	 */
