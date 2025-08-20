@@ -11,6 +11,7 @@ export const FieldGroup = ( {
 	onFieldChange = () => {},
 	renderBeforeFields,
 	className = '',
+	recipe,
 } ) => {
 	const [ fieldValues, setFieldValues ] = useState( initialFieldValues );
 	const [ isAdditionalTimeOpen, setIsAdditionalTimeOpen ] = useState( false );
@@ -42,10 +43,11 @@ export const FieldGroup = ( {
 		onFieldChange( field, value );
 	};
 
-	const afterSettingHook = applyFilters(
-		'tasty_recipes_after_setting_hook',
+	const beforeSettingHook = applyFilters(
+		'tasty_recipes_before_setting_hook',
 		() => {},
 		group,
+		recipe,
 		fields,
 		fieldValues
 	);
@@ -193,6 +195,7 @@ export const FieldGroup = ( {
 
 	return (
 		<>
+			{ beforeSettingHook }
 			<div className={ className }>
 				{ heading && <h3>{ heading }</h3> }
 				{ renderBeforeFields && renderBeforeFields( { fieldValues } ) }
@@ -203,7 +206,6 @@ export const FieldGroup = ( {
 					) }
 				</div>
 			</div>
-			{ afterSettingHook }
 		</>
 	);
 };

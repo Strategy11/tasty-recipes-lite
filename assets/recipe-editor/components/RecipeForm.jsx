@@ -106,6 +106,7 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 				initialFieldValues={ recipe }
 				onFieldChange={ handleRecipeChange }
 				group="details"
+				recipe={ recipe }
 			/>
 			<FieldGroup
 				className="tasty-recipes-video-url"
@@ -117,6 +118,7 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 				initialFieldValues={ recipe }
 				onFieldChange={ handleRecipeChange }
 				group="video"
+				recipe={ recipe }
 			/>
 			{ config.after_video_url_markup && (
 				<div
@@ -186,6 +188,7 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 						</div>
 					</fieldset>
 				) }
+				recipe={ recipe }
 			/>
 		</form>
 	);
