@@ -72,6 +72,13 @@ class Assets {
 		);
 
 		if ( Recipe_Explorer::is_current_page( 'tasty_recipe' ) && 'edit' === get_current_screen()->base ) {
+			/**
+			 * Enqueue external assets for the recipe editor.
+			 *
+			 * @since x.x
+			 */
+			do_action( 'tasty_recipes_enqueue_editor_scripts' );
+
 			$asset_meta = tasty_get_asset_meta( dirname( TASTY_RECIPES_LITE_FILE ) . '/assets/dist/explorer-page.build.asset.php' );
 			wp_enqueue_script(
 				'tasty-recipes-explorer-page',
