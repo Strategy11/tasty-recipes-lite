@@ -1,4 +1,5 @@
 import { useState, useEffect } from '@wordpress/element';
+import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 
 export const FieldGroup = ( {
@@ -40,6 +41,14 @@ export const FieldGroup = ( {
 		setFieldValues( ( prev ) => ( { ...prev, [ field ]: value } ) );
 		onFieldChange( field, value );
 	};
+
+	const afterSettingHook = applyFilters(
+		'tasty_recipes_after_setting_hook',
+		() => {},
+		group,
+		fields,
+		fieldValues
+	);
 
 	const showField = ( field ) =>
 		! ( field.is_pro || ( group === 'nutrition' && field.nutrifox_id ) );
@@ -183,15 +192,18 @@ export const FieldGroup = ( {
 	);
 
 	return (
-		<div className={ className }>
-			{ heading && <h3>{ heading }</h3> }
-			{ renderBeforeFields && renderBeforeFields( { fieldValues } ) }
-			<div className="tasty-recipes-fields-container">
-				{ Object.entries( fields ).map(
-					( [ name, field ] ) =>
-						showField( field ) && renderField( name, field )
-				) }
+		<>
+			<div className={ className }>
+				{ heading && <h3>{ heading }</h3> }
+				{ renderBeforeFields && renderBeforeFields( { fieldValues } ) }
+				<div className="tasty-recipes-fields-container">
+					{ Object.entries( fields ).map(
+						( [ name, field ] ) =>
+							showField( field ) && renderField( name, field )
+					) }
+				</div>
 			</div>
-		</div>
+			{ afterSettingHook }
+		</>
 	);
 };
