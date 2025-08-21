@@ -5,3 +5,4 @@ vendor/**
 node_modules/**
 php-tests/**
 .idea/**
+pnpm-lock.yaml

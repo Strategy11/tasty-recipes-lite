@@ -62,3 +62,4 @@ node_modules
 *.vue
 *.zip
 */__tests__/*
+pnpm-lock.yaml
