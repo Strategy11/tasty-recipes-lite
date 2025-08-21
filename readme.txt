@@ -38,6 +38,7 @@ Tasty Recipes Lite has everything you need to start sharing recipes on your Word
 * Create and edit recipes with an easy-to-use **template editor**
 * **Google AMP** compatible
 * Works with your **ShareASale affiliate ID**
+* Manage all your recipes in a **single location**
 
 === Tasty Recipes Premium Features ===
 
