@@ -26,7 +26,8 @@
     "lint-fix": "eslint assets/settings --fix && eslint assets/block-editor --fix",
     "makepot": "php -d memory_limit=512M /usr/local/bin/wp i18n make-pot . languages/tasty-recipes.pot --skip-audit",
     "test:php": "composer phpunit",
-    "zip": "bin/compile.sh"
+    "zip": "bin/compile.sh",
+    "sync-locks": "pnpm install && npm install --package-lock-only"
   },
   "dependencies": {
     "@wordpress/icons": "^10.26.0",
