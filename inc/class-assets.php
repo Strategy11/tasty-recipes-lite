@@ -75,7 +75,7 @@ class Assets {
 			/**
 			 * Enqueue external assets for the recipe editor.
 			 *
-			 * @since x.x
+			 * @since 1.1.1
 			 */
 			do_action( 'tasty_recipes_enqueue_editor_scripts' );
 
