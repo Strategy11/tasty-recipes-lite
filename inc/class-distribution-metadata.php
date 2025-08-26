@@ -580,7 +580,6 @@ class Distribution_Metadata {
 			$video_schema['thumbnailUrl'] = array( $oembed_data->thumbnail_url );
 		}
 
-		
 		if ( isset( $oembed_data->upload_date ) ) {
 			$video_schema['uploadDate'] = gmdate( 'c', strtotime( $oembed_data->upload_date ) );
 		} elseif ( isset( $oembed_data->uploadDate ) ) {
