@@ -579,12 +579,22 @@ class Distribution_Metadata {
 		if ( isset( $oembed_data->thumbnail_url ) ) {
 			$video_schema['thumbnailUrl'] = array( $oembed_data->thumbnail_url );
 		}
+
 		if ( isset( $oembed_data->upload_date ) ) {
 			$video_schema['uploadDate'] = gmdate( 'c', strtotime( $oembed_data->upload_date ) );
 		} elseif ( isset( $oembed_data->uploadDate ) ) {
 			$video_schema['uploadDate'] = gmdate( 'c', strtotime( $oembed_data->uploadDate ) );
 		}
-		return $video_schema;
+
+		/**
+		 * Allow third-parties to modify the video schema array.
+		 *
+		 * @since x.x
+		 *
+		 * @param array   $video_schema Video schema.
+		 * @param object  $oembed_data oEmbed structured data.
+		 */
+		return apply_filters( 'tasty_recipes_google_schema_video_from_oembed_data', $video_schema, $oembed_data );
 	}
 
 	/**
