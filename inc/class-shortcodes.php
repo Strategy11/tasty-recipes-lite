@@ -177,7 +177,6 @@ class Shortcodes {
 	 * @return string
 	 */
 	public static function render_tasty_recipe_shortcode( $atts ) { // phpcs:ignore SlevomatCodingStandard
-
 		if ( is_home() || empty( $atts['id'] ) ) {
 			return '';
 		}
@@ -296,6 +295,7 @@ class Shortcodes {
 			'footer_heading'     => '',
 			'footer_description' => '',
 			'template'           => self::$custom_template,
+			'raw_atts'           => $atts,
 		);
 		/**
 		 * The template vars before they are prepared.
