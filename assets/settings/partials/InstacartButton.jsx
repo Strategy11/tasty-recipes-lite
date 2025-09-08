@@ -79,7 +79,7 @@ export const InstacartButton = ( {
 					);
 				} }
 				label={ __(
-					'Instacart Tastemakers Affiliate ID',
+					'Instacart Impact Affiliate ID',
 					'tasty-recipes-lite'
 				) }
 				id="tasty-recipes-instacart-affiliate-id"
