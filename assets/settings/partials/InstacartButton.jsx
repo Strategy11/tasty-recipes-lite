@@ -58,21 +58,6 @@ export const InstacartButton = ( {
 				) }
 			/>
 			<TextInput
-				label={ __( 'Instacart API Key', 'tasty-recipes-lite' ) }
-				id="tasty-recipes-instacart-api-key"
-				name="tasty_recipes_instacart_api_key"
-				value={ formData.instacartApiKey }
-				setValue={ ( value ) => {
-					handleChange( 'instacartApiKey', value );
-				} }
-				disabled={ isSettingDisabled( formData.instacartApiKey ) }
-				onClick={ () => {
-					triggerModal(
-						isSettingDisabled( formData.instacartApiKey )
-					);
-				} }
-			/>
-			<TextInput
 				onClick={ () => {
 					triggerModal(
 						isSettingDisabled( formData.instacartAffiliateId )
