@@ -1,5 +1,6 @@
 import { createInterpolateElement } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import { applyFilters } from '@wordpress/hooks';
 import { TextInput, ToggleInput } from '@library';
 import { isSettingDisabled } from '../utils/helpers';
 
@@ -22,41 +23,48 @@ export const InstacartButton = ( {
 		}
 	};
 
+	const instacartButtonElement = applyFilters(
+		'tasty_recipes_instacart_button',
+		<ToggleInput
+			onClick={ () => {
+				triggerModal(
+					isSettingDisabled( formData.instacartButton )
+				);
+			} }
+			label={ __( 'Instacart Button', 'tasty-recipes-lite' ) }
+			id="tasty_recipes_instacart"
+			name="tasty_recipes_instacart"
+			value={ String( formData.instacartButton ?? 0 ) }
+			onValue="1"
+			offValue="0"
+			setValue={ ( value ) => {
+				handleChange( 'instacartButton', value );
+			} }
+			disabled={ isSettingDisabled( formData.instacartButton ) }
+			helper={ createInterpolateElement(
+				__(
+					'By turning this on, you agree to the <termsOfServiceLink>Instacart terms of service</termsOfServiceLink>, available in the US only at the moment.',
+					'tasty-recipes-lite'
+				),
+				{
+					termsOfServiceLink: (
+						// eslint-disable-next-line jsx-a11y/anchor-has-content
+						<a
+							href="https://affiliate.instacart.com/terms"
+							target="_blank"
+							rel="noreferrer"
+						/>
+					),
+				}
+			) }
+		/>,
+		formData,
+		handleChange
+	);
+
 	return (
 		<div className="tasty-recipes-pro-feature tasty-recipes-instacart-button-wrap">
-			<ToggleInput
-				onClick={ () => {
-					triggerModal(
-						isSettingDisabled( formData.instacartButton )
-					);
-				} }
-				label={ __( 'Instacart Button', 'tasty-recipes-lite' ) }
-				id="tasty_recipes_instacart"
-				name="tasty_recipes_instacart"
-				value={ String( formData.instacartButton ?? 0 ) }
-				onValue="1"
-				offValue="0"
-				setValue={ ( value ) => {
-					handleChange( 'instacartButton', value );
-				} }
-				disabled={ isSettingDisabled( formData.instacartButton ) }
-				helper={ createInterpolateElement(
-					__(
-						'By turning this on, you agree to the <termsOfServiceLink>Instacart terms of service</termsOfServiceLink>, available in the US only at the moment.',
-						'tasty-recipes-lite'
-					),
-					{
-						termsOfServiceLink: (
-							// eslint-disable-next-line jsx-a11y/anchor-has-content
-							<a
-								href="https://affiliate.instacart.com/terms"
-								target="_blank"
-								rel="noreferrer"
-							/>
-						),
-					}
-				) }
-			/>
+			{ instacartButtonElement }
 			<TextInput
 				onClick={ () => {
 					triggerModal(
@@ -64,7 +72,7 @@ export const InstacartButton = ( {
 					);
 				} }
 				label={ __(
-					'Instacart Tastemakers Affiliate ID',
+					'Instacart Impact Affiliate ID',
 					'tasty-recipes-lite'
 				) }
 				id="tasty-recipes-instacart-affiliate-id"
