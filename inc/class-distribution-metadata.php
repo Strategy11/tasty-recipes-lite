@@ -589,7 +589,7 @@ class Distribution_Metadata {
 		/**
 		 * Allow third-parties to modify the video schema array.
 		 *
-		 * @since x.x
+		 * @since 1.1.2
 		 *
 		 * @param array   $video_schema Video schema.
 		 * @param object  $oembed_data oEmbed structured data.
