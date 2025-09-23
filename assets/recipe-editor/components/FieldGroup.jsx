@@ -63,10 +63,13 @@ export const FieldGroup = ( {
 		initialFieldValues?.nutrifox_id?.length > 1
 	) {
 		return (
-			<div className={ className }>
-				{ heading && <h3>{ heading }</h3> }
-				{ renderBeforeFields && renderBeforeFields( { fieldValues } ) }
-			</div>
+			<>
+				{ beforeSettingHook }
+				<div className={ className }>
+					{ heading && <h3>{ heading }</h3> }
+					{ renderBeforeFields && renderBeforeFields( { fieldValues } ) }
+				</div>
+			</>
 		);
 	}
 
