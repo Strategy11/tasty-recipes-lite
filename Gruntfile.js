@@ -82,7 +82,6 @@ module.exports = function ( grunt ) {
 	} );
 
 	grunt.loadNpmTasks( 'grunt-text-replace' );
-	grunt.loadNpmTasks( 'grunt-contrib-compress' );
 
 	grunt.util.linefeed = '\n';
 };
