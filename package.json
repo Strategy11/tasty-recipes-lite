@@ -5,7 +5,7 @@
   "author": "WP Tasty",
   "devDependencies": {
     "@wordpress/scripts": "^30.24.0",
-    "cross-env": "^10.0.0",
+    "cross-env": "^10.1.0",
     "grunt": "^1.6.1",
     "grunt-text-replace": "^0.4",
     "ignore-emit-webpack-plugin": "^2.0.6",
