@@ -98,7 +98,9 @@ export const Settings = () => {
 				'Allow visitors to scale the recipe ½, 2x, or 3x.',
 				'tasty-recipes-lite'
 			) }
-		/>
+		/>,
+		formData,
+		handleChange
 	);
 
 	return (
