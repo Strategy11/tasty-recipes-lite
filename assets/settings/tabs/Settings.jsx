@@ -12,7 +12,7 @@ import {
 	useModal,
 	ShareASaleInput,
 	TabletSaveButton,
-	TextInput
+	TextInput,
 } from '@library';
 import { UpgradeBanner } from '../partials/UpgradeBanner';
 import { CookMode } from '../partials/CookMode';
@@ -68,6 +68,38 @@ export const Settings = () => {
 				: formData.quickLinks.filter( ( link ) => link !== value )
 		);
 	};
+
+	const scalingSetting = applyFilters(
+		'tasty_recipes_scaling_setting',
+		<ToggleInput
+			onClick={ () => {
+				if ( isSettingDisabled( formData.scaling ) ) {
+					openModal( {
+						id: 'tasty_recipes_upgrade_modal',
+						title: __( 'Scaling', 'tasty-recipes-lite' ),
+						upgradeUrl: generateUpgradeUrl( {
+							medium: 'tasty-recipes',
+							content: 'scaling',
+						} ),
+					} );
+				}
+			} }
+			label={ __( 'Scaling', 'tasty-recipes-lite' ) }
+			id="tasty_recipes_disable_scaling"
+			name="tasty_recipes_disable_scaling"
+			value={ String( formData.scaling ?? 1 ) }
+			onValue="0"
+			offValue="1"
+			setValue={ ( value ) => {
+				handleChange( 'scaling', value );
+			} }
+			disabled={ isSettingDisabled( formData.scaling ) }
+			helper={ __(
+				'Allow visitors to scale the recipe ½, 2x, or 3x.',
+				'tasty-recipes-lite'
+			) }
+		/>
+	);
 
 	return (
 		<div>
@@ -268,34 +300,7 @@ export const Settings = () => {
 				openModal={ openModal }
 				generateUpgradeUrl={ generateUpgradeUrl }
 			/>
-			<ToggleInput
-				onClick={ () => {
-					if ( isSettingDisabled( formData.scaling ) ) {
-						openModal( {
-							id: 'tasty_recipes_upgrade_modal',
-							title: __( 'Scaling', 'tasty-recipes-lite' ),
-							upgradeUrl: generateUpgradeUrl( {
-								medium: 'tasty-recipes',
-								content: 'scaling',
-							} ),
-						} );
-					}
-				} }
-				label={ __( 'Scaling', 'tasty-recipes-lite' ) }
-				id="tasty_recipes_disable_scaling"
-				name="tasty_recipes_disable_scaling"
-				value={ String( formData.scaling ?? 1 ) }
-				onValue="0"
-				offValue="1"
-				setValue={ ( value ) => {
-					handleChange( 'scaling', value );
-				} }
-				disabled={ isSettingDisabled( formData.scaling ) }
-				helper={ __(
-					'Allow visitors to scale the recipe 1x, 2x, or 3x.',
-					'tasty-recipes-lite'
-				) }
-			/>
+			{ scalingSetting }
 			<ToggleInput
 				onClick={ () => {
 					if ( isSettingDisabled( formData.copyToClipboard ) ) {
