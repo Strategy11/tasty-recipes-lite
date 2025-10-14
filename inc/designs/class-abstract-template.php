@@ -62,7 +62,7 @@ abstract class Abstract_Template {
 	 *
 	 * @var array
 	 */
-	protected $supports = [ 'customization' ];
+	protected $supports = array( 'customization' );
 
 	/**
 	 * Sets the variables.
@@ -252,6 +252,13 @@ abstract class Abstract_Template {
 	 * @return array
 	 */
 	public function get_supports() {
-		return $this->supports;
+		$accepted_values = array( 'customization', 'variations', 'custom_js' );
+
+		return array_filter(
+			$this->supports,
+			function ( $value ) use ( $accepted_values ) {
+				return in_array( $value, $accepted_values, true );
+			}
+		);
 	}
 }
