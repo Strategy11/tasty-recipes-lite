@@ -14,6 +14,7 @@ namespace Tasty_Recipes\Designs;
  * @method string get_template_name() Get template name.
  * @method string get_image_size() Get the image size for the template.
  * @method string get_customized(string $key = '') Get customized options.
+ * @method array get_supports() Get the mechanisms this template supports.
  */
 abstract class Abstract_Template {
 
@@ -55,6 +56,13 @@ abstract class Abstract_Template {
 		'radius'       => '2px',
 		'design_opts'  => array(),
 	];
+
+	/**
+	 * What mechanisms this template supports. Defaults to customization but can also be animations or custom_js.
+	 *
+	 * @var array
+	 */
+	protected $supports = [ 'customization' ];
 
 	/**
 	 * Sets the variables.
@@ -234,5 +242,16 @@ abstract class Abstract_Template {
 		return trailingslashit(
 			plugins_url( $this->get_template_folder(), $this->get_template_plugin() )
 		);
+	}
+
+	/**
+	 * Get the mechanisms this template supports.
+	 * 
+	 * @since x.x
+	 *
+	 * @return array
+	 */
+	public function get_supports() {
+		return $this->supports;
 	}
 }
