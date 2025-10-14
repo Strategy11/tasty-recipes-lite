@@ -58,7 +58,7 @@ abstract class Abstract_Template {
 	];
 
 	/**
-	 * What mechanisms this template supports. Defaults to customization but can also be animations or custom_js.
+	 * What mechanisms this template supports. Defaults to customization but can also be variations or custom_js.
 	 *
 	 * @var array
 	 */
