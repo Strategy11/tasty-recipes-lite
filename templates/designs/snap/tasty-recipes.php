@@ -94,7 +94,7 @@ if ( '.svg' === $ext ) {
 							if ( isset( $icons[ $key ] ) ) {
 								if ( '.svg' === $ext ) {
 									?>
-									<svg viewBox="0 0 24 24" class="detail-icon" aria-hidden="true"><use xlink:href="#tasty-recipes-<?php echo esc_attr( $icons[ $key ] ); ?>" data-tasty-recipes-customization="icon-color.color"></use></svg>
+									<svg viewBox="0 0 24 24" width="12px" class="detail-icon" aria-hidden="true"><use xlink:href="#tasty-recipes-<?php echo esc_attr( $icons[ $key ] ); ?>" data-tasty-recipes-customization="icon-color.color"></use></svg>
 									<?php
 								} else {
 									?>
@@ -110,7 +110,7 @@ if ( '.svg' === $ext ) {
 						$other_details .= '<li class="' . esc_attr( $detail['class'] ) . '"><span class="tasty-recipes-label" data-tasty-recipes-customization="detail-label-color.color">';
 						if ( isset( $icons[ $key ] ) ) {
 							if ( '.svg' === $ext ) {
-								$other_details .= '<svg viewBox="0 0 24 24" class="detail-icon" aria-hidden="true" data-tasty-recipes-customization="icon-color.color"><use xlink:href="#tasty-recipes-' . esc_attr( $icons[ $key ] ) . '"></use></svg>';
+								$other_details .= '<svg viewBox="0 0 24 24" width="12px" class="detail-icon" aria-hidden="true" data-tasty-recipes-customization="icon-color.color"><use xlink:href="#tasty-recipes-' . esc_attr( $icons[ $key ] ) . '"></use></svg>';
 							} else {
 								$other_details .= '<img nopin="nopin" data-pin-nopin="1" class="detail-icon" src="' . esc_url( plugins_url( 'images/' . $icons[ $key ] . $ext, __FILE__ ) ) . '">';
 							}
