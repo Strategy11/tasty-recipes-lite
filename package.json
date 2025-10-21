@@ -4,7 +4,7 @@
   "main": "Gruntfile.js",
   "author": "WP Tasty",
   "devDependencies": {
-    "@wordpress/scripts": "^30.24.0",
+    "@wordpress/scripts": "^30.26.0",
     "cross-env": "^10.0.0",
     "grunt": "^1.6.1",
     "grunt-text-replace": "^0.4",
@@ -29,8 +29,8 @@
     "sync-locks": "pnpm install && npm install --package-lock-only"
   },
   "dependencies": {
-    "@wordpress/icons": "^10.31.0",
-    "@uiw/react-color-chrome": "^2.8.0",
+    "@wordpress/icons": "^11.0.0",
+    "@uiw/react-color-chrome": "^2.9.0",
     "react-select": "^5.10.2"
   }
 }
