@@ -111,11 +111,11 @@ const Placeholder = ( { handleClickSelectImage } ) => {
 		<>
 			<Icon icon={ UploadIcon } width={ 20 } height={ 18 } />
 			<p className="tasty-recipes-image-placeholder-title">
-				{ __( 'Select image for your recipe', 'tasty-recipes-lite' ) }
+				{ __( 'Recipe Image', 'tasty-recipes-lite' ) }
 			</p>
 			<p className="tasty-recipes-image-placeholder-subtitle">
 				{ __(
-					'Maybe a short description here, but not sure about it.',
+					'Select an image file from your library.',
 					'tasty-recipes-lite'
 				) }
 			</p>
