@@ -145,8 +145,9 @@ h3,
 	.tasty-recipes-description img,
 	.tasty-recipes-ingredients img,
 	.tasty-recipes-instructions img,
+	.tasty-recipes-instructions-body img,
 	.tasty-recipes-notes img {
-		display: none;
+		display: none !important;
 	}
 }
 
