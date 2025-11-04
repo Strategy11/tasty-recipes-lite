@@ -1,5 +1,5 @@
-import { createRoot } from '@wordpress/element';
 import { AfterCreationForm } from '../components/AfterCreationForm';
+import { createRootCompat } from '../../utils/reactCompat';
 
 let isOpen = false;
 let instance = null;
@@ -24,7 +24,8 @@ export const openEditorExtension = ( recipe ) => {
 	instance = document.createElement( 'div' );
 	body.appendChild( instance );
 
-	createRoot( instance ).render(
+	root = createRootCompat( instance );
+	root.render(
 		<AfterCreationForm
 			recipe={ recipe }
 			closeEditorExtension={ closeEditorExtension }

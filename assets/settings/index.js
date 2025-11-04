@@ -1,26 +1,23 @@
-import { createRoot } from '@wordpress/element';
 import domReady from '@wordpress/dom-ready';
 import { Design, Settings, Converters } from './tabs';
 import '../scss/settings.scss';
+import { createRootCompat } from '../js/utils/reactCompat';
 
 domReady( () => {
 	const designTab = document.getElementById( 'tasty-recipes-design-tab' );
 	if ( designTab ) {
-		const root = createRoot( designTab );
-		root.render( <Design /> );
+		createRootCompat( designTab ).render( <Design /> );
 	}
 
 	const settingsTab = document.getElementById( 'tasty-recipes-settings-tab' );
 	if ( settingsTab ) {
-		const root = createRoot( settingsTab );
-		root.render( <Settings /> );
+		createRootCompat( settingsTab ).render( <Settings /> );
 	}
 
 	const convertersTab = document.getElementById(
 		'tasty-recipes-converters-tab'
 	);
 	if ( convertersTab ) {
-		const root = createRoot( convertersTab );
-		root.render( <Converters /> );
+		createRootCompat( convertersTab ).render( <Converters /> );
 	}
 } );

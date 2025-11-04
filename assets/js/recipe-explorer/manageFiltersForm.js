@@ -1,5 +1,5 @@
-import { createRoot } from '@wordpress/element';
 import { FiltersForm } from './components/FiltersForm';
+import { createRootCompat } from '../utils/reactCompat';
 
 let isOpen = false;
 let instance = null;
@@ -11,7 +11,7 @@ const parentElement = document.getElementById(
 const closeFiltersForm = () => {
 	if ( instance && root ) {
 		isOpen = false;
-		root.unmount();
+	root.unmount();
 		instance.remove();
 		instance = null;
 		root = null;
@@ -29,6 +29,6 @@ export const toggleFiltersForm = () => {
 	instance = document.createElement( 'div' );
 	parentElement.appendChild( instance );
 
-	root = createRoot( instance );
+	root = createRootCompat( instance );
 	root.render( <FiltersForm closeFiltersForm={ closeFiltersForm } /> );
 };

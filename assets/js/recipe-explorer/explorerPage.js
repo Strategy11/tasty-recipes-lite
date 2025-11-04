@@ -2,11 +2,11 @@
 import domReady from '@wordpress/dom-ready';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
-import { createRoot } from '@wordpress/element';
 import { columnsIcon } from './icons';
 import '../../scss/recipe-explorer/index.scss';
 import { registerEvents } from './listeners';
 import { EmptyState } from './components/EmptyState';
+import { createRootCompat } from '../utils/reactCompat';
 
 domReady( () => {
 	fixTitles();
@@ -206,8 +206,6 @@ const showEmptyStateIfNeeded = () => {
 		const emptyDiv = document.createElement( 'div' );
 		table.parentNode.insertBefore( emptyDiv, table.nextSibling );
 
-		createRoot( emptyDiv ).render(
-			<EmptyState />
-		);
+		createRootCompat( emptyDiv ).render( <EmptyState /> );
 	}
 };

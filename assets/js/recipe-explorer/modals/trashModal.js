@@ -1,6 +1,6 @@
-import { createRoot } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { MessageModal } from '../components/MessageModal';
+import { createRootCompat } from '../../utils/reactCompat';
 
 let isOpen = false;
 let instance = null;
@@ -31,7 +31,8 @@ export const openTrashModal = ( postUrl ) => {
 		</a>
 	);
 
-	root = createRoot( instance ).render(
+	root = createRootCompat( instance );
+	root.render(
 		<MessageModal
 			title={ __( 'Recipe Can’t be Deleted', 'tasty-recipes-lite' ) }
 			description={ __(

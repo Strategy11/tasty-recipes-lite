@@ -1,11 +1,11 @@
-import { createRoot } from '@wordpress/element';
 import { RecipeForm } from './components/RecipeForm';
+import { createRootCompat } from '../js/utils/reactCompat';
 
-let instance;
+let rootInstance;
 
 window.tastyRecipesMountRecipeEditor = ( el, initialRecipe ) => {
-	instance = createRoot( el );
-	instance.render(
+	rootInstance = createRootCompat( el );
+	rootInstance.render(
 		<RecipeForm
 			initialRecipe={ initialRecipe }
 			config={ window.tastyRecipesRecipeEditorData }
@@ -14,8 +14,8 @@ window.tastyRecipesMountRecipeEditor = ( el, initialRecipe ) => {
 };
 
 window.tastyRecipesDestroyRecipeEditor = () => {
-	if ( instance ) {
-		instance.unmount();
-		instance = null;
+	if ( rootInstance ) {
+		rootInstance.unmount();
+		rootInstance = null;
 	}
 };

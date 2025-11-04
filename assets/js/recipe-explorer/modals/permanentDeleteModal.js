@@ -1,7 +1,7 @@
-import { createRoot } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
 import { MessageModal } from '../components/MessageModal';
+import { createRootCompat } from '../../utils/reactCompat';
 
 let isOpen = false;
 let instance = null;
@@ -43,7 +43,8 @@ export const openPermanentDeleteModal = ( postId, name ) => {
 
 	const modalName = name.length > 0 ? `"${ name }"` : '';
 
-	createRoot( instance ).render(
+	root = createRootCompat( instance );
+	root.render(
 		<MessageModal
 			title={ __( 'Permanently Delete Recipe', 'tasty-recipes-lite' ) }
 			description={ sprintf(
