@@ -29,7 +29,7 @@
     "sync-locks": "pnpm install && npm install --package-lock-only"
   },
   "dependencies": {
-    "@wordpress/icons": "^11.0.0",
+    "@wordpress/icons": "^11.1.0",
     "@uiw/react-color-chrome": "^2.9.0",
     "react-select": "^5.10.2"
   }
