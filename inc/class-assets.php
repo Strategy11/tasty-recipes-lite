@@ -139,6 +139,20 @@ class Assets {
 	public static function register_assets() {
 		add_action( 'wp_head', array( __CLASS__, 'maybe_load_head' ), 7 );
 
+		$scripts               = wp_scripts();
+		$has_react_jsx_runtime = $scripts && (bool) $scripts->query( 'react-jsx-runtime', 'registered' );
+		if ( ! $has_react_jsx_runtime ) {
+			$runtime_path    = dirname( __DIR__ ) . '/assets/resources/react-jsx-runtime-shim.min.js';
+			$runtime_version = file_exists( $runtime_path ) ? filemtime( $runtime_path ) : TASTY_RECIPES_LITE_VERSION;
+			wp_register_script(
+				'react-jsx-runtime',
+				plugins_url( 'assets/resources/react-jsx-runtime-shim.min.js', __DIR__ ),
+				array( 'wp-element' ),
+				$runtime_version,
+				true
+			);
+		}
+
 		wp_register_style(
 			'tasty-recipes-main',
 			plugins_url( '/assets/dist/recipe.css', __DIR__ ),
