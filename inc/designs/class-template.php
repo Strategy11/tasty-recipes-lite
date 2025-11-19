@@ -44,6 +44,10 @@ class Template {
 			'fresh'          => Fresh::instance(),
 			'elegant'        => Elegant::instance(),
 			'modern-compact' => Modern_Compact::instance(),
+			'snap-2-0'       => Snap_2_0::instance(),
+			'bold-2-0'       => Bold_2_0::instance(),
+			'fresh-2-0'      => Fresh_2_0::instance(),
+			'elegant-2-0'    => Elegant_2_0::instance(),
 		);
 
 		self::$template_objects = (array) apply_filters( 'tasty_recipes_template_objects', $template_objects );
