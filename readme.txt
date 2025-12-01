@@ -2,9 +2,9 @@
 Contributors: strategy11team, sswells, srwells, danielbachhuber
 Tags: recipe, recipe maker, recipe card, rating, food blogging
 Requires at least: 5.9
-Tested up to: 6.8.2
+Tested up to: 6.8
 Requires PHP: 7.2
-Stable tag: 1.1.2
+Stable tag: 1.1.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -111,6 +111,15 @@ The Tasty Recipes plugin can be installed much like any other WordPress plugin.
 With Tasty Recipes, there aren't any confusing settings to configure or customizations you need to worry about. You can now share your favorite recipes with the world!
 
 == Changelog ==
+= 1.1.4 (November 24, 2025) =
+* Fix: Issue with images not being hidden in print
+* Fix: User ID PHP warning
+* Fix: Typo in the image field
+
+= 1.1.3 (October 21, 2025) =
+* Fix: Issue in Classic Editor for the Snap template
+* Fix: New styling files
+
 = 1.1.2 (September 17, 2025) =
 * New: Filter for a section in admin settings
 * Fix: Update the label of the Instacart Affiliate field

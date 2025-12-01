@@ -99,7 +99,7 @@ class Assets {
 			$users = array();
 			foreach ( $raw_users as $user ) {
 				$users[] = array(
-					'id'   => $user->id,
+					'id'   => $user->ID,
 					'name' => $user->user_login,
 				);
 			}

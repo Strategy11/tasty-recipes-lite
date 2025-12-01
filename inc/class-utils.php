@@ -520,7 +520,7 @@ class Utils {
 			}
 		);
 
-		$allowed_html = array_merge( $add_html, $allowed_html );
+		$allowed_html = array_replace_recursive( $add_html, $allowed_html );
 		return (array) apply_filters( 'tasty_recipes_allowed_html', $allowed_html );
 	}
 
