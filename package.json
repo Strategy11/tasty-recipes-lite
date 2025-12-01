@@ -4,12 +4,13 @@
   "main": "Gruntfile.js",
   "author": "WP Tasty",
   "devDependencies": {
+    "@10up/cypress-wp-utils": "^0.6.0",
     "@wordpress/scripts": "^30.24.0",
     "cross-env": "^10.0.0",
+    "cypress": "^15.4.0",
     "grunt": "^1.6.1",
     "grunt-text-replace": "^0.4",
     "ignore-emit-webpack-plugin": "^2.0.6",
-    "classnames": "^2.5.1",
     "svglint": "^4.1.1"
   },
   "scripts": {
@@ -29,7 +30,6 @@
     "sync-locks": "pnpm install && npm install --package-lock-only"
   },
   "dependencies": {
-    "@wordpress/icons": "^10.31.0",
     "@uiw/react-color-chrome": "^2.8.0",
     "react-select": "^5.10.2"
   }
