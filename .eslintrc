@@ -7,6 +7,7 @@
         "wp": true,
         "MutationObserver": true
     },
+	"plugins": ["cypress"],
     "rules": {
         "@wordpress/i18n-text-domain": [
             "error",
