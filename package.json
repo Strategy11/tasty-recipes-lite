@@ -6,17 +6,18 @@
   "devDependencies": {
     "@10up/cypress-wp-utils": "^0.6.0",
     "@wordpress/scripts": "^30.26.0",
+    "classnames": "^2.5.1",
     "cross-env": "^10.0.0",
     "cypress": "^15.4.0",
+    "eslint-plugin-cypress": "^2.12.1",
     "grunt": "^1.6.1",
     "grunt-text-replace": "^0.4",
     "ignore-emit-webpack-plugin": "^2.0.6",
-    "classnames": "^2.5.1",
     "svglint": "^4.1.1"
   },
   "scripts": {
     "build": "wp-scripts build",
-    "start": "wp-scripts start",
+    "start": "wp-scripts start assets/js/scripts.js --webpack-no-externals --output-path=dist",
     "dev": "npm run start",
     "watch": "npm run start",
     "prod": "npm run production",
@@ -30,13 +31,12 @@
     "zip": "bin/compile.sh",
     "sync-locks": "pnpm install && npm install --package-lock-only",
     "env": "wp-env",
-		"start": "wp-scripts start assets/js/scripts.js --webpack-no-externals --output-path=dist",
-		"e2e:run": "cypress run --config-file cypress.config.js",
-		"e2e:githubrun": "cypress run --config-file cypress.config.js --env TASTY_RECIPES=tasty-recipes"
+    "e2e:run": "cypress run --config-file cypress.config.js",
+    "e2e:githubrun": "cypress run --config-file cypress.config.js --env TASTY_RECIPES=tasty-recipes"
   },
   "dependencies": {
-    "@wordpress/icons": "^11.0.0",
     "@uiw/react-color-chrome": "^2.9.0",
+    "@wordpress/icons": "^11.0.0",
     "react-select": "^5.10.2"
   }
 }
