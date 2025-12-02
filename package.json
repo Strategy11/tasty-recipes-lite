@@ -17,7 +17,7 @@
   },
   "scripts": {
     "build": "wp-scripts build",
-    "start": "wp-scripts start assets/js/scripts.js --webpack-no-externals --output-path=dist",
+    "start": "wp-scripts start",
     "dev": "npm run start",
     "watch": "npm run start",
     "prod": "npm run production",
