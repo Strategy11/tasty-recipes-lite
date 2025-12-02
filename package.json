@@ -28,7 +28,11 @@
     "makepot": "php -d memory_limit=512M /usr/local/bin/wp i18n make-pot . languages/tasty-recipes.pot --skip-audit",
     "test:php": "composer phpunit",
     "zip": "bin/compile.sh",
-    "sync-locks": "pnpm install && npm install --package-lock-only"
+    "sync-locks": "pnpm install && npm install --package-lock-only",
+    "env": "wp-env",
+		"start": "wp-scripts start assets/js/scripts.js --webpack-no-externals --output-path=dist",
+		"e2e:run": "cypress run --config-file cypress.config.js",
+		"e2e:githubrun": "cypress run --config-file cypress.config.js --env TASTY_RECIPES=tasty-recipes"
   },
   "dependencies": {
     "@wordpress/icons": "^11.0.0",
