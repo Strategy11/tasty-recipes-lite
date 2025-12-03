@@ -63,7 +63,7 @@ class Template {
 	public static function get_all_templates( $parts = array() ) {
 		self::set_template_objects();
 
-		$templates = [];
+		$templates = array();
 		if ( empty( self::$template_objects ) ) {
 			return $templates;
 		}
@@ -84,6 +84,19 @@ class Template {
 		}
 
 		return $templates;
+	}
+
+	/**
+	 * Get all template objects.
+	 * 
+	 * @since x.x
+	 * 
+	 * @return array
+	 */
+	public static function get_all_template_objects() {
+		self::set_template_objects();
+
+		return self::$template_objects;
 	}
 
 	/**

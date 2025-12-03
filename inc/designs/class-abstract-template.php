@@ -65,6 +65,13 @@ abstract class Abstract_Template {
 	protected $supports = array( 'customization' );
 
 	/**
+	 * Variation count.
+	 *
+	 * @var int
+	 */
+	protected $variation_count = 0;
+
+	/**
 	 * Sets the variables.
 	 *
 	 * @return void
@@ -207,6 +214,27 @@ abstract class Abstract_Template {
 	}
 
 	/**
+	 * Get current template object.
+	 * 
+	 * @since x.x
+	 * 
+	 * @return array
+	 */
+	public function get_template_object() {
+		$props = array(
+			'id'     => $this->get_id(),
+			'name'   => $this->get_template_name(),
+			'is_pro' => $this->is_pro(),
+		);
+
+		if ( $this->supports( 'variations' ) ) {
+			$props['variation_count'] = $this->get_variation_count();
+		}
+
+		return $props;
+	}
+
+	/**
 	 * Get current template style's path.
 	 *
 	 * @return string
@@ -247,11 +275,24 @@ abstract class Abstract_Template {
 	/**
 	 * Get the mechanisms this template supports.
 	 * 
+	 * @param string $mechanism Mechanism to check.
+	 * 
 	 * @since x.x
 	 *
 	 * @return array
 	 */
-	public function get_supports() {
-		return $this->supports;
+	public function supports( $mechanism ) {
+		return in_array( $mechanism, $this->supports, true );
+	}
+
+	/**
+	 * Get the variation count.
+	 * 
+	 * @since x.x
+	 *
+	 * @return int
+	 */
+	public function get_variation_count() {
+		return $this->variation_count;
 	}
 }

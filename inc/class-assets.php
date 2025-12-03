@@ -242,7 +242,7 @@ class Assets {
 		return apply_filters(
 			'tasty_recipes_design_tab_options',
 			array(
-				'allTemplates'             => Template::get_all_templates(),
+				'allTemplates'             => Template::get_all_templates( array( 'object' ) ),
 				'recipeCardPreviewUrlBase' => $recipe_card_preview_url_base,
 				'template'                 => get_option( Tasty_Recipes::TEMPLATE_OPTION, '' ),
 				'template_parts'           => array( 'name', 'design_opts' ),

@@ -16,6 +16,20 @@ class Bold_2_0 extends Abstract_Template {
 	use Singleton;
 
 	/**
+	 * Variation_count.
+	 *
+	 * @var int
+	 */
+	protected $variation_count = 2;
+
+	/**
+	 * What mechanisms this template supports.
+	 * 
+	 * @var array
+	 */
+	protected $supports = array( 'customization', 'variations' );
+
+	/**
 	 * Sets the variables.
 	 *
 	 * @return void
@@ -26,4 +40,3 @@ class Bold_2_0 extends Abstract_Template {
 		$this->is_pro        = true;
 	}
 }
-

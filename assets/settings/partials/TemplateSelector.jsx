@@ -49,7 +49,7 @@ export const TemplateSelector = ( {
 				</svg>
 			</button>
 			<h3>
-				{ `${ title } (${ index + 1 }/${ total })` }
+				{ `${ title.name } (${ index + 1 }/${ total })` }
 				{ lockedTemplates.includes( selectedTemplate.slug ) && (
 					<PremiumLock
 						upgradeUrl={ generateUpgradeUrl( {
