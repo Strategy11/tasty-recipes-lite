@@ -8,13 +8,10 @@ assets/dist/
 node_modules/
 *.sql
 *.zip
-
 /vendor/
 /inc/libs/
 /.idea
 /.idea/**
-
-# PHP CS Fixer
 .php-cs-fixer.cache
-.wp-env.json export-ignore
-cypress.config.js export-ignore
+.wp-env.json
+cypress.config.js

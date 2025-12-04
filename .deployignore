@@ -6,3 +6,7 @@ node_modules/**
 php-tests/**
 .idea/**
 pnpm-lock.yaml
+cypress
+cypress.config.js
+.wp-env.json
+.nvmrc

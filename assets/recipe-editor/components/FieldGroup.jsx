@@ -1,4 +1,4 @@
-import { useState, useEffect } from '@wordpress/element';
+import { useState, useEffect, useRef } from '@wordpress/element';
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 
@@ -15,6 +15,7 @@ export const FieldGroup = ( {
 } ) => {
 	const [ fieldValues, setFieldValues ] = useState( initialFieldValues );
 	const [ isAdditionalTimeOpen, setIsAdditionalTimeOpen ] = useState( false );
+	const isInitialMount = useRef( true );
 
 	useEffect( () => {
 		if (
@@ -29,6 +30,10 @@ export const FieldGroup = ( {
 	] );
 
 	useEffect( () => {
+		if ( isInitialMount.current ) {
+			isInitialMount.current = false;
+			return;
+		}
 		if ( ! isAdditionalTimeOpen ) {
 			setFieldValues( ( prev ) => ( {
 				...prev,
