@@ -20,7 +20,7 @@ class Bold_2_0 extends Abstract_Template {
 	 *
 	 * @var int
 	 */
-	protected $variation_count = 2;
+	protected $variation_count = 3;
 
 	/**
 	 * What mechanisms this template supports.

@@ -1,4 +1,6 @@
+import { sprintf, __ } from '@wordpress/i18n';
 import { PremiumLock, useModal } from '@library';
+import classNames from 'classnames';
 
 const allTemplates = window.tastyRecipesSettings.design.allTemplates;
 
@@ -23,64 +25,111 @@ export const TemplateSelector = ( {
 	const { generateUpgradeUrl } = useModal();
 	const { title, index, total } = selectedTemplate;
 
+	const variations = [];
+
+	if ( title.variation_count && title.variation_count > 0 ) {
+		for ( let i = 1; i <= title.variation_count; i++ ) {
+			variations.push( i );
+		}
+	}
+
+	const handleTemplateChange = ( slug ) => {
+		setSelectedTemplate( {
+			...selectedTemplate,
+			slug,
+		} );
+	};
+
+	const handleVariationChange = ( variation ) => {
+		setSelectedTemplate( {
+			...selectedTemplate,
+			variation,
+		} );
+	};
+
 	return (
-		<div className="tasty-recipes-card-chooser">
-			<button
-				type="button"
-				onClick={ () =>
-					setSelectedTemplate(
-						iterateTemplate( selectedTemplate, '-' )
-					)
-				}
-			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					width="5"
-					height="8"
-					fill="none"
+		<>
+			<div className="tasty-recipes-card-chooser">
+				<button
+					type="button"
+					onClick={ () =>
+						handleTemplateChange(
+							iterateTemplate( selectedTemplate, '-' )
+						)
+					}
 				>
-					<path
-						stroke="currentColor"
-						strokeLinecap="round"
-						strokeLinejoin="round"
-						strokeWidth="1.5"
-						d="M4.25.75.75 4l3.5 3.25"
-					/>
-				</svg>
-			</button>
-			<h3>
-				{ `${ title.name } (${ index + 1 }/${ total })` }
-				{ lockedTemplates.includes( selectedTemplate.slug ) && (
-					<PremiumLock
-						upgradeUrl={ generateUpgradeUrl( {
-							medium: 'tasty-recipes',
-							campaign: 'upgrade',
-							content: 'template',
-						} ) }
-					/>
-				) }
-			</h3>
-			<button
-				type="button"
-				onClick={ () =>
-					setSelectedTemplate( iterateTemplate( selectedTemplate ) )
-				}
-			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					width="5"
-					height="8"
-					fill="none"
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="5"
+						height="8"
+						fill="none"
+					>
+						<path
+							stroke="currentColor"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							strokeWidth="1.5"
+							d="M4.25.75.75 4l3.5 3.25"
+						/>
+					</svg>
+				</button>
+				<h3>
+					{ `${ title.name } (${ index + 1 }/${ total })` }
+					{ lockedTemplates.includes( selectedTemplate.slug ) && (
+						<PremiumLock
+							upgradeUrl={ generateUpgradeUrl( {
+								medium: 'tasty-recipes',
+								campaign: 'upgrade',
+								content: 'template',
+							} ) }
+						/>
+					) }
+				</h3>
+				<button
+					type="button"
+					onClick={ () =>
+						handleTemplateChange(
+							iterateTemplate( selectedTemplate )
+						)
+					}
 				>
-					<path
-						stroke="currentColor"
-						strokeLinecap="round"
-						strokeLinejoin="round"
-						strokeWidth="1.5"
-						d="M.75 7.25 4.25 4 .75.75"
-					/>
-				</svg>
-			</button>
-		</div>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="5"
+						height="8"
+						fill="none"
+					>
+						<path
+							stroke="currentColor"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							strokeWidth="1.5"
+							d="M.75 7.25 4.25 4 .75.75"
+						/>
+					</svg>
+				</button>
+			</div>
+			{ title.variation_count && title.variation_count > 0 && (
+				<div className="tasty-recipes-template-variations">
+					{ variations.map( ( variation ) => (
+						<button
+							key={ 'variation-' + variation }
+							type="button"
+							onClick={ () => handleVariationChange( variation ) }
+							className={ classNames( {
+								'tasty-recipes-template-variation-active':
+									variation === selectedTemplate.variation,
+							} ) }
+						>
+							{ sprintf(
+								/* translators: %d is the variation number */
+								__( 'Variation %d', 'tasty-recipes-lite' ),
+								variation
+							) }
+						</button>
+					) ) }
+				</div>
+			) }
+		</>
 	);
 };

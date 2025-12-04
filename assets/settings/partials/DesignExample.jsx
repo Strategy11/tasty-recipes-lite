@@ -6,7 +6,7 @@ import { TemplateSelector } from './TemplateSelector';
 const recipeCardPreviewUrlBase =
 	window.tastyRecipesSettings.design.recipeCardPreviewUrlBase;
 
-const getTemplatePreviewUrl = ( template, settings ) => {
+const getTemplatePreviewUrl = ( template, settings, variation ) => {
 	const include = applyFilters(
 		'tasty_recipes_design_example_includes',
 		[ 'nutrifox_display_style', 'star_ratings_style' ],
@@ -18,7 +18,15 @@ const getTemplatePreviewUrl = ( template, settings ) => {
 		.map( ( key ) => `${ key }=${ encodeURIComponent( settings[ key ] ) }` )
 		.join( '&' );
 
-	return recipeCardPreviewUrlBase + '&template=' + template + '&' + params;
+	return (
+		recipeCardPreviewUrlBase +
+		'&template=' +
+		template +
+		'&variation=' +
+		variation +
+		'&' +
+		params
+	);
 };
 
 export const DesignExample = ( {
@@ -41,6 +49,7 @@ export const DesignExample = ( {
 				...formData,
 			},
 		};
+
 		setTimeout( () => {
 			iframeRef.current.contentWindow.postMessage(
 				JSON.stringify( data ),
@@ -116,7 +125,11 @@ export const DesignExample = ( {
 				ref={ iframeRef }
 				title="Template Preview"
 				id="tasty-recipes-card-preview"
-				src={ getTemplatePreviewUrl( template.slug, formData ) }
+				src={ getTemplatePreviewUrl(
+					template.slug,
+					formData,
+					template.variation
+				) }
 				style={ {
 					minHeight: '200px',
 				} }

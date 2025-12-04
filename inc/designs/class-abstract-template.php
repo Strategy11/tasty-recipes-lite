@@ -7,6 +7,8 @@
 
 namespace Tasty_Recipes\Designs;
 
+use Tasty_Recipes;
+
 /**
  * Design template abstract class.
  *
@@ -175,14 +177,25 @@ abstract class Abstract_Template {
 
 	/**
 	 * Get templates base path with trailing slash.
+	 * 
+	 * @param bool $hard_variation If true, use the hard variation.
 	 *
 	 * @return string
 	 */
-	protected function get_base_templates_path() {
-		return trailingslashit(
+	protected function get_base_templates_path( $hard_variation = false ) {
+		$default = trailingslashit(
 			dirname( $this->get_template_plugin() ) .
 			'/' . $this->get_template_folder()
 		);
+
+		if ( $this->supports( 'variations' ) ) {
+			// Use the hard set variation if available for preview, otherwise default to the saved variation or the default 1.
+			$variation = $hard_variation ? $hard_variation : get_option( Tasty_Recipes::TEMPLATE_VARIATION_OPTION, 1 );
+
+			return $default . 'variations/' . $variation . '/';
+		}
+		
+		return $default;
 	}
 
 	/**
@@ -199,12 +212,12 @@ abstract class Abstract_Template {
 	 *
 	 * @return string
 	 */
-	public function get_template_path() {
+	public function get_template_path( $variation = false ) {
 		if ( $this->is_pro() ) {
 			return dirname( $this->get_template_plugin() ) . '/templates/admin/locked-template.php';
 		}
 
-		$template = $this->get_file_path( 'tasty-recipes.php' );
+		$template = $this->get_file_path( 'tasty-recipes.php', $variation );
 		if ( file_exists( $template ) ) {
 			return $template;
 		}
@@ -250,12 +263,12 @@ abstract class Abstract_Template {
 	 *
 	 * @return string
 	 */
-	protected function get_file_path( $file ) {
+	protected function get_file_path( $file, $variation = false ) {
 		if ( empty( $this->id ) ) {
 			return '';
 		}
 
-		return $this->get_base_templates_path() . $file;
+		return $this->get_base_templates_path( $variation ) . $file;
 	}
 
 	/**

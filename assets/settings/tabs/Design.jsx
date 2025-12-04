@@ -5,23 +5,25 @@ import { DesignSettings } from '../partials/DesignSettings';
 
 const globalSettings = window.tastyRecipesSettings;
 const { design } = globalSettings;
-const { customization, template } = design;
+const { customization, template, variation } = design;
 
 export const Design = () => {
 	const { formData, handleChange } = useForm( customization );
 	const { modalData, openModal, closeModal, generateUpgradeUrl } = useModal();
 
-	const [ selectedTemplate, setSelectedTemplate ] = useState(
-		template ?? 'default'
-	);
+	const [ selectedTemplate, setSelectedTemplate ] = useState( {
+		slug: template ?? 'default',
+		variation: Number( variation ) ?? 1,
+	} );
 
 	const templateMeta = {
-		slug: selectedTemplate,
+		slug: selectedTemplate.slug,
+		variation: selectedTemplate.variation,
 		index: Object.keys(
 			window.tastyRecipesSettings.design.allTemplates
-		).indexOf( selectedTemplate ),
+		).indexOf( selectedTemplate.slug ),
 		title: window.tastyRecipesSettings.design.allTemplates[
-			selectedTemplate
+			selectedTemplate.slug
 		],
 		total: Object.keys( window.tastyRecipesSettings.design.allTemplates )
 			.length,

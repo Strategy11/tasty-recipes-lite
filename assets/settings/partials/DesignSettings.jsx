@@ -18,7 +18,8 @@ export const DesignSettings = ( {
 	openModal,
 	generateUpgradeUrl,
 } ) => {
-	const templateName = selectedTemplate !== '' ? selectedTemplate : 'default';
+	const templateName =
+		selectedTemplate.slug !== '' ? selectedTemplate.slug : 'default';
 	const defaultColors = getDefaultColors( templateName );
 
 	const socialFooter = applyFilters(
@@ -52,7 +53,12 @@ export const DesignSettings = ( {
 			<input
 				type="hidden"
 				name="tasty_recipes_template"
-				value={ selectedTemplate }
+				value={ selectedTemplate.slug }
+			/>
+			<input
+				type="hidden"
+				name="tasty_recipes_template_variation"
+				value={ selectedTemplate.variation }
 			/>
 			<h2>{ __( 'Template Colors', 'tasty-recipes-lite' ) }</h2>
 			<div className="tasty-two-columns-field-group">

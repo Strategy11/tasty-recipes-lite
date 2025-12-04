@@ -216,6 +216,7 @@ class Template {
 		}
 
 		$get_template               = Utils::get_param( 'template', 'sanitize_key' );
+		$get_variation              = Utils::get_param( 'variation', 'sanitize_key' );
 		$get_star_ratings_style     = Utils::get_param( 'star_ratings_style', 'sanitize_key' );
 		$get_nutrifox_display_style = Utils::get_param( 'nutrifox_display_style', 'sanitize_key' );
 
@@ -223,6 +224,7 @@ class Template {
 		$star_ratings_style     = ! empty( $get_star_ratings_style ) && in_array( $get_star_ratings_style, array( 'solid', 'outline' ), true ) ? $get_star_ratings_style : null;
 		$show_nutrifox          = ! empty( $get_nutrifox_display_style ) && in_array( $get_nutrifox_display_style, array( 'label', 'card' ), true );
 		$nutrifox_display_style = $show_nutrifox ? $get_nutrifox_display_style : null;
+		$variation              = ! empty( $get_variation ) ? absint( $get_variation ) : false;
 
 		$styles  = ! empty( $custom_design ) ? Shortcodes::get_styles_as_string( $custom_design ) : '';
 		$styles .= Assets::get_css_vars();
@@ -230,7 +232,8 @@ class Template {
 
 		$template        = 'recipe/tasty-recipes';
 		$template_object = self::get_object_by_name( $custom_design );
-		$custom_path     = $template_object->get_template_path();
+		$custom_path     = $template_object->get_template_path( $variation );
+
 		if ( file_exists( $custom_path ) ) {
 			$template = $custom_path;
 		}

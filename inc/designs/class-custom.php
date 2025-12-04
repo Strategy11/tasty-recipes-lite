@@ -29,7 +29,7 @@ class Custom extends Abstract_Template {
 	 *
 	 * @return string
 	 */
-	protected function get_base_templates_path() {
+	protected function get_base_templates_path( $variation = false ) {
 		return trailingslashit( $this->get_template_plugin() );
 	}
 

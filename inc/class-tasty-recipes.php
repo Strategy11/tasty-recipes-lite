@@ -160,6 +160,13 @@ class Tasty_Recipes {
 	const COPY_TO_CLIPBOARD_OPTION = 'tasty_recipes_copy_to_clipboard';
 
 	/**
+	 * Option name for the template variation.
+	 *
+	 * @var string
+	 */
+	const TEMPLATE_VARIATION_OPTION = 'tasty_recipes_template_variation';
+
+	/**
 	 * Instantiates and gets the singleton instance for the class.
 	 *
 	 * @return Tasty_Recipes

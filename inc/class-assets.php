@@ -246,6 +246,7 @@ class Assets {
 				'recipeCardPreviewUrlBase' => $recipe_card_preview_url_base,
 				'template'                 => get_option( Tasty_Recipes::TEMPLATE_OPTION, '' ),
 				'template_parts'           => array( 'name', 'design_opts' ),
+				'variation'                => get_option( Tasty_Recipes::TEMPLATE_VARIATION_OPTION, 1 ),
 				'customization'            => Tasty_Recipes::get_filtered_customization_settings(),
 				'locked'                   => Template::get_locked_templates(),
 			)
