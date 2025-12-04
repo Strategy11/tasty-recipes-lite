@@ -63,3 +63,7 @@ node_modules
 *.zip
 */__tests__/*
 pnpm-lock.yaml
+cypress
+cypress.config.js
+.wp-env.json
+.nvmrc
