@@ -2,9 +2,9 @@
 Contributors: strategy11team, sswells, srwells, danielbachhuber
 Tags: recipe, recipe maker, recipe card, rating, food blogging
 Requires at least: 5.9
-Tested up to: 6.8
+Tested up to: 6.9
 Requires PHP: 7.2
-Stable tag: 1.1.4
+Stable tag: 1.1.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -111,6 +111,9 @@ The Tasty Recipes plugin can be installed much like any other WordPress plugin.
 With Tasty Recipes, there aren't any confusing settings to configure or customizations you need to worry about. You can now share your favorite recipes with the world!
 
 == Changelog ==
+= 1.1.5 (December 4, 2025) =
+* Fix: Issue with additional time field in the Recipe Editor
+
 = 1.1.4 (November 24, 2025) =
 * Fix: Issue with images not being hidden in print
 * Fix: User ID PHP warning
