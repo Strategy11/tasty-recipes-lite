@@ -563,10 +563,11 @@ class Shortcodes {
 	 * @since 3.13
 	 *
 	 * @param bool|string $custom_design Custom design.
+	 * @param int|false   $variation     Template variation.
 	 *
 	 * @return void
 	 */
-	private static function set_template_info( $custom_design = false ) {
+	private static function set_template_info( $custom_design = false, $variation = false ) {
 		self::$template['php'] = '';
 		self::$custom_template = '';
 
@@ -586,8 +587,8 @@ class Shortcodes {
 		self::$custom_template = $custom_design;
 		if ( $template_obj ) {
 			self::$custom_template = $template_obj->get_id();
-			self::$template['php'] = $template_obj->get_template_path();
-			self::$template['css'] = $template_obj->get_style_path();
+			self::$template['php'] = $template_obj->get_template_path( $variation );
+			self::$template['css'] = $template_obj->get_style_path( $variation );
 		}
 	}
 
@@ -991,12 +992,13 @@ class Shortcodes {
 	/**
 	 * Gets the styles to inject into the recipe card.
 	 *
-	 * @param string $override_design Design being used if not the saved option.
+	 * @param string    $override_design Design being used if not the saved option.
+	 * @param int|false $variation       Template variation.
 	 *
 	 * @return string
 	 */
-	public static function get_styles_as_string( $override_design = '' ) {
-		self::set_template_info( $override_design );
+	public static function get_styles_as_string( $override_design = '', $variation = false ) {
+		self::set_template_info( $override_design, $variation );
 
 		// Add stylesheet so we can add inline CSS to it.
 		wp_register_style( 'tasty-recipes-before', false, array(), TASTY_RECIPES_LITE_VERSION );

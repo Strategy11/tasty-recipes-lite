@@ -210,6 +210,8 @@ abstract class Abstract_Template {
 	/**
 	 * Get current template path.
 	 *
+	 * @param int|false $variation Variation number to use.
+	 *
 	 * @return string
 	 */
 	public function get_template_path( $variation = false ) {
@@ -250,16 +252,19 @@ abstract class Abstract_Template {
 	/**
 	 * Get current template style's path.
 	 *
+	 * @param int|false $variation Template variation.
+	 *
 	 * @return string
 	 */
-	public function get_style_path() {
-		return $this->get_file_path( 'tasty-recipes.css' );
+	public function get_style_path( $variation = false ) {
+		return $this->get_file_path( 'tasty-recipes.css', $variation );
 	}
 
 	/**
 	 * Get current template style or template file path.
 	 *
-	 * @param string $file File name.
+	 * @param string    $file      File name.
+	 * @param int|false $variation Template variation.
 	 *
 	 * @return string
 	 */
