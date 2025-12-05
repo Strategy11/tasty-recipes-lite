@@ -31,30 +31,35 @@ jobs:
           COMPOSER_AUTH: '{"github-oauth":{"github.com":"${{ secrets.GH_TOKEN }}"}}'
         run: composer install --no-interaction --prefer-dist
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
       - name: Setup Node with caching
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
+          cache: 'pnpm'
 
       - name: Cache Cypress binary
         uses: actions/cache@v4
         with:
           path: ~/.cache/Cypress
-          key: cypress-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+          key: cypress-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: cypress-${{ runner.os }}-
 
       - name: Install dependencies
-        run: npm ci --include=dev
+        run: pnpm install --frozen-lockfile
 
       - name: Build assets
-        run: npm run build
+        run: pnpm run build
 
       - name: Cypress run
         uses: cypress-io/github-action@v6
         with:
-          start: npm run env start
+          start: pnpm run env start
           wait-on: 'http://localhost:3000'
           browser: chrome
-          command: npm run e2e:run
-          install: false  # Already installed via npm ci
+          command: pnpm run e2e:run
+          install: false  # Already installed via pnpm
