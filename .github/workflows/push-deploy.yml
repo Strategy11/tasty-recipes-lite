@@ -11,15 +11,27 @@ jobs:
     - name: Install Subversion
       run: sudo apt-get update && sudo apt-get install -y subversion
 
-    - uses: actions/checkout@master
+    - uses: actions/checkout@v4
+
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: 9
+
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+
     - name: Build
       run: |
         composer config --auth github-oauth.github.com ${{ secrets.GH_TOKEN }}
         composer install -n --prefer-dist
         composer config --auth --unset github-oauth.github.com
         rm auth.json
-        npm install
-        npm run build
+        pnpm install --frozen-lockfile
+        pnpm run build
+
     - name: WordPress Plugin Deploy
       uses: 10up/action-wordpress-plugin-deploy@2.2.2
       env:

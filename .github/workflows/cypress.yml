@@ -1,18 +1,22 @@
+name: E2E Test
+
 on:
-  # Trigger the workflow on push or pull request,
-  # but only for the main branch
   push:
     branches:
       - main
   pull_request:
-    types: [ opened, labeled, synchronize ]
+    types: [opened, labeled, synchronize]
 
-name: E2E Test
 jobs:
   cypress:
     runs-on: ubuntu-latest
 
-    name: Cypress
+    if: |
+      github.event_name == 'push' ||
+      contains(github.event.pull_request.labels.*.name, 'run tests')
+
+    name: Cypress Tests
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -25,24 +29,37 @@ jobs:
       - name: Composer install
         env:
           COMPOSER_AUTH: '{"github-oauth":{"github.com":"${{ secrets.GH_TOKEN }}"}}'
-        run: composer install
+        run: composer install --no-interaction --prefer-dist
 
-      - name: Install Node
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node with caching
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'pnpm'
+
+      - name: Cache Cypress binary
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/Cypress
+          key: cypress-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: cypress-${{ runner.os }}-
 
       - name: Install dependencies
-        run: npm ci --include=dev
+        run: pnpm install --frozen-lockfile
 
-      - name: Install wp-env
-        run: npm install -g @wordpress/env
+      - name: Build assets
+        run: pnpm run build
 
-      - name: Set up WP environment
-        run: npm run env start
-
-      - name: Build asset
-        run: npm run build
-
-      - name: Test
-        run: npm run e2e:run
+      - name: Cypress run
+        uses: cypress-io/github-action@v6
+        with:
+          start: pnpm run env start
+          wait-on: 'http://localhost:3000'
+          browser: chrome
+          command: pnpm run e2e:run
+          install: false  # Already installed via pnpm

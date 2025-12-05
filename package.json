@@ -4,6 +4,7 @@
   "main": "Gruntfile.js",
   "author": "WP Tasty",
   "devDependencies": {
+    "@wordpress/env": "^10.36.0",
     "@10up/cypress-wp-utils": "^0.6.0",
     "@wordpress/scripts": "^30.26.0",
     "classnames": "^2.5.1",
