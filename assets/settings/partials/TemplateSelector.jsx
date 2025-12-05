@@ -21,6 +21,7 @@ const lockedTemplates = window.tastyRecipesSettings.design.locked;
 export const TemplateSelector = ( {
 	selectedTemplate,
 	setSelectedTemplate,
+	variationSelector = true,
 } ) => {
 	const { generateUpgradeUrl } = useModal();
 	const { title, index, total } = selectedTemplate;
@@ -109,27 +110,32 @@ export const TemplateSelector = ( {
 					</svg>
 				</button>
 			</div>
-			{ title.variation_count && title.variation_count > 0 && (
-				<div className="tasty-recipes-template-variations">
-					{ variations.map( ( variation ) => (
-						<button
-							key={ 'variation-' + variation }
-							type="button"
-							onClick={ () => handleVariationChange( variation ) }
-							className={ classNames( {
-								'tasty-recipes-template-variation-active':
-									variation === selectedTemplate.variation,
-							} ) }
-						>
-							{ sprintf(
-								/* translators: %d is the variation number */
-								__( 'Variation %d', 'tasty-recipes-lite' ),
-								variation
-							) }
-						</button>
-					) ) }
-				</div>
-			) }
+			{ variationSelector &&
+				title.variation_count &&
+				title.variation_count > 0 && (
+					<div className="tasty-recipes-template-variations">
+						{ variations.map( ( variation ) => (
+							<button
+								key={ 'variation-' + variation }
+								type="button"
+								onClick={ () =>
+									handleVariationChange( variation )
+								}
+								className={ classNames( {
+									'tasty-recipes-template-variation-active':
+										variation ===
+										selectedTemplate.variation,
+								} ) }
+							>
+								{ sprintf(
+									/* translators: %d is the variation number */
+									__( 'Variation %d', 'tasty-recipes-lite' ),
+									variation
+								) }
+							</button>
+						) ) }
+					</div>
+				) }
 		</>
 	);
 };

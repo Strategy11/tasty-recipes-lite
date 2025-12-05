@@ -137,6 +137,7 @@ export const DesignExample = ( {
 			<TemplateSelector
 				selectedTemplate={ template }
 				setSelectedTemplate={ setSelectedTemplate }
+				variationSelector={ false }
 			/>
 		</div>
 	);
