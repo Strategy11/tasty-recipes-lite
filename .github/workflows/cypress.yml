@@ -54,7 +54,7 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           start: npm run env start
-          wait-on: 'http://localhost:8888'
+          wait-on: 'http://localhost:3000'
           browser: chrome
           command: npm run e2e:run
           install: false  # Already installed via npm ci
