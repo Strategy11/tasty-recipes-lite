@@ -1007,10 +1007,17 @@ class Shortcodes {
 
 		$styles    = '';
 		$css_files = [];
+		$template_obj = Template::get_object_by_name( self::$custom_template );
+		
+		if ( $template_obj->supports( 'variations' ) ) {
+			$css_files[] = $template_obj->get_shared_style_path();
+		}
+
 		if ( self::$custom_template && self::$template['css'] ) {
 			$css_files[] = self::$template['css'];
 			add_filter( 'tasty_recipes_css_vars', array( __CLASS__, 'add_template_css_vars' ) );
 		}
+		
 
 		/**
 		 * Allow third-parties to more easily inject their own styles.

@@ -176,6 +176,47 @@ abstract class Abstract_Template {
 	}
 
 	/**
+	 * Get current template base folder path.
+	 * 
+	 * @since x.x
+	 *
+	 * @return string
+	 */
+	protected function get_template_base_folder_path() {
+		return trailingslashit(
+			dirname( $this->get_template_plugin() ) .
+			'/' . $this->get_template_folder()
+		);
+	}
+
+	/**
+	 * Get current template variation folder path.
+	 * 
+	 * @since x.x
+	 * 
+	 * @param bool $hard_variation If true, use the hard variation.
+	 *
+	 * @return string
+	 */
+	protected function get_variation_folder_path( $hard_variation = false ) {
+		if ( ! $this->supports( 'variations' ) ) {
+			return '';
+		}
+
+		$active_variation = get_option( Tasty_Recipes::TEMPLATE_VARIATION_OPTION, 1 );
+
+		// Validate that the saved variation is correct for the current template.
+		if ( $active_variation < 1 || $active_variation > $this->get_variation_count() ) {
+			$active_variation = 1;
+		}
+
+		// Use the hard set variation if available for preview.
+		$variation = $hard_variation ? $hard_variation : $active_variation;
+
+		return $this->get_template_base_folder_path() . 'variations/' . $variation . '/';
+	}
+
+	/**
 	 * Get templates base path with trailing slash.
 	 * 
 	 * @param bool $hard_variation If true, use the hard variation.
@@ -183,26 +224,11 @@ abstract class Abstract_Template {
 	 * @return string
 	 */
 	protected function get_base_templates_path( $hard_variation = false ) {
-		$default = trailingslashit(
-			dirname( $this->get_template_plugin() ) .
-			'/' . $this->get_template_folder()
-		);
-
 		if ( $this->supports( 'variations' ) ) {
-			$active_variation = get_option( Tasty_Recipes::TEMPLATE_VARIATION_OPTION, 1 );
-
-			// Validate that the saved variation is correct for the current template.
-			if ( $active_variation < 1 || $active_variation > $this->get_variation_count() ) {
-				$active_variation = 1;
-			}
-
-			// Use the hard set variation if available for preview, otherwise default to the saved variation or the default 1.
-			$variation = $hard_variation ? $hard_variation : $active_variation;
-
-			return $default . 'variations/' . $variation . '/';
+			return $this->get_variation_folder_path( $hard_variation );
 		}
 		
-		return $default;
+		return $this->get_template_base_folder_path();
 	}
 
 	/**
@@ -265,6 +291,19 @@ abstract class Abstract_Template {
 	 */
 	public function get_style_path( $variation = false ) {
 		return $this->get_file_path( 'tasty-recipes.css', $variation );
+	}
+
+	/**
+	 * Get current template shared style path.
+	 *
+	 * @return string
+	 */
+	public function get_shared_style_path() {
+		if ( ! $this->supports( 'variations' ) ) {
+			return '';
+		}
+
+		return $this->get_template_base_folder_path() . 'shared.css';
 	}
 
 	/**
