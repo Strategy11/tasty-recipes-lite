@@ -189,8 +189,15 @@ abstract class Abstract_Template {
 		);
 
 		if ( $this->supports( 'variations' ) ) {
+			$active_variation = get_option( Tasty_Recipes::TEMPLATE_VARIATION_OPTION, 1 );
+
+			// Validate that the saved variation is correct for the current template.
+			if ( $active_variation < 1 || $active_variation > $this->get_variation_count() ) {
+				$active_variation = 1;
+			}
+
 			// Use the hard set variation if available for preview, otherwise default to the saved variation or the default 1.
-			$variation = $hard_variation ? $hard_variation : get_option( Tasty_Recipes::TEMPLATE_VARIATION_OPTION, 1 );
+			$variation = $hard_variation ? $hard_variation : $active_variation;
 
 			return $default . 'variations/' . $variation . '/';
 		}
