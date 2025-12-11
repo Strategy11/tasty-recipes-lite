@@ -662,7 +662,7 @@ class Tasty_Recipes {
 	 *
 	 * @return array
 	 */
-	public static function get_customization_settings() {
+	public static function get_customization_settings( $raw = false ) {
 		/**
 		 * Filter the default customization settings.
 		 * 
@@ -694,6 +694,10 @@ class Tasty_Recipes {
 			$defaults,
 			(array) get_option( self::CUSTOMIZATION_OPTION, array() )
 		);
+
+		if ( $raw ) {
+			return $settings;
+		}
 
 		/**
 		 * Filter the customization settings.
