@@ -32,6 +32,7 @@ class Content_Model {
 	public static function init_post_type() {
 		self::action_init_register_cron_events();
 		self::action_init_register_post_types();
+		self::action_init_register_taxonomies();
 		self::action_init_register_rewrite_rules();
 		self::action_init_register_oembed_providers();
 	}
@@ -78,6 +79,135 @@ class Content_Model {
 			'menu_name'          => __( 'Recipes', 'tasty-recipes-lite' ),
 		);
 		register_post_type( 'tasty_recipe', $args );
+	}
+
+	/**
+	 * Registers our taxonomies.
+	 * 
+	 * @since x.x
+	 *
+	 * @return void
+	 */
+	public static function action_init_register_taxonomies() {
+		$taxonomies = self::get_taxonomy_definitions();
+
+		foreach ( $taxonomies as $taxonomy => $config ) {
+			register_taxonomy( $taxonomy, 'tasty_recipe', $config['args'] );
+		}
+	}
+
+	/**
+	 * Get taxonomy definitions for recipe attributes.
+	 * 
+	 * @since
+	 *
+	 * @return array
+	 */
+	public static function get_taxonomy_definitions() {
+		return array(
+			'tasty_recipe_category' => array(
+				'legacy_meta' => 'category',
+				'args'        => array(
+					'labels'            => array(
+						'name'                       => __( 'Recipe Categories', 'tasty-recipes-lite' ),
+						'singular_name'              => __( 'Recipe Category', 'tasty-recipes-lite' ),
+						'search_items'               => __( 'Search Categories', 'tasty-recipes-lite' ),
+						'all_items'                  => __( 'All Categories', 'tasty-recipes-lite' ),
+						'edit_item'                  => __( 'Edit Category', 'tasty-recipes-lite' ),
+						'update_item'                => __( 'Update Category', 'tasty-recipes-lite' ),
+						'add_new_item'               => __( 'Add New Category', 'tasty-recipes-lite' ),
+						'new_item_name'              => __( 'New Category Name', 'tasty-recipes-lite' ),
+						'menu_name'                  => __( 'Categories', 'tasty-recipes-lite' ),
+						'separate_items_with_commas' => __( 'Separate categories with commas', 'tasty-recipes-lite' ),
+						'choose_from_most_used'      => __( 'Choose from the most used categories', 'tasty-recipes-lite' ),
+						'not_found'                  => __( 'No categories found', 'tasty-recipes-lite' ),
+					),
+					'hierarchical'      => false,
+					'public'            => false,
+					'show_ui'           => true,
+					'show_admin_column' => false,
+					'show_in_nav_menus' => false,
+					'show_tagcloud'     => false,
+					'show_in_rest'      => true,
+					'rewrite'           => false,
+				),
+			),
+			'tasty_recipe_method'   => array(
+				'legacy_meta' => 'method',
+				'args'        => array(
+					'labels'            => array(
+						'name'                       => __( 'Cooking Methods', 'tasty-recipes-lite' ),
+						'singular_name'              => __( 'Cooking Method', 'tasty-recipes-lite' ),
+						'search_items'               => __( 'Search Methods', 'tasty-recipes-lite' ),
+						'all_items'                  => __( 'All Methods', 'tasty-recipes-lite' ),
+						'edit_item'                  => __( 'Edit Method', 'tasty-recipes-lite' ),
+						'update_item'                => __( 'Update Method', 'tasty-recipes-lite' ),
+						'add_new_item'               => __( 'Add New Method', 'tasty-recipes-lite' ),
+						'new_item_name'              => __( 'New Method Name', 'tasty-recipes-lite' ),
+						'menu_name'                  => __( 'Methods', 'tasty-recipes-lite' ),
+						'separate_items_with_commas' => __( 'Separate methods with commas', 'tasty-recipes-lite' ),
+						'choose_from_most_used'      => __( 'Choose from the most used methods', 'tasty-recipes-lite' ),
+						'not_found'                  => __( 'No methods found', 'tasty-recipes-lite' ),
+					),
+					'hierarchical'      => false,
+					'public'            => false,
+					'show_ui'           => true,
+					'show_admin_column' => false,
+					'show_in_nav_menus' => false,
+					'show_tagcloud'     => false,
+					'show_in_rest'      => true,
+					'rewrite'           => false,
+				),
+			),
+			'tasty_recipe_cuisine'  => array(
+				'legacy_meta' => 'cuisine',
+				'args'        => array(
+					'labels'            => array(
+						'name'                       => __( 'Cuisines', 'tasty-recipes-lite' ),
+						'singular_name'              => __( 'Cuisine', 'tasty-recipes-lite' ),
+						'search_items'               => __( 'Search Cuisines', 'tasty-recipes-lite' ),
+						'all_items'                  => __( 'All Cuisines', 'tasty-recipes-lite' ),
+						'edit_item'                  => __( 'Edit Cuisine', 'tasty-recipes-lite' ),
+						'update_item'                => __( 'Update Cuisine', 'tasty-recipes-lite' ),
+						'add_new_item'               => __( 'Add New Cuisine', 'tasty-recipes-lite' ),
+						'new_item_name'              => __( 'New Cuisine Name', 'tasty-recipes-lite' ),
+						'menu_name'                  => __( 'Cuisines', 'tasty-recipes-lite' ),
+						'separate_items_with_commas' => __( 'Separate cuisines with commas', 'tasty-recipes-lite' ),
+						'choose_from_most_used'      => __( 'Choose from the most used cuisines', 'tasty-recipes-lite' ),
+						'not_found'                  => __( 'No cuisines found', 'tasty-recipes-lite' ),
+					),
+					'hierarchical'      => false,
+					'public'            => false,
+					'show_ui'           => true,
+					'show_admin_column' => false,
+					'show_in_nav_menus' => false,
+					'show_tagcloud'     => false,
+					'show_in_rest'      => true,
+					'rewrite'           => false,
+				),
+			),
+		);
+	}
+
+	/**
+	 * Get the taxonomy name for a given legacy meta key.
+	 * 
+	 * @since x.x
+	 *
+	 * @param string $legacy_meta The legacy meta key to look up.
+	 *
+	 * @return string|false The taxonomy name or false if not found.
+	 */
+	public static function get_taxonomy_for_legacy_meta( $legacy_meta ) {
+		$taxonomies = self::get_taxonomy_definitions();
+
+		foreach ( $taxonomies as $taxonomy => $config ) {
+			if ( $config['legacy_meta'] === $legacy_meta ) {
+				return $taxonomy;
+			}
+		}
+
+		return false;
 	}
 
 	/**

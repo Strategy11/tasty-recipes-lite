@@ -162,14 +162,17 @@ class Recipe {
 			'category'              => array(
 				'label'    => __( 'Category', 'tasty-recipes-lite' ),
 				'property' => 'recipeCategory',
+				'taxonomy' => 'tasty_recipe_category',
 			),
 			'method'                => array(
 				'label'    => __( 'Method', 'tasty-recipes-lite' ),
 				'property' => 'cookingMethod',
+				'taxonomy' => 'tasty_recipe_method',
 			),
 			'cuisine'               => array(
 				'label'    => __( 'Cuisine', 'tasty-recipes-lite' ),
 				'property' => 'recipeCuisine',
+				'taxonomy' => 'tasty_recipe_cuisine',
 			),
 			'diet'                  => array(
 				'label'    => __( 'Diet', 'tasty-recipes-lite' ),
@@ -940,7 +943,7 @@ class Recipe {
 	 * @return string
 	 */
 	public function get_category() {
-		return $this->get_meta( 'category' );
+		return $this->get_taxonomy_terms( 'tasty_recipe_category', 'category' );
 	}
 
 	/**
@@ -951,7 +954,7 @@ class Recipe {
 	 * @return void
 	 */
 	public function set_category( $category ) {
-		$this->set_meta( 'category', $category );
+		$this->set_taxonomy_terms( 'tasty_recipe_category', $category, 'category' );
 	}
 
 	/**
@@ -960,7 +963,7 @@ class Recipe {
 	 * @return string
 	 */
 	public function get_cuisine() {
-		return $this->get_meta( 'cuisine' );
+		return $this->get_taxonomy_terms( 'tasty_recipe_cuisine', 'cuisine' );
 	}
 
 	/**
@@ -971,7 +974,7 @@ class Recipe {
 	 * @return void
 	 */
 	public function set_cuisine( $cuisine ) {
-		$this->set_meta( 'cuisine', $cuisine );
+		$this->set_taxonomy_terms( 'tasty_recipe_cuisine', $cuisine, 'cuisine' );
 	}
 
 	/**
@@ -1000,7 +1003,7 @@ class Recipe {
 	 * @return string
 	 */
 	public function get_method() {
-		return $this->get_meta( 'method' );
+		return $this->get_taxonomy_terms( 'tasty_recipe_method', 'method' );
 	}
 
 	/**
@@ -1011,7 +1014,7 @@ class Recipe {
 	 * @return void
 	 */
 	public function set_method( $method ) {
-		$this->set_meta( 'method', $method );
+		$this->set_taxonomy_terms( 'tasty_recipe_method', $method, 'method' );
 	}
 
 	/**
@@ -1457,6 +1460,88 @@ class Recipe {
 	 */
 	private function delete_meta( $meta_key, $meta_value = '' ) {
 		delete_post_meta( $this->get_id(), $meta_key, $meta_value );
+	}
+
+	/**
+	 * Get taxonomy terms for the recipe as a comma-separated string.
+	 * Falls back to legacy post meta if no taxonomy terms exist.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $taxonomy     Taxonomy name.
+	 * @param string $legacy_meta  Legacy meta key for backwards compatibility.
+	 *
+	 * @return string
+	 */
+	protected function get_taxonomy_terms( $taxonomy, $legacy_meta = '' ) {
+		$terms = get_the_terms( $this->get_id(), $taxonomy );
+
+		if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
+			$term_names = wp_list_pluck( $terms, 'name' );
+			return implode( ', ', $term_names );
+		}
+
+		// Backwards compatibility: check legacy post meta.
+		if ( ! empty( $legacy_meta ) ) {
+			$legacy_value = $this->get_meta( $legacy_meta );
+			if ( ! empty( $legacy_value ) ) {
+				return $legacy_value;
+			}
+		}
+
+		return '';
+	}
+
+	/**
+	 * Set taxonomy terms for the recipe from a comma-separated string.
+	 * Also cleans up legacy post meta after successful taxonomy assignment.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $taxonomy     Taxonomy name.
+	 * @param string $value        Comma-separated string of term names.
+	 * @param string $legacy_meta  Legacy meta key for backwards compatibility cleanup.
+	 *
+	 * @return void
+	 */
+	protected function set_taxonomy_terms( $taxonomy, $value, $legacy_meta = '' ) {
+		if ( empty( $value ) ) {
+			wp_set_object_terms( $this->get_id(), array(), $taxonomy );
+			// Clean up legacy meta if it exists.
+			if ( ! empty( $legacy_meta ) ) {
+				$this->delete_meta( $legacy_meta );
+			}
+			return;
+		}
+
+		// Split the comma-separated string into individual terms.
+		$term_names = array_map( 'trim', explode( ',', $value ) );
+		$term_names = array_filter( $term_names ); // Remove empty values.
+
+		$term_ids = array();
+
+		foreach ( $term_names as $term_name ) {
+			// Check if the term already exists.
+			$existing_term = get_term_by( 'name', $term_name, $taxonomy );
+
+			if ( $existing_term ) {
+				$term_ids[] = $existing_term->term_id;
+			} else {
+				// Create the term if it doesn't exist.
+				$new_term = wp_insert_term( $term_name, $taxonomy );
+				if ( ! is_wp_error( $new_term ) ) {
+					$term_ids[] = $new_term['term_id'];
+				}
+			}
+		}
+
+		// Set the terms on the recipe post.
+		wp_set_object_terms( $this->get_id(), $term_ids, $taxonomy );
+
+		// Clean up legacy meta if it exists.
+		if ( ! empty( $legacy_meta ) ) {
+			$this->delete_meta( $legacy_meta );
+		}
 	}
 
 	/**
