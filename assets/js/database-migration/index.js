@@ -12,7 +12,7 @@ domReady( () => {
 		return;
 	}
 
-	const { nonce, ajaxUrl } = window.tastyRecipesMigration || {};
+	const { nonce, ajaxUrl } = window.tastyRecipesDatabaseMigration || {};
 
 	if ( ! nonce || ! ajaxUrl ) {
 		return;
