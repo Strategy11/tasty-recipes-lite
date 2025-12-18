@@ -1,6 +1,6 @@
 import domReady from '@wordpress/dom-ready';
 import { __, sprintf } from '@wordpress/i18n';
-import '../../scss/migration-notice/index.scss';';
+import '../../scss/migration-notice/index.scss';
 
 domReady( () => {
 	const notice = document.getElementById(
