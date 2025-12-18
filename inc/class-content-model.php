@@ -196,7 +196,7 @@ class Content_Model {
 	 *
 	 * @param string $legacy_meta The legacy meta key to look up.
 	 *
-	 * @return string|false The taxonomy name or false if not found.
+	 * @return false|string The taxonomy name or false if not found.
 	 */
 	public static function get_taxonomy_for_legacy_meta( $legacy_meta ) {
 		$taxonomies = self::get_taxonomy_definitions();

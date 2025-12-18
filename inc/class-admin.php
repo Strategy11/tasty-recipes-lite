@@ -8,8 +8,9 @@
 namespace Tasty_Recipes;
 
 use Tasty\Framework\Utils\Url;
-use Tasty_Recipes\Settings;
 use Tasty_Recipes;
+use Tasty_Recipes\Settings;
+use Tasty_Recipes\Objects\Recipe;
 
 /**
  * Manages interactions with the admin.
@@ -797,7 +798,8 @@ class Admin {
 	private static function needs_db_migration() {
 		$current_version = get_option( self::DB_VERSION_OPTION, '0' );
 
-		return version_compare( $current_version, self::CURRENT_DB_VERSION, '<' );
+		return version_compare( $current_version, self::CURRENT_DB_VERSION, '<' ) && 
+				( self::get_recipes_needing_migration_count() > 0 );
 	}
 
 	/**
@@ -913,7 +915,7 @@ class Admin {
 	 * @return void
 	 */
 	private static function migrate_recipe_taxonomies( $recipe_id ) {
-		$recipe = \Tasty_Recipes\Objects\Recipe::get_by_id( $recipe_id );
+		$recipe = Recipe::get_by_id( $recipe_id );
 
 		if ( ! $recipe ) {
 			return;
@@ -929,8 +931,8 @@ class Admin {
 	 *
 	 * @since x.x
 	 *
-	 * @param \Tasty_Recipes\Objects\Recipe $recipe   Recipe object.
-	 * @param string                        $meta_key Meta key to migrate.
+	 * @param Recipe $recipe   Recipe object.
+	 * @param string $meta_key Meta key to migrate.
 	 *
 	 * @return void
 	 */
