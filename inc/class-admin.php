@@ -872,7 +872,7 @@ class Admin {
 				FROM {$wpdb->posts} p
 				INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
 				WHERE p.post_type = 'tasty_recipe'
-				AND pm.meta_key IN ( 'category', 'cuisine', 'method' )
+				AND pm.meta_key IN ( 'category', 'cuisine', 'method', 'diet' )
 				ORDER BY p.ID ASC
 				LIMIT %d OFFSET %d",
 				$limit,
@@ -898,7 +898,7 @@ class Admin {
 			FROM {$wpdb->posts} p
 			INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
 			WHERE p.post_type = 'tasty_recipe'
-			AND pm.meta_key IN ( 'category', 'cuisine', 'method' )"
+			AND pm.meta_key IN ( 'category', 'cuisine', 'method', 'diet' )"
 		);
 	}
 
@@ -921,6 +921,7 @@ class Admin {
 		self::migrate_recipe_meta( $recipe, 'category' );
 		self::migrate_recipe_meta( $recipe, 'cuisine' );
 		self::migrate_recipe_meta( $recipe, 'method' );
+		self::migrate_recipe_meta( $recipe, 'diet' );
 	}
 
 	/**

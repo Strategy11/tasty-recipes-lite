@@ -33,8 +33,12 @@ class Content_Model {
 		self::action_init_register_cron_events();
 		self::action_init_register_post_types();
 		self::action_init_register_taxonomies();
+		self::insert_default_taxonomy_terms();
 		self::action_init_register_rewrite_rules();
 		self::action_init_register_oembed_providers();
+
+		// Prevent deletion of default taxonomy terms.
+		add_action( 'pre_delete_term', array( __CLASS__, 'filter_pre_delete_term' ), 10, 2 );
 	}
 
 	/**
@@ -103,7 +107,7 @@ class Content_Model {
 	 *
 	 * @return array
 	 */
-	public static function get_taxonomy_definitions() {
+	public static function get_taxonomy_definitions() { // phpcs:ignore SlevomatCodingStandard.Functions.FunctionLength.FunctionLength
 		return array(
 			'tasty_recipe_category' => array(
 				'legacy_meta' => 'category',
@@ -186,12 +190,39 @@ class Content_Model {
 					'rewrite'           => false,
 				),
 			),
+			'tasty_recipe_diet'     => array(
+				'legacy_meta' => 'diet',
+				'args'        => array(
+					'labels'            => array(
+						'name'                       => __( 'Diets', 'tasty-recipes-lite' ),
+						'singular_name'              => __( 'Diet', 'tasty-recipes-lite' ),
+						'search_items'               => __( 'Search Diets', 'tasty-recipes-lite' ),
+						'all_items'                  => __( 'All Diets', 'tasty-recipes-lite' ),
+						'edit_item'                  => __( 'Edit Diet', 'tasty-recipes-lite' ),
+						'update_item'                => __( 'Update Diet', 'tasty-recipes-lite' ),
+						'add_new_item'               => __( 'Add New Diet', 'tasty-recipes-lite' ),
+						'new_item_name'              => __( 'New Diet Name', 'tasty-recipes-lite' ),
+						'menu_name'                  => __( 'Diets', 'tasty-recipes-lite' ),
+						'separate_items_with_commas' => __( 'Separate diets with commas', 'tasty-recipes-lite' ),
+						'choose_from_most_used'      => __( 'Choose from the most used diets', 'tasty-recipes-lite' ),
+						'not_found'                  => __( 'No diets found', 'tasty-recipes-lite' ),
+					),
+					'hierarchical'      => false,
+					'public'            => false,
+					'show_ui'           => true,
+					'show_admin_column' => false,
+					'show_in_nav_menus' => false,
+					'show_tagcloud'     => false,
+					'show_in_rest'      => true,
+					'rewrite'           => false,
+				),
+			),
 		);
 	}
 
 	/**
 	 * Get the taxonomy name for a given legacy meta key.
-	 * 
+	 *
 	 * @since x.x
 	 *
 	 * @param string $legacy_meta The legacy meta key to look up.
@@ -208,6 +239,136 @@ class Content_Model {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Get default terms for each taxonomy.
+	 *
+	 * @since x.x
+	 *
+	 * @return array
+	 */
+	public static function get_default_taxonomy_terms() {
+		return array(
+			'tasty_recipe_category' => array(
+				'Breakfast',
+				'Lunch',
+				'Dinner',
+				'Dessert',
+				'Snack',
+				'Appetizer',
+				'Beverage',
+				'Side Dish',
+			),
+			'tasty_recipe_method'   => array(
+				'Baking',
+				'Boiling',
+				'Frying',
+				'Grilling',
+				'Pressure Cooking',
+				'Roasting',
+				'Sautéing',
+				'Slow Cooking',
+				'Steaming',
+			),
+			'tasty_recipe_cuisine'  => array(
+				'American',
+				'Chinese',
+				'French',
+				'Greek',
+				'Indian',
+				'Italian',
+				'Japanese',
+				'Mediterranean',
+				'Mexican',
+				'Thai',
+			),
+			'tasty_recipe_diet'     => array(
+				'Vegetarian',
+				'Vegan',
+				'Gluten-Free',
+				'Dairy-Free',
+				'Keto',
+				'Paleo',
+				'Low-Carb',
+				'Pescatarian',
+			),
+		);
+	}
+
+	/**
+	 * Insert default terms for all recipe taxonomies.
+	 * Should be called after taxonomies are registered.
+	 * Uses an option to ensure this only runs once.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
+	 */
+	public static function insert_default_taxonomy_terms() {
+		$option_key = 'tasty_recipes_default_terms_inserted_v2';
+
+		if ( get_option( $option_key ) ) {
+			return;
+		}
+
+		$defaults = self::get_default_taxonomy_terms();
+
+		foreach ( $defaults as $taxonomy => $terms ) {
+			foreach ( $terms as $term_name ) {
+				if ( ! term_exists( $term_name, $taxonomy ) ) {
+					wp_insert_term( $term_name, $taxonomy );
+				}
+			}
+		}
+
+		update_option( $option_key, true );
+	}
+
+	/**
+	 * Check if a term is a default term that should not be deleted.
+	 *
+	 * @since x.x
+	 *
+	 * @param int    $term_id  The term ID.
+	 * @param string $taxonomy The taxonomy name.
+	 *
+	 * @return bool
+	 */
+	public static function is_default_term( $term_id, $taxonomy ) {
+		$defaults = self::get_default_taxonomy_terms();
+
+		if ( ! isset( $defaults[ $taxonomy ] ) ) {
+			return false;
+		}
+
+		$term = get_term( $term_id, $taxonomy );
+
+		if ( ! $term || is_wp_error( $term ) ) {
+			return false;
+		}
+
+		return in_array( $term->name, $defaults[ $taxonomy ], true );
+	}
+
+	/**
+	 * Prevent deletion of default taxonomy terms.
+	 *
+	 * @since x.x
+	 *
+	 * @param int    $term_id  The term ID.
+	 * @param string $taxonomy The taxonomy name.
+	 *
+	 * @return void
+	 */
+	public static function filter_pre_delete_term( $term_id, $taxonomy ) {
+		if ( self::is_default_term( $term_id, $taxonomy ) ) {
+			wp_die(
+				esc_html__( 'This is a default term and cannot be deleted.', 'tasty-recipes-lite' ),
+				esc_html__( 'Cannot Delete Term', 'tasty-recipes-lite' ),
+				array( 'back_link' => true )
+			);
+		}
 	}
 
 	/**

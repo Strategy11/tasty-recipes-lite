@@ -177,20 +177,7 @@ class Recipe {
 			'diet'                  => array(
 				'label'    => __( 'Diet', 'tasty-recipes-lite' ),
 				'property' => 'suitableForDiet',
-				'options'  => array(
-					''            => __( 'N/A', 'tasty-recipes-lite' ),
-					'Diabetic'    => __( 'Diabetic', 'tasty-recipes-lite' ),
-					'Gluten Free' => __( 'Gluten Free', 'tasty-recipes-lite' ),
-					'Halal'       => __( 'Halal', 'tasty-recipes-lite' ),
-					'Hindu'       => __( 'Hindu', 'tasty-recipes-lite' ),
-					'Kosher'      => __( 'Kosher', 'tasty-recipes-lite' ),
-					'Low Calorie' => __( 'Low Calorie', 'tasty-recipes-lite' ),
-					'Low Fat'     => __( 'Low Fat', 'tasty-recipes-lite' ),
-					'Low Lactose' => __( 'Low Lactose', 'tasty-recipes-lite' ),
-					'Low Salt'    => __( 'Low Salt', 'tasty-recipes-lite' ),
-					'Vegan'       => __( 'Vegan', 'tasty-recipes-lite' ),
-					'Vegetarian'  => __( 'Vegetarian', 'tasty-recipes-lite' ),
-				),
+				'taxonomy' => 'tasty_recipe_diet',
 			),
 		);
 	}
@@ -983,7 +970,7 @@ class Recipe {
 	 * @return string
 	 */
 	public function get_diet() {
-		return $this->get_meta( 'diet' );
+		return $this->get_taxonomy_terms( 'tasty_recipe_diet', 'diet' );
 	}
 
 	/**
@@ -994,7 +981,7 @@ class Recipe {
 	 * @return void
 	 */
 	public function set_diet( $diet ) {
-		$this->set_meta( 'diet', $diet );
+		$this->set_taxonomy_terms( 'tasty_recipe_diet', $diet, 'diet' );
 	}
 
 	/**
