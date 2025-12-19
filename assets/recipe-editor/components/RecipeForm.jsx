@@ -1,13 +1,49 @@
 import { useState, useMemo } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { FieldGroup } from './FieldGroup';
+import { ImprovedKeysNotice } from './ImprovedKeysNotice';
 import { RichTextarea } from './RichTextarea';
 import { ImageField } from './ImageField';
 
 export const RecipeForm = ( { initialRecipe, config } ) => {
 	const [ recipe, setRecipe ] = useState( initialRecipe );
+	const [ isNoticeDismissed, setIsNoticeDismissed ] = useState(
+		!! config.improvedKeysNoticeDismissed
+	);
+
+	const handleNoticeDismiss = () => {
+		setIsNoticeDismissed( true );
+
+		const formData = new FormData();
+		formData.append(
+			'action',
+			'tasty_recipes_dismiss_improved_keys_notice'
+		);
+		formData.append( 'nonce', config.modifyNonce );
+
+		fetch( window.ajaxurl, {
+			method: 'POST',
+			body: formData,
+		} );
+	};
 
 	const attributes = config.attributes;
+	const cookingAttributes = attributes.cooking;
+	const cookingKeys = Object.keys( cookingAttributes );
+	const splitIndex = cookingKeys.indexOf( 'category' );
+
+	const cookingAttributesBefore = Object.fromEntries(
+		cookingKeys
+			.slice( 0, splitIndex > -1 ? splitIndex : cookingKeys.length )
+			.map( ( key ) => [ key, cookingAttributes[ key ] ] )
+	);
+
+	const cookingAttributesAfter = Object.fromEntries(
+		cookingKeys
+			.slice( splitIndex > -1 ? splitIndex : cookingKeys.length )
+			.map( ( key ) => [ key, cookingAttributes[ key ] ] )
+	);
+
 	const nutritionAttributes = useMemo( () => {
 		const nutritionAttrs = attributes.nutrition;
 
@@ -102,7 +138,19 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 			<FieldGroup
 				className="tasty-recipes-details"
 				heading={ __( 'Details', 'tasty-recipes-lite' ) }
-				fields={ attributes.cooking }
+				fields={ cookingAttributesBefore }
+				initialFieldValues={ recipe }
+				onFieldChange={ handleRecipeChange }
+				group="details"
+				recipe={ recipe }
+			/>
+			<ImprovedKeysNotice
+				isDismissed={ isNoticeDismissed }
+				onDismiss={ handleNoticeDismiss }
+			/>
+			<FieldGroup
+				className="tasty-recipes-details"
+				fields={ cookingAttributesAfter }
 				initialFieldValues={ recipe }
 				onFieldChange={ handleRecipeChange }
 				group="details"

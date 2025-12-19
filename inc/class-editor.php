@@ -811,6 +811,24 @@ class Editor {
 	}
 
 	/**
+	 * Handles an AJAX request to dismiss the improved keys notice.
+	 * 
+	 * @since x.x
+	 *
+	 * @return void
+	 */
+	public static function handle_wp_ajax_dismiss_improved_keys_notice() {
+		check_ajax_referer( 'tasty_recipes_modify_recipe', 'nonce' );
+
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			wp_send_json_error();
+		}
+
+		update_option( \Tasty_Recipes::IMPROVED_KEYS_NOTICE_DISMISSED_OPTION, true );
+		wp_send_json_success();
+	}
+
+	/**
 	 * Register REST API routes for the editor.
 	 *
 	 * @since x.x

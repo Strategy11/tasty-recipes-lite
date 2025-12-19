@@ -21,6 +21,69 @@
 		}
 	}
 
+	.tasty-recipes-recipe-category-container, .tasty-recipes-recipe-method-container {
+		margin-top: 15px !important;
+	}
+
+	.tasty-improved-keys-notice {
+		background-color: #E9FBFA;
+		border: 1px solid #6EE7E1;
+		border-radius: 8px;
+		padding: 16px;
+		margin-top: 20px;
+		margin-bottom: 5px;
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+
+		&__badge {
+			background-color: #6EE7E1;
+			color: #0E5350;
+			padding: 2px 8px;
+			border-radius: 8px;
+			font-size: 14px !important;
+			font-weight: 500;
+			font-family: 'Inter', sans-serif;
+		}
+
+		&__header {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+
+		&__title {
+			color: #181B25;
+			font-size: 14px !important;
+			font-weight: 500;
+			font-family: 'Inter', sans-serif;
+		}
+
+		&__close {
+			position: absolute;
+			top: 12px;
+			right: 12px;
+			background: none;
+			border: none;
+			cursor: pointer;
+			font-size: 10px;
+			line-height: 1;
+			color: #525866;
+			padding: 4px;
+		}
+
+
+		&__description {
+			margin: 0;
+			font-size: 14px !important;
+			color: #525866;
+			line-height: 22px;
+			font-family: 'Inter', sans-serif;
+			font-weight: 400;
+		}
+	}
+
 	.tasty-button {
 		background-color: #ED4996;
 		border: 1px solid #ED4996;
@@ -524,4 +587,3 @@
 		}
 	}
 }
-
