@@ -70,16 +70,18 @@ domReady( () => {
 				return;
 			}
 
-			if ( data.data.complete ) {
-				handleComplete();
-			} else {
+			if ( ! data.data.complete ) {
 				loadingText.textContent = sprintf(
 					/* translators: %d: number of remaining recipes */
 					__( 'Updating… (%d remaining)', 'tasty-recipes-lite' ),
 					data.data.remaining
 				);
 				await startMigration( data.data.offset );
+
+				return;
 			}
+
+			handleComplete();
 		} catch ( error ) {
 			handleError(
 				__(

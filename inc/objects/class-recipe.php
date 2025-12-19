@@ -1507,35 +1507,34 @@ class Recipe {
 	protected function set_taxonomy_terms( $taxonomy, $value, $legacy_meta = '' ) {
 		if ( empty( $value ) ) {
 			wp_set_object_terms( $this->get_id(), array(), $taxonomy );
+
 			// Clean up legacy meta if it exists.
 			if ( ! empty( $legacy_meta ) ) {
 				$this->delete_meta( $legacy_meta );
 			}
+
 			return;
 		}
 
-		// Split the comma-separated string into individual terms.
 		$term_names = array_map( 'trim', explode( ',', $value ) );
-		$term_names = array_filter( $term_names ); // Remove empty values.
+		$term_names = array_filter( $term_names );
 
 		$term_ids = array();
 
 		foreach ( $term_names as $term_name ) {
-			// Check if the term already exists.
 			$existing_term = get_term_by( 'name', $term_name, $taxonomy );
-
 			if ( $existing_term ) {
 				$term_ids[] = $existing_term->term_id;
-			} else {
-				// Create the term if it doesn't exist.
-				$new_term = wp_insert_term( $term_name, $taxonomy );
-				if ( ! is_wp_error( $new_term ) ) {
-					$term_ids[] = $new_term['term_id'];
-				}
+
+				continue;
+			}
+
+			$new_term = wp_insert_term( $term_name, $taxonomy );
+			if ( ! is_wp_error( $new_term ) ) {
+				$term_ids[] = $new_term['term_id'];
 			}
 		}
 
-		// Set the terms on the recipe post.
 		wp_set_object_terms( $this->get_id(), $term_ids, $taxonomy );
 
 		// Clean up legacy meta if it exists.

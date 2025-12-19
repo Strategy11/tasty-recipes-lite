@@ -1,6 +1,5 @@
 $migration-notice-accent: #ed4996;
 $migration-notice-success: #00a32a;
-$migration-notice-error: #dc3232;
 $migration-notice-text: #1d2327;
 
 .tasty-recipes-db-migration-notice {
@@ -9,7 +8,7 @@ $migration-notice-text: #1d2327;
 	justify-content: space-between;
 	padding: 10px 15px;
 	background: #fff;
-	border-left: 4px solid $migration-notice-error;
+	border-left: 4px solid $migration-notice-accent;
 	box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
 
 	p {

@@ -780,6 +780,7 @@ class Admin {
 			),
 			'tasty_recipes_db_migration'
 		);
+
 		Tasty_Recipes::echo_template_part(
 			'admin/notice-db-migration',
 			array(
@@ -818,21 +819,17 @@ class Admin {
 
 		$batch_size = 50;
 		$offset     = isset( $_POST['offset'] ) ? absint( wp_unslash( $_POST['offset'] ) ) : 0;
+		$recipes    = self::get_recipes_needing_migration( $batch_size, $offset );
+		$migrated   = 0;
 
-		// Get recipes that still have legacy meta.
-		$recipes = self::get_recipes_needing_migration( $batch_size, $offset );
-
-		$migrated = 0;
 		foreach ( $recipes as $recipe_id ) {
 			self::migrate_recipe_taxonomies( $recipe_id );
 			++$migrated;
 		}
 
-		// Check if there are more recipes to migrate.
 		$remaining = self::get_recipes_needing_migration_count();
 
 		if ( empty( $recipes ) || $remaining === 0 ) {
-			// Migration complete.
 			update_option( self::DB_VERSION_OPTION, self::CURRENT_DB_VERSION );
 			wp_send_json_success(
 				array(
