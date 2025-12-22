@@ -1504,6 +1504,8 @@ class Recipe {
 		}
 
 		$term_names = array_map( 'trim', explode( ',', $value ) );
+
+		// Remove empty strings from the array.
 		$term_names = array_filter( $term_names );
 
 		$term_ids = array();

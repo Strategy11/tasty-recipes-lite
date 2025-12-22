@@ -148,6 +148,7 @@ const formatCreateLabel = ( inputValue ) => (
 			{ __( 'Add', 'tasty-recipes-lite' ) }
 		</span>
 		<span className="tasty-taxonomy-create-option__value">
+			{ /* These are HTML codes for quotes, we have to use them to be compliant with the WP Lint rules */ }
 			&ldquo;{ inputValue }&rdquo;
 		</span>
 	</span>
