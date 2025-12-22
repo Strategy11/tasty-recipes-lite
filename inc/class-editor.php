@@ -1044,7 +1044,7 @@ class Editor {
 		}
 
 		$default_terms = Content_Model::get_default_taxonomy_terms();
-		$defaults      = isset( $default_terms[ $taxonomy ] ) ? $default_terms[ $taxonomy ] : array();
+		$defaults      = $default_terms[ $taxonomy ] ?? array();
 
 		$default_options = array();
 		$custom_options  = array();
