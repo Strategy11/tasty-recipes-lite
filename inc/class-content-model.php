@@ -330,7 +330,7 @@ class Content_Model {
 	 *
 	 * @since x.x
 	 *
-	 * @param int    $term_id  The term ID.
+	 * @param int|string    $term_id  The term ID.
 	 * @param string $taxonomy The taxonomy name.
 	 *
 	 * @return bool

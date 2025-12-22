@@ -912,7 +912,7 @@ class Editor {
 	 *
 	 * @since x.x
 	 *
-	 * @param \WP_REST_Request $request The request object.
+	 * @param object $request The request object.
 	 * @return \WP_REST_Response|\WP_Error
 	 */
 	public static function rest_create_taxonomy_term( $request ) {
@@ -964,7 +964,7 @@ class Editor {
 	 *
 	 * @since x.x
 	 *
-	 * @param \WP_REST_Request $request The request object.
+	 * @param object $request The request object.
 	 * @return \WP_REST_Response|\WP_Error
 	 */
 	public static function rest_delete_taxonomy_term( $request ) {
@@ -1010,7 +1010,7 @@ class Editor {
 	 *
 	 * @since x.x
 	 *
-	 * @param \WP_REST_Request $request The request object.
+	 * @param object $request The request object.
 	 * @return \WP_REST_Response|\WP_Error
 	 */
 	public static function rest_search_taxonomy_terms( $request ) {
