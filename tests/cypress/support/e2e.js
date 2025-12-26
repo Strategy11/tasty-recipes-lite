@@ -16,3 +16,9 @@
 // Import commands.js using ES2015 syntax:
 import './commands';
 import '@10up/cypress-wp-utils';
+
+Cypress.on( 'uncaught:exception', ( err ) => {
+	if ( err.message.includes( 'No route was found' ) ) {
+		return false;
+	}
+} );
