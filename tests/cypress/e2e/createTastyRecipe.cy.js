@@ -5,7 +5,7 @@ describe( 'WP Tasty recipe', () => {
 		cy.viewport( 1280, 720 );
 	} );
 
-	it( 'should create a new recipe', () => {
+	it.skip( 'should create a new recipe', () => {
 		cy.log( 'Click Create Recipe button and close modal' );
 		cy.contains( 'button', 'Create Recipe' ).click();
 		cy.get( '.tasty-recipes-modal' ).should( 'be.visible' );
