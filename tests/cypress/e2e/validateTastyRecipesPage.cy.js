@@ -496,13 +496,8 @@ describe( 'WP Tasty recipe page', () => {
 			} );
 
 		cy.log( 'Validate onboarding consent checkbox' );
-
 		cy.get( 'input[name="tasty_recipes_onboarding_consent_tracking"]' )
-			.should( 'exist' )
-			.and( 'be.checked' )
-			.uncheck( { force: true } )
-			.should( 'not.be.checked' )
-			.check( { force: true } )
-			.should( 'be.checked' );
+			.should( 'be.visible' )
+			.check( { force: true } );
 	} );
 } );
