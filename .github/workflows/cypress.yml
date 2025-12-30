@@ -60,6 +60,7 @@ jobs:
         with:
           start: pnpm run env start
           wait-on: 'http://localhost:3000'
+          wait-on-timeout: 180
           browser: chrome
           command: pnpm run e2e:run
           install: false  # Already installed via pnpm
