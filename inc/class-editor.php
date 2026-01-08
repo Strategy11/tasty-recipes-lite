@@ -510,7 +510,12 @@ class Editor {
 		$post_id     = Utils::post_param( 'post_id', 'intval', 0 );
 		$nonce       = Utils::post_param( 'nonce' );
 
-		if ( empty( $post_recipe ) || empty( $nonce ) ) {
+		if (
+			empty( $post_recipe ) ||
+			empty( $nonce ) ||
+			! wp_verify_nonce( $nonce, 'tasty_recipes_modify_recipe' ) ||
+			! current_user_can( 'edit_posts' )
+		) {
 			wp_send_json_error();
 		}
 
@@ -522,21 +527,23 @@ class Editor {
 			if ( empty( $post ) ) {
 				wp_send_json_error();
 			}
-		}
 
-		if ( $post ) {
+			// Check if user can edit the parent post.
 			$post_type_object = get_post_type_object( $post->post_type );
-			if (
-				! current_user_can( $post_type_object->cap->edit_post, $post->ID )
-				||
-				! wp_verify_nonce( $nonce, 'tasty_recipes_modify_recipe' )
-			) {
+			if ( ! current_user_can( $post_type_object->cap->edit_post, $post->ID ) ) {
 				wp_send_json_error();
 			}
 		}
 
 		if ( ! empty( $post_recipe['id'] ) ) {
-			$recipe = Recipe::get_by_id( (int) $post_recipe['id'] );
+			$recipe_id = (int) $post_recipe['id'];
+
+			// Verify the user can edit this specific recipe (checks ownership for non-Editors).
+			if ( ! current_user_can( 'edit_post', $recipe_id ) ) {
+				wp_send_json_error();
+			}
+
+			$recipe = Recipe::get_by_id( $recipe_id );
 		} else {
 			$recipe = Recipe::create();
 		}
