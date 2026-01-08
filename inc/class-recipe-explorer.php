@@ -516,8 +516,9 @@ class Recipe_Explorer {
 	 * @return void
 	 */
 	public static function delete_recipe_endpoint( $request ) {
-		$params = $request->get_params();
-		$recipe = Recipe::get_by_id( $params['id'] );
+		$params    = $request->get_params();
+		$recipe_id = (int) $params['id'];
+		$recipe    = Recipe::get_by_id( $recipe_id );
 
 		$js_messagebox = JSMessageBox::instance()->init( get_current_user_id() );
 
@@ -527,7 +528,13 @@ class Recipe_Explorer {
 			wp_send_json_error();
 		}
 
-		wp_delete_post( $params['id'], true );
+		if ( ! current_user_can( 'delete_post', $recipe_id ) ) {
+			$js_messagebox->add( 'error', __( 'You do not have permission to delete this recipe.', 'tasty-recipes-lite' ) );
+
+			wp_send_json_error();
+		}
+
+		wp_delete_post( $recipe_id, true );
 
 		$recipe_title = ! empty( $recipe->get_title() ) ? $recipe->get_title() : __( 'The recipe', 'tasty-recipes-lite' );
 
