@@ -346,6 +346,9 @@ class Tasty_Recipes {
 		add_filter( 'update_post_metadata', array( 'Tasty_Recipes\Content_Model', 'filter_update_post_metadata_video_url' ), 10, 4 );
 		add_filter( 'update_post_metadata', array( 'Tasty_Recipes\Content_Model', 'filter_update_post_metadata_thumbnail_id' ), 10, 4 );
 		add_filter( 'template_include', array( 'Tasty_Recipes\Content_Model', 'filter_template_include' ), 1000 );
+		add_filter( 'post_type_link', array( 'Tasty_Recipes\Content_Model', 'filter_recipe_permalink' ), 10, 2 );
+		add_filter( 'get_the_excerpt', array( 'Tasty_Recipes\Content_Model', 'filter_recipe_excerpt' ), 10, 1 );
+		add_filter( 'tasty_recipes_cooking_html', array( 'Tasty_Recipes\Content_Model', 'filter_cooking_attribute_links' ), 10, 2 );
 
 		add_filter( 'allow_empty_comment', array( 'Tasty_Recipes\Ratings', 'filter_allow_rating_empty_comment' ), 10, 2 );
 		add_filter( 'preprocess_comment', array( 'Tasty_Recipes\Ratings', 'filter_preprocess_comment' ), 0 );
