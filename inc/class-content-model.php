@@ -771,7 +771,7 @@ class Content_Model {
 		}
 
 		$description = $recipe->get_description();
-		if ( empty( $description ) ) {
+		if ( ! $description ) {
 			return $excerpt;
 		}
 
