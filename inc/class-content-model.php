@@ -641,21 +641,7 @@ class Content_Model {
 	 * @return void
 	 */
 	public static function filter_taxonomy_archive_query( $query ) {
-		if ( is_admin() || ! $query->is_main_query() ) {
-			return;
-		}
-
-		$recipe_taxonomies  = array_keys( self::get_taxonomy_definitions() );
-		$is_recipe_taxonomy = false;
-
-		foreach ( $recipe_taxonomies as $taxonomy ) {
-			if ( $query->get( $taxonomy ) ) {
-				$is_recipe_taxonomy = true;
-				break;
-			}
-		}
-
-		if ( ! $is_recipe_taxonomy ) {
+		if ( is_admin() || ! $query->is_main_query() || ! self::is_recipe_taxonomy( $query ) ) {
 			return;
 		}
 
@@ -674,6 +660,24 @@ class Content_Model {
 		);
 
 		$query->set( 'meta_query', $existing_meta_query );
+	}
+
+	/**
+	 * Check if the query is for a recipe taxonomy.
+	 * 
+	 * @since x.x
+	 *
+	 * @param \WP_Query $query The query object.
+	 *
+	 * @return bool
+	 */
+	private static function is_recipe_taxonomy( $query ) {
+		foreach ( array_keys( self::get_taxonomy_definitions() ) as $taxonomy ) {
+			if ( $query->get( $taxonomy ) ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
