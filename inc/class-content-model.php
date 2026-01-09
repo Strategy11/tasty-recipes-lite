@@ -798,6 +798,50 @@ class Content_Model {
 	}
 
 	/**
+	 * Filter cooking attribute values to add links to taxonomy archives.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $value     The attribute value.
+	 * @param string $attribute The attribute name (category, method, cuisine, diet).
+	 *
+	 * @return string
+	 */
+	public static function filter_cooking_attribute_links( $value, $attribute ) {
+		$taxonomy_map = array(
+			'category' => 'tasty_recipe_category',
+			'method'   => 'tasty_recipe_method',
+			'cuisine'  => 'tasty_recipe_cuisine',
+			'diet'     => 'tasty_recipe_diet',
+		);
+
+		if ( ! isset( $taxonomy_map[ $attribute ] ) ) {
+			return $value;
+		}
+
+		$taxonomy     = $taxonomy_map[ $attribute ];
+		$terms        = array_map( 'trim', explode( ',', $value ) );
+		$linked_terms = array();
+
+		foreach ( $terms as $term_name ) {
+			$term = get_term_by( 'name', $term_name, $taxonomy );
+
+			if ( $term && ! is_wp_error( $term ) ) {
+				$term_link = get_term_link( $term, $taxonomy );
+
+				if ( ! is_wp_error( $term_link ) ) {
+					$linked_terms[] = '<a href="' . esc_url( $term_link ) . '">' . esc_html( $term_name ) . '</a>';
+					continue;
+				}
+			}
+
+			$linked_terms[] = esc_html( $term_name );
+		}
+
+		return implode( ', ', $linked_terms );
+	}
+
+	/**
 	 * Filters body classes to add a special class when view is loaded.
 	 *
 	 * @param array $classes Existing body classes.
