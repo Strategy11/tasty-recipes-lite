@@ -330,7 +330,7 @@ describe( 'WP Tasty recipe page', () => {
 			{
 				label: 'Scaling',
 				id: 'tasty_recipes_disable_scaling',
-				helperText: 'Allow visitors to scale the recipe 1x, 2x, or 3x.',
+				helperText: 'Allow visitors to scale the recipe ½, 2x, or 3x.',
 			},
 			{
 				label: 'Copy to Clipboard',
