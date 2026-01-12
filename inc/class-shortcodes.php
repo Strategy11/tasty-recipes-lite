@@ -361,15 +361,13 @@ class Shortcodes {
 		 * @param bool $responsive_iframes Whether or not to enable responsive iframes.
 		 */
 		$responsive_iframes = apply_filters( 'tasty_recipes_enable_responsive_iframes', true );
-		$responsive_styles  = '';
 
 		$embed_data = $recipe->get_video_url_response();
 		if ( ! empty( $embed_data->html ) ) {
 			add_filter( 'tasty_recipes_allowed_html', array( __CLASS__, 'allow_html_iframe' ) );
 
 			$template_vars['recipe_video_embed'] = $responsive_iframes ? self::make_iframes_responsive(
-				$embed_data->html,
-				$responsive_styles
+				$embed_data->html
 			) : $embed_data->html;
 		} elseif ( ! empty( $embed_data->provider_url )
 			&& 'www.adthrive.com' === wp_parse_url( $embed_data->provider_url, PHP_URL_HOST ) ) {
@@ -492,14 +490,9 @@ class Shortcodes {
 					continue;
 				}
 				$template_vars[ $oembed_field ] = self::make_iframes_responsive(
-					$template_vars[ $oembed_field ],
-					$responsive_styles
+					$template_vars[ $oembed_field ]
 				);
 			}
-		}
-
-		if ( $responsive_styles ) {
-			$template_vars['recipe_styles'] .= $responsive_styles;
 		}
 
 		$total_reviews = $recipe->get_total_reviews();
@@ -1081,16 +1074,14 @@ class Shortcodes {
 	}
 
 	/**
-	 * Makes all iframes within the content responsive.
+	 * Makes all iframes within the content responsive using modern CSS aspect-ratio.
 	 *
 	 * @param string $content Content to process.
-	 * @param string $styles  Existing responsive iframe styles.
 	 *
 	 * @return string
 	 */
-	private static function make_iframes_responsive( $content, &$styles ) {
-		// Responsive iframes using CSS when width and height are in pixels.
-		// See https://blog.theodo.fr/2018/01/responsive-iframes-css-trick/.
+	private static function make_iframes_responsive( $content ) {
+		// Responsive iframes using modern CSS aspect-ratio.
 		if ( preg_match_all(
 			'#<iframe([^>]+)>.*</iframe>#',
 			$content,
@@ -1112,17 +1103,24 @@ class Shortcodes {
 				if ( ! $count ) {
 					$iframe = str_replace( '<iframe ', '<iframe class="fitvidsignore" ', $iframe );
 				}
-				$unique_class       = 'tasty-recipe-responsive-iframe-container-' . substr( md5( $matches[1][ $i ] ), 0, 8 );
-				$padding_percentage = $attrs['height'] / $attrs['width'];
-				$padding_percentage = round( $padding_percentage * 100, 2 );
-				$iframe             = '<div class="' . esc_attr( 'tasty-recipe-responsive-iframe-container ' . $unique_class ) . '">' . $iframe . '</div>';
-				$content            = str_replace(
+
+				// Check if this is a YouTube Shorts video.
+				// Shorts can be detected by /shorts/ in URL, or by vertical aspect ratio on YouTube embeds.
+				$is_youtube        = preg_match( '#youtube\.com/(embed|shorts)/|youtu\.be/#i', $attrs['src'] );
+				$is_vertical       = (float) $attrs['height'] > (float) $attrs['width'];
+				$has_shorts_path   = preg_match( '#youtube\.com/shorts/#i', $attrs['src'] );
+				$is_youtube_shorts = $has_shorts_path || ( $is_youtube && $is_vertical );
+				$shorts_class      = $is_youtube_shorts ? ' tasty-recipe-youtube-shorts' : '';
+
+				// Use simplified aspect ratios: 9/16 for vertical (Shorts), 16/9 for horizontal.
+				$aspect_ratio = $is_youtube_shorts ? '9 / 16' : '16 / 9';
+				$inline_style = ' style="aspect-ratio: ' . esc_attr( $aspect_ratio ) . ';"';
+				$iframe       = '<div class="' . esc_attr( 'tasty-recipe-responsive-iframe-container' . $shorts_class ) . '"' . $inline_style . '>' . $iframe . '</div>';
+				$content      = str_replace(
 					$original_iframe,
 					$iframe,
 					$content
 				);
-				$styles            .= PHP_EOL . '.' . $unique_class . ' { position: relative; overflow: hidden; padding-top: ' . $padding_percentage . '%; }';
-				$styles            .= PHP_EOL . '.' . $unique_class . ' iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }';
 			}
 		}
 		return $content;

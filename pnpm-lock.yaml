@@ -36,6 +36,9 @@ importers:
       cypress:
         specifier: ^15.4.0
         version: 15.7.1
+      cypress-file-upload:
+        specifier: ^5.0.8
+        version: 5.0.8(cypress@15.7.1)
       eslint-plugin-cypress:
         specifier: ^2.12.1
         version: 2.15.2(eslint@8.57.1)
@@ -3196,6 +3199,12 @@ packages:
   cwd@0.10.0:
     resolution: {integrity: sha512-YGZxdTTL9lmLkCUTpg4j0zQ7IhRB5ZmqNBbGCl3Tg6MP/d5/6sY7L5mmTjzbc6JKgVZYiqTQTNhPFsbXNGlRaA==}
     engines: {node: '>=0.8'}
+
+  cypress-file-upload@5.0.8:
+    resolution: {integrity: sha512-+8VzNabRk3zG6x8f8BWArF/xA/W0VK4IZNx3MV0jFWrJS/qKn8eHfa5nU73P9fOQAgwHFJx7zjg4lwOnljMO8g==}
+    engines: {node: '>=8.2.1'}
+    peerDependencies:
+      cypress: '>3.0.0'
 
   cypress@15.7.1:
     resolution: {integrity: sha512-U3sYnJ+Cnpgr6IPycxsznTg//mGVXfPGeGV+om7VQCyp5XyVkhG4oPr3X3hTq1+OB0Om0O5DxusYmt7cbvwqMQ==}
@@ -11473,6 +11482,10 @@ snapshots:
     dependencies:
       find-pkg: 0.1.2
       fs-exists-sync: 0.1.0
+
+  cypress-file-upload@5.0.8(cypress@15.7.1):
+    dependencies:
+      cypress: 15.7.1
 
   cypress@15.7.1:
     dependencies:
