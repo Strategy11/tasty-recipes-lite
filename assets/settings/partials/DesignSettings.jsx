@@ -70,7 +70,7 @@ export const DesignSettings = ( {
 					/>
 				) ) }
 			</div>
-			<h3>{ __( 'Recipe Title (H2)', 'tasty-recipes-lite' ) }</h3>
+			<h3>{ __( 'Title (H2)', 'tasty-recipes-lite' ) }</h3>
 			<div className="tasty-two-columns-field-group">
 				<ColorInput
 					label=""
@@ -126,7 +126,7 @@ export const DesignSettings = ( {
 					] }
 				/>
 			</div>
-			<h3>{ __( 'Recipe Subtitles (H3)', 'tasty-recipes-lite' ) }</h3>
+			<h3>{ __( 'Subtitles (H3)', 'tasty-recipes-lite' ) }</h3>
 			<div className="tasty-two-columns-field-group">
 				<ColorInput
 					label=""

@@ -333,6 +333,37 @@ export const Settings = () => {
 				openModal={ openModal }
 				generateUpgradeUrl={ generateUpgradeUrl }
 			/>
+			<ToggleInput
+				onClick={ () => {
+					if ( isSettingDisabled( formData.enableHowTos ) ) {
+						openModal( {
+							id: 'tasty_recipes_upgrade_modal',
+							title: __(
+								'Enable How-Tos',
+								'tasty-recipes-lite'
+							),
+							upgradeUrl: generateUpgradeUrl( {
+								medium: 'tasty-recipes',
+								content: 'enable-how-tos',
+							} ),
+						} );
+					}
+				} }
+				label={ __( 'Enable How-Tos', 'tasty-recipes-lite' ) }
+				id="tasty_recipes_enable_how_tos"
+				name="tasty_recipes_enable_how_tos"
+				value={ String( formData.enableHowTos ?? 0 ) }
+				onValue="1"
+				offValue="0"
+				setValue={ ( value ) => {
+					handleChange( 'enableHowTos', value );
+				} }
+				disabled={ isSettingDisabled( formData.enableHowTos ) }
+				helper={ __(
+					'When enabled, you can create and manage How-Tos  alongside Recipes.',
+					'tasty-recipes-lite'
+				) }
+			/>
 			<TabletSaveButton />
 		</div>
 	);

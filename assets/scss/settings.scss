@@ -141,13 +141,10 @@
 
 	&.tasty-recipes-instacart-button-wrap {
 		padding: 0 !important;
+		border-bottom: 1px solid var(--grey-300) !important;
 
 		.tasty-form-field {
 			padding: var(--gap-md) !important;
-		}
-
-		.tasty-form-field:last-child {
-			padding-bottom: 0 !important;
 		}
 	}
 
