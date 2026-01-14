@@ -835,7 +835,7 @@ class Recipe_Explorer {
 	 *
 	 * @param string $field The field/meta key name.
 	 *
-	 * @return string|false The taxonomy name or false if not found.
+	 * @return false|string The taxonomy name or false if not found.
 	 */
 	private static function get_taxonomy_for_field( $field ) {
 		$taxonomy_map = array(
@@ -925,7 +925,7 @@ class Recipe_Explorer {
 
 			if ( ! empty( $value ) ) {
 				$filters[] = array(
-					'meta_key' => $meta_key,
+					'meta_key' => $meta_key, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
 					'taxonomy' => $taxonomy,
 					'value'    => $value,
 				);
@@ -962,6 +962,8 @@ class Recipe_Explorer {
 			$t_alias    = "attr_t_{$index}";
 
 			// LEFT JOIN postmeta for meta value check.
+			// Aliases are safe internal values, not user input.
+			// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$clauses['join'] .= $wpdb->prepare(
 				" LEFT JOIN {$wpdb->postmeta} {$meta_alias} ON ({$wpdb->posts}.ID = {$meta_alias}.post_id AND {$meta_alias}.meta_key = %s)",
 				$filter['meta_key']
@@ -969,7 +971,8 @@ class Recipe_Explorer {
 
 			// LEFT JOIN term_relationships, term_taxonomy, and terms for taxonomy check.
 			$clauses['join'] .= " LEFT JOIN {$wpdb->term_relationships} {$tr_alias} ON ({$wpdb->posts}.ID = {$tr_alias}.object_id)";
-			$clauses['join'] .= " LEFT JOIN {$wpdb->term_taxonomy} {$tt_alias} ON ({$tr_alias}.term_taxonomy_id = {$tt_alias}.term_taxonomy_id AND {$tt_alias}.taxonomy = '{$filter['taxonomy']}')";
+			$clauses['join'] .= " LEFT JOIN {$wpdb->term_taxonomy} {$tt_alias} ON ({$tr_alias}.term_taxonomy_id = {$tt_alias}.term_taxonomy_id"
+				. " AND {$tt_alias}.taxonomy = '{$filter['taxonomy']}')";
 			$clauses['join'] .= " LEFT JOIN {$wpdb->terms} {$t_alias} ON ({$tt_alias}.term_id = {$t_alias}.term_id)";
 
 			// WHERE: match meta value OR term name.
@@ -978,6 +981,7 @@ class Recipe_Explorer {
 				$filter['value'],
 				$filter['value']
 			);
+			// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		}
 
 		// Ensure distinct results since JOINs may cause duplicates.
