@@ -289,25 +289,21 @@ class Recipe_Explorer {
 				
 			// Handle hidden columns content.
 			case 'cuisine':
-				$cuisine = get_post_meta( $recipe_id, 'cuisine', true );
-				echo esc_html( ! empty( $cuisine ) ? $cuisine : '' );
+				echo esc_html( self::get_recipe_attribute( $recipe_id, 'cuisine', 'tasty_recipe_cuisine' ) );
 				break;
-				
+
 			case 'method':
-				$method = get_post_meta( $recipe_id, 'method', true );
-				echo esc_html( ! empty( $method ) ? $method : '' );
+				echo esc_html( self::get_recipe_attribute( $recipe_id, 'method', 'tasty_recipe_method' ) );
 				break;
-				
+
 			case 'category':
-				$category = get_post_meta( $recipe_id, 'category', true );
-				echo esc_html( ! empty( $category ) ? $category : '' );
+				echo esc_html( self::get_recipe_attribute( $recipe_id, 'category', 'tasty_recipe_category' ) );
 				break;
-				
+
 			case 'diet':
-				$diet = get_post_meta( $recipe_id, 'diet', true );
-				echo esc_html( ! empty( $diet ) ? $diet : '' );
+				echo esc_html( self::get_recipe_attribute( $recipe_id, 'diet', 'tasty_recipe_diet' ) );
 				break;
-				
+
 			case 'author':
 				$author_id = $post->post_author;
 				$author    = get_userdata( (int) $author_id );
@@ -339,6 +335,37 @@ class Recipe_Explorer {
 		);
 		
 		return $result;
+	}
+
+	/**
+	 * Get recipe attribute value from post meta or taxonomy.
+	 *
+	 * First checks post meta, then falls back to taxonomy terms if meta is empty.
+	 *
+	 * @since 1.1
+	 *
+	 * @param int    $recipe_id The recipe post ID.
+	 * @param string $meta_key  The post meta key.
+	 * @param string $taxonomy  The taxonomy name.
+	 *
+	 * @return string The attribute value or empty string.
+	 */
+	private static function get_recipe_attribute( $recipe_id, $meta_key, $taxonomy ) {
+		$meta_value = get_post_meta( $recipe_id, $meta_key, true );
+
+		if ( ! empty( $meta_value ) ) {
+			return $meta_value;
+		}
+
+		$terms = get_the_terms( $recipe_id, $taxonomy );
+
+		if ( empty( $terms ) || is_wp_error( $terms ) ) {
+			return '';
+		}
+
+		$term_names = wp_list_pluck( $terms, 'name' );
+
+		return implode( ', ', $term_names );
 	}
 
 	/**
