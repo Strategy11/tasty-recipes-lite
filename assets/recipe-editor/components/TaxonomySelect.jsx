@@ -349,11 +349,14 @@ export const TaxonomySelect = ( { name, taxonomy, value = '', onChange } ) => {
 								? '#ED4996'
 								: '#a0a5ae',
 						},
+						overflow: 'hidden',
 					} ),
 					valueContainer: ( base ) => ( {
 						...base,
 						padding: '4px 8px',
 						gap: '4px',
+						flexWrap: 'wrap',
+						overflow: 'hidden',
 					} ),
 					multiValue: ( base ) => ( {
 						...base,
@@ -406,6 +409,7 @@ export const TaxonomySelect = ( { name, taxonomy, value = '', onChange } ) => {
 						...base,
 						margin: 0,
 						padding: 0,
+						overflow: 'hidden',
 					} ),
 					indicatorSeparator: () => ( {
 						display: 'none',
