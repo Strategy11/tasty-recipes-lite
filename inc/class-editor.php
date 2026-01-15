@@ -883,6 +883,28 @@ class Editor {
 					),
 				),
 				array(
+					'methods'             => 'PUT',
+					'callback'            => array( __CLASS__, 'rest_update_taxonomy_term' ),
+					'permission_callback' => array( __CLASS__, 'rest_check_permission' ),
+					'args'                => array(
+						'taxonomy' => array(
+							'required'          => true,
+							'type'              => 'string',
+							'sanitize_callback' => 'sanitize_text_field',
+						),
+						'id'       => array(
+							'required'          => true,
+							'type'              => 'integer',
+							'sanitize_callback' => 'absint',
+						),
+						'name'     => array(
+							'required'          => true,
+							'type'              => 'string',
+							'sanitize_callback' => 'sanitize_text_field',
+						),
+					),
+				),
+				array(
 					'methods'             => 'DELETE',
 					'callback'            => array( __CLASS__, 'rest_delete_taxonomy_term' ),
 					'permission_callback' => array( __CLASS__, 'rest_check_permission' ),
@@ -963,6 +985,70 @@ class Editor {
 				'id'        => $term->term_id,
 				'count'     => $term->count,
 				'isDefault' => Content_Model::is_default_term( $term->name, $taxonomy ),
+			)
+		);
+	}
+
+	/**
+	 * REST API callback to update a taxonomy term.
+	 *
+	 * @since x.x
+	 *
+	 * @param object $request The request object.
+	 *
+	 * @return \WP_Error|\WP_REST_Response
+	 */
+	public static function rest_update_taxonomy_term( $request ) {
+		$taxonomy = $request->get_param( 'taxonomy' );
+		$id       = $request->get_param( 'id' );
+		$name     = $request->get_param( 'name' );
+
+		if ( ! taxonomy_exists( $taxonomy ) ) {
+			return new \WP_Error(
+				'invalid_taxonomy',
+				__( 'Invalid taxonomy.', 'tasty-recipes-lite' ),
+				array( 'status' => 400 )
+			);
+		}
+
+		$term = get_term( $id, $taxonomy );
+		if ( ! $term || is_wp_error( $term ) ) {
+			return new \WP_Error(
+				'invalid_term',
+				__( 'Invalid term.', 'tasty-recipes-lite' ),
+				array( 'status' => 404 )
+			);
+		}
+
+		if ( Content_Model::is_default_term( $term->name, $taxonomy ) ) {
+			return new \WP_Error(
+				'default_term',
+				__( 'Cannot edit default terms.', 'tasty-recipes-lite' ),
+				array( 'status' => 403 )
+			);
+		}
+
+		$result = wp_update_term(
+			$id,
+			$taxonomy,
+			array(
+				'name' => $name,
+			)
+		);
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		$updated_term = get_term( $result['term_id'], $taxonomy );
+
+		return rest_ensure_response(
+			array(
+				'value'     => $updated_term->name,
+				'label'     => $updated_term->name,
+				'id'        => $updated_term->term_id,
+				'count'     => $updated_term->count,
+				'isDefault' => Content_Model::is_default_term( $updated_term->name, $taxonomy ),
 			)
 		);
 	}

@@ -1,4 +1,4 @@
-import { useState, useCallback } from '@wordpress/element';
+import { useState, useCallback, useRef, useEffect } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
 import { __, sprintf } from '@wordpress/i18n';
@@ -7,10 +7,141 @@ import AsyncCreatableSelect from 'react-select/async-creatable';
 
 const CheckboxOption = ( props ) => {
 	const { isSelected, label, data, selectProps } = props;
-	const { deleteCandidate, onDeleteClick, onCancelDelete, onConfirmDelete } =
-		selectProps;
+	const {
+		deleteCandidate,
+		onDeleteClick,
+		onCancelDelete,
+		onConfirmDelete,
+		onEditClick,
+		editCandidate,
+		editValue,
+		onEditInputChange,
+		onCancelEdit,
+		onConfirmEdit,
+	} = selectProps;
 	const isDefault = data?.isDefault ?? true;
 	const isDeleteCandidate = deleteCandidate?.value === data.value;
+	const isEditCandidate = editCandidate?.value === data.value;
+	const editInputRef = useRef( null );
+
+	useEffect( () => {
+		if ( isEditCandidate && editInputRef.current ) {
+			editInputRef.current.focus();
+		}
+	}, [ isEditCandidate ] );
+
+	if ( isEditCandidate ) {
+		return (
+			<components.Option
+				{ ...props }
+				className="tasty-taxonomy-option--editing"
+			>
+				<div
+					className="tasty-taxonomy-edit-container"
+					onClick={ ( e ) => {
+						if ( e.target.closest( 'input' ) ) {
+							return;
+						}
+						e.stopPropagation();
+						e.preventDefault();
+					} }
+					onMouseDown={ ( e ) => {
+						if ( e.target.closest( 'input' ) ) {
+							return;
+						}
+						e.stopPropagation();
+						e.preventDefault();
+					} }
+					role="presentation"
+				>
+					<div className="tasty-taxonomy-edit-field">
+						<input
+							ref={ editInputRef }
+							type="text"
+							className="tasty-taxonomy-edit-input"
+							style={ {
+								width: '100%',
+								outline: 'none',
+								boxShadow: 'none',
+							} }
+							value={ editValue }
+							onClick={ ( e ) => {
+								e.stopPropagation();
+							} }
+							onChange={ ( e ) =>
+								onEditInputChange( e.target.value )
+							}
+							onMouseDown={ ( e ) => {
+								e.stopPropagation();
+							} }
+							onFocus={ ( e ) => {
+								e.target.style.outline = 'none';
+								e.target.style.boxShadow = 'none';
+							} }
+							onKeyDown={ ( e ) => {
+								e.stopPropagation();
+								if ( e.key === 'Enter' ) {
+									onConfirmEdit( data );
+								} else if ( e.key === 'Escape' ) {
+									onCancelEdit();
+								}
+							} }
+						/>
+					</div>
+					<div className="tasty-taxonomy-edit-actions">
+						<button
+							type="button"
+							className="tasty-taxonomy-edit-confirm"
+							onClick={ ( e ) => {
+								e.stopPropagation();
+								onConfirmEdit( data );
+							} }
+						>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="20"
+								height="20"
+								fill="none"
+								viewBox="0 0 20 20"
+							>
+								<path
+									stroke="#22C55E"
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeWidth="2"
+									d="M4 10l4 4 8-8"
+								/>
+							</svg>
+						</button>
+						<button
+							type="button"
+							className="tasty-taxonomy-edit-cancel"
+							onClick={ ( e ) => {
+								e.stopPropagation();
+								onCancelEdit();
+							} }
+						>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="20"
+								height="20"
+								fill="none"
+								viewBox="0 0 20 20"
+							>
+								<path
+									stroke="#ED4996"
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeWidth="2"
+									d="M5 5l10 10M15 5L5 15"
+								/>
+							</svg>
+						</button>
+					</div>
+				</div>
+			</components.Option>
+		);
+	}
 
 	if ( isDeleteCandidate ) {
 		return (
@@ -85,41 +216,77 @@ const CheckboxOption = ( props ) => {
 			</span>
 			<span className="tasty-taxonomy-option-label">{ label }</span>
 			{ ! isDefault && (
-				<span
-					className="tasty-taxonomy-option-delete"
-					onClick={ ( e ) => {
-						e.stopPropagation();
-						onDeleteClick( data );
-					} }
-					role="button"
-					tabIndex={ 0 }
-					onKeyDown={ ( e ) => {
-						if ( e.key === 'Enter' || e.key === ' ' ) {
+				<>
+					<span
+						className="tasty-taxonomy-option-edit"
+						onClick={ ( e ) => {
+							e.stopPropagation();
+							onEditClick( data );
+						} }
+						role="button"
+						tabIndex={ 0 }
+						onKeyDown={ ( e ) => {
+							if ( e.key === 'Enter' || e.key === ' ' ) {
+								e.stopPropagation();
+								onEditClick( data );
+							}
+						} }
+						onMouseDown={ ( e ) => {
+							e.stopPropagation();
+							e.preventDefault();
+						} }
+					>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							width="20"
+							height="20"
+							fill="none"
+						>
+							<path
+								stroke="#ED4996"
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth="1.5"
+								d="m3.958 16.042 3.542-.834 7.744-7.744a.833.833 0 0 0 0-1.178l-1.53-1.53a.833.833 0 0 0-1.178 0L4.792 12.5l-.834 3.542ZM16.042 16.042h-4.584"
+							/>
+						</svg>
+					</span>
+					<span
+						className="tasty-taxonomy-option-delete"
+						onClick={ ( e ) => {
 							e.stopPropagation();
 							onDeleteClick( data );
-						}
-					} }
-					onMouseDown={ ( e ) => {
-						e.stopPropagation();
-						e.preventDefault();
-					} }
-				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="20"
-						height="20"
-						fill="none"
-						viewBox="0 0 20 20"
+						} }
+						role="button"
+						tabIndex={ 0 }
+						onKeyDown={ ( e ) => {
+							if ( e.key === 'Enter' || e.key === ' ' ) {
+								e.stopPropagation();
+								onDeleteClick( data );
+							}
+						} }
+						onMouseDown={ ( e ) => {
+							e.stopPropagation();
+							e.preventDefault();
+						} }
 					>
-						<path
-							stroke="#ed4996"
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							strokeWidth="1.25"
-							d="m4.792 6.458.7 8.061a1.667 1.667 0 0 0 1.661 1.523h4.86c.865 0 1.586-.661 1.661-1.523l.701-8.06zM8.125 8.958v4.584M11.042 8.958v4.584M7.292 6.458v-.833c0-.92.746-1.667 1.666-1.667h1.25c.92 0 1.667.746 1.667 1.667v.833M3.958 6.458h11.25"
-						/>
-					</svg>
-				</span>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							width="20"
+							height="20"
+							fill="none"
+							viewBox="0 0 20 20"
+						>
+							<path
+								stroke="#ed4996"
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth="1.25"
+								d="m4.792 6.458.7 8.061a1.667 1.667 0 0 0 1.661 1.523h4.86c.865 0 1.586-.661 1.661-1.523l.701-8.06zM8.125 8.958v4.584M11.042 8.958v4.584M7.292 6.458v-.833c0-.92.746-1.667 1.666-1.667h1.25c.92 0 1.667.746 1.667 1.667v.833M3.958 6.458h11.25"
+							/>
+						</svg>
+					</span>
+				</>
 			) }
 		</components.Option>
 	);
@@ -158,6 +325,9 @@ export const TaxonomySelect = ( { name, taxonomy, value = '', onChange } ) => {
 	const [ createdOptions, setCreatedOptions ] = useState( [] );
 	const [ selectKey, setSelectKey ] = useState( 0 );
 	const [ deleteCandidate, setDeleteCandidate ] = useState( null );
+	const [ editCandidate, setEditCandidate ] = useState( null );
+	const [ editValue, setEditValue ] = useState( '' );
+	const [ menuIsOpen, setMenuIsOpen ] = useState( false );
 
 	const selectedValues = value
 		? value
@@ -170,6 +340,67 @@ export const TaxonomySelect = ( { name, taxonomy, value = '', onChange } ) => {
 		value: v,
 		label: v,
 	} ) );
+
+	const handleEditClick = ( option ) => {
+		setDeleteCandidate( null );
+		setEditCandidate( option );
+		setEditValue( option.label );
+	};
+
+	const handleEditInputChange = ( newValue ) => {
+		setEditValue( newValue );
+	};
+
+	const handleCancelEdit = () => {
+		setEditCandidate( null );
+		setEditValue( '' );
+	};
+
+	const handleConfirmEdit = async ( option ) => {
+		const trimmedValue = editValue.trim();
+		if ( ! option.id || ! trimmedValue ) {
+			return;
+		}
+
+		if ( trimmedValue === option.value ) {
+			setEditCandidate( null );
+			setEditValue( '' );
+			return;
+		}
+
+		try {
+			const updatedOption = await apiFetch( {
+				path: '/tasty-recipes/v1/taxonomy-terms',
+				method: 'PUT',
+				data: {
+					taxonomy,
+					id: option.id,
+					name: trimmedValue,
+				},
+			} );
+
+			const nextSelectedValues = selectedValues.map( ( v ) =>
+				v === option.value ? updatedOption.value : v
+			);
+			const uniqueSelectedValues = Array.from(
+				new Set( nextSelectedValues )
+			);
+			onChange( uniqueSelectedValues.join( ', ' ) );
+
+			setCreatedOptions( ( prev ) =>
+				prev.map( ( opt ) =>
+					opt.value === option.value ? updatedOption : opt
+				)
+			);
+
+			setEditCandidate( null );
+			setEditValue( '' );
+			setSelectKey( ( prev ) => prev + 1 );
+		} catch ( error ) {
+			// eslint-disable-next-line no-console
+			console.error( error );
+		}
+	};
 
 	const handleDeleteClick = ( option ) => {
 		setDeleteCandidate( option );
@@ -308,6 +539,17 @@ export const TaxonomySelect = ( { name, taxonomy, value = '', onChange } ) => {
 		}
 	};
 
+	const handleMenuOpen = () => {
+		setMenuIsOpen( true );
+	};
+
+	const handleMenuClose = () => {
+		// Only close if we're not in edit or delete mode
+		if ( ! editCandidate && ! deleteCandidate ) {
+			setMenuIsOpen( false );
+		}
+	};
+
 	return (
 		<>
 			<input type="hidden" name={ name } value={ value } />
@@ -330,7 +572,17 @@ export const TaxonomySelect = ( { name, taxonomy, value = '', onChange } ) => {
 				isClearable={ false }
 				placeholder=""
 				cacheOptions={ false }
+				menuIsOpen={ menuIsOpen }
+				onMenuOpen={ handleMenuOpen }
+				onMenuClose={ handleMenuClose }
+				menuShouldScrollIntoView={ false }
 				deleteCandidate={ deleteCandidate }
+				editCandidate={ editCandidate }
+				editValue={ editValue }
+				onEditClick={ handleEditClick }
+				onEditInputChange={ handleEditInputChange }
+				onCancelEdit={ handleCancelEdit }
+				onConfirmEdit={ handleConfirmEdit }
 				onDeleteClick={ handleDeleteClick }
 				onCancelDelete={ handleCancelDelete }
 				onConfirmDelete={ handleConfirmDelete }

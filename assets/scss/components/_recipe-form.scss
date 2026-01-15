@@ -428,9 +428,9 @@
 			min-height: auto !important;
 		}
 
-		input,
-		input:focus,
-		input:active {
+		input:not(.tasty-taxonomy-edit-input),
+		input:not(.tasty-taxonomy-edit-input):focus,
+		input:not(.tasty-taxonomy-edit-input):active {
 			border: none !important;
 			border-radius: 0 !important;
 			outline: none !important;
@@ -487,17 +487,23 @@
 		flex: 1;
 	}
 
+	.tasty-taxonomy-option-edit,
 	.tasty-taxonomy-option-delete {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		margin-left: auto;
 		padding: 2px;
 		border-radius: 4px;
 		transition: color 0.15s ease, opacity 0.15s ease;
 		opacity: 0;
+		cursor: pointer;
 	}
 
+	.tasty-taxonomy-option-edit {
+		margin-left: auto;
+	}
+
+	.tasty-taxonomy-select__option:hover .tasty-taxonomy-option-edit,
 	.tasty-taxonomy-select__option:hover .tasty-taxonomy-option-delete {
 		opacity: 1;
 	}
@@ -554,6 +560,73 @@
 			background: #BE185D;
 			border-color: #BE185D;
 		}
+	}
+
+	.tasty-taxonomy-edit-container {
+		display: grid;
+		grid-template-columns: 1fr auto;
+		align-items: center;
+		width: 100%;
+		gap: 8px;
+		min-width: 0;
+	}
+
+	.tasty-taxonomy-option--editing {
+		padding: 4px 6px;
+		width: 100%;
+		box-sizing: border-box;
+	}
+
+	.tasty-taxonomy-edit-field {
+		flex: 1 1 100%;
+		min-width: 0;
+		width: 100%;
+		border: 2px solid #ED4996;
+		border-radius: 6px;
+		background-color: #fff;
+	}
+
+	input.tasty-taxonomy-edit-input {
+		flex: 1 1 100%;
+		min-width: 0;
+		width: 100% !important;
+		border: none !important;
+		border-radius: 4px !important;
+		padding: 8px 12px !important;
+		font-size: 14px !important;
+		font-family: 'Inter', sans-serif;
+		color: #0E121B;
+		outline: none !important;
+		min-height: 40px !important;
+		background-color: transparent !important;
+		width: 100%;
+
+		&:focus {
+			outline: none !important;
+		}
+	}
+
+	.tasty-taxonomy-edit-confirm,
+	.tasty-taxonomy-edit-cancel {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex: 0 0 auto;
+		background: transparent;
+		border: none;
+		padding: 4px;
+		cursor: pointer;
+		transition: opacity 0.15s ease;
+
+		&:hover {
+			opacity: 0.7;
+		}
+	}
+
+	.tasty-taxonomy-edit-actions {
+		display: flex;
+		align-items: center;
+		gap: 6px;
 	}
 
 	.tasty-recipes-instruction-steps {
