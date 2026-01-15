@@ -20,8 +20,12 @@ const CheckboxOption = ( props ) => {
 		onConfirmEdit,
 	} = selectProps;
 	const isDefault = data?.isDefault ?? true;
-	const isDeleteCandidate = deleteCandidate?.value === data.value;
-	const isEditCandidate = editCandidate?.value === data.value;
+	const isDeleteCandidate = deleteCandidate?.id
+		? deleteCandidate.id === data.id
+		: deleteCandidate?.value === data.value;
+	const isEditCandidate = editCandidate?.id
+		? editCandidate.id === data.id
+		: editCandidate?.value === data.value;
 	const editInputRef = useRef( null );
 
 	useEffect( () => {
@@ -328,6 +332,7 @@ export const TaxonomySelect = ( { name, taxonomy, value = '', onChange } ) => {
 	const [ editCandidate, setEditCandidate ] = useState( null );
 	const [ editValue, setEditValue ] = useState( '' );
 	const [ menuIsOpen, setMenuIsOpen ] = useState( false );
+	const [ optionOverrides, setOptionOverrides ] = useState( {} );
 
 	const selectedValues = value
 		? value
@@ -392,10 +397,13 @@ export const TaxonomySelect = ( { name, taxonomy, value = '', onChange } ) => {
 					opt.value === option.value ? updatedOption : opt
 				)
 			);
+			setOptionOverrides( ( prev ) => ( {
+				...prev,
+				[ updatedOption.id ]: updatedOption,
+			} ) );
 
 			setEditCandidate( null );
 			setEditValue( '' );
-			setSelectKey( ( prev ) => prev + 1 );
 		} catch ( error ) {
 			// eslint-disable-next-line no-console
 			console.error( error );
@@ -435,6 +443,13 @@ export const TaxonomySelect = ( { name, taxonomy, value = '', onChange } ) => {
 			setCreatedOptions( ( prev ) =>
 				prev.filter( ( opt ) => opt.value !== option.value )
 			);
+			if ( option.id ) {
+				setOptionOverrides( ( prev ) => {
+					const next = { ...prev };
+					delete next[ option.id ];
+					return next;
+				} );
+			}
 
 			setDeleteCandidate( null );
 
@@ -576,6 +591,12 @@ export const TaxonomySelect = ( { name, taxonomy, value = '', onChange } ) => {
 				onMenuOpen={ handleMenuOpen }
 				onMenuClose={ handleMenuClose }
 				menuShouldScrollIntoView={ false }
+				getOptionLabel={ ( option ) =>
+					optionOverrides[ option.id ]?.label ?? option.label
+				}
+				getOptionValue={ ( option ) =>
+					optionOverrides[ option.id ]?.value ?? option.value
+				}
 				deleteCandidate={ deleteCandidate }
 				editCandidate={ editCandidate }
 				editValue={ editValue }
