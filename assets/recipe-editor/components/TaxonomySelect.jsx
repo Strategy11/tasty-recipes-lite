@@ -333,6 +333,7 @@ export const TaxonomySelect = ( { name, taxonomy, value = '', onChange } ) => {
 	const [ editValue, setEditValue ] = useState( '' );
 	const [ menuIsOpen, setMenuIsOpen ] = useState( false );
 	const [ optionOverrides, setOptionOverrides ] = useState( {} );
+	const [ optionOverridesByValue, setOptionOverridesByValue ] = useState( {} );
 
 	const selectedValues = value
 		? value
@@ -341,10 +342,14 @@ export const TaxonomySelect = ( { name, taxonomy, value = '', onChange } ) => {
 				.filter( Boolean )
 		: [];
 
-	const selectedOptions = selectedValues.map( ( v ) => ( {
-		value: v,
-		label: v,
-	} ) );
+	const selectedOptions = selectedValues.map( ( v ) => {
+		const override = optionOverridesByValue[ v ];
+		return {
+			value: override?.value ?? v,
+			label: override?.label ?? v,
+			id: override?.id,
+		};
+	} );
 
 	const handleEditClick = ( option ) => {
 		setDeleteCandidate( null );
@@ -401,6 +406,11 @@ export const TaxonomySelect = ( { name, taxonomy, value = '', onChange } ) => {
 				...prev,
 				[ updatedOption.id ]: updatedOption,
 			} ) );
+			setOptionOverridesByValue( ( prev ) => ( {
+				...prev,
+				[ option.value ]: updatedOption,
+				[ updatedOption.value ]: updatedOption,
+			} ) );
 
 			setEditCandidate( null );
 			setEditValue( '' );
@@ -450,6 +460,15 @@ export const TaxonomySelect = ( { name, taxonomy, value = '', onChange } ) => {
 					return next;
 				} );
 			}
+			setOptionOverridesByValue( ( prev ) => {
+				const next = { ...prev };
+				const override = next[ option.value ];
+				delete next[ option.value ];
+				if ( override?.value ) {
+					delete next[ override.value ];
+				}
+				return next;
+			} );
 
 			setDeleteCandidate( null );
 
