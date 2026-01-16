@@ -10,6 +10,7 @@ on:
 jobs:
   cypress:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     if: |
       github.event_name == 'push' ||
@@ -60,7 +61,7 @@ jobs:
         with:
           start: pnpm run env start
           wait-on: 'http://localhost:3000'
-          wait-on-timeout: 180
+          wait-on-timeout: 300
           browser: chrome
           command: pnpm run e2e:run
           install: false  # Already installed via pnpm
