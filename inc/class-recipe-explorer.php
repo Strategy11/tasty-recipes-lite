@@ -710,7 +710,19 @@ class Recipe_Explorer {
 		$content = apply_filters( 'tasty_recipes_recipe_shortcode', $shortcode, $recipe );
 
 		if ( function_exists( 'use_block_editor_for_post_type' ) && use_block_editor_for_post_type( 'post' ) ) {
-			$content = Block_Editor::get_block_for_recipe( $recipe );
+			$block = Block_Editor::get_block_for_recipe( $recipe );
+
+			/**
+			 * Filters the block content used for embedding recipes.
+			 *
+			 * Pro uses this to return the How-To block instead of the Recipe block.
+			 *
+			 * @since x.x
+			 *
+			 * @param string $block  The block content string.
+			 * @param object $recipe The recipe object.
+			 */
+			$content = apply_filters( 'tasty_recipes_recipe_block', $block, $recipe );
 		}
 
 		return $content;

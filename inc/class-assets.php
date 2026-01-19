@@ -473,6 +473,15 @@ class Assets {
 			$blocks_data['editorNotices'] = Editor::get_converter_messages( $post_id );
 		}
 
+		/**
+		 * Filter the block editor data before it's localized.
+		 *
+		 * @since x.x
+		 *
+		 * @param array $blocks_data The block editor data.
+		 */
+		$blocks_data = apply_filters( 'tasty_recipes_block_editor_data', $blocks_data );
+
 		wp_localize_script( 'tasty-recipes-block-editor', 'tastyRecipesBlockEditor', $blocks_data );
 
 		self::action_wp_head();
