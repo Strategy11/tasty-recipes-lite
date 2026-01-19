@@ -920,7 +920,16 @@ class Shortcodes {
 	 * @return string
 	 */
 	public static function get_shortcode_for_recipe( Recipe $recipe ) {
-		return '[' . self::RECIPE_SHORTCODE . ' id="' . $recipe->get_id() . '"]';
+		$shortcode = '[' . self::RECIPE_SHORTCODE . ' id="' . $recipe->get_id() . '"]';
+		/**
+		 * Filters the shortcode for a given recipe.
+		 *
+		 * @since x.x
+		 *
+		 * @param string $shortcode Shortcode string.
+		 * @param Recipe $recipe    Recipe instance.
+		 */
+		return apply_filters( 'tasty_recipes_recipe_shortcode', $shortcode, $recipe );
 	}
 
 	/**

@@ -528,17 +528,27 @@ class Assets {
 		do_action( 'tasty_recipes_editor_after_video_url' );
 		$after_video_url_markup = ob_get_clean();
 
+		$editor_data = array(
+			'pluginURL'              => plugins_url( '', __DIR__ ),
+			'after_video_url_markup' => $after_video_url_markup,
+			'defaultRecipeType'      => 'recipe',
+			'attributes'             => array(
+				'cooking'   => $cooking_attributes,
+				'nutrition' => $nutrition_attributes,
+			),
+		);
+		/**
+		 * Filters the recipe editor data sent to the client.
+		 *
+		 * @since x.x
+		 *
+		 * @param array $editor_data Editor data.
+		 */
+		$editor_data = apply_filters( 'tasty_recipes_recipe_editor_data', $editor_data );
 		wp_localize_script(
 			'tasty-recipes-recipe-editor',
 			'tastyRecipesRecipeEditorData',
-			array(
-				'pluginURL'              => plugins_url( '', __DIR__ ),
-				'after_video_url_markup' => $after_video_url_markup,
-				'attributes'             => array(
-					'cooking'   => $cooking_attributes,
-					'nutrition' => $nutrition_attributes,
-				),
-			)
+			$editor_data
 		);
 		$time = filemtime( dirname( __DIR__ ) . '/assets/js/editor-modal.js' );
 		wp_register_script(

@@ -8,6 +8,7 @@ export const FieldGroup = ( {
 	fields,
 	initialFieldValues,
 	showLabels = true,
+	showAdditionalTime = true,
 	onFieldChange = () => {},
 	renderBeforeFields,
 	className = '',
@@ -72,7 +73,8 @@ export const FieldGroup = ( {
 				{ beforeSettingHook }
 				<div className={ className }>
 					{ heading && <h3>{ heading }</h3> }
-					{ renderBeforeFields && renderBeforeFields( { fieldValues } ) }
+					{ renderBeforeFields &&
+						renderBeforeFields( { fieldValues } ) }
 				</div>
 			</>
 		);
@@ -93,7 +95,7 @@ export const FieldGroup = ( {
 								data-tasty-tooltip={ field.tooltip }
 							></span>
 						) }
-						{ name === 'prep_time' && (
+						{ name === 'prep_time' && showAdditionalTime && (
 							<button
 								className="tasty-recipes-add-additional-time"
 								type="button"
@@ -147,57 +149,77 @@ export const FieldGroup = ( {
 						}
 					/>
 				) }
-				{ name === 'prep_time' && ! isAdditionalTimeOpen && (
+				{ name === 'prep_time' &&
+					showAdditionalTime &&
+					! isAdditionalTimeOpen && (
+						<span style={ { display: 'none' } }>
+							<input
+								id="tasty-recipes-recipe-additional-time-label"
+								type="hidden"
+								name="additional_time_label"
+							/>
+							<input
+								id="tasty-recipes-recipe-additional-time-value"
+								type="hidden"
+								name="additional_time_value"
+							/>
+						</span>
+					) }
+				{ name === 'prep_time' && ! showAdditionalTime && (
 					<span style={ { display: 'none' } }>
 						<input
 							id="tasty-recipes-recipe-additional-time-label"
 							type="hidden"
 							name="additional_time_label"
+							value=""
 						/>
 						<input
 							id="tasty-recipes-recipe-additional-time-value"
 							type="hidden"
 							name="additional_time_value"
+							value=""
 						/>
 					</span>
 				) }
 			</fieldset>
-			{ name === 'prep_time' && isAdditionalTimeOpen && (
-				<fieldset className="tasty-recipes-additional-time-container">
-					<input
-						id="tasty-recipes-recipe-additional-time-label"
-						type="text"
-						name="additional_time_label"
-						placeholder={ __(
-							'Additional Time Label',
-							'tasty-recipes-lite'
-						) }
-						value={ fieldValues.additional_time_label || '' }
-						onChange={ ( e ) =>
-							handleFieldChange(
-								'additional_time_label',
-								e.target.value
-							)
-						}
-					/>
-					<input
-						id="tasty-recipes-recipe-additional-time-value"
-						type="text"
-						name="additional_time_value"
-						placeholder={ __(
-							'Additional Time Value',
-							'tasty-recipes-lite'
-						) }
-						value={ fieldValues.additional_time_value || '' }
-						onChange={ ( e ) =>
-							handleFieldChange(
-								'additional_time_value',
-								e.target.value
-							)
-						}
-					/>
-				</fieldset>
-			) }
+			{ name === 'prep_time' &&
+				showAdditionalTime &&
+				isAdditionalTimeOpen && (
+					<fieldset className="tasty-recipes-additional-time-container">
+						<input
+							id="tasty-recipes-recipe-additional-time-label"
+							type="text"
+							name="additional_time_label"
+							placeholder={ __(
+								'Additional Time Label',
+								'tasty-recipes-lite'
+							) }
+							value={ fieldValues.additional_time_label || '' }
+							onChange={ ( e ) =>
+								handleFieldChange(
+									'additional_time_label',
+									e.target.value
+								)
+							}
+						/>
+						<input
+							id="tasty-recipes-recipe-additional-time-value"
+							type="text"
+							name="additional_time_value"
+							placeholder={ __(
+								'Additional Time Value',
+								'tasty-recipes-lite'
+							) }
+							value={ fieldValues.additional_time_value || '' }
+							onChange={ ( e ) =>
+								handleFieldChange(
+									'additional_time_value',
+									e.target.value
+								)
+							}
+						/>
+					</fieldset>
+				) }
 		</>
 	);
 

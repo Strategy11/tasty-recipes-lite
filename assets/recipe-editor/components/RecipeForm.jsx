@@ -1,13 +1,31 @@
-import { useState, useMemo } from '@wordpress/element';
+import { useState, useMemo, useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import { applyFilters } from '@wordpress/hooks';
 import { FieldGroup } from './FieldGroup';
 import { RichTextarea } from './RichTextarea';
 import { ImageField } from './ImageField';
 
 export const RecipeForm = ( { initialRecipe, config } ) => {
-	const [ recipe, setRecipe ] = useState( initialRecipe );
+	const defaultRecipeType = config.defaultRecipeType || 'recipe';
+	const initialRecipeState = applyFilters(
+		'tasty_recipes_recipe_editor_initial_recipe',
+		{
+			recipe_type: defaultRecipeType,
+			...( initialRecipe || {} ),
+		},
+		config
+	);
+	const [ recipe, setRecipe ] = useState( initialRecipeState );
 
-	const attributes = config.attributes;
+	const recipeType = recipe.recipe_type || defaultRecipeType;
+	const editorConfig = applyFilters(
+		'tasty_recipes_recipe_editor_config',
+		config,
+		recipeType,
+		recipe
+	);
+	const typeSettings = editorConfig?.typeSettings?.[ recipeType ] || {};
+	const attributes = editorConfig.attributes;
 	const nutritionAttributes = useMemo( () => {
 		const nutritionAttrs = attributes.nutrition;
 
@@ -26,9 +44,122 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 	const handleRecipeChange = ( field, value ) =>
 		setRecipe( ( prev ) => ( { ...prev, [ field ]: value } ) );
 
+	const modalTitles = {
+		create: __( 'Create Recipe', 'tasty-recipes-lite' ),
+		edit: __( 'Edit Recipe', 'tasty-recipes-lite' ),
+		...( typeSettings.modalTitles || {} ),
+	};
+	const buttonLabels = {
+		create: __( 'Insert Recipe', 'tasty-recipes-lite' ),
+		edit: __( 'Update Recipe', 'tasty-recipes-lite' ),
+		...( typeSettings.buttonLabels || {} ),
+	};
+	const imageLabels = typeSettings.imageLabels || {};
+	const richTextareas = [
+		{
+			name: 'description',
+			label: __( 'Description', 'tasty-recipes-lite' ),
+			initialValue: recipe.description,
+			initialVideoSettingsValue: recipe.description_video_settings,
+		},
+		{
+			name: 'ingredients',
+			label: __( 'Ingredients', 'tasty-recipes-lite' ),
+			initialValue: recipe.ingredients,
+			initialVideoSettingsValue: recipe.ingredients_video_settings,
+		},
+		{
+			name: 'instructions',
+			label: __( 'Instructions', 'tasty-recipes-lite' ),
+			initialValue: recipe.instructions,
+			initialVideoSettingsValue: recipe.instructions_video_settings,
+		},
+		{
+			name: 'notes',
+			label: __( 'Notes', 'tasty-recipes-lite' ),
+			initialValue: recipe.notes,
+			initialVideoSettingsValue: recipe.notes_video_settings,
+		},
+	];
+	const richTextareaSettings = richTextareas
+		.map( ( field ) => ( {
+			...field,
+			...( typeSettings.richTextareas?.[ field.name ] || {} ),
+		} ) )
+		.filter( ( field ) => false !== field.show );
+	const detailsGroupSettings = typeSettings.groups?.details || {};
+	const nutritionGroupSettings = typeSettings.groups?.nutrition || {};
+	const detailsFields = applyFilters(
+		'tasty_recipes_recipe_editor_group_fields',
+		detailsGroupSettings.fields || attributes.cooking,
+		'details',
+		recipe,
+		recipeType
+	);
+	const detailsHeading = applyFilters(
+		'tasty_recipes_recipe_editor_group_heading',
+		detailsGroupSettings.heading || __( 'Details', 'tasty-recipes-lite' ),
+		'details',
+		recipe,
+		recipeType
+	);
+	const showDetailsGroup = applyFilters(
+		'tasty_recipes_recipe_editor_show_group',
+		false !== detailsGroupSettings.show,
+		'details',
+		recipe,
+		recipeType
+	);
+	const showAdditionalTime =
+		false !== detailsGroupSettings.showAdditionalTime;
+	const nutritionHeading = applyFilters(
+		'tasty_recipes_recipe_editor_group_heading',
+		__( 'Nutrition', 'tasty-recipes-lite' ),
+		'nutrition',
+		recipe,
+		recipeType
+	);
+	const showNutritionGroup = applyFilters(
+		'tasty_recipes_recipe_editor_show_group',
+		false !== nutritionGroupSettings.show,
+		'nutrition',
+		recipe,
+		recipeType
+	);
+	const typeSelector = applyFilters(
+		'tasty_recipes_recipe_editor_type_selector',
+		null,
+		{
+			recipe,
+			recipeType,
+			handleRecipeChange,
+			editorConfig,
+		}
+	);
+
+	useEffect( () => {
+		const event = new CustomEvent( 'tasty-recipes-editor-labels-update', {
+			detail: {
+				recipeType,
+				modalTitles,
+				buttonLabels,
+			},
+		} );
+		document.dispatchEvent( event );
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [
+		buttonLabels.create,
+		buttonLabels.edit,
+		modalTitles.create,
+		modalTitles.edit,
+		recipeType,
+	] );
+
 	return (
 		<form className="tasty-framework">
 			<input type="hidden" name="id" value={ recipe.id } />
+			<input type="hidden" name="recipe_type" value={ recipeType } />
+			{ typeSelector }
 			<fieldset className="tasty-recipes-modal-form-row">
 				<div>
 					<label htmlFor="title">
@@ -64,50 +195,34 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 			<ImageField
 				recipe={ recipe }
 				handleRecipeChange={ handleRecipeChange }
+				labels={ imageLabels }
 			/>
-			<RichTextarea
-				name="description"
-				label={ __( 'Description', 'tasty-recipes-lite' ) }
-				initialValue={ recipe.description }
-				initialVideoSettingsValue={ recipe.description_video_settings }
-				onChange={ ( value ) =>
-					handleRecipeChange( 'description', value )
-				}
-			/>
-			<RichTextarea
-				name="ingredients"
-				label={ __( 'Ingredients', 'tasty-recipes-lite' ) }
-				initialValue={ recipe.ingredients }
-				initialVideoSettingsValue={ recipe.ingredients_video_settings }
-				onChange={ ( value ) =>
-					handleRecipeChange( 'ingredients', value )
-				}
-			/>
-			<RichTextarea
-				name="instructions"
-				label={ __( 'Instructions', 'tasty-recipes-lite' ) }
-				initialValue={ recipe.instructions }
-				initialVideoSettingsValue={ recipe.instructions_video_settings }
-				onChange={ ( value ) =>
-					handleRecipeChange( 'instructions', value )
-				}
-			/>
-			<RichTextarea
-				name="notes"
-				label={ __( 'Notes', 'tasty-recipes-lite' ) }
-				initialValue={ recipe.notes }
-				initialVideoSettingsValue={ recipe.notes_video_settings }
-				onChange={ ( value ) => handleRecipeChange( 'notes', value ) }
-			/>
-			<FieldGroup
-				className="tasty-recipes-details"
-				heading={ __( 'Details', 'tasty-recipes-lite' ) }
-				fields={ attributes.cooking }
-				initialFieldValues={ recipe }
-				onFieldChange={ handleRecipeChange }
-				group="details"
-				recipe={ recipe }
-			/>
+			{ richTextareaSettings.map( ( field ) => (
+				<RichTextarea
+					key={ field.name }
+					name={ field.name }
+					label={ field.label }
+					initialValue={ field.initialValue }
+					initialVideoSettingsValue={
+						field.initialVideoSettingsValue
+					}
+					onChange={ ( value ) =>
+						handleRecipeChange( field.name, value )
+					}
+				/>
+			) ) }
+			{ showDetailsGroup && (
+				<FieldGroup
+					className="tasty-recipes-details"
+					heading={ detailsHeading }
+					fields={ detailsFields }
+					initialFieldValues={ recipe }
+					onFieldChange={ handleRecipeChange }
+					showAdditionalTime={ showAdditionalTime }
+					group="details"
+					recipe={ recipe }
+				/>
+			) }
 			<FieldGroup
 				className="tasty-recipes-video-url"
 				fields={ {
@@ -120,76 +235,78 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 				group="video"
 				recipe={ recipe }
 			/>
-			{ config.after_video_url_markup && (
+			{ editorConfig.after_video_url_markup && (
 				<div
 					dangerouslySetInnerHTML={ {
-						__html: config.after_video_url_markup,
+						__html: editorConfig.after_video_url_markup,
 					} }
 				/>
 			) }
-			<FieldGroup
-				className="tasty-recipes-nutrition"
-				group="nutrition"
-				heading={ __( 'Nutrition', 'tasty-recipes-lite' ) }
-				fields={ nutritionAttributes }
-				initialFieldValues={ recipe }
-				onFieldChange={ handleRecipeChange }
-				renderBeforeFields={ () => (
-					<fieldset className="tasty-recipes-nutrifox-container">
-						<div className="tasty-recipes-nutrifox-id-container">
-							<label htmlFor="tasty-recipes-recipe-nutrifox_id">
-								{ attributes.nutrition.nutrifox_id.label }
-							</label>
-							<input
-								id="tasty-recipes-recipe-nutrifox_id"
-								type="text"
-								name="nutrifox_id"
-								className="inline-field"
-								value={ recipe.nutrifox_id || '' }
-								onChange={ ( e ) => {
-									handleRecipeChange(
-										'nutrifox_id',
-										e.target.value
-									);
-								} }
-							/>
+			{ showNutritionGroup && (
+				<FieldGroup
+					className="tasty-recipes-nutrition"
+					group="nutrition"
+					heading={ nutritionHeading }
+					fields={ nutritionAttributes }
+					initialFieldValues={ recipe }
+					onFieldChange={ handleRecipeChange }
+					renderBeforeFields={ () => (
+						<fieldset className="tasty-recipes-nutrifox-container">
+							<div className="tasty-recipes-nutrifox-id-container">
+								<label htmlFor="tasty-recipes-recipe-nutrifox_id">
+									{ attributes.nutrition.nutrifox_id.label }
+								</label>
+								<input
+									id="tasty-recipes-recipe-nutrifox_id"
+									type="text"
+									name="nutrifox_id"
+									className="inline-field"
+									value={ recipe.nutrifox_id || '' }
+									onChange={ ( e ) => {
+										handleRecipeChange(
+											'nutrifox_id',
+											e.target.value
+										);
+									} }
+								/>
 
-							{ recipe.nutrifox_id && (
+								{ recipe.nutrifox_id && (
+									<a
+										className="nutrifox-edit"
+										href={ `https://nutrifox.com/recipes/${ parseInt(
+											recipe.nutrifox_id
+										) }/edit` }
+										target="_blank"
+										rel="noopener noreferrer"
+									>
+										<NutrifoxIcon />
+										{ __(
+											'Edit recipe in Nutrifox',
+											'tasty-recipes-lite'
+										) }
+									</a>
+								) }
+							</div>
+							<div className="tasty-recipes-nutrifox-logo-container">
 								<a
-									className="nutrifox-edit"
-									href={ `https://nutrifox.com/recipes/${ parseInt(
-										recipe.nutrifox_id
-									) }/edit` }
+									className="nutrifox-logo"
+									href="https://nutrifox.com/?utm_source=tasty-recipes&utm_medium=dashboard&utm_campaign=recipe-editor"
 									target="_blank"
 									rel="noopener noreferrer"
 								>
-									<NutrifoxIcon />
-									{ __(
-										'Edit recipe in Nutrifox',
-										'tasty-recipes-lite'
-									) }
+									<img
+										alt="Nutrifox logo"
+										src={ nutrifoxLogoUrl }
+										width="96"
+										height="22"
+									/>
 								</a>
-							) }
-						</div>
-						<div className="tasty-recipes-nutrifox-logo-container">
-							<a
-								className="nutrifox-logo"
-								href="https://nutrifox.com/?utm_source=tasty-recipes&utm_medium=dashboard&utm_campaign=recipe-editor"
-								target="_blank"
-								rel="noopener noreferrer"
-							>
-								<img
-									alt="Nutrifox logo"
-									src={ nutrifoxLogoUrl }
-									width="96"
-									height="22"
-								/>
-							</a>
-						</div>
-					</fieldset>
-				) }
-				recipe={ recipe }
-			/>
+							</div>
+						</fieldset>
+					) }
+					recipe={ recipe }
+				/>
+			) }
 		</form>
 	);
 };

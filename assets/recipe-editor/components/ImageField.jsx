@@ -10,7 +10,19 @@ const getFileName = ( url ) =>
 		.pop()
 		.replace( /-\d+x\d+(?=\.[a-zA-Z0-9]+$)/, '' );
 
-export const ImageField = ( { recipe, handleRecipeChange } ) => {
+export const ImageField = ( { recipe, handleRecipeChange, labels = {} } ) => {
+	const mergedLabels = {
+		mediaTitle: __( 'Media Library', 'tasty-recipes-lite' ),
+		mediaButton: __( 'Select Image', 'tasty-recipes-lite' ),
+		placeholderTitle: __( 'Recipe Image', 'tasty-recipes-lite' ),
+		placeholderSubtitle: __(
+			'Select an image file from your library.',
+			'tasty-recipes-lite'
+		),
+		placeholderButton: __( 'Select Image', 'tasty-recipes-lite' ),
+		removeButton: __( 'Remove Image', 'tasty-recipes-lite' ),
+		...labels,
+	};
 	const [ recipeThumbnail, setRecipeThumbnail ] = useState(
 		recipe?.image_sizes?.thumbnail
 	);
@@ -19,13 +31,13 @@ export const ImageField = ( { recipe, handleRecipeChange } ) => {
 		e.preventDefault();
 
 		const frame = wp.media( {
-			title: __( 'Media Library', 'tasty-recipes-lite' ),
+			title: mergedLabels.mediaTitle,
 			multiple: false,
 			library: {
 				type: 'image',
 			},
 			button: {
-				text: __( 'Select Image', 'tasty-recipes-lite' ),
+				text: mergedLabels.mediaButton,
 			},
 		} );
 
@@ -72,17 +84,23 @@ export const ImageField = ( { recipe, handleRecipeChange } ) => {
 				<ImagePreview
 					recipeThumbnail={ recipeThumbnail }
 					handleClickRemoveImage={ handleClickRemoveImage }
+					labels={ mergedLabels }
 				/>
 			) : (
 				<Placeholder
 					handleClickSelectImage={ handleClickSelectImage }
+					labels={ mergedLabels }
 				/>
 			) }
 		</div>
 	);
 };
 
-const ImagePreview = ( { recipeThumbnail, handleClickRemoveImage } ) => {
+const ImagePreview = ( {
+	recipeThumbnail,
+	handleClickRemoveImage,
+	labels,
+} ) => {
 	return (
 		<>
 			<div className="tasty-image-preview">
@@ -100,30 +118,27 @@ const ImagePreview = ( { recipeThumbnail, handleClickRemoveImage } ) => {
 				onClick={ handleClickRemoveImage }
 			>
 				<Icon icon={ TrashIcon } width={ 24 } />
-				<span>{ __( 'Remove Image', 'tasty-recipes-lite' ) }</span>
+				<span>{ labels.removeButton }</span>
 			</button>
 		</>
 	);
 };
 
-const Placeholder = ( { handleClickSelectImage } ) => {
+const Placeholder = ( { handleClickSelectImage, labels } ) => {
 	return (
 		<>
 			<Icon icon={ UploadIcon } width={ 20 } height={ 18 } />
 			<p className="tasty-recipes-image-placeholder-title">
-				{ __( 'Recipe Image', 'tasty-recipes-lite' ) }
+				{ labels.placeholderTitle }
 			</p>
 			<p className="tasty-recipes-image-placeholder-subtitle">
-				{ __(
-					'Select an image file from your library.',
-					'tasty-recipes-lite'
-				) }
+				{ labels.placeholderSubtitle }
 			</p>
 			<button
 				className="tasty-secondary-button"
 				onClick={ handleClickSelectImage }
 			>
-				{ __( 'Select Image', 'tasty-recipes-lite' ) }
+				{ labels.placeholderButton }
 			</button>
 		</>
 	);
