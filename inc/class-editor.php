@@ -601,9 +601,14 @@ class Editor {
 		}
 
 		if ( ! $post ) {
+			$recipe_post = get_post( $recipe->get_id() );
+
+			// Include recipe_type in the response for the embed modal.
+			$recipe_post->recipe_type = isset( $post_recipe['recipe_type'] ) ? sanitize_text_field( $post_recipe['recipe_type'] ) : 'recipe';
+
 			wp_send_json_success(
 				array(
-					'recipe' => get_post( $recipe->get_id() ),
+					'recipe' => $recipe_post,
 				)
 			);
 		}

@@ -501,14 +501,25 @@ class Recipe_Explorer {
 
 		$recipe_title = ! empty( $recipe->get_title() ) ? $recipe->get_title() : __( 'The', 'tasty-recipes-lite' );
 
-		$message  = '<h3>' . esc_html__( 'Post created!', 'tasty-recipes-lite' ) . '</h3>';
-		$message .= '<p>';
-		$message .= sprintf(
+		$success_message = sprintf(
 			/* translators: %s: recipe title */
 			__( '%s recipe has been embedded successfully.', 'tasty-recipes-lite' ),
 			esc_html( $recipe_title )
 		);
-		$message .= '</p>';
+
+		/**
+		 * Filters the success message after creating a post with a recipe.
+		 *
+		 * @since x.x
+		 *
+		 * @param string $success_message The success message.
+		 * @param int    $recipe_id       The recipe ID.
+		 * @param string $recipe_title    The recipe title.
+		 */
+		$success_message = apply_filters( 'tasty_recipes_create_post_success_message', $success_message, $params['recipe_id'], $recipe_title );
+
+		$message  = '<h3>' . esc_html__( 'Post created!', 'tasty-recipes-lite' ) . '</h3>';
+		$message .= '<p>' . esc_html( $success_message ) . '</p>';
 		$message .= '<p><a style="color: #ED4996;" href="' . esc_url( get_edit_post_link( $post_id ) ) . '">' . esc_html__( 'Go to Post', 'tasty-recipes-lite' ) . '</a></p>';
 		
 		$js_messagebox->add( 'success', $message );
@@ -636,14 +647,37 @@ class Recipe_Explorer {
 
 		$recipe_title = ! empty( $recipe->get_title() ) ? $recipe->get_title() : __( 'The recipe', 'tasty-recipes-lite' );
 
-		$message  = '<h3>' . esc_html__( 'Recipe embedded!', 'tasty-recipes-lite' ) . '</h3>';
-		$message .= '<p>';
-		$message .= sprintf(
+		$success_heading = __( 'Recipe embedded!', 'tasty-recipes-lite' );
+
+		$success_message = sprintf(
 			/* translators: %s: recipe title */
 			__( '%s recipe has been embedded successfully.', 'tasty-recipes-lite' ),
 			esc_html( $recipe_title )
 		);
-		$message .= '</p>';
+
+		/**
+		 * Filters the success heading after embedding a recipe.
+		 *
+		 * @since x.x
+		 *
+		 * @param string $success_heading The success heading.
+		 * @param int    $recipe_id       The recipe ID.
+		 */
+		$success_heading = apply_filters( 'tasty_recipes_embed_success_heading', $success_heading, $params['recipe_id'] );
+
+		/**
+		 * Filters the success message after embedding a recipe.
+		 *
+		 * @since x.x
+		 *
+		 * @param string $success_message The success message.
+		 * @param int    $recipe_id       The recipe ID.
+		 * @param string $recipe_title    The recipe title.
+		 */
+		$success_message = apply_filters( 'tasty_recipes_embed_success_message', $success_message, $params['recipe_id'], $recipe_title );
+
+		$message  = '<h3>' . esc_html( $success_heading ) . '</h3>';
+		$message .= '<p>' . esc_html( $success_message ) . '</p>';
 		$message .= '<p><a style="color: #ED4996;" href="' . get_edit_post_link( $post_id ) . '">' . esc_html__( 'Go to Recipe', 'tasty-recipes-lite' ) . '</a></p>';
 		
 		$js_messagebox->add( 'success', $message );
@@ -663,7 +697,17 @@ class Recipe_Explorer {
 	private static function generate_recipe_content( $recipe_id ) {
 		$recipe = Recipe::get_by_id( $recipe_id );
 
-		$content = '[wp-tasty id="' . $recipe_id . '"]';
+		$shortcode = '[wp-tasty id="' . $recipe_id . '"]';
+
+		/**
+		 * Filters the shortcode used for embedding recipes.
+		 *
+		 * @since x.x
+		 *
+		 * @param string $shortcode The shortcode string.
+		 * @param object $recipe    The recipe object.
+		 */
+		$content = apply_filters( 'tasty_recipes_recipe_shortcode', $shortcode, $recipe );
 
 		if ( function_exists( 'use_block_editor_for_post_type' ) && use_block_editor_for_post_type( 'post' ) ) {
 			$content = Block_Editor::get_block_for_recipe( $recipe );
