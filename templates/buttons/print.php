@@ -20,6 +20,17 @@ if ( $current_post ) {
 $template_obj = Tasty_Recipes\Designs\Template::get_object_by_name( 'current' );
 ?>
 
+<?php
+/**
+ * Filters the print button label.
+ *
+ * @since x.x
+ *
+ * @param string $label     The button label.
+ * @param int    $recipe_id The recipe ID.
+ */
+$print_button_label = apply_filters( 'tasty_recipes_print_button_label', __( 'Print Recipe', 'tasty-recipes-lite' ), $recipe->get_id() );
+?>
 <a class="button tasty-recipes-print-button tasty-recipes-no-print" <?php echo '#' === $print_link ? '' : 'href="' . esc_url( $print_link ) . '"'; ?> target="_blank" data-tasty-recipes-customization="<?php echo esc_attr( $customization ); ?>">
 	<?php if ( '.svg' === $ext ) : ?>
 		<svg viewBox="0 0 24 24" class="svg-print" aria-hidden="true"><use xlink:href="#tasty-recipes-icon-print"></use></svg>
@@ -28,5 +39,5 @@ $template_obj = Tasty_Recipes\Designs\Template::get_object_by_name( 'current' );
 	<?php else : ?>
 		<svg viewBox="0 0 24 24" class="svg-print" aria-hidden="true"><use xlink:href="#tasty-recipes-icon-print"></use></svg>
 	<?php endif; ?>
-	<?php esc_html_e( 'Print Recipe', 'tasty-recipes-lite' ); ?>
+	<?php echo esc_html( $print_button_label ); ?>
 </a>
