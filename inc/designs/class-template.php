@@ -554,6 +554,10 @@ class Template {
 			'nutrition'    => __( 'Nutrition', 'tasty-recipes-lite' ),
 		);
 
+		if ( ! isset( $defaults[ $name ] ) ) {
+			return '';
+		}
+
 		return apply_filters( 'tasty_recipes_get_heading_name', $defaults[ $name ], $name, $recipe_object );
 	}
 }
