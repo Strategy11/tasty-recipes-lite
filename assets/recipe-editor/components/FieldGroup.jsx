@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from '@wordpress/element';
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
-import { TaxonomySelect } from './TaxonomySelect';
+import { TaxonomySelect } from './taxonomy-select';
 
 export const FieldGroup = ( {
 	heading,
