@@ -289,25 +289,21 @@ class Recipe_Explorer {
 				
 			// Handle hidden columns content.
 			case 'cuisine':
-				$cuisine = get_post_meta( $recipe_id, 'cuisine', true );
-				echo esc_html( ! empty( $cuisine ) ? $cuisine : '' );
+				echo esc_html( self::get_recipe_attribute( $recipe_id, 'cuisine', 'tasty_recipe_cuisine' ) );
 				break;
-				
+
 			case 'method':
-				$method = get_post_meta( $recipe_id, 'method', true );
-				echo esc_html( ! empty( $method ) ? $method : '' );
+				echo esc_html( self::get_recipe_attribute( $recipe_id, 'method', 'tasty_recipe_method' ) );
 				break;
-				
+
 			case 'category':
-				$category = get_post_meta( $recipe_id, 'category', true );
-				echo esc_html( ! empty( $category ) ? $category : '' );
+				echo esc_html( self::get_recipe_attribute( $recipe_id, 'category', 'tasty_recipe_category' ) );
 				break;
-				
+
 			case 'diet':
-				$diet = get_post_meta( $recipe_id, 'diet', true );
-				echo esc_html( ! empty( $diet ) ? $diet : '' );
+				echo esc_html( self::get_recipe_attribute( $recipe_id, 'diet', 'tasty_recipe_diet' ) );
 				break;
-				
+
 			case 'author':
 				$author_id = $post->post_author;
 				$author    = get_userdata( (int) $author_id );
@@ -339,6 +335,37 @@ class Recipe_Explorer {
 		);
 		
 		return $result;
+	}
+
+	/**
+	 * Get recipe attribute value from post meta or taxonomy.
+	 *
+	 * First checks post meta, then falls back to taxonomy terms if meta is empty.
+	 *
+	 * @since 1.1
+	 *
+	 * @param int    $recipe_id The recipe post ID.
+	 * @param string $meta_key  The post meta key.
+	 * @param string $taxonomy  The taxonomy name.
+	 *
+	 * @return string The attribute value or empty string.
+	 */
+	private static function get_recipe_attribute( $recipe_id, $meta_key, $taxonomy ) {
+		$meta_value = get_post_meta( $recipe_id, $meta_key, true );
+
+		if ( ! empty( $meta_value ) ) {
+			return $meta_value;
+		}
+
+		$terms = get_the_terms( $recipe_id, $taxonomy );
+
+		if ( empty( $terms ) || is_wp_error( $terms ) ) {
+			return '';
+		}
+
+		$term_names = wp_list_pluck( $terms, 'name' );
+
+		return implode( ', ', $term_names );
 	}
 
 	/**
@@ -755,12 +782,14 @@ class Recipe_Explorer {
 	public static function get_unique_filter_values( $field ) {
 		$cache_key = 'tasty_recipes_unique_filter_values_' . $field;
 
-		if ( wp_cache_get( $cache_key, 'tasty_recipes' ) ) {
-			return wp_cache_get( $cache_key, 'tasty_recipes' );
+		$cached = wp_cache_get( $cache_key, 'tasty_recipes' );
+		if ( false !== $cached ) {
+			return $cached;
 		}
 
 		global $wpdb;
 
+		// Get unique meta values.
 		$query = $wpdb->prepare(
 			"SELECT DISTINCT pm.meta_value 
 			FROM {$wpdb->postmeta} pm 
@@ -776,9 +805,47 @@ class Recipe_Explorer {
 		// phpcs:ignore
 		$values = $wpdb->get_col( $query );
 
+		// Get taxonomy terms.
+		$taxonomy = self::get_taxonomy_for_field( $field );
+		if ( $taxonomy ) {
+			$terms = get_terms(
+				array(
+					'taxonomy'   => $taxonomy,
+					'hide_empty' => true,
+					'fields'     => 'names',
+				)
+			);
+
+			if ( ! is_wp_error( $terms ) && ! empty( $terms ) ) {
+				$values = array_unique( array_merge( $values, $terms ) );
+			}
+		}
+
+		sort( $values );
+
 		wp_cache_set( $cache_key, $values, 'tasty_recipes', 3600 );
 
 		return $values;
+	}
+
+	/**
+	 * Get the taxonomy name for a given field.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $field The field/meta key name.
+	 *
+	 * @return false|string The taxonomy name or false if not found.
+	 */
+	private static function get_taxonomy_for_field( $field ) {
+		$taxonomy_map = array(
+			'category' => 'tasty_recipe_category',
+			'method'   => 'tasty_recipe_method',
+			'cuisine'  => 'tasty_recipe_cuisine',
+			'diet'     => 'tasty_recipe_diet',
+		);
+
+		return isset( $taxonomy_map[ $field ] ) ? $taxonomy_map[ $field ] : false;
 	}
 
 	/**
@@ -797,61 +864,33 @@ class Recipe_Explorer {
 			return $query;
 		}
 
-		$meta_queries = array();
-		$relation     = 'AND';
-
 		if ( Utils::get_param( 'rating' ) ) {
 			$rating_filter = Utils::get_param( 'rating' );
-			
+
 			// We run this custom query because sometimes the ratings are floats and we should round them to the nearest integer.
 			add_filter(
 				'posts_clauses',
 				function ( $clauses ) use ( $rating_filter ) {
 					global $wpdb;
-				
+
 					$clauses['join']  .= " INNER JOIN {$wpdb->postmeta} rating_meta ON ({$wpdb->posts}.ID = rating_meta.post_id AND rating_meta.meta_key = 'average_rating')";
 					$clauses['where'] .= $wpdb->prepare( ' AND ROUND(CAST(rating_meta.meta_value AS DECIMAL(3,2))) = %d', $rating_filter );
-				
+
 					return $clauses;
 				}
 			);
 		}
 
-		if ( Utils::get_param( 'cuisine' ) ) {
-			$meta_queries[] = array(
-				'key'     => 'cuisine',
-				'value'   => Utils::get_param( 'cuisine' ),
-				'compare' => '=',
-			);
-		}
+		// Build attribute filters that check both meta and taxonomy.
+		$attribute_filters = self::get_attribute_filters();
 
-		if ( Utils::get_param( 'method' ) ) {
-			$meta_queries[] = array(
-				'key'     => 'method',
-				'value'   => Utils::get_param( 'method' ),
-				'compare' => '=',
+		if ( ! empty( $attribute_filters ) ) {
+			add_filter(
+				'posts_clauses',
+				function ( $clauses ) use ( $attribute_filters ) {
+					return self::apply_attribute_filter_clauses( $clauses, $attribute_filters );
+				}
 			);
-		}
-
-		if ( Utils::get_param( 'category' ) ) {
-			$meta_queries[] = array(
-				'key'     => 'category',
-				'value'   => Utils::get_param( 'category' ),
-				'compare' => '=',
-			);
-		}
-
-		if ( Utils::get_param( 'diet' ) ) {
-			$meta_queries[] = array(
-				'key'     => 'diet',
-				'value'   => Utils::get_param( 'diet' ),
-				'compare' => '=',
-			);
-		}
-
-		if ( ! empty( $meta_queries ) ) {
-			$meta_queries['relation'] = $relation;
-			$query->set( 'meta_query', $meta_queries );
 		}
 
 		if ( Utils::get_param( 'author' ) ) {
@@ -862,6 +901,93 @@ class Recipe_Explorer {
 		}
 
 		return $query;
+	}
+
+	/**
+	 * Get the attribute filters from request parameters.
+	 *
+	 * @since x.x
+	 *
+	 * @return array Array of filters with meta_key, taxonomy, and value.
+	 */
+	private static function get_attribute_filters() {
+		$filter_config = array(
+			'cuisine'  => 'tasty_recipe_cuisine',
+			'method'   => 'tasty_recipe_method',
+			'category' => 'tasty_recipe_category',
+			'diet'     => 'tasty_recipe_diet',
+		);
+
+		$filters = array();
+
+		foreach ( $filter_config as $meta_key => $taxonomy ) {
+			$value = Utils::get_param( $meta_key );
+
+			if ( ! empty( $value ) ) {
+				$filters[] = array(
+					'meta_key' => $meta_key, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+					'taxonomy' => $taxonomy,
+					'value'    => $value,
+				);
+			}
+		}
+
+		return $filters;
+	}
+
+	/**
+	 * Apply custom SQL clauses for attribute filters.
+	 *
+	 * Filters by post meta OR taxonomy term, allowing recipes to match
+	 * if they have either the meta value or the taxonomy term assigned.
+	 * 
+	 * We'll run this custom query for a while so we give people time to 
+	 * migrate to the new taxonomies and then we'll remove this and use
+	 * WP default taxonomy filters.
+	 *
+	 * @since x.x
+	 *
+	 * @param array $clauses          The query clauses.
+	 * @param array $attribute_filters The attribute filters to apply.
+	 *
+	 * @return array Modified clauses.
+	 */
+	private static function apply_attribute_filter_clauses( $clauses, $attribute_filters ) {
+		global $wpdb;
+
+		foreach ( $attribute_filters as $index => $filter ) {
+			$meta_alias = "attr_meta_{$index}";
+			$tr_alias   = "attr_tr_{$index}";
+			$tt_alias   = "attr_tt_{$index}";
+			$t_alias    = "attr_t_{$index}";
+
+			// LEFT JOIN postmeta for meta value check.
+			// Aliases are safe internal values, not user input.
+			// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$clauses['join'] .= $wpdb->prepare(
+				" LEFT JOIN {$wpdb->postmeta} {$meta_alias} ON ({$wpdb->posts}.ID = {$meta_alias}.post_id AND {$meta_alias}.meta_key = %s)",
+				$filter['meta_key']
+			);
+
+			// LEFT JOIN term_relationships, term_taxonomy, and terms for taxonomy check.
+			$clauses['join'] .= " LEFT JOIN {$wpdb->term_relationships} {$tr_alias} ON ({$wpdb->posts}.ID = {$tr_alias}.object_id)";
+			$clauses['join'] .= " LEFT JOIN {$wpdb->term_taxonomy} {$tt_alias} ON ({$tr_alias}.term_taxonomy_id = {$tt_alias}.term_taxonomy_id"
+				. " AND {$tt_alias}.taxonomy = '{$filter['taxonomy']}')";
+			$clauses['join'] .= " LEFT JOIN {$wpdb->terms} {$t_alias} ON ({$tt_alias}.term_id = {$t_alias}.term_id)";
+
+			// WHERE: match meta value OR term name.
+			$clauses['where'] .= $wpdb->prepare(
+				" AND ({$meta_alias}.meta_value = %s OR {$t_alias}.name = %s)",
+				$filter['value'],
+				$filter['value']
+			);
+			// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		}
+
+		// Ensure distinct results since JOINs may cause duplicates.
+		$clauses['distinct'] = 'DISTINCT';
+
+		return $clauses;
 	}
 
 	/**

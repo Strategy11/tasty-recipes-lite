@@ -162,32 +162,22 @@ class Recipe {
 			'category'              => array(
 				'label'    => __( 'Category', 'tasty-recipes-lite' ),
 				'property' => 'recipeCategory',
+				'taxonomy' => 'tasty_recipe_category',
 			),
 			'method'                => array(
 				'label'    => __( 'Method', 'tasty-recipes-lite' ),
 				'property' => 'cookingMethod',
+				'taxonomy' => 'tasty_recipe_method',
 			),
 			'cuisine'               => array(
 				'label'    => __( 'Cuisine', 'tasty-recipes-lite' ),
 				'property' => 'recipeCuisine',
+				'taxonomy' => 'tasty_recipe_cuisine',
 			),
 			'diet'                  => array(
 				'label'    => __( 'Diet', 'tasty-recipes-lite' ),
 				'property' => 'suitableForDiet',
-				'options'  => array(
-					''            => __( 'N/A', 'tasty-recipes-lite' ),
-					'Diabetic'    => __( 'Diabetic', 'tasty-recipes-lite' ),
-					'Gluten Free' => __( 'Gluten Free', 'tasty-recipes-lite' ),
-					'Halal'       => __( 'Halal', 'tasty-recipes-lite' ),
-					'Hindu'       => __( 'Hindu', 'tasty-recipes-lite' ),
-					'Kosher'      => __( 'Kosher', 'tasty-recipes-lite' ),
-					'Low Calorie' => __( 'Low Calorie', 'tasty-recipes-lite' ),
-					'Low Fat'     => __( 'Low Fat', 'tasty-recipes-lite' ),
-					'Low Lactose' => __( 'Low Lactose', 'tasty-recipes-lite' ),
-					'Low Salt'    => __( 'Low Salt', 'tasty-recipes-lite' ),
-					'Vegan'       => __( 'Vegan', 'tasty-recipes-lite' ),
-					'Vegetarian'  => __( 'Vegetarian', 'tasty-recipes-lite' ),
-				),
+				'taxonomy' => 'tasty_recipe_diet',
 			),
 		);
 	}
@@ -940,7 +930,7 @@ class Recipe {
 	 * @return string
 	 */
 	public function get_category() {
-		return $this->get_meta( 'category' );
+		return $this->get_taxonomy_terms( 'tasty_recipe_category', 'category' );
 	}
 
 	/**
@@ -951,7 +941,7 @@ class Recipe {
 	 * @return void
 	 */
 	public function set_category( $category ) {
-		$this->set_meta( 'category', $category );
+		$this->set_taxonomy_terms( 'tasty_recipe_category', $category, 'category' );
 	}
 
 	/**
@@ -960,7 +950,7 @@ class Recipe {
 	 * @return string
 	 */
 	public function get_cuisine() {
-		return $this->get_meta( 'cuisine' );
+		return $this->get_taxonomy_terms( 'tasty_recipe_cuisine', 'cuisine' );
 	}
 
 	/**
@@ -971,7 +961,7 @@ class Recipe {
 	 * @return void
 	 */
 	public function set_cuisine( $cuisine ) {
-		$this->set_meta( 'cuisine', $cuisine );
+		$this->set_taxonomy_terms( 'tasty_recipe_cuisine', $cuisine, 'cuisine' );
 	}
 
 	/**
@@ -980,7 +970,7 @@ class Recipe {
 	 * @return string
 	 */
 	public function get_diet() {
-		return $this->get_meta( 'diet' );
+		return $this->get_taxonomy_terms( 'tasty_recipe_diet', 'diet' );
 	}
 
 	/**
@@ -991,7 +981,7 @@ class Recipe {
 	 * @return void
 	 */
 	public function set_diet( $diet ) {
-		$this->set_meta( 'diet', $diet );
+		$this->set_taxonomy_terms( 'tasty_recipe_diet', $diet, 'diet' );
 	}
 
 	/**
@@ -1000,7 +990,7 @@ class Recipe {
 	 * @return string
 	 */
 	public function get_method() {
-		return $this->get_meta( 'method' );
+		return $this->get_taxonomy_terms( 'tasty_recipe_method', 'method' );
 	}
 
 	/**
@@ -1011,7 +1001,7 @@ class Recipe {
 	 * @return void
 	 */
 	public function set_method( $method ) {
-		$this->set_meta( 'method', $method );
+		$this->set_taxonomy_terms( 'tasty_recipe_method', $method, 'method' );
 	}
 
 	/**
@@ -1457,6 +1447,89 @@ class Recipe {
 	 */
 	private function delete_meta( $meta_key, $meta_value = '' ) {
 		delete_post_meta( $this->get_id(), $meta_key, $meta_value );
+	}
+
+	/**
+	 * Get taxonomy terms for the recipe as a comma-separated string.
+	 * Falls back to legacy post meta if no taxonomy terms exist.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $taxonomy     Taxonomy name.
+	 * @param string $legacy_meta  Legacy meta key for backwards compatibility.
+	 *
+	 * @return string
+	 */
+	protected function get_taxonomy_terms( $taxonomy, $legacy_meta = '' ) {
+		$terms = get_the_terms( $this->get_id(), $taxonomy );
+
+		if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
+			$term_names = wp_list_pluck( $terms, 'name' );
+			return implode( ', ', $term_names );
+		}
+
+		// Backwards compatibility: check legacy post meta.
+		if ( ! empty( $legacy_meta ) ) {
+			$legacy_value = $this->get_meta( $legacy_meta );
+			if ( ! empty( $legacy_value ) ) {
+				return $legacy_value;
+			}
+		}
+
+		return '';
+	}
+
+	/**
+	 * Set taxonomy terms for the recipe from a comma-separated string.
+	 * Also cleans up legacy post meta after successful taxonomy assignment.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $taxonomy     Taxonomy name.
+	 * @param string $value        Comma-separated string of term names.
+	 * @param string $legacy_meta  Legacy meta key for backwards compatibility cleanup.
+	 *
+	 * @return void
+	 */
+	protected function set_taxonomy_terms( $taxonomy, $value, $legacy_meta = '' ) {
+		if ( empty( $value ) ) {
+			wp_set_object_terms( $this->get_id(), array(), $taxonomy );
+
+			// Clean up legacy meta if it exists.
+			if ( ! empty( $legacy_meta ) ) {
+				$this->delete_meta( $legacy_meta );
+			}
+
+			return;
+		}
+
+		$term_names = array_map( 'trim', explode( ',', $value ) );
+
+		// Remove empty strings from the array.
+		$term_names = array_filter( $term_names );
+
+		$term_ids = array();
+
+		foreach ( $term_names as $term_name ) {
+			$existing_term = get_term_by( 'name', $term_name, $taxonomy );
+			if ( $existing_term ) {
+				$term_ids[] = $existing_term->term_id;
+
+				continue;
+			}
+
+			$new_term = wp_insert_term( $term_name, $taxonomy );
+			if ( ! is_wp_error( $new_term ) ) {
+				$term_ids[] = $new_term['term_id'];
+			}
+		}
+
+		wp_set_object_terms( $this->get_id(), $term_ids, $taxonomy );
+
+		// Clean up legacy meta if it exists.
+		if ( ! empty( $legacy_meta ) ) {
+			$this->delete_meta( $legacy_meta );
+		}
 	}
 
 	/**

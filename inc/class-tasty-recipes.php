@@ -160,6 +160,13 @@ class Tasty_Recipes {
 	const COPY_TO_CLIPBOARD_OPTION = 'tasty_recipes_copy_to_clipboard';
 
 	/**
+	 * Option name for the improved keys notice dismissal.
+	 *
+	 * @var string
+	 */
+	const IMPROVED_KEYS_NOTICE_DISMISSED_OPTION = 'tasty_recipes_improved_keys_notice_dismissed';
+
+	/**
 	 * Instantiates and gets the singleton instance for the class.
 	 *
 	 * @return Tasty_Recipes
@@ -286,6 +293,8 @@ class Tasty_Recipes {
 		add_action( 'wp_ajax_tasty_recipes_revert_ignore_type_convert', array( 'Tasty_Recipes\Editor', 'handle_wp_ajax_revert_ignore_type_convert' ) );
 		add_action( 'wp_ajax_tasty_recipes_parse_shortcode', array( 'Tasty_Recipes\Editor', 'handle_wp_ajax_parse_shortcode' ) );
 		add_action( 'wp_ajax_tasty_recipes_modify_recipe', array( 'Tasty_Recipes\Editor', 'handle_wp_ajax_modify_recipe' ) );
+		add_action( 'wp_ajax_tasty_recipes_dismiss_improved_keys_notice', array( 'Tasty_Recipes\Editor', 'handle_wp_ajax_dismiss_improved_keys_notice' ) );
+		add_action( 'rest_api_init', array( 'Tasty_Recipes\Editor', 'action_rest_api_init' ) );
 
 		add_action( 'wp_insert_post', array( 'Tasty_Recipes\Editor', 'handle_add_new_post' ), 10, 3 );
 		add_action( 'post_updated', array( 'Tasty_Recipes\Editor', 'handle_edit_post' ), 10, 3 );
@@ -337,6 +346,9 @@ class Tasty_Recipes {
 		add_filter( 'update_post_metadata', array( 'Tasty_Recipes\Content_Model', 'filter_update_post_metadata_video_url' ), 10, 4 );
 		add_filter( 'update_post_metadata', array( 'Tasty_Recipes\Content_Model', 'filter_update_post_metadata_thumbnail_id' ), 10, 4 );
 		add_filter( 'template_include', array( 'Tasty_Recipes\Content_Model', 'filter_template_include' ), 1000 );
+		add_filter( 'post_type_link', array( 'Tasty_Recipes\Content_Model', 'filter_recipe_permalink' ), 10, 2 );
+		add_filter( 'get_the_excerpt', array( 'Tasty_Recipes\Content_Model', 'filter_recipe_excerpt' ), 10, 1 );
+		add_filter( 'tasty_recipes_cooking_html', array( 'Tasty_Recipes\Content_Model', 'filter_cooking_attribute_links' ), 10, 2 );
 
 		add_filter( 'allow_empty_comment', array( 'Tasty_Recipes\Ratings', 'filter_allow_rating_empty_comment' ), 10, 2 );
 		add_filter( 'preprocess_comment', array( 'Tasty_Recipes\Ratings', 'filter_preprocess_comment' ), 0 );

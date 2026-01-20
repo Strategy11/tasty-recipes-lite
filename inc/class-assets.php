@@ -532,9 +532,11 @@ class Assets {
 			'tasty-recipes-recipe-editor',
 			'tastyRecipesRecipeEditorData',
 			array(
-				'pluginURL'              => plugins_url( '', __DIR__ ),
-				'after_video_url_markup' => $after_video_url_markup,
-				'attributes'             => array(
+				'pluginURL'                   => plugins_url( '', __DIR__ ),
+				'after_video_url_markup'      => $after_video_url_markup,
+				'improvedKeysNoticeDismissed' => get_option( \Tasty_Recipes::IMPROVED_KEYS_NOTICE_DISMISSED_OPTION, false ),
+				'modifyNonce'                 => wp_create_nonce( 'tasty_recipes_modify_recipe' ),
+				'attributes'                  => array(
 					'cooking'   => $cooking_attributes,
 					'nutrition' => $nutrition_attributes,
 				),

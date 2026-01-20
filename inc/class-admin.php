@@ -8,9 +8,9 @@
 namespace Tasty_Recipes;
 
 use Tasty\Framework\Utils\Url;
-use Tasty_Recipes\Settings;
 use Tasty_Recipes;
-use Tasty\Framework\Utils\Vars;
+use Tasty_Recipes\Settings;
+use Tasty_Recipes\Objects\Recipe;
 
 /**
  * Manages interactions with the admin.
@@ -130,6 +130,24 @@ class Admin {
 	private static $editor_id = 'tasty-recipes-settings';
 
 	/**
+	 * Option name for storing the database version.
+	 *
+	 * @since x.x
+	 *
+	 * @var string
+	 */
+	const DB_VERSION_OPTION = 'tasty_recipes_db_version';
+
+	/**
+	 * Current database version.
+	 *
+	 * @since x.x
+	 *
+	 * @var string
+	 */
+	const CURRENT_DB_VERSION = '1.0';
+
+	/**
 	 * Registers hooks.
 	 *
 	 * @since 1.0
@@ -151,6 +169,7 @@ class Admin {
 		add_filter( 'hidden_columns', array( __CLASS__, 'filter_hidden_columns' ) );
 		add_filter( 'plugin_action_links_' . plugin_basename( TASTY_RECIPES_LITE_FILE ), array( __CLASS__, 'filter_plugin_action_links' ) );
 		add_filter( 'tasty_framework_admin_header_title', array( __CLASS__, 'update_admin_dashboard_title' ) );
+		add_action( 'admin_notices', array( __CLASS__, 'action_admin_notices_db_migration' ) );
 
 		if ( ! wp_doing_ajax() ) {
 			return;
@@ -158,6 +177,7 @@ class Admin {
 
 		add_action( 'wp_ajax_tasty_recipes_get_count', array( __CLASS__, 'handle_wp_ajax_get_count' ) );
 		add_action( 'wp_ajax_tasty_recipes_convert', array( __CLASS__, 'handle_wp_ajax_convert' ) );
+		add_action( 'wp_ajax_tasty_recipes_run_db_migration', array( __CLASS__, 'handle_wp_ajax_run_db_migration' ) );
 	}
 
 	/**
@@ -708,5 +728,223 @@ class Admin {
 	public static function get_cook_mode_helper() {
 		_deprecated_function( __METHOD__, '1.0' );
 		return '';
+	}
+
+	/**
+	 * Renders the admin notice when database migration is needed.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
+	 */
+	public static function action_admin_notices_db_migration() {
+		if ( ! current_user_can( self::CAPABILITY ) ) {
+			return;
+		}
+
+		if ( ! self::needs_db_migration() ) {
+			return;
+		}
+
+		$asset_meta = tasty_get_asset_meta( dirname( TASTY_RECIPES_LITE_FILE ) . '/assets/dist/database-migration.build.asset.php' );
+		wp_enqueue_script(
+			'tasty-recipes-database-migration',
+			plugins_url( 'assets/dist/database-migration.build.js', TASTY_RECIPES_LITE_FILE ),
+			$asset_meta['dependencies'],
+			$asset_meta['version'],
+			true
+		);
+
+		wp_localize_script(
+			'tasty-recipes-database-migration',
+			'tastyRecipesDatabaseMigration',
+			array(
+				'nonce'   => wp_create_nonce( 'tasty_recipes_db_migration' ),
+				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+			)
+		);
+		
+		wp_enqueue_style(
+			'tasty-recipes-database-migration',
+			plugins_url( 'assets/dist/database-migration.css', TASTY_RECIPES_LITE_FILE ),
+			array(),
+			$asset_meta['version']
+		);
+
+		$migration_url = wp_nonce_url(
+			add_query_arg(
+				array(
+					'action' => 'tasty_recipes_run_db_migration',
+				),
+				admin_url( 'admin-ajax.php' )
+			),
+			'tasty_recipes_db_migration'
+		);
+
+		Tasty_Recipes::echo_template_part(
+			'admin/notice-db-migration',
+			array(
+				'migration_url' => $migration_url,
+			)
+		);
+	}
+
+	/**
+	 * Check if database migration is needed.
+	 *
+	 * @since x.x
+	 *
+	 * @return bool
+	 */
+	private static function needs_db_migration() {
+		$current_version = get_option( self::DB_VERSION_OPTION, '0' );
+
+		return version_compare( $current_version, self::CURRENT_DB_VERSION, '<' ) && 
+				( self::get_recipes_needing_migration_count() > 0 );
+	}
+
+	/**
+	 * Handles the AJAX request to run database migration.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
+	 */
+	public static function handle_wp_ajax_run_db_migration() {
+		check_ajax_referer( 'tasty_recipes_db_migration' );
+
+		if ( ! current_user_can( self::CAPABILITY ) ) {
+			wp_send_json_error( array( 'message' => __( 'You do not have permission to perform this action.', 'tasty-recipes-lite' ) ) );
+		}
+
+		$batch_size = 50;
+		$offset     = isset( $_POST['offset'] ) ? absint( wp_unslash( $_POST['offset'] ) ) : 0;
+		$recipes    = self::get_recipes_needing_migration( $batch_size, $offset );
+		$migrated   = 0;
+
+		foreach ( $recipes as $recipe_id ) {
+			self::migrate_recipe_taxonomies( $recipe_id );
+			++$migrated;
+		}
+
+		$remaining = self::get_recipes_needing_migration_count();
+
+		if ( empty( $recipes ) || $remaining === 0 ) {
+			update_option( self::DB_VERSION_OPTION, self::CURRENT_DB_VERSION );
+			wp_send_json_success(
+				array(
+					'complete'  => true,
+					'migrated'  => $migrated,
+					'remaining' => 0,
+					'message'   => __( 'Database migration completed successfully.', 'tasty-recipes-lite' ),
+				)
+			);
+		}
+
+		wp_send_json_success(
+			array(
+				'complete'  => false,
+				'migrated'  => $migrated,
+				'remaining' => $remaining,
+				'offset'    => $offset + $batch_size,
+			)
+		);
+	}
+
+	/**
+	 * Get recipes that need migration (have legacy meta).
+	 *
+	 * @since x.x
+	 *
+	 * @param int $limit  Number of recipes to retrieve.
+	 * @param int $offset Offset for pagination.
+	 *
+	 * @return array Array of recipe post IDs.
+	 */
+	private static function get_recipes_needing_migration( $limit = 50, $offset = 0 ) {
+		global $wpdb;
+
+		// We use a direct database query to avoid the overhead of get_posts() with meta_query. It is a lot faster and more efficient.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		return $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT DISTINCT p.ID
+				FROM {$wpdb->posts} p
+				INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
+				WHERE p.post_type = 'tasty_recipe'
+				AND pm.meta_key IN ( 'category', 'cuisine', 'method', 'diet' )
+				ORDER BY p.ID ASC
+				LIMIT %d OFFSET %d",
+				$limit,
+				$offset
+			)
+		);
+	}
+
+	/**
+	 * Get count of recipes that need migration.
+	 *
+	 * @since x.x
+	 *
+	 * @return int
+	 */
+	private static function get_recipes_needing_migration_count() {
+		global $wpdb;
+
+		// We use a direct database query to avoid the overhead of get_posts(). It is a lot faster and more efficient.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		return (int) $wpdb->get_var(
+			"SELECT COUNT( DISTINCT p.ID )
+			FROM {$wpdb->posts} p
+			INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
+			WHERE p.post_type = 'tasty_recipe'
+			AND pm.meta_key IN ( 'category', 'cuisine', 'method', 'diet' )"
+		);
+	}
+
+	/**
+	 * Migrate a single recipe's meta to taxonomies.
+	 *
+	 * @since x.x
+	 *
+	 * @param int $recipe_id Recipe post ID.
+	 *
+	 * @return void
+	 */
+	private static function migrate_recipe_taxonomies( $recipe_id ) {
+		$recipe = Recipe::get_by_id( $recipe_id );
+
+		if ( ! $recipe ) {
+			return;
+		}
+
+		self::migrate_recipe_meta( $recipe, 'category' );
+		self::migrate_recipe_meta( $recipe, 'cuisine' );
+		self::migrate_recipe_meta( $recipe, 'method' );
+		self::migrate_recipe_meta( $recipe, 'diet' );
+	}
+
+	/**
+	 * Migrate a single meta key to taxonomy for a recipe.
+	 *
+	 * @since x.x
+	 *
+	 * @param Recipe $recipe   Recipe object.
+	 * @param string $meta_key Meta key to migrate.
+	 *
+	 * @return void
+	 */
+	private static function migrate_recipe_meta( $recipe, $meta_key ) {
+		$recipe_id = $recipe->get_id();
+		$value     = get_post_meta( $recipe_id, $meta_key, true );
+
+		if ( ! empty( $value ) ) {
+			$method = "set_{$meta_key}";
+			$recipe->$method( $value );
+
+			return;
+		}
+
+		delete_post_meta( $recipe_id, $meta_key );
 	}
 }

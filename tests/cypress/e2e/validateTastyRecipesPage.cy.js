@@ -174,17 +174,23 @@ describe( 'WP Tasty recipe page', () => {
 			'admin.php?page=tasty-recipes&tab=settings'
 		);
 
+		cy.log( 'Wait for Settings tab to render' );
+		cy.get( '#tasty-recipes-settings-tab', { timeout: 20000 } )
+			.should( 'be.visible' )
+			.and( 'not.be.empty' );
+
 		cy.log( 'Validate and update Quick Links checkboxes' );
-		cy.get( '#tasty-recipes-quick-links-jump' )
-			.should( 'exist' )
+		cy.contains( 'label', 'Jump to Recipe' ).should( 'be.visible' );
+		cy.get( '#tasty-recipes-quick-links-jump', { timeout: 20000 } )
+			.should( 'be.visible' )
 			.should( 'be.checked' );
 
-		cy.get( '#tasty-recipes-quick-links-print' )
-			.should( 'exist' )
+		cy.get( '#tasty-recipes-quick-links-print', { timeout: 20000 } )
+			.should( 'be.visible' )
 			.should( 'be.checked' );
 
-		cy.get( '#tasty-recipes-quick-links-rating' )
-			.should( 'exist' )
+		cy.get( '#tasty-recipes-quick-links-rating', { timeout: 20000 } )
+			.should( 'be.visible' )
 			.should( 'not.be.checked' );
 
 		cy.get( '#tasty-recipes-quick-links-print' ).uncheck();
@@ -330,7 +336,7 @@ describe( 'WP Tasty recipe page', () => {
 			{
 				label: 'Scaling',
 				id: 'tasty_recipes_disable_scaling',
-				helperText: 'Allow visitors to scale the recipe 1x, 2x, or 3x.',
+				helperText: 'Allow visitors to scale the recipe ½, 2x, or 3x.',
 			},
 			{
 				label: 'Copy to Clipboard',

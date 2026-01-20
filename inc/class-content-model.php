@@ -32,8 +32,16 @@ class Content_Model {
 	public static function init_post_type() {
 		self::action_init_register_cron_events();
 		self::action_init_register_post_types();
+		self::action_init_register_taxonomies();
+		self::insert_default_taxonomy_terms();
 		self::action_init_register_rewrite_rules();
 		self::action_init_register_oembed_providers();
+
+		// Prevent deletion of default taxonomy terms.
+		add_action( 'pre_delete_term', array( __CLASS__, 'filter_pre_delete_term' ), 10, 2 );
+
+		// Filter taxonomy archive queries to only show recipes with parent posts.
+		add_action( 'pre_get_posts', array( __CLASS__, 'filter_taxonomy_archive_query' ) );
 	}
 
 	/**
@@ -78,6 +86,245 @@ class Content_Model {
 			'menu_name'          => __( 'Recipes', 'tasty-recipes-lite' ),
 		);
 		register_post_type( 'tasty_recipe', $args );
+	}
+
+	/**
+	 * Registers our taxonomies.
+	 * 
+	 * @since x.x
+	 *
+	 * @return void
+	 */
+	public static function action_init_register_taxonomies() {
+		$taxonomies = self::get_taxonomy_definitions();
+
+		foreach ( $taxonomies as $taxonomy => $config ) {
+			register_taxonomy( $taxonomy, 'tasty_recipe', $config['args'] );
+		}
+	}
+
+	/**
+	 * Get taxonomy definitions for recipe attributes.
+	 * 
+	 * @since x.x
+	 *
+	 * @return array
+	 */
+	public static function get_taxonomy_definitions() { // phpcs:ignore SlevomatCodingStandard.Functions.FunctionLength.FunctionLength
+		return array(
+			'tasty_recipe_category' => self::get_taxonomy_definition( __( 'category', 'tasty-recipes-lite' ), __( 'Categories', 'tasty-recipes-lite' ) ),
+			'tasty_recipe_method'   => self::get_taxonomy_definition( __( 'method', 'tasty-recipes-lite' ), __( 'Methods', 'tasty-recipes-lite' ) ),
+			'tasty_recipe_cuisine'  => self::get_taxonomy_definition( __( 'cuisine', 'tasty-recipes-lite' ), __( 'Cuisines', 'tasty-recipes-lite' ) ),
+			'tasty_recipe_diet'     => self::get_taxonomy_definition( __( 'diet', 'tasty-recipes-lite' ), __( 'Diets', 'tasty-recipes-lite' ) ),
+		);
+	}
+
+	/**
+	 * Get the taxonomy definition for a given taxonomy.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $taxonomy The taxonomy name.
+	 * @param string $plural The plural of the taxonomy.
+	 *
+	 * @return array
+	 */
+	private static function get_taxonomy_definition( $taxonomy, $plural ) {
+		$singular = ucfirst( $taxonomy );
+		$slug     = 'recipe-' . sanitize_title( $taxonomy );
+
+		return array(
+			'legacy_meta' => $taxonomy,
+			'args'        => array(
+				'labels'            => array(
+					// translators: %s is the plural of the taxonomy.
+					'name'                       => sprintf( __( 'Recipe %s', 'tasty-recipes-lite' ), $plural ),
+					'singular_name'              => $singular,
+					// translators: %s is the plural of the taxonomy.
+					'search_items'               => sprintf( __( 'Search %s', 'tasty-recipes-lite' ), $plural ),
+					// translators: %s is the plural of the taxonomy.
+					'all_items'                  => sprintf( __( 'All %s', 'tasty-recipes-lite' ), $plural ),
+					// translators: %s is the singular of the taxonomy.
+					'edit_item'                  => sprintf( __( 'Edit %s', 'tasty-recipes-lite' ), $singular ),
+					// translators: %s is the singular of the taxonomy.
+					'update_item'                => sprintf( __( 'Update %s', 'tasty-recipes-lite' ), $singular ),
+					// translators: %s is the singular of the taxonomy.
+					'add_new_item'               => sprintf( __( 'Add New %s', 'tasty-recipes-lite' ), $singular ),
+					// translators: %s is the singular of the taxonomy.
+					'new_item_name'              => sprintf( __( 'New %s Name', 'tasty-recipes-lite' ), $singular ),
+					// translators: %s is the plural of the taxonomy.
+					'menu_name'                  => $plural,
+					// translators: %s is the plural of the taxonomy.
+					'separate_items_with_commas' => sprintf( __( 'Separate %s with commas', 'tasty-recipes-lite' ), $plural ),
+					// translators: %s is the plural of the taxonomy.
+					'choose_from_most_used'      => sprintf( __( 'Choose from the most used %s', 'tasty-recipes-lite' ), $plural ),
+					// translators: %s is the plural of the taxonomy.
+					'not_found'                  => sprintf( __( 'No %s found', 'tasty-recipes-lite' ), $plural ),
+				),
+				'hierarchical'      => false,
+				'public'            => true,
+				'show_ui'           => true,
+				'show_admin_column' => false,
+				'show_in_nav_menus' => true,
+				'show_tagcloud'     => false,
+				'show_in_rest'      => true,
+				'rewrite'           => array(
+					'slug'       => $slug,
+					'with_front' => false,
+				),
+			),
+		);
+	}
+
+	/**
+	 * Get the taxonomy name for a given legacy meta key.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $legacy_meta The legacy meta key to look up.
+	 *
+	 * @return false|string The taxonomy name or false if not found.
+	 */
+	public static function get_taxonomy_for_legacy_meta( $legacy_meta ) {
+		$taxonomies = self::get_taxonomy_definitions();
+
+		foreach ( $taxonomies as $taxonomy => $config ) {
+			if ( $config['legacy_meta'] === $legacy_meta ) {
+				return $taxonomy;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Get default terms for each taxonomy.
+	 *
+	 * @since x.x
+	 *
+	 * @return array
+	 */
+	public static function get_default_taxonomy_terms() {
+		return array(
+			'tasty_recipe_category' => array(
+				'Breakfast',
+				'Lunch',
+				'Dinner',
+				'Dessert',
+				'Snack',
+				'Appetizer',
+				'Beverage',
+				'Side Dish',
+			),
+			'tasty_recipe_method'   => array(
+				'Baking',
+				'Boiling',
+				'Frying',
+				'Grilling',
+				'Pressure Cooking',
+				'Roasting',
+				'Sautéing',
+				'Slow Cooking',
+				'Steaming',
+			),
+			'tasty_recipe_cuisine'  => array(
+				'American',
+				'Chinese',
+				'French',
+				'Greek',
+				'Indian',
+				'Italian',
+				'Japanese',
+				'Mediterranean',
+				'Mexican',
+				'Thai',
+			),
+			'tasty_recipe_diet'     => array(
+				'Vegetarian',
+				'Vegan',
+				'Gluten-Free',
+				'Dairy-Free',
+				'Keto',
+				'Paleo',
+				'Low-Carb',
+				'Pescatarian',
+			),
+		);
+	}
+
+	/**
+	 * Insert default terms for all recipe taxonomies.
+	 * Should be called after taxonomies are registered.
+	 * Uses an option to ensure this only runs once.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
+	 */
+	public static function insert_default_taxonomy_terms() {
+		$option_key = 'tasty_recipes_default_terms_inserted_v2';
+
+		if ( get_option( $option_key ) ) {
+			return;
+		}
+
+		$defaults = self::get_default_taxonomy_terms();
+
+		foreach ( $defaults as $taxonomy => $terms ) {
+			foreach ( $terms as $term_name ) {
+				if ( ! term_exists( $term_name, $taxonomy ) ) {
+					wp_insert_term( $term_name, $taxonomy );
+				}
+			}
+		}
+
+		update_option( $option_key, true );
+	}
+
+	/**
+	 * Check if a term is a default term that should not be deleted.
+	 *
+	 * @since x.x
+	 *
+	 * @param int|string $term_id  The term ID.
+	 * @param string     $taxonomy The taxonomy name.
+	 *
+	 * @return bool
+	 */
+	public static function is_default_term( $term_id, $taxonomy ) {
+		$defaults = self::get_default_taxonomy_terms();
+
+		if ( ! isset( $defaults[ $taxonomy ] ) ) {
+			return false;
+		}
+
+		$term = get_term( $term_id, $taxonomy );
+
+		if ( ! $term || is_wp_error( $term ) ) {
+			return false;
+		}
+
+		return in_array( $term->name, $defaults[ $taxonomy ], true );
+	}
+
+	/**
+	 * Prevent deletion of default taxonomy terms.
+	 *
+	 * @since x.x
+	 *
+	 * @param int    $term_id  The term ID.
+	 * @param string $taxonomy The taxonomy name.
+	 *
+	 * @return void
+	 */
+	public static function filter_pre_delete_term( $term_id, $taxonomy ) {
+		if ( self::is_default_term( $term_id, $taxonomy ) ) {
+			wp_die(
+				esc_html__( 'This is a default term and cannot be deleted.', 'tasty-recipes-lite' ),
+				esc_html__( 'Cannot Delete Term', 'tasty-recipes-lite' ),
+				array( 'back_link' => true )
+			);
+		}
 	}
 
 	/**
@@ -382,6 +629,220 @@ class Content_Model {
 		}
 
 		return $template;
+	}
+
+	/**
+	 * Modify the taxonomy archive query to only include recipes with parent posts.
+	 *
+	 * @since x.x
+	 *
+	 * @param \WP_Query $query The main query.
+	 *
+	 * @return void
+	 */
+	public static function filter_taxonomy_archive_query( $query ) {
+		if ( is_admin() || ! $query->is_main_query() || ! self::is_recipe_taxonomy( $query ) ) {
+			return;
+		}
+
+		// Force the post type to tasty_recipe since it's not public.
+		$query->set( 'post_type', 'tasty_recipe' );
+
+		// Only include recipes that have a parent post.
+		$existing_meta_query = $query->get( 'meta_query' );
+		if ( ! is_array( $existing_meta_query ) ) {
+			$existing_meta_query = array();
+		}
+
+		$existing_meta_query[] = array(
+			'key'     => '_tasty_recipe_parents',
+			'compare' => 'EXISTS',
+		);
+
+		$query->set( 'meta_query', $existing_meta_query );
+	}
+
+	/**
+	 * Check if the query is for a recipe taxonomy.
+	 * 
+	 * @since x.x
+	 *
+	 * @param \WP_Query $query The query object.
+	 *
+	 * @return bool
+	 */
+	private static function is_recipe_taxonomy( $query ) {
+		foreach ( array_keys( self::get_taxonomy_definitions() ) as $taxonomy ) {
+			if ( $query->get( $taxonomy ) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Get archive display data for a recipe.
+	 * Returns image, title, description from recipe but link to parent post.
+	 *
+	 * @since x.x
+	 *
+	 * @param int $recipe_id The recipe post ID.
+	 *
+	 * @return array|false Array with display data or false if no parent exists.
+	 */
+	public static function get_archive_item_data( $recipe_id ) {
+		$parent_post_id = get_post_meta( $recipe_id, '_tasty_recipe_parents', true );
+		if ( empty( $parent_post_id ) ) {
+			return false;
+		}
+
+		$parent_post = get_post( $parent_post_id );
+		if ( ! $parent_post || 'publish' !== $parent_post->post_status ) {
+			return false;
+		}
+
+		$recipe = Objects\Recipe::get_by_id( $recipe_id );
+		if ( ! $recipe ) {
+			return false;
+		}
+
+		$image_data = $recipe->get_image_size( 'medium' );
+
+		return array(
+			'recipe_id'      => $recipe_id,
+			'parent_post_id' => $parent_post_id,
+			'title'          => $recipe->get_title(),
+			'description'    => $recipe->get_description(),
+			'image_id'       => $recipe->get_image_id(),
+			'image_html'     => $image_data ? $image_data['html'] : '',
+			'image_url'      => $image_data ? $image_data['url'] : '',
+			'permalink'      => get_permalink( $parent_post_id ),
+			'parent_title'   => $parent_post->post_title,
+		);
+	}
+
+	/**
+	 * Filter the permalink for recipe posts on taxonomy archives.
+	 * Returns the parent post's permalink instead of the recipe's (non-existent) permalink.
+	 *
+	 * @since x.x
+	 *
+	 * @param string   $permalink The post's permalink.
+	 * @param \WP_Post $post      The post object.
+	 *
+	 * @return string
+	 */
+	public static function filter_recipe_permalink( $permalink, $post ) {
+		if ( 'tasty_recipe' !== $post->post_type || ! self::is_recipe_taxonomy_archive() ) {
+			return $permalink;
+		}
+
+		$parent_post_id = get_post_meta( $post->ID, '_tasty_recipe_parents', true );
+		if ( empty( $parent_post_id ) ) {
+			return $permalink;
+		}
+
+		$parent_post = get_post( $parent_post_id );
+		if ( ! $parent_post || 'publish' !== $parent_post->post_status ) {
+			return $permalink;
+		}
+
+		return get_permalink( $parent_post_id );
+	}
+
+	/**
+	 * Filter the excerpt for recipe posts on taxonomy archives.
+	 * Returns the recipe description since recipes don't have a traditional excerpt.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $excerpt The post excerpt.
+	 *
+	 * @return string
+	 */
+	public static function filter_recipe_excerpt( $excerpt ) {
+		if ( 'tasty_recipe' !== get_post_type() || ! self::is_recipe_taxonomy_archive() ) {
+			return $excerpt;
+		}
+
+		$recipe = Objects\Recipe::get_by_id( get_the_ID() );
+		if ( ! $recipe ) {
+			return $excerpt;
+		}
+
+		$description = $recipe->get_description();
+		if ( ! $description ) {
+			return $excerpt;
+		}
+
+		$description    = wp_strip_all_tags( $description );
+		$excerpt_length = 55;
+		$excerpt_more   = ' [&hellip;]';
+
+		return wp_trim_words( $description, $excerpt_length, $excerpt_more );
+	}
+
+	/**
+	 * Check if we're currently on a recipe taxonomy archive page.
+	 *
+	 * @since x.x
+	 *
+	 * @return bool
+	 */
+	public static function is_recipe_taxonomy_archive() {
+		$recipe_taxonomies = array_keys( self::get_taxonomy_definitions() );
+
+		foreach ( $recipe_taxonomies as $taxonomy ) {
+			if ( is_tax( $taxonomy ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Filter cooking attribute values to add links to taxonomy archives.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $value     The attribute value.
+	 * @param string $attribute The attribute name (category, method, cuisine, diet).
+	 *
+	 * @return string
+	 */
+	public static function filter_cooking_attribute_links( $value, $attribute ) {
+		$taxonomy_map = array(
+			'category' => 'tasty_recipe_category',
+			'method'   => 'tasty_recipe_method',
+			'cuisine'  => 'tasty_recipe_cuisine',
+			'diet'     => 'tasty_recipe_diet',
+		);
+
+		if ( ! isset( $taxonomy_map[ $attribute ] ) ) {
+			return $value;
+		}
+
+		$taxonomy     = $taxonomy_map[ $attribute ];
+		$terms        = array_map( 'trim', explode( ',', $value ) );
+		$linked_terms = array();
+
+		foreach ( $terms as $term_name ) {
+			$term = get_term_by( 'name', $term_name, $taxonomy );
+
+			if ( $term && ! is_wp_error( $term ) ) {
+				$term_link = get_term_link( $term, $taxonomy );
+
+				if ( ! is_wp_error( $term_link ) ) {
+					$linked_terms[] = '<a href="' . esc_url( $term_link ) . '">' . esc_html( $term_name ) . '</a>';
+					continue;
+				}
+			}
+
+			$linked_terms[] = esc_html( $term_name );
+		}
+
+		return implode( ', ', $linked_terms );
 	}
 
 	/**
