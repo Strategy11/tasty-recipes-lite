@@ -132,7 +132,7 @@ class Admin {
 	/**
 	 * Option name for storing the database version.
 	 *
-	 * @since x.x
+	 * @since 1.2
 	 *
 	 * @var string
 	 */
@@ -141,7 +141,7 @@ class Admin {
 	/**
 	 * Current database version.
 	 *
-	 * @since x.x
+	 * @since 1.2
 	 *
 	 * @var string
 	 */
@@ -733,7 +733,7 @@ class Admin {
 	/**
 	 * Renders the admin notice when database migration is needed.
 	 *
-	 * @since x.x
+	 * @since 1.2
 	 *
 	 * @return void
 	 */
@@ -792,7 +792,7 @@ class Admin {
 	/**
 	 * Check if database migration is needed.
 	 *
-	 * @since x.x
+	 * @since 1.2
 	 *
 	 * @return bool
 	 */
@@ -806,7 +806,7 @@ class Admin {
 	/**
 	 * Handles the AJAX request to run database migration.
 	 *
-	 * @since x.x
+	 * @since 1.2
 	 *
 	 * @return void
 	 */
@@ -854,7 +854,7 @@ class Admin {
 	/**
 	 * Get recipes that need migration (have legacy meta).
 	 *
-	 * @since x.x
+	 * @since 1.2
 	 *
 	 * @param int $limit  Number of recipes to retrieve.
 	 * @param int $offset Offset for pagination.
@@ -884,7 +884,7 @@ class Admin {
 	/**
 	 * Get count of recipes that need migration.
 	 *
-	 * @since x.x
+	 * @since 1.2
 	 *
 	 * @return int
 	 */
@@ -905,7 +905,7 @@ class Admin {
 	/**
 	 * Migrate a single recipe's meta to taxonomies.
 	 *
-	 * @since x.x
+	 * @since 1.2
 	 *
 	 * @param int $recipe_id Recipe post ID.
 	 *
@@ -927,7 +927,7 @@ class Admin {
 	/**
 	 * Migrate a single meta key to taxonomy for a recipe.
 	 *
-	 * @since x.x
+	 * @since 1.2
 	 *
 	 * @param Recipe $recipe   Recipe object.
 	 * @param string $meta_key Meta key to migrate.

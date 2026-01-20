@@ -831,7 +831,7 @@ class Recipe_Explorer {
 	/**
 	 * Get the taxonomy name for a given field.
 	 *
-	 * @since x.x
+	 * @since 1.2
 	 *
 	 * @param string $field The field/meta key name.
 	 *
@@ -906,7 +906,7 @@ class Recipe_Explorer {
 	/**
 	 * Get the attribute filters from request parameters.
 	 *
-	 * @since x.x
+	 * @since 1.2
 	 *
 	 * @return array Array of filters with meta_key, taxonomy, and value.
 	 */
@@ -945,7 +945,7 @@ class Recipe_Explorer {
 	 * migrate to the new taxonomies and then we'll remove this and use
 	 * WP default taxonomy filters.
 	 *
-	 * @since x.x
+	 * @since 1.2
 	 *
 	 * @param array $clauses          The query clauses.
 	 * @param array $attribute_filters The attribute filters to apply.

@@ -820,7 +820,7 @@ class Editor {
 	/**
 	 * Handles an AJAX request to dismiss the improved keys notice.
 	 * 
-	 * @since x.x
+	 * @since 1.2
 	 *
 	 * @return void
 	 */
@@ -838,7 +838,7 @@ class Editor {
 	/**
 	 * Register REST API routes for the editor.
 	 *
-	 * @since x.x
+	 * @since 1.2
 	 *
 	 * @return void
 	 */
@@ -928,7 +928,7 @@ class Editor {
 	/**
 	 * Check REST API permission.
 	 *
-	 * @since x.x
+	 * @since 1.2
 	 *
 	 * @return bool
 	 */
@@ -939,7 +939,7 @@ class Editor {
 	/**
 	 * REST API callback to create a taxonomy term.
 	 *
-	 * @since x.x
+	 * @since 1.2
 	 *
 	 * @param object $request The request object.
 	 *
@@ -992,7 +992,7 @@ class Editor {
 	/**
 	 * REST API callback to update a taxonomy term.
 	 *
-	 * @since x.x
+	 * @since 1.2
 	 *
 	 * @param object $request The request object.
 	 *
@@ -1056,7 +1056,7 @@ class Editor {
 	/**
 	 * REST API callback to delete a taxonomy term.
 	 *
-	 * @since x.x
+	 * @since 1.2
 	 *
 	 * @param object $request The request object.
 	 *
@@ -1103,7 +1103,7 @@ class Editor {
 	/**
 	 * REST API callback to search taxonomy terms.
 	 *
-	 * @since x.x
+	 * @since 1.2
 	 *
 	 * @param object $request The request object.
 	 *
