@@ -88,6 +88,7 @@ export const Settings = () => {
 				}
 			} }
 			label={ __( 'Enable How-Tos', 'tasty-recipes-lite' ) }
+			isNew
 			id="tasty_recipes_enable_how_tos"
 			name="tasty_recipes_enable_how_tos"
 			value={ String( formData.enableHowTos ?? 0 ) }
