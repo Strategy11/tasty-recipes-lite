@@ -5,9 +5,11 @@
  * @package Tasty_Recipes
  */
 
+use Tasty_Recipes\Block_Editor;
 use Tasty_Recipes\MetaBox;
 use Tasty_Recipes\Onboarding_Wizard;
 use Tasty_Recipes\Recipe_Explorer;
+use Tasty_Recipes\Shortcodes;
 
 /**
  * Base controller class for the plugin.
@@ -246,7 +248,7 @@ class Tasty_Recipes {
 	private function setup_actions() {
 		// Bootstrap.
 		Tasty_Recipes\Assets::load_hooks();
-		Tasty_Recipes\Shortcodes::load_hooks();
+		Shortcodes::load_hooks();
 		Tasty_Recipes\Quick_Links::load_hooks();
 		add_action( 'init', array( 'Tasty_Recipes\Block_Editor', 'action_init_register' ) );
 		add_action( 'init', array( 'Tasty_Recipes\Content_Model', 'init_post_type' ) );
@@ -421,12 +423,43 @@ class Tasty_Recipes {
 		if ( ! $post ) {
 			return false;
 		}
-		if ( false !== stripos( $post->post_content, '[' . Tasty_Recipes\Shortcodes::RECIPE_SHORTCODE ) ) {
-			return true;
+
+		/**
+		 * Filters the shortcode tags to check for when determining if a post has a recipe.
+		 *
+		 * @since x.x
+		 *
+		 * @param array $shortcode_tags Array of shortcode tags to check for.
+		 */
+		$shortcode_tags = apply_filters(
+			'tasty_recipes_has_recipe_shortcode_tags',
+			array( Shortcodes::RECIPE_SHORTCODE )
+		);
+
+		/**
+		 * Filters the block types to check for when determining if a post has a recipe.
+		 *
+		 * @since x.x
+		 *
+		 * @param array $block_types Array of block types to check for.
+		 */
+		$block_types = apply_filters(
+			'tasty_recipes_has_recipe_block_types',
+			array( Block_Editor::RECIPE_BLOCK_TYPE )
+		);
+
+		foreach ( $shortcode_tags as $shortcode_tag ) {
+			if ( false !== stripos( $post->post_content, '[' . $shortcode_tag ) ) {
+				return true;
+			}
 		}
-		if ( false !== stripos( $post->post_content, '<!-- wp:' . Tasty_Recipes\Block_Editor::RECIPE_BLOCK_TYPE . ' ' ) ) {
-			return true;
+
+		foreach ( $block_types as $block_type ) {
+			if ( false !== stripos( $post->post_content, '<!-- wp:' . $block_type . ' ' ) ) {
+				return true;
+			}
 		}
+
 		return false;
 	}
 
@@ -501,23 +534,37 @@ class Tasty_Recipes {
 		);
 		$options  = array_merge( $defaults, $options );
 
+		/**
+		 * Filters the shortcode tags to search for when finding recipes in content.
+		 *
+		 * @since x.x
+		 *
+		 * @param array $shortcode_tags Array of shortcode tags to search for.
+		 */
+		$shortcode_tags = apply_filters(
+			'tasty_recipes_content_shortcode_tags',
+			array( Shortcodes::RECIPE_SHORTCODE )
+		);
+
 		$recipes = array();
-		if ( preg_match_all( '#\[' . Tasty_Recipes\Shortcodes::RECIPE_SHORTCODE . '(.+)\]#Us', $content, $matches ) ) {
-			foreach ( $matches[0] as $i => $shortcode ) {
-				$atts = shortcode_parse_atts( $matches[1][ $i ] );
-				if ( empty( $atts['id'] ) ) {
-					continue;
-				}
+		foreach ( $shortcode_tags as $shortcode_tag ) {
+			if ( preg_match_all( '#\[' . $shortcode_tag . '(.+)\]#Us', $content, $matches ) ) {
+				foreach ( $matches[0] as $i => $shortcode ) {
+					$atts = shortcode_parse_atts( $matches[1][ $i ] );
+					if ( empty( $atts['id'] ) ) {
+						continue;
+					}
 
-				if ( false === $options['disable-json-ld']
-					&& in_array( 'disable-json-ld', $atts, true ) ) {
-					continue;
-				}
+					if ( false === $options['disable-json-ld']
+						&& in_array( 'disable-json-ld', $atts, true ) ) {
+						continue;
+					}
 
-				if ( ! empty( $options['full-result'] ) ) {
-					$recipes[] = $atts;
-				} else {
-					$recipes[] = (int) $atts['id'];
+					if ( ! empty( $options['full-result'] ) ) {
+						$recipes[] = $atts;
+					} else {
+						$recipes[] = (int) $atts['id'];
+					}
 				}
 			}
 		}
@@ -545,9 +592,21 @@ class Tasty_Recipes {
 	 * @return void
 	 */
 	public static function recursively_search_blocks( $blocks, $options, &$recipes ) {
+		/**
+		 * Filters the block types to search for when finding recipes in content.
+		 *
+		 * @since x.x
+		 *
+		 * @param array $block_types Array of block types to search for.
+		 */
+		$block_types = apply_filters(
+			'tasty_recipes_content_block_types',
+			array( Block_Editor::RECIPE_BLOCK_TYPE )
+		);
+
 		foreach ( $blocks as $untyped_block ) {
 			$block = (array) $untyped_block;
-			if ( ! empty( $block['blockName'] ) && Tasty_Recipes\Block_Editor::RECIPE_BLOCK_TYPE === $block['blockName'] ) {
+			if ( ! empty( $block['blockName'] ) && in_array( $block['blockName'], $block_types, true ) ) {
 				/**
 				 * Filter to disable the use of custom schema for a block.
 				 *

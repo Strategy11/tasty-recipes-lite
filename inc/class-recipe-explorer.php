@@ -272,7 +272,14 @@ class Recipe_Explorer {
 			unset( $columns['date'] );
 		}
 
-		return $columns;
+		/**
+		 * Filters the Recipe Explorer columns.
+		 *
+		 * @since x.x
+		 *
+		 * @param array $columns The columns array.
+		 */
+		return apply_filters( 'tasty_recipes_explorer_columns', $columns );
 	}
 
 	/**
@@ -342,6 +349,18 @@ class Recipe_Explorer {
 				$author_id = $post->post_author;
 				$author    = get_userdata( (int) $author_id );
 				echo esc_html( $author ? $author->display_name : '—' );
+				break;
+
+			default:
+				/**
+				 * Fires when rendering a custom column in the Recipe Explorer.
+				 *
+				 * @since x.x
+				 *
+				 * @param string $column_name The column name.
+				 * @param int    $recipe_id   The recipe ID.
+				 */
+				do_action( 'tasty_recipes_explorer_custom_column', $column_name, $recipe_id );
 				break;
 		}
 	}
@@ -499,6 +518,9 @@ class Recipe_Explorer {
 			wp_send_json_error();
 		}
 
+		// Set the parent post for the recipe.
+		$recipe->add_parent_post( $post_id );
+
 		$recipe_title = ! empty( $recipe->get_title() ) ? $recipe->get_title() : __( 'The', 'tasty-recipes-lite' );
 
 		$success_message = sprintf(
@@ -544,7 +566,18 @@ class Recipe_Explorer {
 			wp_send_json_error( __( 'Recipe not found', 'tasty-recipes-lite' ) );
 		}
 
-		wp_send_json_success( $recipe->to_json() );
+		/**
+		 * Filters the recipe JSON data returned by the API.
+		 *
+		 * Pro uses this to add recipe_type to the response.
+		 *
+		 * @since x.x
+		 *
+		 * @param array $recipe_json The recipe JSON data.
+		 */
+		$recipe_json = apply_filters( 'tasty_recipes_shortcode_response_recipe_json', $recipe->to_json() );
+
+		wp_send_json_success( $recipe_json );
 	}
 
 	/**
@@ -644,6 +677,9 @@ class Recipe_Explorer {
 				'post_content' => $updated_content,
 			)
 		);
+
+		// Set the parent post for the recipe.
+		$recipe->add_parent_post( $post_id );
 
 		$recipe_title = ! empty( $recipe->get_title() ) ? $recipe->get_title() : __( 'The recipe', 'tasty-recipes-lite' );
 
