@@ -557,6 +557,7 @@ class Assets {
 				'nutrition' => $nutrition_attributes,
 			),
 		);
+
 		// Add additional keys needed by the editor.
 		$editor_data['improvedKeysNoticeDismissed'] = get_option( \Tasty_Recipes::IMPROVED_KEYS_NOTICE_DISMISSED_OPTION, false );
 		$editor_data['modifyNonce']                 = wp_create_nonce( 'tasty_recipes_modify_recipe' );
