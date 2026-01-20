@@ -1453,7 +1453,7 @@ class Recipe {
 	 * Get taxonomy terms for the recipe as a comma-separated string.
 	 * Falls back to legacy post meta if no taxonomy terms exist.
 	 *
-	 * @since x.x
+	 * @since 1.2
 	 *
 	 * @param string $taxonomy     Taxonomy name.
 	 * @param string $legacy_meta  Legacy meta key for backwards compatibility.
@@ -1483,7 +1483,7 @@ class Recipe {
 	 * Set taxonomy terms for the recipe from a comma-separated string.
 	 * Also cleans up legacy post meta after successful taxonomy assignment.
 	 *
-	 * @since x.x
+	 * @since 1.2
 	 *
 	 * @param string $taxonomy     Taxonomy name.
 	 * @param string $value        Comma-separated string of term names.

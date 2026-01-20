@@ -91,7 +91,7 @@ class Content_Model {
 	/**
 	 * Registers our taxonomies.
 	 * 
-	 * @since x.x
+	 * @since 1.2
 	 *
 	 * @return void
 	 */
@@ -106,7 +106,7 @@ class Content_Model {
 	/**
 	 * Get taxonomy definitions for recipe attributes.
 	 * 
-	 * @since x.x
+	 * @since 1.2
 	 *
 	 * @return array
 	 */
@@ -122,7 +122,7 @@ class Content_Model {
 	/**
 	 * Get the taxonomy definition for a given taxonomy.
 	 *
-	 * @since x.x
+	 * @since 1.2
 	 *
 	 * @param string $taxonomy The taxonomy name.
 	 * @param string $plural The plural of the taxonomy.
@@ -179,7 +179,7 @@ class Content_Model {
 	/**
 	 * Get the taxonomy name for a given legacy meta key.
 	 *
-	 * @since x.x
+	 * @since 1.2
 	 *
 	 * @param string $legacy_meta The legacy meta key to look up.
 	 *
@@ -200,7 +200,7 @@ class Content_Model {
 	/**
 	 * Get default terms for each taxonomy.
 	 *
-	 * @since x.x
+	 * @since 1.2
 	 *
 	 * @return array
 	 */
@@ -257,7 +257,7 @@ class Content_Model {
 	 * Should be called after taxonomies are registered.
 	 * Uses an option to ensure this only runs once.
 	 *
-	 * @since x.x
+	 * @since 1.2
 	 *
 	 * @return void
 	 */
@@ -284,7 +284,7 @@ class Content_Model {
 	/**
 	 * Check if a term is a default term that should not be deleted.
 	 *
-	 * @since x.x
+	 * @since 1.2
 	 *
 	 * @param int|string $term_id  The term ID.
 	 * @param string     $taxonomy The taxonomy name.
@@ -310,7 +310,7 @@ class Content_Model {
 	/**
 	 * Prevent deletion of default taxonomy terms.
 	 *
-	 * @since x.x
+	 * @since 1.2
 	 *
 	 * @param int    $term_id  The term ID.
 	 * @param string $taxonomy The taxonomy name.
@@ -634,7 +634,7 @@ class Content_Model {
 	/**
 	 * Modify the taxonomy archive query to only include recipes with parent posts.
 	 *
-	 * @since x.x
+	 * @since 1.2
 	 *
 	 * @param \WP_Query $query The main query.
 	 *
@@ -665,7 +665,7 @@ class Content_Model {
 	/**
 	 * Check if the query is for a recipe taxonomy.
 	 * 
-	 * @since x.x
+	 * @since 1.2
 	 *
 	 * @param \WP_Query $query The query object.
 	 *
@@ -684,7 +684,7 @@ class Content_Model {
 	 * Get archive display data for a recipe.
 	 * Returns image, title, description from recipe but link to parent post.
 	 *
-	 * @since x.x
+	 * @since 1.2
 	 *
 	 * @param int $recipe_id The recipe post ID.
 	 *
@@ -725,7 +725,7 @@ class Content_Model {
 	 * Filter the permalink for recipe posts on taxonomy archives.
 	 * Returns the parent post's permalink instead of the recipe's (non-existent) permalink.
 	 *
-	 * @since x.x
+	 * @since 1.2
 	 *
 	 * @param string   $permalink The post's permalink.
 	 * @param \WP_Post $post      The post object.
@@ -754,7 +754,7 @@ class Content_Model {
 	 * Filter the excerpt for recipe posts on taxonomy archives.
 	 * Returns the recipe description since recipes don't have a traditional excerpt.
 	 *
-	 * @since x.x
+	 * @since 1.2
 	 *
 	 * @param string $excerpt The post excerpt.
 	 *
@@ -785,7 +785,7 @@ class Content_Model {
 	/**
 	 * Check if we're currently on a recipe taxonomy archive page.
 	 *
-	 * @since x.x
+	 * @since 1.2
 	 *
 	 * @return bool
 	 */
@@ -804,7 +804,7 @@ class Content_Model {
 	/**
 	 * Filter cooking attribute values to add links to taxonomy archives.
 	 *
-	 * @since x.x
+	 * @since 1.2
 	 *
 	 * @param string $value     The attribute value.
 	 * @param string $attribute The attribute name (category, method, cuisine, diet).
