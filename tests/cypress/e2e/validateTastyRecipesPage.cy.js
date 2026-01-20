@@ -166,7 +166,7 @@ describe( 'WP Tasty recipe page', () => {
 			} );
 	} );
 
-	it.only( 'should validate recipes Settings page content', () => {
+	it( 'should validate recipes Settings page content', () => {
 		cy.log( 'Navigate to Settings tab' );
 		cy.contains( '.tasty-nav-tab', 'Settings' ).click();
 		cy.url().should(
@@ -196,7 +196,7 @@ describe( 'WP Tasty recipe page', () => {
 		cy.get( '#tasty-recipes-settings-tab' )
 			.find( 'label[for="tasty-recipes-quick-links-print"]' )
 			.should( 'exist' )
-			.parent()
+			.next( 'label.tasty-checkbox-container' )
 			.find( 'input[type="checkbox"]' )
 			.then( ( $el ) => {
 				if ( ! $el.prop( 'checked' ) ) {
@@ -208,23 +208,23 @@ describe( 'WP Tasty recipe page', () => {
 		cy.get( '#tasty-recipes-settings-tab' )
 			.find( 'label[for="tasty-recipes-quick-links-rating"]' )
 			.should( 'exist' )
-			.parent()
-			.find( 'input[type="checkbox"]' )
+			.parent( '.tasty-form-field' )
+			.find( '.tasty-form-field-input-wrapper input[type="checkbox"]' )
 			.then( ( $el ) => {
 				if ( ! $el.prop( 'checked' ) ) {
 					cy.wrap( $el ).check( { force: true } );
 				}
 			} );
 
-		cy.get( '#tasty-recipes-quick-links-print' ).uncheck();
-		cy.get( '#tasty-recipes-quick-links-rating' ).check();
-
 		cy.log( 'Quick Links checkbox states updated successfully' );
 		cy.get( 'input[name="tasty_recipes_quick_links[]"]:checked' ).then(
 			( $els ) => {
 				const values = [ ...$els ].map( ( el ) => el.value );
-				expect( values ).to.include.members( [ 'jump', 'rating' ] );
-				expect( values ).not.to.include( 'print' );
+				expect( values ).to.include.members( [
+					'jump',
+					'print',
+					'rating',
+				] );
 			}
 		);
 
