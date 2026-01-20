@@ -1,9 +1,10 @@
 import { __ } from '@wordpress/i18n';
 import { useState, useRef, useEffect } from '@wordpress/element';
+import { applyFilters } from '@wordpress/hooks';
 
 const { filters } = window.tastyRecipesExplorerPage;
 
-const emptyFormData = {
+const defaultEmptyFormData = {
 	rating: '',
 	cuisine: '',
 	method: '',
@@ -12,12 +13,29 @@ const emptyFormData = {
 	diet: '',
 };
 
+const emptyFormData = applyFilters(
+	'tasty_recipes_filters_empty_form_data',
+	defaultEmptyFormData
+);
+
 export const FiltersForm = ( { closeFiltersForm } ) => {
 	const formRef = useRef( null );
 	const [ formData, setFormData ] = useState( () => {
 		const currentParams = new URLSearchParams( window.location.search );
+		const urlData = Object.fromEntries( currentParams.entries() );
 
-		return Object.fromEntries( currentParams.entries() );
+		// Merge with empty form data and handle array fields.
+		const mergedData = { ...emptyFormData };
+		Object.entries( urlData ).forEach( ( [ key, value ] ) => {
+			// Check if this field should be an array (based on emptyFormData).
+			if ( Array.isArray( emptyFormData[ key ] ) ) {
+				mergedData[ key ] = value ? value.split( ',' ) : [];
+			} else {
+				mergedData[ key ] = value;
+			}
+		} );
+
+		return mergedData;
 	} );
 
 	useEffect( () => {
@@ -42,11 +60,19 @@ export const FiltersForm = ( { closeFiltersForm } ) => {
 
 		const currentParams = new URLSearchParams( window.location.search );
 
-		Object.entries( formData ).forEach( ( [ key, value ] ) =>
-			value
-				? currentParams.set( key, value )
-				: currentParams.delete( key )
-		);
+		Object.entries( formData ).forEach( ( [ key, value ] ) => {
+			if ( Array.isArray( value ) ) {
+				if ( value.length > 0 ) {
+					currentParams.set( key, value.join( ',' ) );
+				} else {
+					currentParams.delete( key );
+				}
+			} else if ( value ) {
+				currentParams.set( key, value );
+			} else {
+				currentParams.delete( key );
+			}
+		} );
 
 		setUrlParamsAndRefresh( currentParams );
 	};
@@ -238,6 +264,12 @@ export const FiltersForm = ( { closeFiltersForm } ) => {
 					) ) }
 				</select>
 			</div>
+			{ applyFilters(
+				'tasty_recipes_filters_additional_groups',
+				null,
+				formData,
+				setFormData
+			) }
 			<div className="tasty-recipes-filter-actions">
 				<button
 					type="reset"

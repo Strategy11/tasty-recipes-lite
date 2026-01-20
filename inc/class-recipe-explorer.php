@@ -983,6 +983,17 @@ class Recipe_Explorer {
 			);
 		}
 
+		/**
+		 * Fires after the default recipe explorer filters have been applied.
+		 *
+		 * Pro uses this to add recipe_type filtering.
+		 *
+		 * @since x.x
+		 *
+		 * @param \WP_Query $query The query object.
+		 */
+		do_action( 'tasty_recipes_explorer_filter_query', $query );
+
 		return $query;
 	}
 

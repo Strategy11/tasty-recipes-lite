@@ -104,20 +104,33 @@ class Assets {
 				);
 			}
 
+			$explorer_data = array(
+				'emptyStateImage' => plugins_url( 'assets/images/empty-state-image.png', TASTY_RECIPES_LITE_FILE ),
+				'filters'         => array(
+					'rating'   => Recipe_Explorer::get_unique_filter_values( 'rating' ),
+					'cuisine'  => Recipe_Explorer::get_unique_filter_values( 'cuisine' ),
+					'method'   => Recipe_Explorer::get_unique_filter_values( 'method' ),
+					'category' => Recipe_Explorer::get_unique_filter_values( 'category' ),
+					'diet'     => Recipe_Explorer::get_unique_filter_values( 'diet' ),
+					'author'   => $users,
+				),
+			);
+
+			/**
+			 * Filters the explorer page data.
+			 *
+			 * Pro uses this to add enableHowTos flag.
+			 *
+			 * @since x.x
+			 *
+			 * @param array $explorer_data The explorer page data.
+			 */
+			$explorer_data = apply_filters( 'tasty_recipes_explorer_page_data', $explorer_data );
+
 			wp_localize_script(
 				'tasty-recipes-explorer-page',
 				'tastyRecipesExplorerPage',
-				array(
-					'emptyStateImage' => plugins_url( 'assets/images/empty-state-image.png', TASTY_RECIPES_LITE_FILE ),
-					'filters'         => array(
-						'rating'   => Recipe_Explorer::get_unique_filter_values( 'rating' ),
-						'cuisine'  => Recipe_Explorer::get_unique_filter_values( 'cuisine' ),
-						'method'   => Recipe_Explorer::get_unique_filter_values( 'method' ),
-						'category' => Recipe_Explorer::get_unique_filter_values( 'category' ),
-						'diet'     => Recipe_Explorer::get_unique_filter_values( 'diet' ),
-						'author'   => $users,
-					),
-				)
+				$explorer_data
 			);
 
 			wp_enqueue_style(
