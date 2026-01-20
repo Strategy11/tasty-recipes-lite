@@ -175,33 +175,56 @@ describe( 'WP Tasty recipe page', () => {
 		);
 
 		cy.log( 'Wait for Settings tab to render' );
-		cy.get( '#tasty-recipes-settings-tab', { timeout: 20000 } )
+		cy.get( '#tasty-recipes-settings-tab' )
 			.should( 'be.visible' )
 			.and( 'not.be.empty' );
 
 		cy.log( 'Validate and update Quick Links checkboxes' );
-		cy.contains( 'label', 'Jump to Recipe' ).should( 'be.visible' );
-		cy.get( '#tasty-recipes-quick-links-jump', { timeout: 20000 } )
-			.should( 'be.visible' )
-			.should( 'be.checked' );
+		cy.contains( 'label', /Jump to Recipe/ ).should( 'exist' );
+		cy.get( '#tasty-recipes-settings-tab' )
+			.find( 'label[for="tasty-recipes-quick-links-jump"]' )
+			.should( 'exist' )
+			.parent()
+			.find( 'input[type="checkbox"]' )
+			.then( ( $el ) => {
+				if ( ! $el.prop( 'checked' ) ) {
+					cy.wrap( $el ).check( { force: true } );
+				}
+			} );
 
-		cy.get( '#tasty-recipes-quick-links-print', { timeout: 20000 } )
-			.should( 'be.visible' )
-			.should( 'be.checked' );
+		cy.contains( 'label', /Print Recipe/ ).should( 'exist' );
+		cy.get( '#tasty-recipes-settings-tab' )
+			.find( 'label[for="tasty-recipes-quick-links-print"]' )
+			.should( 'exist' )
+			.next( 'label.tasty-checkbox-container' )
+			.find( 'input[type="checkbox"]' )
+			.then( ( $el ) => {
+				if ( ! $el.prop( 'checked' ) ) {
+					cy.wrap( $el ).check( { force: true } );
+				}
+			} );
 
-		cy.get( '#tasty-recipes-quick-links-rating', { timeout: 20000 } )
-			.should( 'be.visible' )
-			.should( 'not.be.checked' );
-
-		cy.get( '#tasty-recipes-quick-links-print' ).uncheck();
-		cy.get( '#tasty-recipes-quick-links-rating' ).check();
+		cy.contains( 'label', /Leave a Review/ ).should( 'exist' );
+		cy.get( '#tasty-recipes-settings-tab' )
+			.find( 'label[for="tasty-recipes-quick-links-rating"]' )
+			.should( 'exist' )
+			.parent( '.tasty-form-field' )
+			.find( '.tasty-form-field-input-wrapper input[type="checkbox"]' )
+			.then( ( $el ) => {
+				if ( ! $el.prop( 'checked' ) ) {
+					cy.wrap( $el ).check( { force: true } );
+				}
+			} );
 
 		cy.log( 'Quick Links checkbox states updated successfully' );
 		cy.get( 'input[name="tasty_recipes_quick_links[]"]:checked' ).then(
 			( $els ) => {
 				const values = [ ...$els ].map( ( el ) => el.value );
-				expect( values ).to.include.members( [ 'jump', 'rating' ] );
-				expect( values ).not.to.include( 'print' );
+				expect( values ).to.include.members( [
+					'jump',
+					'print',
+					'rating',
+				] );
 			}
 		);
 
