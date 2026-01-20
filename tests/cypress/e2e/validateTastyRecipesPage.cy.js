@@ -102,7 +102,7 @@ describe( 'WP Tasty recipe page', () => {
 			colorFields.length
 		);
 
-		cy.contains( 'h3', 'Recipe Title (H2)' ).should( 'be.visible' );
+		cy.contains( 'h3', 'Title (H2)' ).should( 'be.visible' );
 
 		const expectedOptions = [
 			'Default Capitalization',
@@ -122,7 +122,7 @@ describe( 'WP Tasty recipe page', () => {
 				cy.wrap( $opt ).should( 'have.text', expectedOptions[ i ] );
 			} );
 
-		cy.contains( 'h3', 'Recipe Subtitles (H3)' ).should( 'be.visible' );
+		cy.contains( 'h3', 'Subtitles (H3)' ).should( 'be.visible' );
 
 		const expectedH3 = expectedOptions;
 
