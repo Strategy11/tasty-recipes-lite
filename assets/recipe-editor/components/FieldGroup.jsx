@@ -51,7 +51,16 @@ export const FieldGroup = ( {
 
 	const beforeSettingHook = applyFilters(
 		'tasty_recipes_before_setting_hook',
-		() => {},
+		null,
+		group,
+		recipe,
+		fields,
+		fieldValues
+	);
+
+	const afterSettingHook = applyFilters(
+		'tasty_recipes_after_setting_hook',
+		null,
 		group,
 		recipe,
 		fields,
@@ -236,6 +245,7 @@ export const FieldGroup = ( {
 					) }
 				</div>
 			</div>
+			{ afterSettingHook }
 		</>
 	);
 };
