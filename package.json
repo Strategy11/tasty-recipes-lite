@@ -15,7 +15,7 @@
     "grunt": "^1.6.1",
     "grunt-text-replace": "^0.4",
     "ignore-emit-webpack-plugin": "^2.0.6",
-    "svglint": "^4.1.1"
+    "svglint": "^4.2.0"
   },
   "scripts": {
     "build": "wp-scripts build",
