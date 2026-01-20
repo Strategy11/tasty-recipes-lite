@@ -172,9 +172,7 @@ class Block_Editor {
 		}
 
 		/**
-		 * Filter to validate if a recipe block should render this ID.
-		 *
-		 * Pro uses this to prevent how-to IDs from being rendered in recipe blocks.
+		 * Filter to validate if a recipe block should render this ID and allows preventing certain recipe IDs from being rendered in recipe blocks.
 		 *
 		 * @since x.x
 		 *

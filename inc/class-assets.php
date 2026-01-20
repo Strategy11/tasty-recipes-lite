@@ -117,9 +117,7 @@ class Assets {
 			);
 
 			/**
-			 * Filters the explorer page data.
-			 *
-			 * Pro uses this to add enableHowTos flag.
+			 * Filters the explorer page data and allows extending the data passed to the explorer page JavaScript.
 			 *
 			 * @since x.x
 			 *

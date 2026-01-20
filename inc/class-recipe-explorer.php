@@ -594,9 +594,7 @@ class Recipe_Explorer {
 		}
 
 		/**
-		 * Filters the recipe JSON data returned by the API.
-		 *
-		 * Pro uses this to add recipe_type to the response.
+		 * Filters the recipe JSON data returned by the API and allows extending the recipe data with additional fields.
 		 *
 		 * @since x.x
 		 *
@@ -776,9 +774,7 @@ class Recipe_Explorer {
 			$block = Block_Editor::get_block_for_recipe( $recipe );
 
 			/**
-			 * Filters the block content used for embedding recipes.
-			 *
-			 * Pro uses this to return the How-To block instead of the Recipe block.
+			 * Filters the block content used for embedding recipes and allows changing the block type based on the recipe.
 			 *
 			 * @since x.x
 			 *
@@ -1023,9 +1019,7 @@ class Recipe_Explorer {
 		}
 
 		/**
-		 * Fires after the default recipe explorer filters have been applied.
-		 *
-		 * Pro uses this to add recipe_type filtering.
+		 * Fires after the default recipe explorer filters have been applied and allows adding custom query filters to the recipe explorer.
 		 *
 		 * @since x.x
 		 *
