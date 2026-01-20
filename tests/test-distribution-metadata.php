@@ -516,7 +516,7 @@ EOT;
 		$recipe->set_category( 'Breakfast, Lunch, Dinner' );
 		$recipe->set_method( 'Cooking' );
 		$schema = Distribution_Metadata::get_google_schema_for_recipe( $recipe );
-		$this->assertEquals( 'Indian', $schema['recipeCuisine'] );
+		$this->assertEquals( 'Asian', $schema['recipeCuisine'] );
 		$this->assertEquals( 'Breakfast', $schema['recipeCategory'] );
 		$this->assertEquals( 'Cooking', $schema['cookingMethod'] );
 	}

@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import { FieldGroup } from './FieldGroup';
+import { ImprovedKeysNotice } from './ImprovedKeysNotice';
 import { RichTextarea } from './RichTextarea';
 import { ImageField } from './ImageField';
 
@@ -16,6 +17,25 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 		config
 	);
 	const [ recipe, setRecipe ] = useState( initialRecipeState );
+	const [ isNoticeDismissed, setIsNoticeDismissed ] = useState(
+		!! config.improvedKeysNoticeDismissed
+	);
+
+	const handleNoticeDismiss = () => {
+		setIsNoticeDismissed( true );
+
+		const formData = new FormData();
+		formData.append(
+			'action',
+			'tasty_recipes_dismiss_improved_keys_notice'
+		);
+		formData.append( 'nonce', config.modifyNonce );
+
+		fetch( window.ajaxurl, {
+			method: 'POST',
+			body: formData,
+		} );
+	};
 
 	const recipeType = recipe.recipe_type || defaultRecipeType;
 	const editorConfig = applyFilters(
@@ -26,6 +46,24 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 	);
 	const typeSettings = editorConfig?.typeSettings?.[ recipeType ] || {};
 	const attributes = editorConfig.attributes;
+
+	// For ImprovedKeysNotice positioning - split cooking attributes around 'category'
+	const cookingAttributes = attributes.cooking;
+	const cookingKeys = Object.keys( cookingAttributes );
+	const splitIndex = cookingKeys.indexOf( 'category' );
+
+	const cookingAttributesBefore = Object.fromEntries(
+		cookingKeys
+			.slice( 0, splitIndex > -1 ? splitIndex : cookingKeys.length )
+			.map( ( key ) => [ key, cookingAttributes[ key ] ] )
+	);
+
+	const cookingAttributesAfter = Object.fromEntries(
+		cookingKeys
+			.slice( splitIndex > -1 ? splitIndex : cookingKeys.length )
+			.map( ( key ) => [ key, cookingAttributes[ key ] ] )
+	);
+
 	const nutritionAttributes = useMemo( () => {
 		const nutritionAttrs = attributes.nutrition;
 
@@ -89,6 +127,14 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 		.filter( ( field ) => false !== field.show );
 	const detailsGroupSettings = typeSettings.groups?.details || {};
 	const nutritionGroupSettings = typeSettings.groups?.nutrition || {};
+
+	// Use split cooking attributes for recipe type to support ImprovedKeysNotice placement
+	const isRecipeType = recipeType === 'recipe';
+	const detailsFieldsBefore = isRecipeType
+		? cookingAttributesBefore
+		: detailsGroupSettings.fields || attributes.cooking;
+	const detailsFieldsAfter = isRecipeType ? cookingAttributesAfter : null;
+
 	const detailsFields = applyFilters(
 		'tasty_recipes_recipe_editor_group_fields',
 		detailsGroupSettings.fields || attributes.cooking,
@@ -211,7 +257,35 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 					}
 				/>
 			) ) }
-			{ showDetailsGroup && (
+			{ showDetailsGroup && isRecipeType && (
+				<>
+					<FieldGroup
+						className="tasty-recipes-details"
+						heading={ detailsHeading }
+						fields={ detailsFieldsBefore }
+						initialFieldValues={ recipe }
+						onFieldChange={ handleRecipeChange }
+						showAdditionalTime={ showAdditionalTime }
+						group="details"
+						recipe={ recipe }
+					/>
+					<ImprovedKeysNotice
+						isDismissed={ isNoticeDismissed }
+						onDismiss={ handleNoticeDismiss }
+					/>
+					{ detailsFieldsAfter && (
+						<FieldGroup
+							className="tasty-recipes-details"
+							fields={ detailsFieldsAfter }
+							initialFieldValues={ recipe }
+							onFieldChange={ handleRecipeChange }
+							group="details"
+							recipe={ recipe }
+						/>
+					) }
+				</>
+			) }
+			{ showDetailsGroup && ! isRecipeType && (
 				<FieldGroup
 					className="tasty-recipes-details"
 					heading={ detailsHeading }

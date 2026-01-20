@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from '@wordpress/element';
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
+import { TaxonomySelect } from './taxonomy-select';
 
 export const FieldGroup = ( {
 	heading,
@@ -89,6 +90,63 @@ export const FieldGroup = ( {
 		);
 	}
 
+	const renderFieldInput = ( name, field ) => {
+		if ( field.taxonomy ) {
+			return (
+				<TaxonomySelect
+					name={ name }
+					taxonomy={ field.taxonomy }
+					value={ fieldValues[ field.object_key || name ] || '' }
+					onChange={ ( newValue ) =>
+						handleFieldChange( field.object_key || name, newValue )
+					}
+				/>
+			);
+		}
+
+		if ( field.options ) {
+			return (
+				<select
+					id={ `tasty-recipes-recipe-${ name }` }
+					name={ name }
+					value={ fieldValues[ field.object_key || name ] || '' }
+					className="inline-field"
+					onChange={ ( e ) =>
+						handleFieldChange(
+							field.object_key || name,
+							e.target.value
+						)
+					}
+				>
+					{ Object.entries( field.options ).map(
+						( [ value, label ] ) => (
+							<option key={ value } value={ value }>
+								{ label }
+							</option>
+						)
+					) }
+				</select>
+			);
+		}
+
+		return (
+			<input
+				id={ `tasty-recipes-recipe-${ name }` }
+				type="text"
+				placeholder={ field.placeholder }
+				name={ name }
+				className="inline-field"
+				value={ fieldValues[ field.object_key || name ] || '' }
+				onChange={ ( e ) =>
+					handleFieldChange(
+						field.object_key || name,
+						e.target.value
+					)
+				}
+			/>
+		);
+	};
+
 	const renderField = ( name, field ) => (
 		<>
 			<fieldset
@@ -121,60 +179,8 @@ export const FieldGroup = ( {
 						) }
 					</label>
 				) }
-				{ field.options ? (
-					<select
-						id={ `tasty-recipes-recipe-${ name }` }
-						name={ name }
-						value={ fieldValues[ field.object_key || name ] || '' }
-						className="inline-field"
-						onChange={ ( e ) =>
-							handleFieldChange(
-								field.object_key || name,
-								e.target.value
-							)
-						}
-					>
-						{ Object.entries( field.options ).map(
-							( [ value, label ] ) => (
-								<option key={ value } value={ value }>
-									{ label }
-								</option>
-							)
-						) }
-					</select>
-				) : (
-					<input
-						id={ `tasty-recipes-recipe-${ name }` }
-						type="text"
-						placeholder={ field.placeholder }
-						name={ name }
-						className="inline-field"
-						value={ fieldValues[ field.object_key || name ] || '' }
-						onChange={ ( e ) =>
-							handleFieldChange(
-								field.object_key || name,
-								e.target.value
-							)
-						}
-					/>
-				) }
-				{ name === 'prep_time' &&
-					showAdditionalTime &&
-					! isAdditionalTimeOpen && (
-						<span style={ { display: 'none' } }>
-							<input
-								id="tasty-recipes-recipe-additional-time-label"
-								type="hidden"
-								name="additional_time_label"
-							/>
-							<input
-								id="tasty-recipes-recipe-additional-time-value"
-								type="hidden"
-								name="additional_time_value"
-							/>
-						</span>
-					) }
-				{ name === 'prep_time' && ! showAdditionalTime && (
+				{ renderFieldInput( name, field ) }
+				{ name === 'prep_time' && ! isAdditionalTimeOpen && (
 					<span style={ { display: 'none' } }>
 						<input
 							id="tasty-recipes-recipe-additional-time-label"

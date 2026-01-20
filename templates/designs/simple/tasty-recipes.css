@@ -30,6 +30,10 @@
 	color: #797B7C;
 }
 
+.tasty-recipes ul {
+	padding-left: 0;
+}
+
 .tasty-recipes-details ul li {
 	list-style-type: none;
 	margin-left: 0;
