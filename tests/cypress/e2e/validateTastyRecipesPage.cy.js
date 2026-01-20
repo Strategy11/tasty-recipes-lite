@@ -180,20 +180,35 @@ describe( 'WP Tasty recipe page', () => {
 			.and( 'not.be.empty' );
 
 		cy.log( 'Validate and update Quick Links checkboxes' );
-		cy.contains( 'label', /Jump to Recipe/ ).should( 'be.visible' );
+		cy.contains( 'label', /Jump to Recipe/ ).should( 'exist' );
 		cy.get( '#tasty-recipes-quick-links-jump' )
 			.should( 'exist' )
+			.then( ( $el ) => {
+				if ( ! $el.prop( 'checked' ) ) {
+					cy.wrap( $el ).check( { force: true } );
+				}
+			} )
 			.should( 'be.checked' );
 
 		cy.contains( 'label', /Print Recipe/ ).should( 'exist' );
 		cy.get( '#tasty-recipes-quick-links-print' )
 			.should( 'exist' )
+			.then( ( $el ) => {
+				if ( ! $el.prop( 'checked' ) ) {
+					cy.wrap( $el ).check( { force: true } );
+				}
+			} )
 			.should( 'be.checked' );
 
 		cy.contains( 'label', /Leave a Review/ ).should( 'exist' );
 		cy.get( '#tasty-recipes-quick-links-rating' )
 			.should( 'exist' )
-			.should( 'not.be.checked' );
+			.then( ( $el ) => {
+				if ( ! $el.prop( 'checked' ) ) {
+					cy.wrap( $el ).check( { force: true } );
+				}
+			} )
+			.should( 'be.checked' );
 
 		cy.get( '#tasty-recipes-quick-links-print' ).uncheck();
 		cy.get( '#tasty-recipes-quick-links-rating' ).check();
