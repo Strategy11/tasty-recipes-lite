@@ -61,17 +61,15 @@ export const FiltersForm = ( { closeFiltersForm } ) => {
 		const currentParams = new URLSearchParams( window.location.search );
 
 		Object.entries( formData ).forEach( ( [ key, value ] ) => {
-			if ( Array.isArray( value ) ) {
-				if ( value.length > 0 ) {
-					currentParams.set( key, value.join( ',' ) );
-				} else {
-					currentParams.delete( key );
-				}
-			} else if ( value ) {
-				currentParams.set( key, value );
-			} else {
+			const isEmpty = Array.isArray( value ) ? value.length === 0 : ! value;
+
+			if ( isEmpty ) {
 				currentParams.delete( key );
+				return;
 			}
+
+			const paramValue = Array.isArray( value ) ? value.join( ',' ) : value;
+			currentParams.set( key, paramValue );
 		} );
 
 		setUrlParamsAndRefresh( currentParams );
