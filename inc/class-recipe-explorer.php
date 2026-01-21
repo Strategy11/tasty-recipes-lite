@@ -839,6 +839,14 @@ class Recipe_Explorer {
 			$actions['delete'] = $button;
 		}
 
+		// Filters the post row actions and allows adding custom actions to the post row actions.
+		$actions = apply_filters(
+			'tasty_recipes_post_row_actions',
+			$actions,
+			$post,
+			$parent_post_id
+		);
+
 		return $actions;
 	}
 

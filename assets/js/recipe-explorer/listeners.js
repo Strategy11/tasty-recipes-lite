@@ -115,7 +115,8 @@ const trashListener = ( e ) => {
 	e.preventDefault();
 
 	const postUrl = e.target.dataset.postUrl;
-	openTrashModal( postUrl );
+	const recipeType = e.target.dataset.recipeType ?? 'recipe';
+	openTrashModal( postUrl, recipeType );
 };
 
 const permanentDeleteListener = ( e ) => {
