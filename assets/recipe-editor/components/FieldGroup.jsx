@@ -86,6 +86,7 @@ export const FieldGroup = ( {
 					{ renderBeforeFields &&
 						renderBeforeFields( { fieldValues } ) }
 				</div>
+				{ afterSettingHook }
 			</>
 		);
 	}
