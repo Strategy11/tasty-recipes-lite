@@ -31,9 +31,10 @@ export const openTrashModal = ( postUrl ) => {
 		</a>
 	);
 
-	root = createRoot( instance ).render(
+	root = createRoot( instance );
+	root.render(
 		<MessageModal
-			title={ __( 'Recipe Can’t be Deleted', 'tasty-recipes-lite' ) }
+			title={ __( "Recipe Can't be Deleted", 'tasty-recipes-lite' ) }
 			description={ __(
 				"This recipe can't be deleted since it is embedded in your site. Please remove the recipe from your page first.",
 				'tasty-recipes-lite'
