@@ -28,7 +28,7 @@
 
 			// Listen for label updates from the React form.
 			document.addEventListener( 'tasty-recipes-editor-labels-update', function( event ) {
-				var detail = event.detail;
+				const detail = event.detail;
 				if ( ! detail ) {
 					return;
 				}
