@@ -38,6 +38,8 @@ namespace {
 	 * @return string
 	 */
 	function tasty_recipes_get_print_url( $post_id, $recipe_id ) {
+		return '';
+	}
 }
 
 namespace Elementor {
