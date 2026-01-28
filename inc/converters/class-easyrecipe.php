@@ -116,7 +116,7 @@ class EasyRecipe extends Converter {
 		}
 
 		// Might be a really old EasyRecipe with a plain <img> tag.
-		if ( ! $image_id && false !== strpos( $existing, '<div class="ERSTopRight">' ) ) {
+		if ( ! $image_id && str_contains( $existing, '<div class="ERSTopRight">' ) ) {
 			if ( preg_match( '#<img[^>]+src=[\'"]([^\'"]+)[\'"]#', $existing, $matches ) ) {
 				$image_id = static::get_image_id_from_file( $matches[1] );
 			}
@@ -195,7 +195,7 @@ class EasyRecipe extends Converter {
 
 			// Remove 'Author: ', etc. from the values.
 			if ( in_array( $key, array( 'author_name', 'category', 'cuisine', 'yield' ), true )
-				&& 0 === strpos( $matches[2][0], 'ERS' ) ) {
+				&& str_starts_with( $matches[2][0], 'ERS' ) ) {
 				$bits = explode( ': ', $value );
 				array_shift( $bits );
 				$value = implode( ': ', $bits );

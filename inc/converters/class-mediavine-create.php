@@ -174,7 +174,7 @@ class Mediavine_Create extends Converter {
 					$output .= ' rel="nofollow"';
 				}
 				// Check for internal links.
-				if ( strpos( $ingredient['link'], get_site_url() ) !== 0 ) {
+				if ( ! str_starts_with( $ingredient['link'], get_site_url() ) ) {
 					$output .= ' target="_blank"';
 				}
 				$output .= '>';

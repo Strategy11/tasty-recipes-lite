@@ -305,7 +305,7 @@ class Utils {
 		}
 
 		$rest_prefix = trailingslashit( rest_get_url_prefix() );
-		return false !== strpos( self::server_param( 'REQUEST_URI' ), $rest_prefix );
+		return str_contains( self::server_param( 'REQUEST_URI' ), $rest_prefix );
 	}
 
 	/**

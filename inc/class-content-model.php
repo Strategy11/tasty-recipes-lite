@@ -442,7 +442,7 @@ class Content_Model {
 		}
 
 		// Looks like a shortcode.
-		if ( 0 === strpos( trim( $meta_value ), '[' ) ) {
+		if (  str_starts_with( trim( $meta_value ), '[' ) ) {
 			$shortcode = trim( $meta_value, '[] ' ); // Deliberate empty space.
 			// Only AdThrive shortcodes are supported.
 			$adthrive_beginning = 'adthrive-in-post-video-player ';

@@ -253,8 +253,8 @@ abstract class Converter {
 	 * @return false|Recipe
 	 */
 	public static function create_recipe_from_existing( $existing, $post_id ) {
-		$existing = $existing;
-		$post_id  = $post_id;
+		
+		
 		return false;
 	}
 

@@ -76,8 +76,8 @@ class Tasty_Recipes_Converter_Testcase extends Tasty_Recipes_Testcase {
 	 */
 	protected function pre_recipe_conversion( $source, $expected ) {
 		/** Override in subclass as necessary */
-		$source   = $source;
-		$expected = $expected;
+		
+		
 	}
 
 	/**
@@ -91,7 +91,7 @@ class Tasty_Recipes_Converter_Testcase extends Tasty_Recipes_Testcase {
 		$recipe_json = $recipe->to_json();
 		unset( $recipe_json['id'] );
 		foreach ( $recipe_json as $k => $v ) {
-			if ( false !== strpos( $k, '_rendered' ) ) {
+			if ( str_contains( $k, '_rendered' ) ) {
 				unset( $recipe_json[ $k ] );
 			}
 		}
