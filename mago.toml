@@ -25,22 +25,18 @@ use-tabs = true
 integrations = []
 
 [linter.rules]
-ambiguous-function-call = { enabled = false }
 array-style = { enabled = false }
 braced-string-interpolation = { enabled = false }
 class-name = { enabled = false }
 combine-consecutive-issets = { enabled = false }
 cyclomatic-complexity = { enabled = false }
 excessive-nesting = { enabled = false } # Consider enabling this soon.
-excessive-parameter-list = { enabled = false }
 explicit-octal = { enabled = false }
 function-name = { enabled = false }
 halstead = { enabled = false } # Consider enabling this soon.
-identity-comparison = { enabled = false }
 inline-variable-return = { enabled = false }
 kan-defect = { enabled = false }
 literal-named-argument = { enabled = false }
-loop-does-not-iterate = { enabled = false }
 no-assign-in-condition = { enabled = false }
 no-boolean-flag-parameter = { enabled = false }
 no-closing-tag = { enabled = false }
@@ -48,26 +44,20 @@ no-else-clause = { enabled = false }
 no-empty = { enabled = false }
 no-error-control-operator = { enabled = false }
 no-global = { enabled = false }
-no-insecure-comparison = { enabled = false } # Consider enabling this soon.
 no-multi-assignments = { enabled = false }
-no-nested-ternary = { enabled = false }
 no-redundant-file = { enabled = false }
 no-redundant-math = { enabled = false }
 no-redundant-method-override = { enabled = false } # Fix this first.
 no-redundant-use = { enabled = false }
 no-request-variable = { enabled = false }
-no-sprintf-concat = { enabled = false }
 no-trailing-space = { enabled = false }
 prefer-arrow-function = { enabled = false }
 prefer-early-continue = { enabled = false }
 prefer-static-closure = { enabled = false }
 require-preg-quote-delimiter = { enabled = false }
-sensitive-parameter = { enabled = false }
-strict-behavior = { enabled = false }
 strict-types = { enabled = false }
 tagged-todo = { enabled = false }
 too-many-methods = { enabled = false }
-too-many-properties = { enabled = false }
 use-compound-assignment = { enabled = false } # Consider enabling this soon.
 
 [analyzer]
