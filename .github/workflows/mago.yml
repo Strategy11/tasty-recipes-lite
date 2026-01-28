@@ -12,6 +12,8 @@ jobs:
         uses: actions/checkout@v4.1.1
 
       - name: Install dependencies
+        env:
+          COMPOSER_AUTH: '{"github-oauth":{"github.com":"${{ secrets.GH_TOKEN }}"}}'
         run: composer install --dev --prefer-dist --no-progress
 
       - name: "⚡ Install Mago"
