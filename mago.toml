@@ -85,15 +85,10 @@ no-boolean-literal-comparison = false
 check-missing-type-hints = false
 register-super-globals = true
 ignore = [
-    "ambiguous-instantiation-target",
     "ambiguous-object-method-access",
     "ambiguous-object-property-access",
     "array-to-string-conversion",
-    "conflicting-reference-constraint",
-    "deprecated-function",
     "falsable-return-statement",
-    "false-argument", # Fix this soon
-    "generic-object-iteration",
     "impossible-assignment",
     "impossible-condition",
     "impossible-nonnull-entry-check",
@@ -112,7 +107,6 @@ ignore = [
     "invalid-member-selector",
     "invalid-method-access",
     "invalid-operand",
-    "invalid-param-tag",
     "invalid-property-access",
     "invalid-property-assignment-value",
     "invalid-property-read",
@@ -139,7 +133,6 @@ ignore = [
     "mixed-property-type-coercion",
     "mixed-return-statement",
     "never-return",
-    "no-value",
     "non-documented-property",
     "non-existent-class-like",
     "non-existent-constant",
@@ -183,15 +176,10 @@ ignore = [
     "reference-constraint-violation",
     "reference-to-undefined-variable",
     "string-member-selector",
-    "too-few-arguments",
-    "too-many-arguments",
     "undefined-int-array-index",
     "undefined-string-array-index",
     "undefined-variable",
-    "undefined-variable-in-closure-use",
     "unknown-class-instantiation",
-    "unknown-iterator-type",
-    "unsafe-instantiation",
     "unused-method",
     "unused-property",
 ]
