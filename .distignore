@@ -67,3 +67,4 @@ cypress
 cypress.config.js
 .wp-env.json
 .nvmrc
+mago.toml
