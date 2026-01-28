@@ -252,9 +252,7 @@ abstract class Converter {
 	 *
 	 * @return false|Recipe
 	 */
-	public static function create_recipe_from_existing( $existing, $post_id ) {
-		
-		
+	public static function create_recipe_from_existing( $existing, $post_id ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed, VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		return false;
 	}
 
