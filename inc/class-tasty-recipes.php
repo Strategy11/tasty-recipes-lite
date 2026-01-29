@@ -84,6 +84,15 @@ class Tasty_Recipes {
 	const SHAREASALE_OPTION = 'tasty_recipes_shareasale';
 
 	/**
+	 * Option name for disabling taxonomy links.
+	 *
+	 * @since x.x
+	 *
+	 * @var string
+	 */
+	const DISABLE_TAXONOMY_LINKS_OPTION = 'tasty_recipes_disable_taxonomy_links';
+
+	/**
 	 * Option name for the powered by link.
 	 *
 	 * @var string
@@ -349,6 +358,14 @@ class Tasty_Recipes {
 		add_filter( 'post_type_link', array( 'Tasty_Recipes\Content_Model', 'filter_recipe_permalink' ), 10, 2 );
 		add_filter( 'get_the_excerpt', array( 'Tasty_Recipes\Content_Model', 'filter_recipe_excerpt' ), 10, 1 );
 		add_filter( 'tasty_recipes_cooking_html', array( 'Tasty_Recipes\Content_Model', 'filter_cooking_attribute_links' ), 10, 2 );
+
+		// Apply the disable taxonomy links setting to the filters.
+		add_filter( 'tasty_recipes_taxonomy_has_archive', array( __CLASS__, 'filter_disable_taxonomy_links_setting' ) );
+		add_filter( 'tasty_recipes_enable_taxonomy_links', array( __CLASS__, 'filter_disable_taxonomy_links_setting' ) );
+
+		// Flush rewrite rules when the taxonomy links setting changes.
+		add_action( 'update_option_' . self::DISABLE_TAXONOMY_LINKS_OPTION, array( __CLASS__, 'action_flush_rewrite_rules_on_taxonomy_setting_change' ), 10, 2 );
+		add_action( 'add_option_' . self::DISABLE_TAXONOMY_LINKS_OPTION, array( __CLASS__, 'action_flush_rewrite_rules_on_taxonomy_setting_change' ), 10, 2 );
 
 		add_filter( 'allow_empty_comment', array( 'Tasty_Recipes\Ratings', 'filter_allow_rating_empty_comment' ), 10, 2 );
 		add_filter( 'preprocess_comment', array( 'Tasty_Recipes\Ratings', 'filter_preprocess_comment' ), 0 );
@@ -841,5 +858,41 @@ class Tasty_Recipes {
 	public static function echo_template_part( $template, $vars = array() ) {
 		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo self::get_template_part( $template, $vars );
+	}
+
+	/**
+	 * Filter callback to disable taxonomy features based on the setting.
+	 *
+	 * Used for both archive pages and front-end links.
+	 *
+	 * @since x.x
+	 *
+	 * @param bool $enabled Whether the taxonomy feature is enabled.
+	 *
+	 * @return bool
+	 */
+	public static function filter_disable_taxonomy_links_setting( $enabled ) {
+		if ( get_option( self::DISABLE_TAXONOMY_LINKS_OPTION, '0' ) === '1' ) {
+			return false;
+		}
+
+		return $enabled;
+	}
+
+	/**
+	 * Flush rewrite rules when the taxonomy links setting changes.
+	 *
+	 * @since x.x
+	 *
+	 * @param mixed $old_value The old option value.
+	 * @param mixed $new_value The new option value.
+	 *
+	 * @return void
+	 */
+	public static function action_flush_rewrite_rules_on_taxonomy_setting_change( $old_value, $new_value ) {
+		if ( $old_value !== $new_value ) {
+			// We refresh the permalinks this way because using the flush_rewrite_rules function is against WP VIP.
+			delete_option( 'rewrite_rules' );
+		}
 	}
 }
