@@ -265,7 +265,7 @@ class Settings {
 
 	/**
 	 * Add admin tabs to the head of all links admin pages.
-	 * 
+	 *
 	 * @since 1.1
 	 *
 	 * @return void
@@ -283,7 +283,7 @@ class Settings {
 
 	/**
 	 * Check if we're on the recipes admin page.
-	 * 
+	 *
 	 * @since 1.1
 	 *
 	 * @return bool
@@ -299,7 +299,7 @@ class Settings {
 
 	/**
 	 * Get all tabs.
-	 * 
+	 *
 	 * @since 1.1
 	 *
 	 * @return array
@@ -503,7 +503,7 @@ class Settings {
 			return '';
 		}
 
-		if ( false === strpos( $color, 'rgba' ) ) {
+		if ( ! str_contains( $color, 'rgba' ) ) {
 			return self::sanitize_hex_color( $color );
 		}
 
@@ -586,7 +586,7 @@ class Settings {
 
 	/**
 	 * Handle the onboarding consent tracking form submission.
-	 * 
+	 *
 	 * @since 1.1
 	 *
 	 * @return void
