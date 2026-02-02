@@ -215,17 +215,17 @@ export const Settings = () => {
 				} }
 			/>
 			<ToggleInput
-				label={ __( 'Disable Taxonomy Key Links', 'tasty-recipes-lite' ) }
-				id="tasty_recipes_disable_taxonomy_links"
-				name="tasty_recipes_disable_taxonomy_links"
-				value={ String( formData.disableTaxonomyLinks ?? 0 ) }
+				label={ __( 'Taxonomy Key Links', 'tasty-recipes-lite' ) }
+				id="tasty_recipes_enable_taxonomy_links"
+				name="tasty_recipes_enable_taxonomy_links"
+				value={ String( formData.enableTaxonomyLinks ?? 0 ) }
 				onValue="1"
 				offValue="0"
 				setValue={ ( value ) => {
-					handleChange( 'disableTaxonomyLinks', value );
+					handleChange( 'enableTaxonomyLinks', value );
 				} }
 				helper={ __(
-					'Removes the ability for users to click a taxonomy key and see all recipes that are tagged similarly',
+					'Allow users to click a taxonomy key and see all recipes that are tagged similarly',
 					'tasty-recipes-lite'
 				) }
 			/>
