@@ -868,7 +868,7 @@ class Content_Model {
 				$term_link = get_term_link( $term, $taxonomy );
 
 				if ( ! is_wp_error( $term_link ) ) {
-					$linked_terms[] = '<a href="' . esc_url( $term_link ) . '">' . esc_html( $term_name ) . '</a>';
+					$linked_terms[] = '<a data-tasty-recipes-customization="detail-value-color.color" href="' . esc_url( $term_link ) . '">' . esc_html( $term_name ) . '</a>';
 					continue;
 				}
 			}
