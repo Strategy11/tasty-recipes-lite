@@ -176,6 +176,17 @@ class Tasty_Recipes {
 	const IMPROVED_KEYS_NOTICE_DISMISSED_OPTION = 'tasty_recipes_improved_keys_notice_dismissed';
 
 	/**
+	 * Option name for the flush rewrite rules flag.
+	 *
+	 * Used to flag that rewrite rules should be flushed on next init.
+	 *
+	 * @since x.x
+	 *
+	 * @var string
+	 */
+	const FLUSH_REWRITE_RULES_OPTION = 'tasty_recipes_flush_rewrite_rules';
+
+	/**
 	 * Instantiates and gets the singleton instance for the class.
 	 *
 	 * @return Tasty_Recipes
@@ -266,6 +277,7 @@ class Tasty_Recipes {
 		Tasty_Recipes\Quick_Links::load_hooks();
 		add_action( 'init', array( 'Tasty_Recipes\Block_Editor', 'action_init_register' ) );
 		add_action( 'init', array( 'Tasty_Recipes\Content_Model', 'init_post_type' ) );
+		add_action( 'init', array( __CLASS__, 'action_maybe_flush_rewrite_rules' ), 99 );
 		add_action( 'tasty_recipes_process_thumbnails', array( 'Tasty_Recipes\Content_Model', 'action_tasty_recipes_process_thumbnails' ) );
 		add_action( 'rest_api_init', array( 'Tasty_Recipes\Recipe_Explorer', 'action_rest_api_init' ) );
 		add_action( 'rest_api_init', array( 'Tasty_Recipes\Onboarding_Wizard', 'register_api_routes' ) );
@@ -434,8 +446,25 @@ class Tasty_Recipes {
 	public static function plugin_activation() {
 		self::require_files();
 		\Tasty_Recipes\Content_Model::action_init_register_rewrite_rules();
-		// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.flush_rewrite_rules_flush_rewrite_rules
-		flush_rewrite_rules();
+		update_option( self::FLUSH_REWRITE_RULES_OPTION, true );
+	}
+
+	/**
+	 * Flush rewrite rules if flagged to do so.
+	 *
+	 * This is called during init to ensure rewrite rules are properly flushed
+	 * after plugin activation, when WordPress is fully initialized.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
+	 */
+	public static function action_maybe_flush_rewrite_rules() {
+		if ( get_option( self::FLUSH_REWRITE_RULES_OPTION ) ) {
+			delete_option( self::FLUSH_REWRITE_RULES_OPTION );
+			// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.flush_rewrite_rules_flush_rewrite_rules
+			flush_rewrite_rules();
+		}
 	}
 
 	/**
