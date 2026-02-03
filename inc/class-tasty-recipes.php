@@ -433,9 +433,8 @@ class Tasty_Recipes {
 	 */
 	public static function plugin_activation() {
 		self::require_files();
-		\Tasty_Recipes\Content_Model::action_init_register_rewrite_rules();
-		// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.flush_rewrite_rules_flush_rewrite_rules
-		flush_rewrite_rules();
+		// This is more reliable than flushing directly during activation.
+		delete_option( 'rewrite_rules' );
 	}
 
 	/**
