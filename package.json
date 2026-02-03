@@ -5,7 +5,7 @@
   "author": "WP Tasty",
   "devDependencies": {
     "@10up/cypress-wp-utils": "^0.6.0",
-    "@wordpress/env": "^10.36.0",
+    "@wordpress/env": "^10.39.0",
     "@wordpress/scripts": "^30.26.0",
     "classnames": "^2.5.1",
     "cross-env": "^10.0.0",
