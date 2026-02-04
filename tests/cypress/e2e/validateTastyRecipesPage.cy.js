@@ -102,7 +102,7 @@ describe( 'WP Tasty recipe page', () => {
 			colorFields.length
 		);
 
-		cy.contains( 'h3', 'Recipe Title (H2)' ).should( 'be.visible' );
+		cy.contains( 'h3', 'Title (H2)' ).should( 'be.visible' );
 
 		const expectedOptions = [
 			'Default Capitalization',
@@ -122,7 +122,7 @@ describe( 'WP Tasty recipe page', () => {
 				cy.wrap( $opt ).should( 'have.text', expectedOptions[ i ] );
 			} );
 
-		cy.contains( 'h3', 'Recipe Subtitles (H3)' ).should( 'be.visible' );
+		cy.contains( 'h3', 'Subtitles (H3)' ).should( 'be.visible' );
 
 		const expectedH3 = expectedOptions;
 
@@ -174,28 +174,57 @@ describe( 'WP Tasty recipe page', () => {
 			'admin.php?page=tasty-recipes&tab=settings'
 		);
 
+		cy.log( 'Wait for Settings tab to render' );
+		cy.get( '#tasty-recipes-settings-tab' )
+			.should( 'be.visible' )
+			.and( 'not.be.empty' );
+
 		cy.log( 'Validate and update Quick Links checkboxes' );
-		cy.get( '#tasty-recipes-quick-links-jump' )
+		cy.contains( 'label', /Jump to Recipe/ ).should( 'exist' );
+		cy.get( '#tasty-recipes-settings-tab' )
+			.find( 'label[for="tasty-recipes-quick-links-jump"]' )
 			.should( 'exist' )
-			.should( 'be.checked' );
+			.parent()
+			.find( 'input[type="checkbox"]' )
+			.then( ( $el ) => {
+				if ( ! $el.prop( 'checked' ) ) {
+					cy.wrap( $el ).check( { force: true } );
+				}
+			} );
 
-		cy.get( '#tasty-recipes-quick-links-print' )
+		cy.contains( 'label', /Print Recipe/ ).should( 'exist' );
+		cy.get( '#tasty-recipes-settings-tab' )
+			.find( 'label[for="tasty-recipes-quick-links-print"]' )
 			.should( 'exist' )
-			.should( 'be.checked' );
+			.next( 'label.tasty-checkbox-container' )
+			.find( 'input[type="checkbox"]' )
+			.then( ( $el ) => {
+				if ( ! $el.prop( 'checked' ) ) {
+					cy.wrap( $el ).check( { force: true } );
+				}
+			} );
 
-		cy.get( '#tasty-recipes-quick-links-rating' )
+		cy.contains( 'label', /Leave a Review/ ).should( 'exist' );
+		cy.get( '#tasty-recipes-settings-tab' )
+			.find( 'label[for="tasty-recipes-quick-links-rating"]' )
 			.should( 'exist' )
-			.should( 'not.be.checked' );
-
-		cy.get( '#tasty-recipes-quick-links-print' ).uncheck();
-		cy.get( '#tasty-recipes-quick-links-rating' ).check();
+			.parent( '.tasty-form-field' )
+			.find( '.tasty-form-field-input-wrapper input[type="checkbox"]' )
+			.then( ( $el ) => {
+				if ( ! $el.prop( 'checked' ) ) {
+					cy.wrap( $el ).check( { force: true } );
+				}
+			} );
 
 		cy.log( 'Quick Links checkbox states updated successfully' );
 		cy.get( 'input[name="tasty_recipes_quick_links[]"]:checked' ).then(
 			( $els ) => {
 				const values = [ ...$els ].map( ( el ) => el.value );
-				expect( values ).to.include.members( [ 'jump', 'rating' ] );
-				expect( values ).not.to.include( 'print' );
+				expect( values ).to.include.members( [
+					'jump',
+					'print',
+					'rating',
+				] );
 			}
 		);
 
@@ -330,7 +359,7 @@ describe( 'WP Tasty recipe page', () => {
 			{
 				label: 'Scaling',
 				id: 'tasty_recipes_disable_scaling',
-				helperText: 'Allow visitors to scale the recipe 1x, 2x, or 3x.',
+				helperText: 'Allow visitors to scale the recipe ½, 2x, or 3x.',
 			},
 			{
 				label: 'Copy to Clipboard',

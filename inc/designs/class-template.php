@@ -553,4 +553,31 @@ class Template {
 			$template
 		);
 	}
+
+	/**
+	 * Get the heading name for the template.
+	 * 
+	 * @since x.x
+	 *
+	 * @param string $name The name of the heading.
+	 * @param object $recipe_object The recipe object.
+	 *
+	 * @return string
+	 */
+	public static function get_heading_name( $name, $recipe_object ) {
+		$defaults = array(
+			'description'  => __( 'Description', 'tasty-recipes-lite' ),
+			'ingredients'  => __( 'Ingredients', 'tasty-recipes-lite' ),
+			'instructions' => __( 'Instructions', 'tasty-recipes-lite' ),
+			'equipment'    => __( 'Equipment', 'tasty-recipes-lite' ),
+			'notes'        => __( 'Notes', 'tasty-recipes-lite' ),
+			'nutrition'    => __( 'Nutrition', 'tasty-recipes-lite' ),
+		);
+
+		if ( ! isset( $defaults[ $name ] ) ) {
+			return '';
+		}
+
+		return apply_filters( 'tasty_recipes_get_heading_name', $defaults[ $name ], $name, $recipe_object );
+	}
 }

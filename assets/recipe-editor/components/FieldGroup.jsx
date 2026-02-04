@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from '@wordpress/element';
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
+import { TaxonomySelect } from './taxonomy-select';
 
 export const FieldGroup = ( {
 	heading,
@@ -8,6 +9,7 @@ export const FieldGroup = ( {
 	fields,
 	initialFieldValues,
 	showLabels = true,
+	showAdditionalTime = true,
 	onFieldChange = () => {},
 	renderBeforeFields,
 	className = '',
@@ -50,7 +52,16 @@ export const FieldGroup = ( {
 
 	const beforeSettingHook = applyFilters(
 		'tasty_recipes_before_setting_hook',
-		() => {},
+		null,
+		group,
+		recipe,
+		fields,
+		fieldValues
+	);
+
+	const afterSettingHook = applyFilters(
+		'tasty_recipes_after_setting_hook',
+		null,
 		group,
 		recipe,
 		fields,
@@ -72,11 +83,70 @@ export const FieldGroup = ( {
 				{ beforeSettingHook }
 				<div className={ className }>
 					{ heading && <h3>{ heading }</h3> }
-					{ renderBeforeFields && renderBeforeFields( { fieldValues } ) }
+					{ renderBeforeFields &&
+						renderBeforeFields( { fieldValues } ) }
 				</div>
+				{ afterSettingHook }
 			</>
 		);
 	}
+
+	const renderFieldInput = ( name, field ) => {
+		if ( field.taxonomy ) {
+			return (
+				<TaxonomySelect
+					name={ name }
+					taxonomy={ field.taxonomy }
+					value={ fieldValues[ field.object_key || name ] || '' }
+					onChange={ ( newValue ) =>
+						handleFieldChange( field.object_key || name, newValue )
+					}
+				/>
+			);
+		}
+
+		if ( field.options ) {
+			return (
+				<select
+					id={ `tasty-recipes-recipe-${ name }` }
+					name={ name }
+					value={ fieldValues[ field.object_key || name ] || '' }
+					className="inline-field"
+					onChange={ ( e ) =>
+						handleFieldChange(
+							field.object_key || name,
+							e.target.value
+						)
+					}
+				>
+					{ Object.entries( field.options ).map(
+						( [ value, label ] ) => (
+							<option key={ value } value={ value }>
+								{ label }
+							</option>
+						)
+					) }
+				</select>
+			);
+		}
+
+		return (
+			<input
+				id={ `tasty-recipes-recipe-${ name }` }
+				type="text"
+				placeholder={ field.placeholder }
+				name={ name }
+				className="inline-field"
+				value={ fieldValues[ field.object_key || name ] || '' }
+				onChange={ ( e ) =>
+					handleFieldChange(
+						field.object_key || name,
+						e.target.value
+					)
+				}
+			/>
+		);
+	};
 
 	const renderField = ( name, field ) => (
 		<>
@@ -93,7 +163,7 @@ export const FieldGroup = ( {
 								data-tasty-tooltip={ field.tooltip }
 							></span>
 						) }
-						{ name === 'prep_time' && (
+						{ name === 'prep_time' && showAdditionalTime && (
 							<button
 								className="tasty-recipes-add-additional-time"
 								type="button"
@@ -110,94 +180,62 @@ export const FieldGroup = ( {
 						) }
 					</label>
 				) }
-				{ field.options ? (
-					<select
-						id={ `tasty-recipes-recipe-${ name }` }
-						name={ name }
-						value={ fieldValues[ field.object_key || name ] || '' }
-						className="inline-field"
-						onChange={ ( e ) =>
-							handleFieldChange(
-								field.object_key || name,
-								e.target.value
-							)
-						}
-					>
-						{ Object.entries( field.options ).map(
-							( [ value, label ] ) => (
-								<option key={ value } value={ value }>
-									{ label }
-								</option>
-							)
-						) }
-					</select>
-				) : (
-					<input
-						id={ `tasty-recipes-recipe-${ name }` }
-						type="text"
-						placeholder={ field.placeholder }
-						name={ name }
-						className="inline-field"
-						value={ fieldValues[ field.object_key || name ] || '' }
-						onChange={ ( e ) =>
-							handleFieldChange(
-								field.object_key || name,
-								e.target.value
-							)
-						}
-					/>
-				) }
+				{ renderFieldInput( name, field ) }
 				{ name === 'prep_time' && ! isAdditionalTimeOpen && (
 					<span style={ { display: 'none' } }>
 						<input
 							id="tasty-recipes-recipe-additional-time-label"
 							type="hidden"
 							name="additional_time_label"
+							value=""
 						/>
 						<input
 							id="tasty-recipes-recipe-additional-time-value"
 							type="hidden"
 							name="additional_time_value"
+							value=""
 						/>
 					</span>
 				) }
 			</fieldset>
-			{ name === 'prep_time' && isAdditionalTimeOpen && (
-				<fieldset className="tasty-recipes-additional-time-container">
-					<input
-						id="tasty-recipes-recipe-additional-time-label"
-						type="text"
-						name="additional_time_label"
-						placeholder={ __(
-							'Additional Time Label',
-							'tasty-recipes-lite'
-						) }
-						value={ fieldValues.additional_time_label || '' }
-						onChange={ ( e ) =>
-							handleFieldChange(
-								'additional_time_label',
-								e.target.value
-							)
-						}
-					/>
-					<input
-						id="tasty-recipes-recipe-additional-time-value"
-						type="text"
-						name="additional_time_value"
-						placeholder={ __(
-							'Additional Time Value',
-							'tasty-recipes-lite'
-						) }
-						value={ fieldValues.additional_time_value || '' }
-						onChange={ ( e ) =>
-							handleFieldChange(
-								'additional_time_value',
-								e.target.value
-							)
-						}
-					/>
-				</fieldset>
-			) }
+			{ name === 'prep_time' &&
+				showAdditionalTime &&
+				isAdditionalTimeOpen && (
+					<fieldset className="tasty-recipes-additional-time-container">
+						<input
+							id="tasty-recipes-recipe-additional-time-label"
+							type="text"
+							name="additional_time_label"
+							placeholder={ __(
+								'Additional Time Label',
+								'tasty-recipes-lite'
+							) }
+							value={ fieldValues.additional_time_label || '' }
+							onChange={ ( e ) =>
+								handleFieldChange(
+									'additional_time_label',
+									e.target.value
+								)
+							}
+						/>
+						<input
+							id="tasty-recipes-recipe-additional-time-value"
+							type="text"
+							name="additional_time_value"
+							placeholder={ __(
+								'Additional Time Value',
+								'tasty-recipes-lite'
+							) }
+							value={ fieldValues.additional_time_value || '' }
+							onChange={ ( e ) =>
+								handleFieldChange(
+									'additional_time_value',
+									e.target.value
+								)
+							}
+						/>
+					</fieldset>
+				) }
 		</>
 	);
 
@@ -214,6 +252,7 @@ export const FieldGroup = ( {
 					) }
 				</div>
 			</div>
+			{ afterSettingHook }
 		</>
 	);
 };

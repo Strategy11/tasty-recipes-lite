@@ -96,8 +96,38 @@ class Recipe_Explorer {
 			return '';
 		}
 
+		$create_options = array(
+			array(
+				'type'  => 'recipe',
+				'label' => __( 'Recipe', 'tasty-recipes-lite' ),
+			),
+		);
+		/**
+		 * Filters the create options shown in the recipe explorer button.
+		 *
+		 * @since x.x
+		 *
+		 * @param array $create_options Create options.
+		 */
+		$create_options = apply_filters( 'tasty_recipes_recipe_explorer_create_options', $create_options );
+
 		$html  = '<p class="tasty-tabs-buttons">';
-		$html .= '<a class="tasty-button tasty-button-pink" id="tasty-create-recipe" href="#">' . esc_html__( 'Create Recipe', 'tasty-recipes-lite' ) . '</a>';
+		$html .= '<span class="tasty-recipes-add-new">';
+		$html .= '<button type="button" class="tasty-button tasty-button-pink" id="tasty-create-recipe" aria-haspopup="true">';
+		$html .= esc_html__( 'Add New', 'tasty-recipes-lite' );
+		$html .= '<span class="dashicons dashicons-arrow-down-alt2" aria-hidden="true"></span>';
+		$html .= '</button>';
+		$html .= '<span class="tasty-recipes-add-new-menu" role="menu">';
+		foreach ( $create_options as $option ) {
+			if ( empty( $option['type'] ) || empty( $option['label'] ) ) {
+				continue;
+			}
+			$html .= '<button type="button" class="tasty-recipes-add-new-item" role="menuitem" data-recipe-type="' . esc_attr( $option['type'] ) . '">';
+			$html .= esc_html( $option['label'] );
+			$html .= '</button>';
+		}
+		$html .= '</span>';
+		$html .= '</span>';
 
 		return $html;
 	}
@@ -242,7 +272,14 @@ class Recipe_Explorer {
 			unset( $columns['date'] );
 		}
 
-		return $columns;
+		/**
+		 * Filters the Recipe Explorer columns.
+		 *
+		 * @since x.x
+		 *
+		 * @param array $columns The columns array.
+		 */
+		return apply_filters( 'tasty_recipes_explorer_columns', $columns );
 	}
 
 	/**
@@ -289,29 +326,37 @@ class Recipe_Explorer {
 				
 			// Handle hidden columns content.
 			case 'cuisine':
-				$cuisine = get_post_meta( $recipe_id, 'cuisine', true );
-				echo esc_html( ! empty( $cuisine ) ? $cuisine : '' );
+				echo esc_html( self::get_recipe_attribute( $recipe_id, 'cuisine', 'tasty_recipe_cuisine' ) );
 				break;
-				
+
 			case 'method':
-				$method = get_post_meta( $recipe_id, 'method', true );
-				echo esc_html( ! empty( $method ) ? $method : '' );
+				echo esc_html( self::get_recipe_attribute( $recipe_id, 'method', 'tasty_recipe_method' ) );
 				break;
-				
+
 			case 'category':
-				$category = get_post_meta( $recipe_id, 'category', true );
-				echo esc_html( ! empty( $category ) ? $category : '' );
+				echo esc_html( self::get_recipe_attribute( $recipe_id, 'category', 'tasty_recipe_category' ) );
 				break;
-				
+
 			case 'diet':
-				$diet = get_post_meta( $recipe_id, 'diet', true );
-				echo esc_html( ! empty( $diet ) ? $diet : '' );
+				echo esc_html( self::get_recipe_attribute( $recipe_id, 'diet', 'tasty_recipe_diet' ) );
 				break;
-				
+
 			case 'author':
 				$author_id = $post->post_author;
 				$author    = get_userdata( (int) $author_id );
 				echo esc_html( $author ? $author->display_name : '—' );
+				break;
+
+			default:
+				/**
+				 * Fires when rendering a custom column in the Recipe Explorer.
+				 *
+				 * @since x.x
+				 *
+				 * @param string $column_name The column name.
+				 * @param int    $recipe_id   The recipe ID.
+				 */
+				do_action( 'tasty_recipes_explorer_custom_column', $column_name, $recipe_id );
 				break;
 		}
 	}
@@ -339,6 +384,37 @@ class Recipe_Explorer {
 		);
 		
 		return $result;
+	}
+
+	/**
+	 * Get recipe attribute value from post meta or taxonomy.
+	 *
+	 * First checks post meta, then falls back to taxonomy terms if meta is empty.
+	 *
+	 * @since 1.1
+	 *
+	 * @param int    $recipe_id The recipe post ID.
+	 * @param string $meta_key  The post meta key.
+	 * @param string $taxonomy  The taxonomy name.
+	 *
+	 * @return string The attribute value or empty string.
+	 */
+	private static function get_recipe_attribute( $recipe_id, $meta_key, $taxonomy ) {
+		$meta_value = get_post_meta( $recipe_id, $meta_key, true );
+
+		if ( ! empty( $meta_value ) ) {
+			return $meta_value;
+		}
+
+		$terms = get_the_terms( $recipe_id, $taxonomy );
+
+		if ( empty( $terms ) || is_wp_error( $terms ) ) {
+			return '';
+		}
+
+		$term_names = wp_list_pluck( $terms, 'name' );
+
+		return implode( ', ', $term_names );
 	}
 
 	/**
@@ -469,16 +545,30 @@ class Recipe_Explorer {
 			wp_send_json_error();
 		}
 
+		// Set the parent post for the recipe.
+		$recipe->add_parent_post( $post_id );
+
 		$recipe_title = ! empty( $recipe->get_title() ) ? $recipe->get_title() : __( 'The', 'tasty-recipes-lite' );
 
-		$message  = '<h3>' . esc_html__( 'Post created!', 'tasty-recipes-lite' ) . '</h3>';
-		$message .= '<p>';
-		$message .= sprintf(
+		$success_message = sprintf(
 			/* translators: %s: recipe title */
 			__( '%s recipe has been embedded successfully.', 'tasty-recipes-lite' ),
 			esc_html( $recipe_title )
 		);
-		$message .= '</p>';
+
+		/**
+		 * Filters the success message after creating a post with a recipe.
+		 *
+		 * @since x.x
+		 *
+		 * @param string $success_message The success message.
+		 * @param int    $recipe_id       The recipe ID.
+		 * @param string $recipe_title    The recipe title.
+		 */
+		$success_message = apply_filters( 'tasty_recipes_create_post_success_message', $success_message, $params['recipe_id'], $recipe_title );
+
+		$message  = '<h3>' . esc_html__( 'Post created!', 'tasty-recipes-lite' ) . '</h3>';
+		$message .= '<p>' . esc_html( $success_message ) . '</p>';
 		$message .= '<p><a style="color: #ED4996;" href="' . esc_url( get_edit_post_link( $post_id ) ) . '">' . esc_html__( 'Go to Post', 'tasty-recipes-lite' ) . '</a></p>';
 		
 		$js_messagebox->add( 'success', $message );
@@ -503,7 +593,16 @@ class Recipe_Explorer {
 			wp_send_json_error( __( 'Recipe not found', 'tasty-recipes-lite' ) );
 		}
 
-		wp_send_json_success( $recipe->to_json() );
+		/**
+		 * Filters the recipe JSON data returned by the API and allows extending the recipe data with additional fields.
+		 *
+		 * @since x.x
+		 *
+		 * @param array $recipe_json The recipe JSON data.
+		 */
+		$recipe_json = apply_filters( 'tasty_recipes_shortcode_response_recipe_json', $recipe->to_json() );
+
+		wp_send_json_success( $recipe_json );
 	}
 
 	/**
@@ -604,16 +703,42 @@ class Recipe_Explorer {
 			)
 		);
 
+		// Set the parent post for the recipe.
+		$recipe->add_parent_post( $post_id );
+
 		$recipe_title = ! empty( $recipe->get_title() ) ? $recipe->get_title() : __( 'The recipe', 'tasty-recipes-lite' );
 
-		$message  = '<h3>' . esc_html__( 'Recipe embedded!', 'tasty-recipes-lite' ) . '</h3>';
-		$message .= '<p>';
-		$message .= sprintf(
+		$success_heading = __( 'Recipe embedded!', 'tasty-recipes-lite' );
+
+		$success_message = sprintf(
 			/* translators: %s: recipe title */
 			__( '%s recipe has been embedded successfully.', 'tasty-recipes-lite' ),
 			esc_html( $recipe_title )
 		);
-		$message .= '</p>';
+
+		/**
+		 * Filters the success heading after embedding a recipe.
+		 *
+		 * @since x.x
+		 *
+		 * @param string $success_heading The success heading.
+		 * @param int    $recipe_id       The recipe ID.
+		 */
+		$success_heading = apply_filters( 'tasty_recipes_embed_success_heading', $success_heading, $params['recipe_id'] );
+
+		/**
+		 * Filters the success message after embedding a recipe.
+		 *
+		 * @since x.x
+		 *
+		 * @param string $success_message The success message.
+		 * @param int    $recipe_id       The recipe ID.
+		 * @param string $recipe_title    The recipe title.
+		 */
+		$success_message = apply_filters( 'tasty_recipes_embed_success_message', $success_message, $params['recipe_id'], $recipe_title );
+
+		$message  = '<h3>' . esc_html( $success_heading ) . '</h3>';
+		$message .= '<p>' . esc_html( $success_message ) . '</p>';
 		$message .= '<p><a style="color: #ED4996;" href="' . get_edit_post_link( $post_id ) . '">' . esc_html__( 'Go to Recipe', 'tasty-recipes-lite' ) . '</a></p>';
 		
 		$js_messagebox->add( 'success', $message );
@@ -633,10 +758,30 @@ class Recipe_Explorer {
 	private static function generate_recipe_content( $recipe_id ) {
 		$recipe = Recipe::get_by_id( $recipe_id );
 
-		$content = '[wp-tasty id="' . $recipe_id . '"]';
+		$shortcode = '[wp-tasty id="' . $recipe_id . '"]';
+
+		/**
+		 * Filters the shortcode used for embedding recipes.
+		 *
+		 * @since x.x
+		 *
+		 * @param string $shortcode The shortcode string.
+		 * @param object $recipe    The recipe object.
+		 */
+		$content = apply_filters( 'tasty_recipes_recipe_shortcode', $shortcode, $recipe );
 
 		if ( function_exists( 'use_block_editor_for_post_type' ) && use_block_editor_for_post_type( 'post' ) ) {
-			$content = Block_Editor::get_block_for_recipe( $recipe );
+			$block = Block_Editor::get_block_for_recipe( $recipe );
+
+			/**
+			 * Filters the block content used for embedding recipes and allows changing the block type based on the recipe.
+			 *
+			 * @since x.x
+			 *
+			 * @param string $block  The block content string.
+			 * @param object $recipe The recipe object.
+			 */
+			$content = apply_filters( 'tasty_recipes_recipe_block', $block, $recipe );
 		}
 
 		return $content;
@@ -693,6 +838,14 @@ class Recipe_Explorer {
 
 			$actions['delete'] = $button;
 		}
+
+		// Filters the post row actions and allows adding custom actions to the post row actions.
+		$actions = apply_filters(
+			'tasty_recipes_post_row_actions',
+			$actions,
+			$post,
+			$parent_post_id
+		);
 
 		return $actions;
 	}
@@ -755,12 +908,14 @@ class Recipe_Explorer {
 	public static function get_unique_filter_values( $field ) {
 		$cache_key = 'tasty_recipes_unique_filter_values_' . $field;
 
-		if ( wp_cache_get( $cache_key, 'tasty_recipes' ) ) {
-			return wp_cache_get( $cache_key, 'tasty_recipes' );
+		$cached = wp_cache_get( $cache_key, 'tasty_recipes' );
+		if ( false !== $cached ) {
+			return $cached;
 		}
 
 		global $wpdb;
 
+		// Get unique meta values.
 		$query = $wpdb->prepare(
 			"SELECT DISTINCT pm.meta_value 
 			FROM {$wpdb->postmeta} pm 
@@ -776,9 +931,47 @@ class Recipe_Explorer {
 		// phpcs:ignore
 		$values = $wpdb->get_col( $query );
 
+		// Get taxonomy terms.
+		$taxonomy = self::get_taxonomy_for_field( $field );
+		if ( $taxonomy ) {
+			$terms = get_terms(
+				array(
+					'taxonomy'   => $taxonomy,
+					'hide_empty' => true,
+					'fields'     => 'names',
+				)
+			);
+
+			if ( ! is_wp_error( $terms ) && ! empty( $terms ) ) {
+				$values = array_unique( array_merge( $values, $terms ) );
+			}
+		}
+
+		sort( $values );
+
 		wp_cache_set( $cache_key, $values, 'tasty_recipes', 3600 );
 
 		return $values;
+	}
+
+	/**
+	 * Get the taxonomy name for a given field.
+	 *
+	 * @since 1.2
+	 *
+	 * @param string $field The field/meta key name.
+	 *
+	 * @return false|string The taxonomy name or false if not found.
+	 */
+	private static function get_taxonomy_for_field( $field ) {
+		$taxonomy_map = array(
+			'category' => 'tasty_recipe_category',
+			'method'   => 'tasty_recipe_method',
+			'cuisine'  => 'tasty_recipe_cuisine',
+			'diet'     => 'tasty_recipe_diet',
+		);
+
+		return isset( $taxonomy_map[ $field ] ) ? $taxonomy_map[ $field ] : false;
 	}
 
 	/**
@@ -797,61 +990,33 @@ class Recipe_Explorer {
 			return $query;
 		}
 
-		$meta_queries = array();
-		$relation     = 'AND';
-
 		if ( Utils::get_param( 'rating' ) ) {
 			$rating_filter = Utils::get_param( 'rating' );
-			
+
 			// We run this custom query because sometimes the ratings are floats and we should round them to the nearest integer.
 			add_filter(
 				'posts_clauses',
 				function ( $clauses ) use ( $rating_filter ) {
 					global $wpdb;
-				
+
 					$clauses['join']  .= " INNER JOIN {$wpdb->postmeta} rating_meta ON ({$wpdb->posts}.ID = rating_meta.post_id AND rating_meta.meta_key = 'average_rating')";
 					$clauses['where'] .= $wpdb->prepare( ' AND ROUND(CAST(rating_meta.meta_value AS DECIMAL(3,2))) = %d', $rating_filter );
-				
+
 					return $clauses;
 				}
 			);
 		}
 
-		if ( Utils::get_param( 'cuisine' ) ) {
-			$meta_queries[] = array(
-				'key'     => 'cuisine',
-				'value'   => Utils::get_param( 'cuisine' ),
-				'compare' => '=',
-			);
-		}
+		// Build attribute filters that check both meta and taxonomy.
+		$attribute_filters = self::get_attribute_filters();
 
-		if ( Utils::get_param( 'method' ) ) {
-			$meta_queries[] = array(
-				'key'     => 'method',
-				'value'   => Utils::get_param( 'method' ),
-				'compare' => '=',
+		if ( ! empty( $attribute_filters ) ) {
+			add_filter(
+				'posts_clauses',
+				function ( $clauses ) use ( $attribute_filters ) {
+					return self::apply_attribute_filter_clauses( $clauses, $attribute_filters );
+				}
 			);
-		}
-
-		if ( Utils::get_param( 'category' ) ) {
-			$meta_queries[] = array(
-				'key'     => 'category',
-				'value'   => Utils::get_param( 'category' ),
-				'compare' => '=',
-			);
-		}
-
-		if ( Utils::get_param( 'diet' ) ) {
-			$meta_queries[] = array(
-				'key'     => 'diet',
-				'value'   => Utils::get_param( 'diet' ),
-				'compare' => '=',
-			);
-		}
-
-		if ( ! empty( $meta_queries ) ) {
-			$meta_queries['relation'] = $relation;
-			$query->set( 'meta_query', $meta_queries );
 		}
 
 		if ( Utils::get_param( 'author' ) ) {
@@ -861,7 +1026,103 @@ class Recipe_Explorer {
 			);
 		}
 
+		/**
+		 * Fires after the default recipe explorer filters have been applied and allows adding custom query filters to the recipe explorer.
+		 *
+		 * @since x.x
+		 *
+		 * @param \WP_Query $query The query object.
+		 */
+		do_action( 'tasty_recipes_explorer_filter_query', $query );
+
 		return $query;
+	}
+
+	/**
+	 * Get the attribute filters from request parameters.
+	 *
+	 * @since 1.2
+	 *
+	 * @return array Array of filters with meta_key, taxonomy, and value.
+	 */
+	private static function get_attribute_filters() {
+		$filter_config = array(
+			'cuisine'  => 'tasty_recipe_cuisine',
+			'method'   => 'tasty_recipe_method',
+			'category' => 'tasty_recipe_category',
+			'diet'     => 'tasty_recipe_diet',
+		);
+
+		$filters = array();
+
+		foreach ( $filter_config as $meta_key => $taxonomy ) {
+			$value = Utils::get_param( $meta_key );
+
+			if ( ! empty( $value ) ) {
+				$filters[] = array(
+					'meta_key' => $meta_key, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+					'taxonomy' => $taxonomy,
+					'value'    => $value,
+				);
+			}
+		}
+
+		return $filters;
+	}
+
+	/**
+	 * Apply custom SQL clauses for attribute filters.
+	 *
+	 * Filters by post meta OR taxonomy term, allowing recipes to match
+	 * if they have either the meta value or the taxonomy term assigned.
+	 * 
+	 * We'll run this custom query for a while so we give people time to 
+	 * migrate to the new taxonomies and then we'll remove this and use
+	 * WP default taxonomy filters.
+	 *
+	 * @since 1.2
+	 *
+	 * @param array $clauses          The query clauses.
+	 * @param array $attribute_filters The attribute filters to apply.
+	 *
+	 * @return array Modified clauses.
+	 */
+	private static function apply_attribute_filter_clauses( $clauses, $attribute_filters ) {
+		global $wpdb;
+
+		foreach ( $attribute_filters as $index => $filter ) {
+			$meta_alias = "attr_meta_{$index}";
+			$tr_alias   = "attr_tr_{$index}";
+			$tt_alias   = "attr_tt_{$index}";
+			$t_alias    = "attr_t_{$index}";
+
+			// LEFT JOIN postmeta for meta value check.
+			// Aliases are safe internal values, not user input.
+			// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$clauses['join'] .= $wpdb->prepare(
+				" LEFT JOIN {$wpdb->postmeta} {$meta_alias} ON ({$wpdb->posts}.ID = {$meta_alias}.post_id AND {$meta_alias}.meta_key = %s)",
+				$filter['meta_key']
+			);
+
+			// LEFT JOIN term_relationships, term_taxonomy, and terms for taxonomy check.
+			$clauses['join'] .= " LEFT JOIN {$wpdb->term_relationships} {$tr_alias} ON ({$wpdb->posts}.ID = {$tr_alias}.object_id)";
+			$clauses['join'] .= " LEFT JOIN {$wpdb->term_taxonomy} {$tt_alias} ON ({$tr_alias}.term_taxonomy_id = {$tt_alias}.term_taxonomy_id"
+				. " AND {$tt_alias}.taxonomy = '{$filter['taxonomy']}')";
+			$clauses['join'] .= " LEFT JOIN {$wpdb->terms} {$t_alias} ON ({$tt_alias}.term_id = {$t_alias}.term_id)";
+
+			// WHERE: match meta value OR term name.
+			$clauses['where'] .= $wpdb->prepare(
+				" AND ({$meta_alias}.meta_value = %s OR {$t_alias}.name = %s)",
+				$filter['value'],
+				$filter['value']
+			);
+			// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		}
+
+		// Ensure distinct results since JOINs may cause duplicates.
+		$clauses['distinct'] = 'DISTINCT';
+
+		return $clauses;
 	}
 
 	/**

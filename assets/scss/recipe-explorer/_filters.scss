@@ -45,6 +45,37 @@
 			font-size: 13px;
 			color: #717784;
 		}
+
+		&--checkboxes {
+			border-top: 1px solid #E4E7EC;
+			padding-top: 15px;
+
+			.tasty-recipes-filter-group-label {
+				display: block;
+				font-size: 13px;
+				font-weight: 500;
+				color: #181B25;
+				margin-bottom: 8px;
+			}
+
+			.tasty-recipes-checkbox-label {
+				display: flex;
+				align-items: center;
+				gap: 8px;
+				font-size: 13px;
+				font-weight: 400;
+				color: #181B25;
+				cursor: pointer;
+				margin-bottom: 6px;
+
+				input[type="checkbox"] {
+					width: 16px;
+					height: 16px;
+					margin: 0;
+					accent-color: #ED4996;
+				}
+			}
+		}
 	}
 
 	.tasty-recipes-filter-actions {

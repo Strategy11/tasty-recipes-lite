@@ -65,8 +65,68 @@
 }
 
 #tasty-create-recipe {
+	align-items: center;
+	display: inline-flex;
+	gap: 6px;
 	line-height: 2.15384615;
 	min-height: 30px;
+}
+
+.tasty-recipes-add-new {
+	display: inline-flex;
+	position: relative;
+
+	.tasty-recipes-add-new-menu {
+		background: #ffffff;
+		border: 1px solid #ccd0d4;
+		border-radius: 6px;
+		box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+		display: none;
+		flex-direction: column;
+		gap: 2px;
+		min-width: 140px;
+		opacity: 0;
+		padding: 6px;
+		position: absolute;
+		right: 0;
+		top: calc(100% + 6px);
+		transition: opacity 0.15s ease-in-out;
+		visibility: hidden;
+		z-index: 99;
+
+		&::before {
+			content: '';
+			height: 6px;
+			left: 0;
+			position: absolute;
+			right: 0;
+			top: -6px;
+		}
+	}
+
+	&:hover .tasty-recipes-add-new-menu,
+	&:focus-within .tasty-recipes-add-new-menu {
+		display: flex;
+		opacity: 1;
+		visibility: visible;
+	}
+
+	.tasty-recipes-add-new-item {
+		background: transparent;
+		border: 0;
+		border-radius: 4px;
+		color: #1d2327;
+		cursor: pointer;
+		font-size: 13px;
+		padding: 8px 10px;
+		text-align: left;
+		width: 100%;
+
+		&:hover,
+		&:focus {
+			background: #f6f7f7;
+		}
+	}
 }
 
 .page-title-action {

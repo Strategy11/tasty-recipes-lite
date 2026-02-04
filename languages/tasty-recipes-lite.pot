@@ -1,15 +1,15 @@
-# Copyright (C) 2025 WP Tasty Recipes Team
+# Copyright (C) 2026 WP Tasty Recipes Team
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Tasty Recipes Lite 1.1.5\n"
+"Project-Id-Version: Tasty Recipes Lite 1.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/tasty-recipes-lite\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-12-04T12:23:56+00:00\n"
+"POT-Creation-Date: 2026-01-20T10:58:46+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: tasty-recipes-lite\n"
@@ -45,9 +45,9 @@ msgstr ""
 
 #: functions.php:68
 #: inc/objects/class-recipe.php:79
-#: assets/dist/recipe-editor-js.build.js:381
-#: assets/recipe-editor/components/RecipeForm.jsx:70
-#: assets/dist/recipe-editor-js.build.js:416
+#: assets/dist/recipe-editor-js.build.js:2
+#: assets/recipe-editor/components/RecipeForm.jsx:106
+#: assets/dist/recipe-editor-js.build.js:528
 msgid "Description"
 msgstr ""
 
@@ -55,67 +55,74 @@ msgstr ""
 #: inc/objects/class-recipe.php:103
 #: templates/designs/snap/tasty-recipes.php:205
 #: templates/recipe/tasty-recipes.php:128
-#: assets/dist/recipe-editor-js.build.js:399
-#: assets/recipe-editor/components/RecipeForm.jsx:97
-#: assets/dist/recipe-editor-js.build.js:443
+#: assets/dist/recipe-editor-js.build.js:2
+#: assets/recipe-editor/components/RecipeForm.jsx:133
+#: assets/dist/recipe-editor-js.build.js:555
 msgid "Notes"
 msgstr ""
 
 #: functions.php:70
 #: templates/designs/snap/tasty-recipes.php:229
 #: templates/recipe/tasty-recipes.php:145
-#: assets/dist/recipe-editor-js.build.js:429
-#: assets/recipe-editor/components/RecipeForm.jsx:133
-#: assets/dist/recipe-editor-js.build.js:479
+#: assets/dist/recipe-editor-js.build.js:2
+#: assets/recipe-editor/components/RecipeForm.jsx:181
+#: assets/dist/recipe-editor-js.build.js:603
 msgid "Nutrition"
 msgstr ""
 
-#: inc/class-admin.php:234
+#: inc/class-admin.php:254
 msgid "Tasty Recipe"
 msgstr ""
 
-#: inc/class-admin.php:254
-#: inc/class-admin.php:271
+#: inc/class-admin.php:274
+#: inc/class-admin.php:291
 #: assets/block-editor/recipeBlock/Recipe.jsx:83
-#: assets/dist/recipes-block.build.js:215
+#: assets/dist/recipes-block.build.js:1
 #: assets/dist/recipes-block.build.js:186
 msgid "Edit Tasty Recipe"
 msgstr ""
 
-#: inc/class-admin.php:323
+#: inc/class-admin.php:343
 #: inc/class-settings.php:316
-#: inc/libs/tasty-framework/inc/Admin/Pages/Dashboard.php:291
 msgid "Settings"
 msgstr ""
 
-#: inc/class-admin.php:325
+#: inc/class-admin.php:345
 msgid "License manager"
 msgstr ""
 
-#: inc/class-admin.php:374
-#: inc/class-admin.php:402
+#: inc/class-admin.php:394
+#: inc/class-admin.php:422
 #: inc/designs/class-template.php:185
 msgid "Sorry, you don't have permission to do this."
 msgstr ""
 
-#: inc/class-admin.php:384
+#: inc/class-admin.php:404
 msgid "Couldn't count recipes. Please contact support for assistance."
 msgstr ""
 
-#: inc/class-admin.php:413
+#: inc/class-admin.php:433
 msgid "Couldn't convert recipes. Please contact support for assistance."
 msgstr ""
 
 #. translators: %1$s: post title, %2$d: post ID
-#: inc/class-admin.php:432
+#: inc/class-admin.php:452
 msgid "Couldn't convert recipe in '%1$s' (post %2$d). Please contact support for assistance."
 msgstr ""
 
-#: inc/class-admin.php:608
+#: inc/class-admin.php:628
 #: inc/class-editor.php:344
 #: inc/class-editor.php:349
 #: inc/class-editor.php:358
 msgid "You don't have permission to do this."
+msgstr ""
+
+#: inc/class-admin.php:817
+msgid "You do not have permission to perform this action."
+msgstr ""
+
+#: inc/class-admin.php:839
+msgid "Database migration completed successfully."
 msgstr ""
 
 #: inc/class-block-editor.php:130
@@ -123,75 +130,165 @@ msgstr ""
 msgid "(no title)"
 msgstr ""
 
-#: inc/class-content-model.php:66
-#: inc/class-content-model.php:78
+#: inc/class-content-model.php:74
+#: inc/class-content-model.php:86
 #: inc/class-settings.php:314
 msgid "Recipes"
 msgstr ""
 
-#: inc/class-content-model.php:67
+#: inc/class-content-model.php:75
 msgid "Recipe"
 msgstr ""
 
-#: inc/class-content-model.php:68
+#: inc/class-content-model.php:76
 msgid "All Recipes"
 msgstr ""
 
-#: inc/class-content-model.php:69
+#: inc/class-content-model.php:77
 msgid "New Recipe"
 msgstr ""
 
-#: inc/class-content-model.php:70
+#: inc/class-content-model.php:78
 msgid "Add New"
 msgstr ""
 
-#: inc/class-content-model.php:71
+#: inc/class-content-model.php:79
 msgid "Add New Recipe"
 msgstr ""
 
-#: inc/class-content-model.php:72
+#: inc/class-content-model.php:80
 #: inc/integrations/elementor/class-recipe-control.php:84
 msgid "Edit Recipe"
 msgstr ""
 
-#: inc/class-content-model.php:73
+#: inc/class-content-model.php:81
 msgid "View Recipes"
 msgstr ""
 
-#: inc/class-content-model.php:74
+#: inc/class-content-model.php:82
 msgid "Search Recipes"
 msgstr ""
 
-#: inc/class-content-model.php:75
+#: inc/class-content-model.php:83
 msgid "No recipes found"
 msgstr ""
 
-#: inc/class-content-model.php:76
+#: inc/class-content-model.php:84
 msgid "No recipes found in trash"
 msgstr ""
 
-#: inc/class-content-model.php:77
+#: inc/class-content-model.php:85
 msgid "Parent recipe"
 msgstr ""
 
-#. translators: Nutrifox HTTP error code.
+#: inc/class-content-model.php:115
+msgid "category"
+msgstr ""
+
+#: inc/class-content-model.php:115
+msgid "Categories"
+msgstr ""
+
+#: inc/class-content-model.php:116
+msgid "method"
+msgstr ""
+
+#: inc/class-content-model.php:116
+msgid "Methods"
+msgstr ""
+
+#: inc/class-content-model.php:117
+msgid "cuisine"
+msgstr ""
+
+#: inc/class-content-model.php:117
+msgid "Cuisines"
+msgstr ""
+
+#: inc/class-content-model.php:118
+msgid "diet"
+msgstr ""
+
+#: inc/class-content-model.php:118
+msgid "Diets"
+msgstr ""
+
+#. translators: %s is the plural of the taxonomy.
+#: inc/class-content-model.php:141
+msgid "Recipe %s"
+msgstr ""
+
+#. translators: %s is the plural of the taxonomy.
+#: inc/class-content-model.php:144
+msgid "Search %s"
+msgstr ""
+
+#. translators: %s is the plural of the taxonomy.
+#: inc/class-content-model.php:146
+msgid "All %s"
+msgstr ""
+
+#. translators: %s is the singular of the taxonomy.
+#: inc/class-content-model.php:148
+msgid "Edit %s"
+msgstr ""
+
+#. translators: %s is the singular of the taxonomy.
+#: inc/class-content-model.php:150
+msgid "Update %s"
+msgstr ""
+
+#. translators: %s is the singular of the taxonomy.
+#: inc/class-content-model.php:152
+msgid "Add New %s"
+msgstr ""
+
+#. translators: %s is the singular of the taxonomy.
 #: inc/class-content-model.php:154
+msgid "New %s Name"
+msgstr ""
+
+#. translators: %s is the plural of the taxonomy.
+#: inc/class-content-model.php:158
+msgid "Separate %s with commas"
+msgstr ""
+
+#. translators: %s is the plural of the taxonomy.
+#: inc/class-content-model.php:160
+msgid "Choose from the most used %s"
+msgstr ""
+
+#. translators: %s is the plural of the taxonomy.
+#: inc/class-content-model.php:162
+msgid "No %s found"
+msgstr ""
+
+#: inc/class-content-model.php:323
+msgid "This is a default term and cannot be deleted."
+msgstr ""
+
+#: inc/class-content-model.php:324
+msgid "Cannot Delete Term"
+msgstr ""
+
+#. translators: Nutrifox HTTP error code.
+#: inc/class-content-model.php:401
 msgid "Nutrifox API request failed (HTTP code %d)"
 msgstr ""
 
-#: inc/class-content-model.php:189
+#: inc/class-content-model.php:436
 msgid "Unknown shortcode in video URL."
 msgstr ""
 
-#: inc/class-content-model.php:208
+#: inc/class-content-model.php:455
 msgid "Shortcode is missing video id."
 msgstr ""
 
-#: inc/class-content-model.php:234
+#: inc/class-content-model.php:481
 msgid "Unknown provider for URL."
 msgstr ""
 
-#: inc/class-content-model.php:253
+#: inc/class-content-model.php:500
 msgid "Invalid response from provider."
 msgstr ""
 
@@ -244,8 +341,6 @@ msgid "Warning: Post revisions are not enabled, please back up post content befo
 msgstr ""
 
 #: inc/class-editor.php:266
-#: inc/libs/tasty-framework/inc/Admin/Pages/Dashboard.php:221
-#: inc/libs/tasty-framework/inc/Admin/Pages/Dashboard.php:346
 msgid "Learn more"
 msgstr ""
 
@@ -266,9 +361,38 @@ msgstr ""
 msgid "Invalid request"
 msgstr ""
 
-#: inc/class-editor.php:548
-#: inc/class-editor.php:624
+#: inc/class-editor.php:555
+#: inc/class-editor.php:631
 msgid "No recipe found."
+msgstr ""
+
+#: inc/class-editor.php:955
+#: inc/class-editor.php:1009
+#: inc/class-editor.php:1072
+#: inc/class-editor.php:1119
+msgid "Invalid taxonomy."
+msgstr ""
+
+#: inc/class-editor.php:1018
+#: inc/class-editor.php:1081
+msgid "Invalid term."
+msgstr ""
+
+#: inc/class-editor.php:1026
+msgid "Cannot edit default terms."
+msgstr ""
+
+#: inc/class-editor.php:1089
+msgid "Cannot delete default terms."
+msgstr ""
+
+#: inc/class-editor.php:1172
+#: assets/dist/recipe-editor-js.build.js:2
+#: assets/recipe-editor/components/taxonomy-select/useTaxonomyOptions.js:191
+#: assets/recipe-editor/components/taxonomy-select/utils.js:74
+#: assets/dist/recipe-editor-js.build.js:1542
+#: assets/dist/recipe-editor-js.build.js:1715
+msgid "Created by you"
 msgstr ""
 
 #: inc/class-frontend.php:101
@@ -334,8 +458,8 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: inc/class-recipe-explorer.php:100
-#: assets/dist/explorer-page.build.js:150
-#: assets/dist/explorer-page.build.js:710
+#: assets/dist/explorer-page.build.js:1
+#: assets/dist/explorer-page.build.js:2
 #: assets/js/recipe-explorer/components/EmptyState.jsx:64
 #: assets/js/recipe-explorer/components/partials/Breadcrumbs.jsx:21
 #: assets/dist/explorer-page.build.js:129
@@ -348,7 +472,7 @@ msgid "Recipe Title"
 msgstr ""
 
 #: inc/class-recipe-explorer.php:228
-#: assets/dist/explorer-page.build.js:241
+#: assets/dist/explorer-page.build.js:1
 #: assets/js/recipe-explorer/components/FiltersForm.jsx:93
 #: assets/dist/explorer-page.build.js:228
 msgid "Rating"
@@ -363,8 +487,8 @@ msgid "Last updated"
 msgstr ""
 
 #: inc/class-recipe-explorer.php:233
-#: inc/objects/class-recipe.php:171
-#: assets/dist/explorer-page.build.js:277
+#: inc/objects/class-recipe.php:173
+#: assets/dist/explorer-page.build.js:1
 #: assets/js/recipe-explorer/components/FiltersForm.jsx:123
 #: assets/dist/explorer-page.build.js:258
 msgid "Cuisine"
@@ -376,114 +500,118 @@ msgstr ""
 
 #: inc/class-recipe-explorer.php:235
 #: inc/objects/class-recipe.php:163
-#: assets/dist/explorer-page.build.js:317
+#: assets/dist/explorer-page.build.js:1
 #: assets/js/recipe-explorer/components/FiltersForm.jsx:171
 #: assets/dist/explorer-page.build.js:306
 msgid "Category"
 msgstr ""
 
 #: inc/class-recipe-explorer.php:236
-#: inc/objects/class-recipe.php:175
-#: assets/dist/explorer-page.build.js:357
+#: inc/objects/class-recipe.php:178
+#: assets/dist/explorer-page.build.js:1
 #: assets/js/recipe-explorer/components/FiltersForm.jsx:219
 #: assets/dist/explorer-page.build.js:354
 msgid "Diet"
 msgstr ""
 
 #: inc/class-recipe-explorer.php:237
-#: inc/class-shortcodes.php:604
-#: assets/dist/explorer-page.build.js:337
+#: inc/class-shortcodes.php:597
+#: assets/dist/explorer-page.build.js:1
 #: assets/js/recipe-explorer/components/FiltersForm.jsx:195
 #: assets/dist/explorer-page.build.js:330
 msgid "Author"
 msgstr ""
 
 #: inc/class-recipe-explorer.php:239
-#: assets/dist/explorer-page.build.js:16735
+#: assets/dist/explorer-page.build.js:2
 #: assets/js/recipe-explorer/explorerPage.js:125
-#: assets/dist/explorer-page.build.js:14545
+#: assets/dist/explorer-page.build.js:14710
 msgid "Columns"
 msgstr ""
 
-#: inc/class-recipe-explorer.php:449
-#: inc/class-recipe-explorer.php:503
-#: inc/class-recipe-explorer.php:525
-#: inc/class-recipe-explorer.php:577
+#: inc/class-recipe-explorer.php:476
+#: inc/class-recipe-explorer.php:530
+#: inc/class-recipe-explorer.php:553
+#: inc/class-recipe-explorer.php:611
 msgid "Recipe not found"
 msgstr ""
 
-#: inc/class-recipe-explorer.php:464
+#: inc/class-recipe-explorer.php:491
 msgid "Error!"
 msgstr ""
 
-#: inc/class-recipe-explorer.php:472
+#: inc/class-recipe-explorer.php:499
 msgid "The"
 msgstr ""
 
-#: inc/class-recipe-explorer.php:474
+#: inc/class-recipe-explorer.php:501
 msgid "Post created!"
 msgstr ""
 
 #. translators: %s: recipe title
-#: inc/class-recipe-explorer.php:478
-#: inc/class-recipe-explorer.php:606
+#: inc/class-recipe-explorer.php:505
+#: inc/class-recipe-explorer.php:640
 msgid "%s recipe has been embedded successfully."
 msgstr ""
 
-#: inc/class-recipe-explorer.php:482
-#: assets/dist/explorer-page.build.js:1308
+#: inc/class-recipe-explorer.php:509
+#: assets/dist/explorer-page.build.js:1
 #: assets/js/recipe-explorer/modals/trashModal.js:30
 #: assets/dist/explorer-page.build.js:1141
 msgid "Go to Post"
 msgstr ""
 
-#: inc/class-recipe-explorer.php:532
-#: inc/class-recipe-explorer.php:600
+#: inc/class-recipe-explorer.php:559
+msgid "You do not have permission to delete this recipe."
+msgstr ""
+
+#: inc/class-recipe-explorer.php:566
+#: inc/class-recipe-explorer.php:634
 msgid "The recipe"
 msgstr ""
 
-#: inc/class-recipe-explorer.php:534
+#: inc/class-recipe-explorer.php:568
 msgid "Recipe deleted!"
 msgstr ""
 
 #. translators: %s: recipe title
-#: inc/class-recipe-explorer.php:538
+#: inc/class-recipe-explorer.php:572
 msgid "%s has been deleted successfully."
 msgstr ""
 
-#: inc/class-recipe-explorer.php:563
+#: inc/class-recipe-explorer.php:597
 msgid "You need to select a post to embed the recipe in."
 msgstr ""
 
-#: inc/class-recipe-explorer.php:569
+#: inc/class-recipe-explorer.php:603
 msgid "You do not have permission to edit this post."
 msgstr ""
 
-#: inc/class-recipe-explorer.php:585
+#: inc/class-recipe-explorer.php:619
 msgid "Post not found"
 msgstr ""
 
-#: inc/class-recipe-explorer.php:602
+#: inc/class-recipe-explorer.php:636
 msgid "Recipe embedded!"
 msgstr ""
 
-#: inc/class-recipe-explorer.php:610
+#: inc/class-recipe-explorer.php:644
 msgid "Go to Recipe"
 msgstr ""
 
-#: inc/class-recipe-explorer.php:669
+#: inc/class-recipe-explorer.php:703
 msgid "Edit"
 msgstr ""
 
-#: inc/class-recipe-explorer.php:676
+#: inc/class-recipe-explorer.php:710
 msgid "Trash"
 msgstr ""
 
-#: inc/class-recipe-explorer.php:684
+#: inc/class-recipe-explorer.php:718
 msgid "Delete Permanently"
 msgstr ""
 
-#: inc/class-recipe-explorer.php:711
+#: inc/class-recipe-explorer.php:745
 msgid "Filters"
 msgstr ""
 
@@ -518,17 +646,17 @@ msgstr ""
 
 #: inc/class-shortcodes.php:263
 #: templates/recipe-print-controls.php:23
-#: assets/dist/settings.build.js:1084
+#: assets/dist/settings.build.js:1
 #: assets/settings/tabs/Settings.jsx:32
 #: assets/dist/settings.build.js:1121
 msgid "Print"
 msgstr ""
 
-#: inc/class-shortcodes.php:513
+#: inc/class-shortcodes.php:506
 msgid "No reviews"
 msgstr ""
 
-#: inc/class-shortcodes.php:843
+#: inc/class-shortcodes.php:836
 msgid "Recipe Card powered by"
 msgstr ""
 
@@ -540,419 +668,21 @@ msgstr ""
 msgid "No Tasty Recipe created yet. Click 'Edit Recipe' in the widget controls to create one."
 msgstr ""
 
-#: inc/libs/tasty-framework/inc/Abstracts/PluginInstaller.php:269
-msgid "Failed to read file content."
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Abstracts/PluginInstaller.php:278
-msgid "Failed to write to new file."
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Abstracts/PluginInstaller.php:482
-#: inc/libs/tasty-framework/inc/Admin/License/Manager.php:423
-#: inc/libs/tasty-framework/inc/Admin/License/Manager.php:461
-msgid "That's not a valid license."
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Admin/Inbox/APIClient.php:62
-msgid "No messages found."
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Admin/License/APIClient.php:42
-msgid "No plugins are associated with that license or it does not exist."
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Admin/License/APIClient.php:160
-msgid "Unknown error"
-msgstr ""
-
-#. translators: the plugin name.
-#: inc/libs/tasty-framework/inc/Admin/License/EDDUpdater.php:364
-msgid "There is a new version of %1$s available."
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Admin/License/EDDUpdater.php:370
-msgid "Contact your network administrator to install the update."
-msgstr ""
-
-#. translators: 1: opening anchor tag, do not translate 2. the new plugin version 3. closing anchor tag, do not translate.
-#: inc/libs/tasty-framework/inc/Admin/License/EDDUpdater.php:375
-msgid "%1$sView version %2$s details%3$s."
-msgstr ""
-
-#. translators: 1: changelog url, do not translate 2: new version 3: closing a tag, do not translate 4:upgrade plugin button, do not translate 5: closing a tag, do not translate
-#: inc/libs/tasty-framework/inc/Admin/License/EDDUpdater.php:385
-msgid "%1$sView version %2$s details%3$s or %4$supdate now%5$s."
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Admin/License/EDDUpdater.php:396
-msgid "Update now."
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Admin/License/EDDUpdater.php:642
-msgid "You do not have permission to install plugin updates"
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Admin/License/EDDUpdater.php:642
-#: inc/libs/tasty-framework/inc/Admin/Pages/Dashboard.php:195
-msgid "Error"
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Admin/License/Manager.php:115
-msgid "All Plugins"
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Admin/License/Manager.php:181
-msgid "Can't download plugin, please reach out to our support."
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Admin/License/Manager.php:188
-msgid "Downloaded and activated successfully."
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Admin/License/Manager.php:210
-msgid "Activated successfully."
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Admin/License/Manager.php:232
-msgid "Deactivated successfully."
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Admin/License/Manager.php:261
-msgid "License was removed successfully."
-msgstr ""
-
-#. translators: %s Plugin name.
-#: inc/libs/tasty-framework/inc/Admin/License/Manager.php:361
-msgid "%s is almost ready. Click the \"Enter License\" button above to continue."
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Admin/License/Manager.php:389
-msgid "The license was not saved."
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Admin/License/Manager.php:406
-#: inc/libs/tasty-framework/inc/Admin/License/Manager.php:503
-msgid "That's not a valid plugin."
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Admin/License/Manager.php:413
-#: inc/libs/tasty-framework/inc/Admin/License/Manager.php:478
-msgid "Can't connect to the WP Tasty server. Please try again later."
-msgstr ""
-
-#. translators: %1$s Error message.
-#: inc/libs/tasty-framework/inc/Admin/License/Manager.php:416
-msgid "Error: %1$s"
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Admin/License/Manager.php:520
-msgid "Not authorized!"
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Admin/Menu.php:100
-msgid "WP Tasty Dashboard"
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Admin/Menu.php:101
-#: inc/libs/tasty-framework/inc/Admin/Menu.php:106
-#: inc/libs/tasty-framework/inc/Admin/Menu.php:280
-msgid "Dashboard"
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Admin/Menu.php:138
-#: inc/libs/tasty-framework/inc/Admin/Pages/Dashboard.php:496
-msgid "Upgrade"
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Admin/Pages/Dashboard.php:90
-msgid "Get all our plugins for 25 websites for one low price ($926 value)"
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Admin/Pages/Dashboard.php:103
-msgid "Get This Deal"
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Admin/Pages/Dashboard.php:190
-msgid "Active"
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Admin/Pages/Dashboard.php:191
-msgid "Installed"
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Admin/Pages/Dashboard.php:192
-msgid "Not installed"
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Admin/Pages/Dashboard.php:193
-msgid "No License"
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Admin/Pages/Dashboard.php:194
-msgid "Expired"
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Admin/Pages/Dashboard.php:241
-msgid "Get a license"
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Admin/Pages/Dashboard.php:277
-msgid "Remove license"
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Admin/Pages/Dashboard.php:320
-msgid "Upgrade plan"
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Admin/Pages/Dashboard.php:351
-msgid "Activate plugin"
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Admin/Pages/Dashboard.php:380
-msgid "Deactivate"
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Admin/Pages/Dashboard.php:411
-msgid "Download"
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Admin/Pages/Dashboard.php:430
-msgid "Activate"
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Admin/Pages/Dashboard.php:460
-msgid "Renew"
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Admin/Sales/APIClient.php:97
-msgid "No sales found."
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Main.php:182
-#: inc/libs/tasty-framework/inc/Main.php:191
-#: inc/libs/tasty-framework/inc/Traits/Singleton.php:42
-#: inc/libs/tasty-framework/inc/Traits/Singleton.php:51
-msgid "Don't try again!"
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Utils/Common.php:85
-msgid "Save Changes"
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Utils/HumanTimeDiff.php:155
-msgid "year"
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Utils/HumanTimeDiff.php:156
-msgid "years"
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Utils/HumanTimeDiff.php:160
-msgid "month"
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Utils/HumanTimeDiff.php:161
-msgid "months"
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Utils/HumanTimeDiff.php:165
-msgid "week"
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Utils/HumanTimeDiff.php:166
-msgid "weeks"
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Utils/HumanTimeDiff.php:170
-msgid "day"
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Utils/HumanTimeDiff.php:171
-msgid "days"
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Utils/HumanTimeDiff.php:175
-msgid "hour"
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Utils/HumanTimeDiff.php:176
-msgid "hours"
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Utils/HumanTimeDiff.php:180
-msgid "minute"
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Utils/HumanTimeDiff.php:181
-msgid "minutes"
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Utils/HumanTimeDiff.php:185
-msgid "second"
-msgstr ""
-
-#: inc/libs/tasty-framework/inc/Utils/HumanTimeDiff.php:186
-msgid "seconds"
-msgstr ""
-
-#: inc/libs/tasty-framework/templates/Admin/dashboard-modal.php:19
-#: inc/libs/tasty-framework/templates/Admin/dashboard.php:24
-msgid "Enter License Key"
-msgstr ""
-
-#: inc/libs/tasty-framework/templates/Admin/dashboard-modal.php:24
-msgid "Activating a plugin, requires a valid license. If you have one, please fill in the form below."
-msgstr ""
-
-#: inc/libs/tasty-framework/templates/Admin/dashboard-modal.php:29
-msgid "Select Plugin"
-msgstr ""
-
-#: inc/libs/tasty-framework/templates/Admin/dashboard-modal.php:32
-#: inc/libs/tasty-framework/templates/Admin/dashboard-modal.php:34
-msgid "Add a valid license first"
-msgstr ""
-
-#: inc/libs/tasty-framework/templates/Admin/dashboard-modal.php:40
-msgid "License Key"
-msgstr ""
-
-#: inc/libs/tasty-framework/templates/Admin/dashboard-modal.php:46
-msgid "Activate License"
-msgstr ""
-
-#: inc/libs/tasty-framework/templates/Admin/dashboard-modal.php:55
-msgid "License Saved"
-msgstr ""
-
-#: inc/libs/tasty-framework/templates/Admin/dashboard-modal.php:60
-msgid "After activating your plugin license, you must download the plugin before you can use it. Here are the steps:"
-msgstr ""
-
-#: inc/libs/tasty-framework/templates/Admin/dashboard-modal.php:62
-msgid "Download plugin files"
-msgstr ""
-
-#: inc/libs/tasty-framework/templates/Admin/dashboard-modal.php:63
-msgid "Upload plugin"
-msgstr ""
-
-#: inc/libs/tasty-framework/templates/Admin/dashboard-modal.php:64
-msgid "Activate and install it"
-msgstr ""
-
-#: inc/libs/tasty-framework/templates/Admin/dashboard-modal.php:65
-msgid "Enjoy! 🎉"
-msgstr ""
-
-#: inc/libs/tasty-framework/templates/Admin/dashboard-modal.php:70
-msgid "Just one more step and you’ll be ready to start."
-msgstr ""
-
-#: inc/libs/tasty-framework/templates/Admin/dashboard-modal.php:74
-msgid "Thanks for choosing WP Tasty. Enjoy!"
-msgstr ""
-
-#: inc/libs/tasty-framework/templates/Admin/dashboard-modal.php:81
-msgid "Download Plugin"
-msgstr ""
-
-#: inc/libs/tasty-framework/templates/Admin/dashboard-modal.php:86
-msgid "Activate Plugin"
-msgstr ""
-
-#: inc/libs/tasty-framework/templates/Admin/dashboard-modal.php:90
-#: assets/dist/explorer-page.build.js:418
-#: assets/js/recipe-explorer/components/MessageModal.jsx:10
-#: assets/dist/explorer-page.build.js:401
-msgid "Close"
-msgstr ""
-
-#: inc/libs/tasty-framework/templates/Admin/dashboard.php:19
-msgid "Licensing"
-msgstr ""
-
-#: inc/libs/tasty-framework/templates/Admin/dashboard.php:67
-msgid "Refresh the page in 1 minute. If the problem continues, please reach out to support."
-msgstr ""
-
-#: inc/libs/tasty-framework/templates/Admin/dashboard.php:121
-msgid "all access"
-msgstr ""
-
-#: inc/libs/tasty-framework/templates/Admin/dashboard.php:124
-#: templates/about.php:73
-msgid "Save"
-msgstr ""
-
-#: inc/libs/tasty-framework/templates/Admin/header.php:28
-msgid "Support & Documentation"
-msgstr ""
-
-#: inc/libs/tasty-framework/templates/Admin/inbox-banner.php:16
-#: inc/libs/tasty-framework/templates/Admin/inbox-message.php:26
-msgid "Dismiss"
-msgstr ""
-
-#. translators: %s: Time stamp
-#: inc/libs/tasty-framework/templates/Admin/inbox-message.php:17
-msgid "%s ago"
-msgstr ""
-
-#: inc/libs/tasty-framework/templates/Admin/inbox.php:19
-msgid "Inbox"
-msgstr ""
-
-#: inc/libs/tasty-framework/templates/Admin/inbox.php:25
-msgid "Dismissed"
-msgstr ""
-
-#: inc/libs/tasty-framework/templates/Admin/inbox.php:39
-msgid "No messages"
-msgstr ""
-
-#: inc/libs/tasty-framework/templates/Admin/inbox.php:40
-msgid "You don't have any messages"
-msgstr ""
-
-#: inc/libs/tasty-framework/templates/Admin/inbox.php:42
-msgid "Good news! No notifications at the moment."
-msgstr ""
-
-#. translators: %1$s Plugin name.
-#: inc/libs/tasty-framework/templates/Admin/Notices/license-empty.php:17
-msgid "%1$s is almost ready."
-msgstr ""
-
-#: inc/libs/tasty-framework/templates/Admin/Notices/license-empty.php:21
-msgid "Enter your license to continue."
-msgstr ""
-
-#: inc/libs/tasty-framework/templates/Admin/Notices/license-invalid.php:29
-msgid "Think you've reached this message in error?"
-msgstr ""
-
-#. translators: %1$s Opening anchor tag, %1$s Closing anchor tag.
-#: inc/libs/tasty-framework/templates/Admin/Notices/license-invalid.php:34
-msgid "%1$sSubmit a support ticket%2$s, and we'll do our best to help out."
-msgstr ""
-
 #: inc/objects/class-recipe.php:65
 msgid "ID"
 msgstr ""
 
 #: inc/objects/class-recipe.php:68
-#: assets/dist/recipe-editor-js.build.js:354
-#: assets/recipe-editor/components/RecipeForm.jsx:35
-#: assets/dist/recipe-editor-js.build.js:381
+#: assets/dist/recipe-editor-js.build.js:2
+#: assets/recipe-editor/components/RecipeForm.jsx:71
+#: assets/dist/recipe-editor-js.build.js:493
 msgid "Title"
 msgstr ""
 
 #: inc/objects/class-recipe.php:72
-#: assets/dist/recipe-editor-js.build.js:366
-#: assets/recipe-editor/components/RecipeForm.jsx:50
-#: assets/dist/recipe-editor-js.build.js:396
+#: assets/dist/recipe-editor-js.build.js:2
+#: assets/recipe-editor/components/RecipeForm.jsx:86
+#: assets/dist/recipe-editor-js.build.js:508
 msgid "Author Name"
 msgstr ""
 
@@ -967,9 +697,9 @@ msgstr ""
 #: inc/objects/class-recipe.php:87
 #: templates/designs/snap/tasty-recipes.php:135
 #: templates/recipe/tasty-recipes.php:70
-#: assets/dist/recipe-editor-js.build.js:387
-#: assets/recipe-editor/components/RecipeForm.jsx:79
-#: assets/dist/recipe-editor-js.build.js:425
+#: assets/dist/recipe-editor-js.build.js:2
+#: assets/recipe-editor/components/RecipeForm.jsx:115
+#: assets/dist/recipe-editor-js.build.js:537
 msgid "Ingredients"
 msgstr ""
 
@@ -980,9 +710,9 @@ msgstr ""
 #: inc/objects/class-recipe.php:95
 #: templates/designs/snap/tasty-recipes.php:168
 #: templates/recipe/tasty-recipes.php:94
-#: assets/dist/recipe-editor-js.build.js:393
-#: assets/recipe-editor/components/RecipeForm.jsx:88
-#: assets/dist/recipe-editor-js.build.js:434
+#: assets/dist/recipe-editor-js.build.js:2
+#: assets/recipe-editor/components/RecipeForm.jsx:124
+#: assets/dist/recipe-editor-js.build.js:546
 msgid "Instructions"
 msgstr ""
 
@@ -1040,103 +770,55 @@ msgstr ""
 msgid "Yield"
 msgstr ""
 
-#: inc/objects/class-recipe.php:167
+#: inc/objects/class-recipe.php:168
 msgid "Method"
 msgstr ""
 
-#: inc/objects/class-recipe.php:178
-msgid "N/A"
-msgstr ""
-
-#: inc/objects/class-recipe.php:179
-msgid "Diabetic"
-msgstr ""
-
-#: inc/objects/class-recipe.php:180
-msgid "Gluten Free"
-msgstr ""
-
-#: inc/objects/class-recipe.php:181
-msgid "Halal"
-msgstr ""
-
-#: inc/objects/class-recipe.php:182
-msgid "Hindu"
-msgstr ""
-
-#: inc/objects/class-recipe.php:183
-msgid "Kosher"
-msgstr ""
-
-#: inc/objects/class-recipe.php:184
-msgid "Low Calorie"
-msgstr ""
-
-#: inc/objects/class-recipe.php:185
-msgid "Low Fat"
-msgstr ""
-
-#: inc/objects/class-recipe.php:186
-msgid "Low Lactose"
-msgstr ""
-
-#: inc/objects/class-recipe.php:187
-msgid "Low Salt"
-msgstr ""
-
-#: inc/objects/class-recipe.php:188
-msgid "Vegan"
-msgstr ""
-
-#: inc/objects/class-recipe.php:189
-msgid "Vegetarian"
-msgstr ""
-
-#: inc/objects/class-recipe.php:203
+#: inc/objects/class-recipe.php:193
 msgid "Serving Size"
 msgstr ""
 
-#: inc/objects/class-recipe.php:208
+#: inc/objects/class-recipe.php:198
 msgid "Calories"
 msgstr ""
 
-#: inc/objects/class-recipe.php:213
+#: inc/objects/class-recipe.php:203
 msgid "Sugar"
 msgstr ""
 
-#: inc/objects/class-recipe.php:218
+#: inc/objects/class-recipe.php:208
 msgid "Sodium"
 msgstr ""
 
-#: inc/objects/class-recipe.php:223
+#: inc/objects/class-recipe.php:213
 msgid "Fat"
 msgstr ""
 
-#: inc/objects/class-recipe.php:228
+#: inc/objects/class-recipe.php:218
 msgid "Saturated Fat"
 msgstr ""
 
-#: inc/objects/class-recipe.php:233
+#: inc/objects/class-recipe.php:223
 msgid "Unsaturated Fat"
 msgstr ""
 
-#: inc/objects/class-recipe.php:237
+#: inc/objects/class-recipe.php:227
 msgid "Trans Fat"
 msgstr ""
 
-#: inc/objects/class-recipe.php:242
+#: inc/objects/class-recipe.php:232
 msgid "Carbohydrates"
 msgstr ""
 
-#: inc/objects/class-recipe.php:247
+#: inc/objects/class-recipe.php:237
 msgid "Fiber"
 msgstr ""
 
-#: inc/objects/class-recipe.php:252
+#: inc/objects/class-recipe.php:242
 msgid "Protein"
 msgstr ""
 
-#: inc/objects/class-recipe.php:257
+#: inc/objects/class-recipe.php:247
 msgid "Cholesterol"
 msgstr ""
 
@@ -1209,9 +891,29 @@ msgstr ""
 msgid "Allow WP Tasty to track plugin usage to help us ensure compatibility and simplify our settings."
 msgstr ""
 
+#: templates/about.php:73
+msgid "Save"
+msgstr ""
+
 #. translators: %s: template name
 #: templates/admin/locked-template.php:15
 msgid "Preview %s template"
+msgstr ""
+
+#: templates/admin/notice-db-migration.php:15
+msgid "A database update"
+msgstr ""
+
+#: templates/admin/notice-db-migration.php:15
+msgid "is required to ensure WP Tasty continues to work properly."
+msgstr ""
+
+#: templates/admin/notice-db-migration.php:19
+msgid "Update WP Tasty Database"
+msgstr ""
+
+#: templates/admin/notice-db-migration.php:20
+msgid "Updating..."
 msgstr ""
 
 #: templates/admin/onboarding-wizard/index.php:34
@@ -1290,9 +992,9 @@ msgstr ""
 
 #: templates/designs/snap/tasty-recipes.php:174
 #: templates/recipe/tasty-recipes.php:100
-#: assets/dist/settings.build.js:1177
-#: assets/settings/tabs/Settings.jsx:155
-#: assets/dist/settings.build.js:1244
+#: assets/dist/settings.build.js:1
+#: assets/settings/tabs/Settings.jsx:189
+#: assets/dist/settings.build.js:1278
 msgid "Off"
 msgstr ""
 
@@ -1308,7 +1010,7 @@ msgstr ""
 
 #: templates/parts/metabox.php:12
 #: assets/block-editor/metabox.js:15
-#: assets/dist/recipes-block.build.js:138
+#: assets/dist/recipes-block.build.js:1
 #: assets/dist/recipes-block.build.js:84
 msgid "Conversion options for the following products will not be shown:"
 msgstr ""
@@ -1368,199 +1070,178 @@ msgid "Looks like you're using a custom recipe card template. To enable design c
 msgstr ""
 
 #: assets/block-editor/index.js:16
-#: assets/dist/recipes-block.build.js:11781
-#: assets/dist/recipes-block.build.js:10498
+#: assets/dist/recipes-block.build.js:1
+#: assets/dist/recipes-block.build.js:10499
 msgid "recipe"
 msgstr ""
 
 #: assets/block-editor/recipeBlock/Recipe.jsx:37
-#: assets/dist/recipes-block.build.js:194
+#: assets/dist/recipes-block.build.js:1
 #: assets/dist/recipes-block.build.js:140
 msgid "This is a non-food recipe (craft, cleaning product, etc)"
 msgstr ""
 
 #: assets/block-editor/recipeBlock/Recipe.jsx:51
-#: assets/dist/recipes-block.build.js:199
+#: assets/dist/recipes-block.build.js:1
 #: assets/dist/recipes-block.build.js:154
 msgid "Disable unit conversion for this recipe"
 msgstr ""
 
 #: assets/block-editor/recipeBlock/Recipe.jsx:65
-#: assets/dist/recipes-block.build.js:204
+#: assets/dist/recipes-block.build.js:1
 #: assets/dist/recipes-block.build.js:168
 msgid "Disable scaling for this recipe"
 msgstr ""
 
 #: assets/block-editor/recipeBlock/Recipe.jsx:104
-#: assets/dist/recipes-block.build.js:230
+#: assets/dist/recipes-block.build.js:1
 #: assets/dist/recipes-block.build.js:207
 msgid "Select Recipe"
 msgstr ""
 
 #: assets/block-editor/recipeBlock/Recipe.jsx:118
-#: assets/dist/recipes-block.build.js:244
+#: assets/dist/recipes-block.build.js:1
 #: assets/dist/recipes-block.build.js:221
 msgid "Recipe options"
 msgstr ""
 
 #: assets/block-editor/recipeBlock/Recipe.jsx:125
-#: assets/dist/recipes-block.build.js:247
+#: assets/dist/recipes-block.build.js:1
 #: assets/dist/recipes-block.build.js:228
 msgid "Override author link"
 msgstr ""
 
 #: assets/block-editor/recipeBlock/RecipePlaceholder.jsx:35
-#: assets/dist/recipes-block.build.js:324
+#: assets/dist/recipes-block.build.js:1
 #: assets/dist/recipes-block.build.js:292
 msgid "Create Tasty Recipe"
 msgstr ""
 
 #: assets/block-editor/recipeBlock/RecipePlaceholder.jsx:47
-#: assets/dist/recipes-block.build.js:339
+#: assets/dist/recipes-block.build.js:1
 #: assets/dist/recipes-block.build.js:304
 msgid "Tasty Recipes"
 msgstr ""
 
 #: assets/block-editor/recipeBlock/RecipePlaceholder.jsx:50
-#: assets/dist/recipes-block.build.js:342
+#: assets/dist/recipes-block.build.js:1
 #: assets/dist/recipes-block.build.js:307
 msgid "Select an already created recipe to embed or create a new one from scratch."
 msgstr ""
 
 #: assets/block-editor/recipeBlock/RecipePlaceholder.jsx:61
-#: assets/dist/recipes-block.build.js:348
+#: assets/dist/recipes-block.build.js:1
 #: assets/dist/recipes-block.build.js:318
 msgid "Create new recipe"
 msgstr ""
 
 #: assets/block-editor/recipeBlock/RecipePlaceholder.jsx:70
-#: assets/dist/recipes-block.build.js:352
+#: assets/dist/recipes-block.build.js:1
 #: assets/dist/recipes-block.build.js:327
 msgid "Embed existing recipe"
 msgstr ""
 
 #: assets/block-editor/recipeBlock/RecipePlaceholder.jsx:82
-#: assets/dist/recipes-block.build.js:359
+#: assets/dist/recipes-block.build.js:1
 #: assets/dist/recipes-block.build.js:339
 msgid "Select existing recipe"
 msgstr ""
 
-#: assets/dist/explorer-page.build.js:48
-#: assets/js/recipe-explorer/components/AfterCreationForm.jsx:19
-#: assets/dist/explorer-page.build.js:19
-msgid "Embed Recipe"
+#: assets/dist/database-migration.build.js:1
+#: assets/js/database-migration/index.js:41
+#: assets/dist/database-migration.build.js:94
+msgid "Error:"
 msgstr ""
 
-#: assets/dist/explorer-page.build.js:133
-#: assets/js/recipe-explorer/components/EmptyState.jsx:33
-#: assets/dist/explorer-page.build.js:98
-msgid "No recipes yet"
+#: assets/dist/database-migration.build.js:1
+#: assets/dist/database-migration.build.js:2
+#: assets/js/database-migration/index.js:65
+#: assets/js/database-migration/index.js:87
+#: assets/dist/database-migration.build.js:118
+#: assets/dist/database-migration.build.js:140
+msgid "An error occurred during migration."
 msgstr ""
 
-#: assets/dist/explorer-page.build.js:135
-#: assets/js/recipe-explorer/components/EmptyState.jsx:35
-#: assets/dist/explorer-page.build.js:100
-msgid "No recipes yet? Click \"Create Recipe\" to start your culinary journey!"
+#. translators: %d: number of remaining recipes
+#: assets/dist/database-migration.build.js:2
+#: assets/js/database-migration/index.js:76
+#: assets/dist/database-migration.build.js:129
+msgid "Updating… (%d remaining)"
 msgstr ""
 
-#: assets/dist/explorer-page.build.js:137
-#: assets/js/recipe-explorer/components/EmptyState.jsx:42
-#: assets/dist/explorer-page.build.js:107
-msgid "Check out <link>our docs</link> to read more."
+#: assets/dist/database-migration.build.js:2
+#: assets/js/database-migration/index.js:29
+#: assets/dist/database-migration.build.js:82
+msgid "Success!"
 msgstr ""
 
-#: assets/dist/explorer-page.build.js:250
-#: assets/js/recipe-explorer/components/FiltersForm.jsx:102
-#: assets/dist/explorer-page.build.js:237
-msgid "Select rating"
+#: assets/dist/database-migration.build.js:2
+#: assets/js/database-migration/index.js:30
+#: assets/dist/database-migration.build.js:83
+msgid "Database update completed successfully."
 msgstr ""
 
-#: assets/dist/explorer-page.build.js:254
-#: assets/js/recipe-explorer/components/FiltersForm.jsx:105
-#: assets/dist/explorer-page.build.js:240
-msgid "5 stars"
+#: assets/dist/explorer-page.build.js:1
+#: assets/js/recipe-explorer/components/partials/Breadcrumbs.jsx:32
+#: assets/dist/explorer-page.build.js:630
+msgid "Post Selection"
 msgstr ""
 
-#: assets/dist/explorer-page.build.js:258
-#: assets/js/recipe-explorer/components/FiltersForm.jsx:108
-#: assets/dist/explorer-page.build.js:243
-msgid "4 stars"
+#: assets/dist/explorer-page.build.js:1
+#: assets/js/recipe-explorer/components/partials/Breadcrumbs.jsx:41
+#: assets/dist/explorer-page.build.js:639
+msgid "Embed"
 msgstr ""
 
-#: assets/dist/explorer-page.build.js:262
-#: assets/js/recipe-explorer/components/FiltersForm.jsx:111
-#: assets/dist/explorer-page.build.js:246
-msgid "3 stars"
+#: assets/dist/explorer-page.build.js:1
+#: assets/js/recipe-explorer/components/pages/SelectPage.jsx:23
+#: assets/dist/explorer-page.build.js:555
+msgid "Embed in existing post"
 msgstr ""
 
-#: assets/dist/explorer-page.build.js:266
-#: assets/js/recipe-explorer/components/FiltersForm.jsx:114
-#: assets/dist/explorer-page.build.js:249
-msgid "2 stars"
+#: assets/dist/explorer-page.build.js:1
+#: assets/js/recipe-explorer/components/pages/SelectPage.jsx:27
+#: assets/dist/explorer-page.build.js:559
+msgid "Embed your recipe in an existing post."
 msgstr ""
 
-#: assets/dist/explorer-page.build.js:270
-#: assets/js/recipe-explorer/components/FiltersForm.jsx:117
-#: assets/dist/explorer-page.build.js:252
-msgid "1 star"
+#: assets/dist/explorer-page.build.js:1
+#: assets/js/recipe-explorer/components/pages/SelectPage.jsx:37
+#: assets/dist/explorer-page.build.js:569
+msgid "Create new post"
 msgstr ""
 
-#: assets/dist/explorer-page.build.js:286
-#: assets/js/recipe-explorer/components/FiltersForm.jsx:132
-#: assets/dist/explorer-page.build.js:267
-msgid "Select cuisine"
+#: assets/dist/explorer-page.build.js:1
+#: assets/js/recipe-explorer/components/pages/SelectPage.jsx:38
+#: assets/dist/explorer-page.build.js:570
+msgid "Create a new post and embed your recipe."
 msgstr ""
 
-#: assets/dist/explorer-page.build.js:297
-#: assets/js/recipe-explorer/components/FiltersForm.jsx:147
-#: assets/dist/explorer-page.build.js:282
-msgid "Cooking method"
+#: assets/dist/explorer-page.build.js:1
+#: assets/js/recipe-explorer/components/pages/SelectPage.jsx:47
+#: assets/dist/explorer-page.build.js:579
+msgid "<link>Skip this step</link> and add the recipe later from inside a post or page."
 msgstr ""
 
-#: assets/dist/explorer-page.build.js:306
-#: assets/js/recipe-explorer/components/FiltersForm.jsx:156
-#: assets/dist/explorer-page.build.js:291
-msgid "Select cooking method"
+#: assets/dist/explorer-page.build.js:1
+#: assets/js/recipe-explorer/components/partials/EmbedStepFooter.jsx:15
+#: assets/dist/explorer-page.build.js:659
+msgid "Back"
 msgstr ""
 
-#: assets/dist/explorer-page.build.js:326
-#: assets/js/recipe-explorer/components/FiltersForm.jsx:180
-#: assets/dist/explorer-page.build.js:315
-msgid "Select category"
+#: assets/dist/explorer-page.build.js:1
+#: assets/js/recipe-explorer/components/partials/SearchComponent.jsx:63
+#: assets/dist/explorer-page.build.js:734
+msgid "Select post to embed recipe"
 msgstr ""
 
-#: assets/dist/explorer-page.build.js:346
-#: assets/js/recipe-explorer/components/FiltersForm.jsx:204
-#: assets/dist/explorer-page.build.js:339
-msgid "Select author"
+#: assets/dist/explorer-page.build.js:1
+#: assets/js/recipe-explorer/components/partials/SearchComponent.jsx:78
+#: assets/dist/explorer-page.build.js:749
+msgid "Start typing to search…"
 msgstr ""
 
-#: assets/dist/explorer-page.build.js:366
-#: assets/js/recipe-explorer/components/FiltersForm.jsx:228
-#: assets/dist/explorer-page.build.js:363
-msgid "Select diet"
-msgstr ""
-
-#: assets/dist/explorer-page.build.js:379
-#: assets/js/recipe-explorer/components/FiltersForm.jsx:247
-#: assets/dist/explorer-page.build.js:382
-msgid "Reset"
-msgstr ""
-
-#: assets/dist/explorer-page.build.js:383
-#: assets/js/recipe-explorer/components/FiltersForm.jsx:250
-#: assets/dist/explorer-page.build.js:385
-msgid "Apply Filters"
-msgstr ""
-
-#: assets/dist/explorer-page.build.js:509
-#: assets/js/recipe-explorer/components/pages/CreatePage.jsx:28
-#: assets/dist/explorer-page.build.js:470
-msgid "Enter title for new post"
-msgstr ""
-
-#: assets/dist/explorer-page.build.js:519
-#: assets/dist/explorer-page.build.js:585
+#: assets/dist/explorer-page.build.js:1
 #: assets/js/recipe-explorer/components/pages/CreatePage.jsx:40
 #: assets/js/recipe-explorer/components/pages/EmbedPage.jsx:40
 #: assets/dist/explorer-page.build.js:482
@@ -1568,273 +1249,389 @@ msgstr ""
 msgid "Create & Embed"
 msgstr ""
 
-#: assets/dist/explorer-page.build.js:638
-#: assets/js/recipe-explorer/components/pages/SelectPage.jsx:23
-#: assets/dist/explorer-page.build.js:555
-msgid "Embed in existing post"
+#: assets/dist/explorer-page.build.js:1
+#: assets/js/recipe-explorer/components/pages/CreatePage.jsx:28
+#: assets/dist/explorer-page.build.js:470
+msgid "Enter title for new post"
 msgstr ""
 
-#: assets/dist/explorer-page.build.js:639
-#: assets/js/recipe-explorer/components/pages/SelectPage.jsx:27
-#: assets/dist/explorer-page.build.js:559
-msgid "Embed your recipe in an existing post."
+#: assets/dist/explorer-page.build.js:1
+#: assets/js/recipe-explorer/components/AfterCreationForm.jsx:19
+#: assets/dist/explorer-page.build.js:19
+msgid "Embed Recipe"
 msgstr ""
 
-#: assets/dist/explorer-page.build.js:647
-#: assets/js/recipe-explorer/components/pages/SelectPage.jsx:37
-#: assets/dist/explorer-page.build.js:569
-msgid "Create new post"
+#: assets/dist/explorer-page.build.js:1
+#: assets/js/recipe-explorer/components/MessageModal.jsx:10
+#: assets/dist/explorer-page.build.js:401
+msgid "Close"
 msgstr ""
 
-#: assets/dist/explorer-page.build.js:648
-#: assets/js/recipe-explorer/components/pages/SelectPage.jsx:38
-#: assets/dist/explorer-page.build.js:570
-msgid "Create a new post and embed your recipe."
+#: assets/dist/explorer-page.build.js:1
+#: assets/js/recipe-explorer/components/FiltersForm.jsx:102
+#: assets/dist/explorer-page.build.js:237
+msgid "Select rating"
 msgstr ""
 
-#: assets/dist/explorer-page.build.js:653
-#: assets/js/recipe-explorer/components/pages/SelectPage.jsx:47
-#: assets/dist/explorer-page.build.js:579
-msgid "<link>Skip this step</link> and add the recipe later from inside a post or page."
+#: assets/dist/explorer-page.build.js:1
+#: assets/js/recipe-explorer/components/FiltersForm.jsx:105
+#: assets/dist/explorer-page.build.js:240
+msgid "5 stars"
 msgstr ""
 
-#: assets/dist/explorer-page.build.js:720
-#: assets/js/recipe-explorer/components/partials/Breadcrumbs.jsx:32
-#: assets/dist/explorer-page.build.js:630
-msgid "Post Selection"
+#: assets/dist/explorer-page.build.js:1
+#: assets/js/recipe-explorer/components/FiltersForm.jsx:108
+#: assets/dist/explorer-page.build.js:243
+msgid "4 stars"
 msgstr ""
 
-#: assets/dist/explorer-page.build.js:729
-#: assets/js/recipe-explorer/components/partials/Breadcrumbs.jsx:41
-#: assets/dist/explorer-page.build.js:639
-msgid "Embed"
+#: assets/dist/explorer-page.build.js:1
+#: assets/js/recipe-explorer/components/FiltersForm.jsx:111
+#: assets/dist/explorer-page.build.js:246
+msgid "3 stars"
 msgstr ""
 
-#: assets/dist/explorer-page.build.js:764
-#: assets/js/recipe-explorer/components/partials/EmbedStepFooter.jsx:15
-#: assets/dist/explorer-page.build.js:659
-msgid "Back"
+#: assets/dist/explorer-page.build.js:1
+#: assets/js/recipe-explorer/components/FiltersForm.jsx:114
+#: assets/dist/explorer-page.build.js:249
+msgid "2 stars"
 msgstr ""
 
-#: assets/dist/explorer-page.build.js:849
-#: assets/js/recipe-explorer/components/partials/SearchComponent.jsx:63
-#: assets/dist/explorer-page.build.js:734
-msgid "Select post to embed recipe"
+#: assets/dist/explorer-page.build.js:1
+#: assets/js/recipe-explorer/components/FiltersForm.jsx:117
+#: assets/dist/explorer-page.build.js:252
+msgid "1 star"
 msgstr ""
 
-#: assets/dist/explorer-page.build.js:859
-#: assets/js/recipe-explorer/components/partials/SearchComponent.jsx:78
-#: assets/dist/explorer-page.build.js:749
-msgid "Start typing to search…"
+#: assets/dist/explorer-page.build.js:1
+#: assets/js/recipe-explorer/components/FiltersForm.jsx:132
+#: assets/dist/explorer-page.build.js:267
+msgid "Select cuisine"
 msgstr ""
 
-#: assets/dist/explorer-page.build.js:1250
+#: assets/dist/explorer-page.build.js:1
+#: assets/js/recipe-explorer/components/FiltersForm.jsx:147
+#: assets/dist/explorer-page.build.js:282
+msgid "Cooking method"
+msgstr ""
+
+#: assets/dist/explorer-page.build.js:1
+#: assets/js/recipe-explorer/components/FiltersForm.jsx:156
+#: assets/dist/explorer-page.build.js:291
+msgid "Select cooking method"
+msgstr ""
+
+#: assets/dist/explorer-page.build.js:1
+#: assets/js/recipe-explorer/components/FiltersForm.jsx:180
+#: assets/dist/explorer-page.build.js:315
+msgid "Select category"
+msgstr ""
+
+#: assets/dist/explorer-page.build.js:1
+#: assets/js/recipe-explorer/components/FiltersForm.jsx:204
+#: assets/dist/explorer-page.build.js:339
+msgid "Select author"
+msgstr ""
+
+#: assets/dist/explorer-page.build.js:1
+#: assets/js/recipe-explorer/components/FiltersForm.jsx:228
+#: assets/dist/explorer-page.build.js:363
+msgid "Select diet"
+msgstr ""
+
+#: assets/dist/explorer-page.build.js:1
+#: assets/js/recipe-explorer/components/FiltersForm.jsx:247
+#: assets/dist/explorer-page.build.js:382
+msgid "Reset"
+msgstr ""
+
+#: assets/dist/explorer-page.build.js:1
+#: assets/js/recipe-explorer/components/FiltersForm.jsx:250
+#: assets/dist/explorer-page.build.js:385
+msgid "Apply Filters"
+msgstr ""
+
+#: assets/dist/explorer-page.build.js:1
+#: assets/js/recipe-explorer/modals/trashModal.js:36
+#: assets/dist/explorer-page.build.js:1147
+msgid "Recipe Can’t be Deleted"
+msgstr ""
+
+#: assets/dist/explorer-page.build.js:1
+#: assets/js/recipe-explorer/modals/trashModal.js:37
+#: assets/dist/explorer-page.build.js:1148
+msgid "This recipe can't be deleted since it is embedded in your site. Please remove the recipe from your page first."
+msgstr ""
+
+#: assets/dist/explorer-page.build.js:1
+#: assets/dist/recipe-editor-js.build.js:2
 #: assets/js/recipe-explorer/modals/permanentDeleteModal.js:40
+#: assets/recipe-editor/components/taxonomy-select/DeleteConfirmation.jsx:54
 #: assets/dist/explorer-page.build.js:1088
+#: assets/dist/recipe-editor-js.build.js:1036
 msgid "Delete"
 msgstr ""
 
-#: assets/dist/explorer-page.build.js:1254
+#: assets/dist/explorer-page.build.js:1
 #: assets/js/recipe-explorer/modals/permanentDeleteModal.js:48
 #: assets/dist/explorer-page.build.js:1096
 msgid "Permanently Delete Recipe"
 msgstr ""
 
 #. translators: %s: recipe name
-#: assets/dist/explorer-page.build.js:1256
+#: assets/dist/explorer-page.build.js:2
 #: assets/js/recipe-explorer/modals/permanentDeleteModal.js:51
 #: assets/dist/explorer-page.build.js:1099
 msgid "Are you sure you want to permanently delete the %s recipe? This action cannot be undone."
 msgstr ""
 
-#: assets/dist/explorer-page.build.js:1259
+#: assets/dist/explorer-page.build.js:2
+#: assets/dist/recipe-editor-js.build.js:2
 #: assets/js/recipe-explorer/modals/permanentDeleteModal.js:59
+#: assets/recipe-editor/components/taxonomy-select/DeleteConfirmation.jsx:44
 #: assets/dist/explorer-page.build.js:1107
+#: assets/dist/recipe-editor-js.build.js:1026
 msgid "Cancel"
 msgstr ""
 
-#: assets/dist/explorer-page.build.js:1311
-#: assets/js/recipe-explorer/modals/trashModal.js:36
-#: assets/dist/explorer-page.build.js:1147
-msgid "Recipe Can’t be Deleted"
+#: assets/dist/explorer-page.build.js:2
+#: assets/js/recipe-explorer/components/EmptyState.jsx:33
+#: assets/dist/explorer-page.build.js:98
+msgid "No recipes yet"
 msgstr ""
 
-#: assets/dist/explorer-page.build.js:1312
-#: assets/js/recipe-explorer/modals/trashModal.js:37
-#: assets/dist/explorer-page.build.js:1148
-msgid "This recipe can't be deleted since it is embedded in your site. Please remove the recipe from your page first."
+#: assets/dist/explorer-page.build.js:2
+#: assets/js/recipe-explorer/components/EmptyState.jsx:35
+#: assets/dist/explorer-page.build.js:100
+msgid "No recipes yet? Click \"Create Recipe\" to start your culinary journey!"
 msgstr ""
 
-#: assets/dist/explorer-page.build.js:16727
+#: assets/dist/explorer-page.build.js:2
+#: assets/js/recipe-explorer/components/EmptyState.jsx:42
+#: assets/dist/explorer-page.build.js:107
+msgid "Check out <link>our docs</link> to read more."
+msgstr ""
+
+#: assets/dist/explorer-page.build.js:2
 #: assets/js/recipe-explorer/explorerPage.js:113
-#: assets/dist/explorer-page.build.js:14533
+#: assets/dist/explorer-page.build.js:14698
 msgid "Search recipes"
 msgstr ""
 
-#: assets/dist/explorer-page.build.js:16761
+#: assets/dist/explorer-page.build.js:2
 #: assets/js/recipe-explorer/explorerPage.js:159
-#: assets/dist/explorer-page.build.js:14579
+#: assets/dist/explorer-page.build.js:14744
 msgid "Not available on Lite plan"
 msgstr ""
 
-#: assets/dist/recipe-editor-js.build.js:63
-#: assets/recipe-editor/components/FieldGroup.jsx:63
-#: assets/dist/recipe-editor-js.build.js:58
-msgid "+ Time"
+#. translators: 1: Term name, 2: Number of recipes
+#: assets/dist/recipe-editor-js.build.js:2
+#: assets/recipe-editor/components/taxonomy-select/DeleteConfirmation.jsx:27
+#: assets/dist/recipe-editor-js.build.js:1009
+msgid "[%1$s] is linked to %2$d recipes. Delete?"
 msgstr ""
 
-#: assets/dist/recipe-editor-js.build.js:63
-#: assets/recipe-editor/components/FieldGroup.jsx:64
-#: assets/dist/recipe-editor-js.build.js:59
+#: assets/dist/recipe-editor-js.build.js:2
+#: assets/recipe-editor/components/taxonomy-select/utils.js:7
+#: assets/dist/recipe-editor-js.build.js:1648
+msgid "Add"
+msgstr ""
+
+#: assets/dist/recipe-editor-js.build.js:2
+#: assets/recipe-editor/components/FieldGroup.jsx:65
+#: assets/dist/recipe-editor-js.build.js:65
 msgid "- Time"
 msgstr ""
 
-#: assets/dist/recipe-editor-js.build.js:132
-#: assets/recipe-editor/components/FieldGroup.jsx:171
-#: assets/dist/recipe-editor-js.build.js:166
+#: assets/dist/recipe-editor-js.build.js:2
+#: assets/recipe-editor/components/FieldGroup.jsx:64
+#: assets/dist/recipe-editor-js.build.js:64
+msgid "+ Time"
+msgstr ""
+
+#: assets/dist/recipe-editor-js.build.js:2
+#: assets/recipe-editor/components/FieldGroup.jsx:193
+#: assets/dist/recipe-editor-js.build.js:193
 msgid "Additional Time Label"
 msgstr ""
 
-#: assets/dist/recipe-editor-js.build.js:139
-#: assets/recipe-editor/components/FieldGroup.jsx:187
-#: assets/dist/recipe-editor-js.build.js:182
+#: assets/dist/recipe-editor-js.build.js:2
+#: assets/recipe-editor/components/FieldGroup.jsx:209
+#: assets/dist/recipe-editor-js.build.js:209
 msgid "Additional Time Value"
 msgstr ""
 
-#: assets/dist/recipe-editor-js.build.js:198
-#: assets/recipe-editor/components/ImageField.jsx:22
-#: assets/dist/recipe-editor-js.build.js:237
-msgid "Media Library"
+#: assets/dist/recipe-editor-js.build.js:2
+#: assets/recipe-editor/components/ImprovedKeysNotice.jsx:14
+#: assets/dist/recipe-editor-js.build.js:387
+msgid "Dismiss notice"
 msgstr ""
 
-#: assets/dist/recipe-editor-js.build.js:204
-#: assets/dist/recipe-editor-js.build.js:292
-#: assets/recipe-editor/components/ImageField.jsx:28
-#: assets/recipe-editor/components/ImageField.jsx:126
-#: assets/dist/recipe-editor-js.build.js:243
-#: assets/dist/recipe-editor-js.build.js:341
-msgid "Select Image"
+#: assets/dist/recipe-editor-js.build.js:2
+#: assets/recipe-editor/components/ImprovedKeysNotice.jsx:34
+#: assets/dist/recipe-editor-js.build.js:407
+msgid "New"
 msgstr ""
 
-#: assets/dist/recipe-editor-js.build.js:270
-#: assets/recipe-editor/components/ImageField.jsx:103
-#: assets/dist/recipe-editor-js.build.js:318
-msgid "Remove Image"
+#: assets/dist/recipe-editor-js.build.js:2
+#: assets/recipe-editor/components/ImprovedKeysNotice.jsx:37
+#: assets/dist/recipe-editor-js.build.js:410
+msgid "Improved Recipe Keys!"
 msgstr ""
 
-#: assets/dist/recipe-editor-js.build.js:285
-#: assets/recipe-editor/components/ImageField.jsx:114
-#: assets/dist/recipe-editor-js.build.js:329
-msgid "Recipe Image"
+#: assets/dist/recipe-editor-js.build.js:2
+#: assets/recipe-editor/components/ImprovedKeysNotice.jsx:41
+#: assets/dist/recipe-editor-js.build.js:414
+msgid "You can now select your recipe keys from a predefined list of popular options, multi-select options for the same key, and add new (or delete old) custom keys instantly."
 msgstr ""
 
-#: assets/dist/recipe-editor-js.build.js:288
-#: assets/recipe-editor/components/ImageField.jsx:117
-#: assets/dist/recipe-editor-js.build.js:332
-msgid "Select an image file from your library."
-msgstr ""
-
-#: assets/dist/recipe-editor-js.build.js:405
-#: assets/recipe-editor/components/RecipeForm.jsx:104
-#: assets/dist/recipe-editor-js.build.js:450
-msgid "Details"
-msgstr ""
-
-#: assets/dist/recipe-editor-js.build.js:415
-#: assets/recipe-editor/components/RecipeForm.jsx:115
-#: assets/dist/recipe-editor-js.build.js:461
-msgid "Video URL"
-msgstr ""
-
-#: assets/dist/recipe-editor-js.build.js:454
-#: assets/recipe-editor/components/RecipeForm.jsx:167
-#: assets/dist/recipe-editor-js.build.js:513
-msgid "Edit recipe in Nutrifox"
-msgstr ""
-
-#: assets/dist/recipe-editor-js.build.js:527
+#: assets/dist/recipe-editor-js.build.js:2
 #: assets/recipe-editor/components/RichTextarea.jsx:18
-#: assets/dist/recipe-editor-js.build.js:581
+#: assets/dist/recipe-editor-js.build.js:705
 msgid "Autoplay"
 msgstr ""
 
-#: assets/dist/recipe-editor-js.build.js:528
+#: assets/dist/recipe-editor-js.build.js:2
 #: assets/recipe-editor/components/RichTextarea.jsx:19
-#: assets/dist/recipe-editor-js.build.js:582
+#: assets/dist/recipe-editor-js.build.js:706
 msgid "Mute"
 msgstr ""
 
-#: assets/dist/recipe-editor-js.build.js:529
+#: assets/dist/recipe-editor-js.build.js:2
 #: assets/recipe-editor/components/RichTextarea.jsx:20
-#: assets/dist/recipe-editor-js.build.js:583
+#: assets/dist/recipe-editor-js.build.js:707
 msgid "Loop"
 msgstr ""
 
-#: assets/dist/recipe-editor-js.build.js:530
+#: assets/dist/recipe-editor-js.build.js:2
 #: assets/recipe-editor/components/RichTextarea.jsx:21
-#: assets/dist/recipe-editor-js.build.js:584
+#: assets/dist/recipe-editor-js.build.js:708
 msgid "Hide Controls"
 msgstr ""
 
-#: assets/dist/recipe-editor-js.build.js:580
+#: assets/dist/recipe-editor-js.build.js:2
 #: assets/recipe-editor/components/RichTextarea.jsx:94
-#: assets/dist/recipe-editor-js.build.js:657
+#: assets/dist/recipe-editor-js.build.js:781
 msgid "Video Settings:"
 msgstr ""
 
-#: assets/dist/settings.build.js:51
-#: assets/dist/settings.build.js:66
-#: assets/settings/partials/CookMode.jsx:19
-#: assets/settings/partials/CookMode.jsx:39
-#: assets/dist/settings.build.js:21
-#: assets/dist/settings.build.js:41
-msgid "Enable Cook Mode"
+#: assets/dist/recipe-editor-js.build.js:2
+#: assets/recipe-editor/components/ImageField.jsx:22
+#: assets/dist/recipe-editor-js.build.js:264
+msgid "Media Library"
 msgstr ""
 
-#: assets/dist/settings.build.js:76
-#: assets/settings/partials/CookMode.jsx:49
-#: assets/dist/settings.build.js:51
-msgid "Show Cook Mode toggle to let visitors prevent sleep mode for supported devices."
+#: assets/dist/recipe-editor-js.build.js:2
+#: assets/recipe-editor/components/ImageField.jsx:28
+#: assets/recipe-editor/components/ImageField.jsx:126
+#: assets/dist/recipe-editor-js.build.js:270
+#: assets/dist/recipe-editor-js.build.js:368
+msgid "Select Image"
 msgstr ""
 
-#: assets/dist/settings.build.js:81
-#: assets/settings/partials/CookMode.jsx:59
-#: assets/dist/settings.build.js:61
-msgid "Cook Mode requires SSL (HTTPS)"
+#: assets/dist/recipe-editor-js.build.js:2
+#: assets/recipe-editor/components/ImageField.jsx:103
+#: assets/dist/recipe-editor-js.build.js:345
+msgid "Remove Image"
 msgstr ""
 
-#: assets/dist/settings.build.js:88
-#: assets/settings/partials/CookMode.jsx:73
-#: assets/dist/settings.build.js:75
-msgid "Cook Mode description"
+#: assets/dist/recipe-editor-js.build.js:2
+#: assets/recipe-editor/components/ImageField.jsx:114
+#: assets/dist/recipe-editor-js.build.js:356
+msgid "Recipe Image"
 msgstr ""
 
-#: assets/dist/settings.build.js:193
+#: assets/dist/recipe-editor-js.build.js:2
+#: assets/recipe-editor/components/ImageField.jsx:117
+#: assets/dist/recipe-editor-js.build.js:359
+msgid "Select an image file from your library."
+msgstr ""
+
+#: assets/dist/recipe-editor-js.build.js:2
+#: assets/recipe-editor/components/RecipeForm.jsx:140
+#: assets/dist/recipe-editor-js.build.js:562
+msgid "Details"
+msgstr ""
+
+#: assets/dist/recipe-editor-js.build.js:2
+#: assets/recipe-editor/components/RecipeForm.jsx:163
+#: assets/dist/recipe-editor-js.build.js:585
+msgid "Video URL"
+msgstr ""
+
+#: assets/dist/recipe-editor-js.build.js:2
+#: assets/recipe-editor/components/RecipeForm.jsx:215
+#: assets/dist/recipe-editor-js.build.js:637
+msgid "Edit recipe in Nutrifox"
+msgstr ""
+
+#: assets/dist/settings.build.js:1
 #: assets/settings/partials/DesignExample.jsx:91
 #: assets/dist/settings.build.js:178
 msgid "Premium Template"
 msgstr ""
 
-#: assets/dist/settings.build.js:278
+#: assets/dist/settings.build.js:1
+#: assets/settings/utils/templateFields.js:4
+#: assets/dist/settings.build.js:1472
+msgid "Button Color"
+msgstr ""
+
+#: assets/dist/settings.build.js:1
+#: assets/settings/utils/templateFields.js:5
+#: assets/dist/settings.build.js:1473
+msgid "Button Text Color"
+msgstr ""
+
+#: assets/dist/settings.build.js:1
+#: assets/settings/utils/templateFields.js:6
+#: assets/dist/settings.build.js:1474
+msgid "Detail Label Color"
+msgstr ""
+
+#: assets/dist/settings.build.js:1
+#: assets/settings/utils/templateFields.js:7
+#: assets/dist/settings.build.js:1475
+msgid "Detail Value Color"
+msgstr ""
+
+#: assets/dist/settings.build.js:1
+#: assets/settings/utils/templateFields.js:8
+#: assets/dist/settings.build.js:1476
+msgid "Primary Color"
+msgstr ""
+
+#: assets/dist/settings.build.js:1
+#: assets/settings/utils/templateFields.js:9
+#: assets/dist/settings.build.js:1477
+msgid "Secondary Color"
+msgstr ""
+
+#: assets/dist/settings.build.js:1
+#: assets/settings/utils/templateFields.js:10
+#: assets/dist/settings.build.js:1478
+msgid "Icon Color"
+msgstr ""
+
+#: assets/dist/settings.build.js:1
 #: assets/settings/partials/DesignSettings.jsx:36
 #: assets/dist/settings.build.js:254
 msgid "Social Footers"
 msgstr ""
 
-#: assets/dist/settings.build.js:292
+#: assets/dist/settings.build.js:1
 #: assets/settings/partials/DesignSettings.jsx:57
 #: assets/dist/settings.build.js:275
 msgid "Template Colors"
 msgstr ""
 
-#: assets/dist/settings.build.js:306
+#: assets/dist/settings.build.js:1
 #: assets/settings/partials/DesignSettings.jsx:73
 #: assets/dist/settings.build.js:291
 msgid "Recipe Title (H2)"
 msgstr ""
 
-#: assets/dist/settings.build.js:327
-#: assets/dist/settings.build.js:366
+#: assets/dist/settings.build.js:1
 #: assets/settings/partials/DesignSettings.jsx:95
 #: assets/settings/partials/DesignSettings.jsx:151
 #: assets/dist/settings.build.js:313
@@ -1842,8 +1639,7 @@ msgstr ""
 msgid "Default Capitalization"
 msgstr ""
 
-#: assets/dist/settings.build.js:331
-#: assets/dist/settings.build.js:370
+#: assets/dist/settings.build.js:1
 #: assets/settings/partials/DesignSettings.jsx:103
 #: assets/settings/partials/DesignSettings.jsx:159
 #: assets/dist/settings.build.js:321
@@ -1851,8 +1647,7 @@ msgstr ""
 msgid "Uppercase Capitalization"
 msgstr ""
 
-#: assets/dist/settings.build.js:335
-#: assets/dist/settings.build.js:374
+#: assets/dist/settings.build.js:1
 #: assets/settings/partials/DesignSettings.jsx:111
 #: assets/settings/partials/DesignSettings.jsx:167
 #: assets/dist/settings.build.js:329
@@ -1860,8 +1655,7 @@ msgstr ""
 msgid "Normal Capitalization"
 msgstr ""
 
-#: assets/dist/settings.build.js:339
-#: assets/dist/settings.build.js:378
+#: assets/dist/settings.build.js:1
 #: assets/settings/partials/DesignSettings.jsx:119
 #: assets/settings/partials/DesignSettings.jsx:175
 #: assets/dist/settings.build.js:337
@@ -1869,68 +1663,111 @@ msgstr ""
 msgid "Lowercase Capitalization"
 msgstr ""
 
-#: assets/dist/settings.build.js:345
+#: assets/dist/settings.build.js:1
 #: assets/settings/partials/DesignSettings.jsx:129
 #: assets/dist/settings.build.js:347
 msgid "Recipe Subtitles (H3)"
 msgstr ""
 
-#: assets/dist/settings.build.js:384
+#: assets/dist/settings.build.js:1
 #: assets/settings/partials/DesignSettings.jsx:185
 #: assets/dist/settings.build.js:403
 msgid "Body"
 msgstr ""
 
-#: assets/dist/settings.build.js:398
+#: assets/dist/settings.build.js:1
 #: assets/settings/partials/DesignSettings.jsx:198
 #: assets/dist/settings.build.js:416
 msgid "Star Ratings"
 msgstr ""
 
-#: assets/dist/settings.build.js:421
+#: assets/dist/settings.build.js:1
 #: assets/settings/partials/DesignSettings.jsx:221
 #: assets/dist/settings.build.js:439
 msgid "Solid"
 msgstr ""
 
-#: assets/dist/settings.build.js:425
+#: assets/dist/settings.build.js:1
 #: assets/settings/partials/DesignSettings.jsx:228
 #: assets/dist/settings.build.js:446
 msgid "Outline"
 msgstr ""
 
-#: assets/dist/settings.build.js:434
+#: assets/dist/settings.build.js:1
 #: assets/settings/partials/DesignSettings.jsx:239
 #: assets/dist/settings.build.js:457
 msgid "Nutrition Display"
 msgstr ""
 
-#: assets/dist/settings.build.js:447
+#: assets/dist/settings.build.js:1
 #: assets/settings/partials/DesignSettings.jsx:259
 #: assets/dist/settings.build.js:477
 msgid "Insert Nutrifox label (iframe)"
 msgstr ""
 
-#: assets/dist/settings.build.js:461
+#: assets/dist/settings.build.js:1
 #: assets/settings/partials/DesignSettings.jsx:283
 #: assets/dist/settings.build.js:501
 msgid "Insert as plain text"
 msgstr ""
 
-#: assets/dist/settings.build.js:482
+#: assets/dist/settings.build.js:1
 #: assets/settings/partials/DesignSettings.jsx:311
 #: assets/dist/settings.build.js:529
 msgid "Try Nutrifox free for 14 days"
 msgstr ""
 
-#: assets/dist/settings.build.js:487
+#: assets/dist/settings.build.js:1
 #: assets/settings/partials/DesignSettings.jsx:321
 #: assets/dist/settings.build.js:539
 msgid "Social Footer"
 msgstr ""
 
-#: assets/dist/settings.build.js:538
-#: assets/dist/settings.build.js:550
+#: assets/dist/settings.build.js:1
+#: assets/settings/partials/UpgradeBanner.jsx:14
+#: assets/dist/settings.build.js:828
+msgid "Unlock Your Recipe’s Full Potential"
+msgstr ""
+
+#: assets/dist/settings.build.js:1
+#: assets/settings/partials/UpgradeBanner.jsx:18
+#: assets/dist/settings.build.js:832
+msgid "The features below are exclusive to WP Tasty Recipes Pro. Upgrade now to power up your recipes and your site."
+msgstr ""
+
+#: assets/dist/settings.build.js:1
+#: assets/settings/partials/UpgradeBanner.jsx:22
+#: assets/dist/settings.build.js:836
+msgid "Upgrade to PRO"
+msgstr ""
+
+#: assets/dist/settings.build.js:1
+#: assets/settings/partials/CookMode.jsx:19
+#: assets/settings/partials/CookMode.jsx:39
+#: assets/dist/settings.build.js:21
+#: assets/dist/settings.build.js:41
+msgid "Enable Cook Mode"
+msgstr ""
+
+#: assets/dist/settings.build.js:1
+#: assets/settings/partials/CookMode.jsx:49
+#: assets/dist/settings.build.js:51
+msgid "Show Cook Mode toggle to let visitors prevent sleep mode for supported devices."
+msgstr ""
+
+#: assets/dist/settings.build.js:1
+#: assets/settings/partials/CookMode.jsx:59
+#: assets/dist/settings.build.js:61
+msgid "Cook Mode requires SSL (HTTPS)"
+msgstr ""
+
+#: assets/dist/settings.build.js:1
+#: assets/settings/partials/CookMode.jsx:73
+#: assets/dist/settings.build.js:75
+msgid "Cook Mode description"
+msgstr ""
+
+#: assets/dist/settings.build.js:1
 #: assets/settings/partials/InstacartButton.jsx:17
 #: assets/settings/partials/InstacartButton.jsx:34
 #: assets/dist/settings.build.js:570
@@ -1938,26 +1775,25 @@ msgstr ""
 msgid "Instacart Button"
 msgstr ""
 
-#: assets/dist/settings.build.js:560
+#: assets/dist/settings.build.js:1
 #: assets/settings/partials/InstacartButton.jsx:45
 #: assets/dist/settings.build.js:598
 msgid "By turning this on, you agree to the <termsOfServiceLink>Instacart terms of service</termsOfServiceLink>, available in the US only at the moment."
 msgstr ""
 
-#: assets/dist/settings.build.js:577
+#: assets/dist/settings.build.js:1
 #: assets/settings/partials/InstacartButton.jsx:74
 #: assets/dist/settings.build.js:627
 msgid "Instacart Impact Affiliate ID"
 msgstr ""
 
-#: assets/dist/settings.build.js:585
+#: assets/dist/settings.build.js:1
 #: assets/settings/partials/InstacartButton.jsx:86
 #: assets/dist/settings.build.js:639
 msgid "<a>Get commissions</a> when visitors order ingredients."
 msgstr ""
 
-#: assets/dist/settings.build.js:719
-#: assets/dist/settings.build.js:733
+#: assets/dist/settings.build.js:1
 #: assets/settings/partials/UnitConversion.jsx:15
 #: assets/settings/partials/UnitConversion.jsx:32
 #: assets/dist/settings.build.js:760
@@ -1965,254 +1801,190 @@ msgstr ""
 msgid "Unit Conversion"
 msgstr ""
 
-#: assets/dist/settings.build.js:743
+#: assets/dist/settings.build.js:1
 #: assets/settings/partials/UnitConversion.jsx:42
 #: assets/dist/settings.build.js:787
 msgid "Allow visitors to convert between US Customary and Metric."
 msgstr ""
 
-#: assets/dist/settings.build.js:751
+#: assets/dist/settings.build.js:1
 #: assets/settings/partials/UnitConversion.jsx:56
 #: assets/dist/settings.build.js:801
 msgid "Automatically apply unit conversion to existing recipes."
 msgstr ""
 
-#: assets/dist/settings.build.js:791
-#: assets/settings/partials/UpgradeBanner.jsx:14
-#: assets/dist/settings.build.js:828
-msgid "Unlock Your Recipe’s Full Potential"
+#: assets/dist/settings.build.js:1
+#: assets/settings/tabs/Settings.jsx:37
+#: assets/dist/settings.build.js:1126
+msgid "Pin this recipe"
 msgstr ""
 
-#: assets/dist/settings.build.js:792
-#: assets/settings/partials/UpgradeBanner.jsx:18
-#: assets/dist/settings.build.js:832
-msgid "The features below are exclusive to WP Tasty Recipes Pro. Upgrade now to power up your recipes and your site."
+#: assets/dist/settings.build.js:1
+#: assets/settings/tabs/Settings.jsx:43
+#: assets/dist/settings.build.js:1132
+msgid "Mediavine Grow.me Save"
 msgstr ""
 
-#: assets/dist/settings.build.js:793
-#: assets/settings/partials/UpgradeBanner.jsx:22
-#: assets/dist/settings.build.js:836
-msgid "Upgrade to PRO"
+#: assets/dist/settings.build.js:1
+#: assets/settings/tabs/Settings.jsx:49
+#: assets/dist/settings.build.js:1138
+msgid "Slickstream Favorites"
 msgstr ""
 
-#: assets/dist/settings.build.js:887
+#: assets/dist/settings.build.js:1
+#: assets/settings/tabs/Settings.jsx:79
+#: assets/settings/tabs/Settings.jsx:87
+#: assets/dist/settings.build.js:1168
+#: assets/dist/settings.build.js:1176
+msgid "Scaling"
+msgstr ""
+
+#: assets/dist/settings.build.js:1
+#: assets/settings/tabs/Settings.jsx:97
+#: assets/dist/settings.build.js:1186
+msgid "Allow visitors to scale the recipe ½, 2x, or 3x."
+msgstr ""
+
+#: assets/dist/settings.build.js:1
+#: assets/settings/tabs/Settings.jsx:109
+#: assets/dist/settings.build.js:1198
+msgid "Quick Links"
+msgstr ""
+
+#: assets/dist/settings.build.js:1
+#: assets/settings/tabs/Settings.jsx:113
+#: assets/dist/settings.build.js:1202
+msgid "'Jump to Recipe' link"
+msgstr ""
+
+#: assets/dist/settings.build.js:1
+#: assets/settings/tabs/Settings.jsx:129
+#: assets/dist/settings.build.js:1218
+msgid "'Print Recipe' link"
+msgstr ""
+
+#: assets/dist/settings.build.js:1
+#: assets/settings/tabs/Settings.jsx:142
+#: assets/dist/settings.build.js:1231
+msgid "'Leave a Review' link"
+msgstr ""
+
+#: assets/dist/settings.build.js:1
+#: assets/settings/tabs/Settings.jsx:151
+#: assets/dist/settings.build.js:1240
+msgid "Enable or disable quick links below the post title."
+msgstr ""
+
+#: assets/dist/settings.build.js:1
+#: assets/settings/tabs/Settings.jsx:159
+#: assets/dist/settings.build.js:1248
+msgid "Recipe Card Buttons"
+msgstr ""
+
+#: assets/dist/settings.build.js:1
+#: assets/settings/tabs/Settings.jsx:201
+#: assets/dist/settings.build.js:1290
+msgid "Default Author Link"
+msgstr ""
+
+#: assets/dist/settings.build.js:1
+#: assets/settings/tabs/Settings.jsx:223
+#: assets/settings/tabs/Settings.jsx:237
+#: assets/dist/settings.build.js:1312
+#: assets/dist/settings.build.js:1326
+msgid "Quick Links Style"
+msgstr ""
+
+#: assets/dist/settings.build.js:1
+#: assets/settings/tabs/Settings.jsx:247
+#: assets/dist/settings.build.js:1336
+msgid "Buttons"
+msgstr ""
+
+#: assets/dist/settings.build.js:1
+#: assets/settings/tabs/Settings.jsx:254
+#: assets/dist/settings.build.js:1343
+msgid "Links"
+msgstr ""
+
+#: assets/dist/settings.build.js:1
+#: assets/settings/tabs/Settings.jsx:273
+#: assets/settings/tabs/Settings.jsx:284
+#: assets/dist/settings.build.js:1362
+#: assets/dist/settings.build.js:1373
+msgid "Ingredient Checkboxes"
+msgstr ""
+
+#: assets/dist/settings.build.js:1
+#: assets/settings/tabs/Settings.jsx:294
+#: assets/dist/settings.build.js:1383
+msgid "Allow visitors to check off recipe ingredients."
+msgstr ""
+
+#: assets/dist/settings.build.js:1
+#: assets/settings/tabs/Settings.jsx:311
+#: assets/settings/tabs/Settings.jsx:322
+#: assets/dist/settings.build.js:1400
+#: assets/dist/settings.build.js:1411
+msgid "Copy to Clipboard"
+msgstr ""
+
+#: assets/dist/settings.build.js:1
+#: assets/settings/tabs/Settings.jsx:332
+#: assets/dist/settings.build.js:1421
+msgid "Allow visitors to copy ingredients to clipboard."
+msgstr ""
+
+#: assets/dist/settings.build.js:1
 #: assets/settings/tabs/Converters.jsx:79
 #: assets/dist/settings.build.js:924
 msgid "Import Existing Recipes"
 msgstr ""
 
 #. translators: %s: Link to WordPress backup documentation
-#: assets/dist/settings.build.js:890
+#: assets/dist/settings.build.js:2
 #: assets/settings/tabs/Converters.jsx:84
 #: assets/dist/settings.build.js:929
 msgid "Just in case, we recommend backing up your database before converting your recipes in bulk to Tasty Recipes. <a>Learn more about backing up your database.</a>"
 msgstr ""
 
-#: assets/dist/settings.build.js:904
+#: assets/dist/settings.build.js:2
 #: assets/settings/tabs/Converters.jsx:103
 #: assets/dist/settings.build.js:948
 msgid "Select an option below to start converting recipes."
 msgstr ""
 
-#: assets/dist/settings.build.js:949
+#: assets/dist/settings.build.js:2
 #: assets/settings/tabs/Converters.jsx:170
 #: assets/dist/settings.build.js:1015
 msgid "Start import"
 msgstr ""
 
-#: assets/dist/settings.build.js:951
+#: assets/dist/settings.build.js:2
 #: assets/settings/tabs/Converters.jsx:175
 #: assets/dist/settings.build.js:1020
 msgid "Importing recipes…"
 msgstr ""
 
-#: assets/dist/settings.build.js:953
+#: assets/dist/settings.build.js:2
 #: assets/settings/tabs/Converters.jsx:180
 #: assets/dist/settings.build.js:1025
 msgid "Import complete!"
 msgstr ""
 
-#: assets/dist/settings.build.js:1088
-#: assets/settings/tabs/Settings.jsx:37
-#: assets/dist/settings.build.js:1126
-msgid "Pin this recipe"
-msgstr ""
-
-#: assets/dist/settings.build.js:1093
-#: assets/settings/tabs/Settings.jsx:43
-#: assets/dist/settings.build.js:1132
-msgid "Mediavine Grow.me Save"
-msgstr ""
-
-#: assets/dist/settings.build.js:1098
-#: assets/settings/tabs/Settings.jsx:49
-#: assets/dist/settings.build.js:1138
-msgid "Slickstream Favorites"
-msgstr ""
-
-#: assets/dist/settings.build.js:1124
-#: assets/settings/tabs/Settings.jsx:75
-#: assets/dist/settings.build.js:1164
-msgid "Quick Links"
-msgstr ""
-
-#: assets/dist/settings.build.js:1128
-#: assets/settings/tabs/Settings.jsx:79
-#: assets/dist/settings.build.js:1168
-msgid "'Jump to Recipe' link"
-msgstr ""
-
-#: assets/dist/settings.build.js:1135
-#: assets/settings/tabs/Settings.jsx:95
-#: assets/dist/settings.build.js:1184
-msgid "'Print Recipe' link"
-msgstr ""
-
-#: assets/dist/settings.build.js:1142
-#: assets/settings/tabs/Settings.jsx:108
-#: assets/dist/settings.build.js:1197
-msgid "'Leave a Review' link"
-msgstr ""
-
-#: assets/dist/settings.build.js:1146
-#: assets/settings/tabs/Settings.jsx:117
-#: assets/dist/settings.build.js:1206
-msgid "Enable or disable quick links below the post title."
-msgstr ""
-
-#: assets/dist/settings.build.js:1150
-#: assets/settings/tabs/Settings.jsx:125
-#: assets/dist/settings.build.js:1214
-msgid "Recipe Card Buttons"
-msgstr ""
-
-#: assets/dist/settings.build.js:1183
-#: assets/settings/tabs/Settings.jsx:167
-#: assets/dist/settings.build.js:1256
-msgid "Default Author Link"
-msgstr ""
-
-#: assets/dist/settings.build.js:1204
-#: assets/dist/settings.build.js:1213
-#: assets/settings/tabs/Settings.jsx:189
-#: assets/settings/tabs/Settings.jsx:203
-#: assets/dist/settings.build.js:1278
-#: assets/dist/settings.build.js:1292
-msgid "Quick Links Style"
-msgstr ""
-
-#: assets/dist/settings.build.js:1222
-#: assets/settings/tabs/Settings.jsx:213
-#: assets/dist/settings.build.js:1302
-msgid "Buttons"
-msgstr ""
-
-#: assets/dist/settings.build.js:1226
-#: assets/settings/tabs/Settings.jsx:220
-#: assets/dist/settings.build.js:1309
-msgid "Links"
-msgstr ""
-
-#: assets/dist/settings.build.js:1240
-#: assets/dist/settings.build.js:1248
-#: assets/settings/tabs/Settings.jsx:239
-#: assets/settings/tabs/Settings.jsx:250
-#: assets/dist/settings.build.js:1328
-#: assets/dist/settings.build.js:1339
-msgid "Ingredient Checkboxes"
-msgstr ""
-
-#: assets/dist/settings.build.js:1258
-#: assets/settings/tabs/Settings.jsx:260
-#: assets/dist/settings.build.js:1349
-msgid "Allow visitors to check off recipe ingredients."
-msgstr ""
-
-#: assets/dist/settings.build.js:1269
-#: assets/dist/settings.build.js:1277
-#: assets/settings/tabs/Settings.jsx:276
-#: assets/settings/tabs/Settings.jsx:284
-#: assets/dist/settings.build.js:1365
-#: assets/dist/settings.build.js:1373
-msgid "Scaling"
-msgstr ""
-
-#: assets/dist/settings.build.js:1287
-#: assets/settings/tabs/Settings.jsx:294
-#: assets/dist/settings.build.js:1383
-msgid "Allow visitors to scale the recipe 1x, 2x, or 3x."
-msgstr ""
-
-#: assets/dist/settings.build.js:1293
-#: assets/dist/settings.build.js:1301
-#: assets/settings/tabs/Settings.jsx:304
-#: assets/settings/tabs/Settings.jsx:315
-#: assets/dist/settings.build.js:1393
-#: assets/dist/settings.build.js:1404
-msgid "Copy to Clipboard"
-msgstr ""
-
-#: assets/dist/settings.build.js:1311
-#: assets/settings/tabs/Settings.jsx:325
-#: assets/dist/settings.build.js:1414
-msgid "Allow visitors to copy ingredients to clipboard."
-msgstr ""
-
-#: assets/dist/settings.build.js:1410
-#: assets/settings/utils/templateFields.js:4
-#: assets/dist/settings.build.js:1465
-msgid "Button Color"
-msgstr ""
-
-#: assets/dist/settings.build.js:1411
-#: assets/settings/utils/templateFields.js:5
-#: assets/dist/settings.build.js:1466
-msgid "Button Text Color"
-msgstr ""
-
-#: assets/dist/settings.build.js:1412
-#: assets/settings/utils/templateFields.js:6
-#: assets/dist/settings.build.js:1467
-msgid "Detail Label Color"
-msgstr ""
-
-#: assets/dist/settings.build.js:1413
-#: assets/settings/utils/templateFields.js:7
-#: assets/dist/settings.build.js:1468
-msgid "Detail Value Color"
-msgstr ""
-
-#: assets/dist/settings.build.js:1414
-#: assets/settings/utils/templateFields.js:8
-#: assets/dist/settings.build.js:1469
-msgid "Primary Color"
-msgstr ""
-
-#: assets/dist/settings.build.js:1415
-#: assets/settings/utils/templateFields.js:9
-#: assets/dist/settings.build.js:1470
-msgid "Secondary Color"
-msgstr ""
-
-#: assets/dist/settings.build.js:1416
-#: assets/settings/utils/templateFields.js:10
-#: assets/dist/settings.build.js:1471
-msgid "Icon Color"
-msgstr ""
-
-#: assets/dist/usage-modal.build.js:56
+#: assets/dist/usage-modal.build.js:1
 #: assets/js/usage-modal/components/UsageModal.jsx:30
 #: assets/dist/usage-modal.build.js:30
 msgid "Help Us to Improve WP Tasty"
 msgstr ""
 
-#: assets/dist/usage-modal.build.js:65
+#: assets/dist/usage-modal.build.js:1
 #: assets/js/usage-modal/components/UsageModal.jsx:39
 #: assets/dist/usage-modal.build.js:39
 msgid "Allow us to collect anonymized usage data to improve features and crush bugs. You can change this setting anytime"
 msgstr ""
 
-#: assets/dist/usage-modal.build.js:71
+#: assets/dist/usage-modal.build.js:1
 #: assets/js/usage-modal/components/UsageModal.jsx:49
 #: assets/dist/usage-modal.build.js:49
 msgid "Allow Tracking"

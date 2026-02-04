@@ -28,7 +28,7 @@ class Utils {
 		}
 		$backup_tags = $GLOBALS['shortcode_tags'];
 		remove_all_shortcodes();
-		add_shortcode( $shortcode_tag, '__return_false' );
+		add_shortcode( $shortcode_tag, '__return_false' ); // @phpstan-ignore argument.type
 		preg_match_all( '/' . get_shortcode_regex() . '/', $content, $matches, PREG_SET_ORDER );
 		if ( empty( $matches ) ) {
 			$GLOBALS['shortcode_tags'] = $backup_tags; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited

@@ -601,9 +601,14 @@ class Editor {
 		}
 
 		if ( ! $post ) {
+			$recipe_post = get_post( $recipe->get_id() );
+
+			// Include recipe_type in the response for the embed modal.
+			$recipe_post->recipe_type = isset( $post_recipe['recipe_type'] ) ? sanitize_text_field( $post_recipe['recipe_type'] ) : 'recipe';
+
 			wp_send_json_success(
 				array(
-					'recipe' => get_post( $recipe->get_id() ),
+					'recipe' => $recipe_post,
 				)
 			);
 		}
@@ -815,5 +820,365 @@ class Editor {
 		}
 
 		return $output;
+	}
+
+	/**
+	 * Handles an AJAX request to dismiss the improved keys notice.
+	 * 
+	 * @since 1.2
+	 *
+	 * @return void
+	 */
+	public static function handle_wp_ajax_dismiss_improved_keys_notice() {
+		check_ajax_referer( 'tasty_recipes_modify_recipe', 'nonce' );
+
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			wp_send_json_error();
+		}
+
+		update_option( \Tasty_Recipes::IMPROVED_KEYS_NOTICE_DISMISSED_OPTION, true );
+		wp_send_json_success();
+	}
+
+	/**
+	 * Register REST API routes for the editor.
+	 *
+	 * @since 1.2
+	 *
+	 * @return void
+	 */
+	public static function action_rest_api_init() {
+		register_rest_route(
+			'tasty-recipes/v1',
+			'/taxonomy-terms',
+			array(
+				array(
+					'methods'             => 'GET',
+					'callback'            => array( __CLASS__, 'rest_search_taxonomy_terms' ),
+					'permission_callback' => array( __CLASS__, 'rest_check_permission' ),
+					'args'                => array(
+						'taxonomy' => array(
+							'required'          => true,
+							'type'              => 'string',
+							'sanitize_callback' => 'sanitize_text_field',
+						),
+						'search'   => array(
+							'required'          => false,
+							'type'              => 'string',
+							'default'           => '',
+							'sanitize_callback' => 'sanitize_text_field',
+						),
+					),
+				),
+				array(
+					'methods'             => 'POST',
+					'callback'            => array( __CLASS__, 'rest_create_taxonomy_term' ),
+					'permission_callback' => array( __CLASS__, 'rest_check_permission' ),
+					'args'                => array(
+						'taxonomy' => array(
+							'required'          => true,
+							'type'              => 'string',
+							'sanitize_callback' => 'sanitize_text_field',
+						),
+						'name'     => array(
+							'required'          => true,
+							'type'              => 'string',
+							'sanitize_callback' => 'sanitize_text_field',
+						),
+					),
+				),
+				array(
+					'methods'             => 'PUT',
+					'callback'            => array( __CLASS__, 'rest_update_taxonomy_term' ),
+					'permission_callback' => array( __CLASS__, 'rest_check_permission' ),
+					'args'                => array(
+						'taxonomy' => array(
+							'required'          => true,
+							'type'              => 'string',
+							'sanitize_callback' => 'sanitize_text_field',
+						),
+						'id'       => array(
+							'required'          => true,
+							'type'              => 'integer',
+							'sanitize_callback' => 'absint',
+						),
+						'name'     => array(
+							'required'          => true,
+							'type'              => 'string',
+							'sanitize_callback' => 'sanitize_text_field',
+						),
+					),
+				),
+				array(
+					'methods'             => 'DELETE',
+					'callback'            => array( __CLASS__, 'rest_delete_taxonomy_term' ),
+					'permission_callback' => array( __CLASS__, 'rest_check_permission' ),
+					'args'                => array(
+						'taxonomy' => array(
+							'required'          => true,
+							'type'              => 'string',
+							'sanitize_callback' => 'sanitize_text_field',
+						),
+						'id'       => array(
+							'required'          => true,
+							'type'              => 'integer',
+							'sanitize_callback' => 'absint',
+						),
+					),
+				),
+			)
+		);
+	}
+
+	/**
+	 * Check REST API permission.
+	 *
+	 * @since 1.2
+	 *
+	 * @return bool
+	 */
+	public static function rest_check_permission() {
+		return current_user_can( 'edit_posts' );
+	}
+
+	/**
+	 * REST API callback to create a taxonomy term.
+	 *
+	 * @since 1.2
+	 *
+	 * @param object $request The request object.
+	 *
+	 * @return \WP_Error|\WP_REST_Response
+	 */
+	public static function rest_create_taxonomy_term( $request ) {
+		$taxonomy = $request->get_param( 'taxonomy' );
+		$name     = $request->get_param( 'name' );
+
+		if ( ! taxonomy_exists( $taxonomy ) ) {
+			return new \WP_Error(
+				'invalid_taxonomy',
+				__( 'Invalid taxonomy.', 'tasty-recipes-lite' ),
+				array( 'status' => 400 )
+			);
+		}
+
+		$existing_term = get_term_by( 'name', $name, $taxonomy );
+		if ( $existing_term ) {
+			return rest_ensure_response(
+				array(
+					'value'     => $existing_term->name,
+					'label'     => $existing_term->name,
+					'id'        => $existing_term->term_id,
+					'count'     => $existing_term->count,
+					'isDefault' => Content_Model::is_default_term( $existing_term->name, $taxonomy ),
+				)
+			);
+		}
+
+		$result = wp_insert_term( $name, $taxonomy );
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		$term = get_term( $result['term_id'], $taxonomy );
+
+		return rest_ensure_response(
+			array(
+				'value'     => $term->name,
+				'label'     => $term->name,
+				'id'        => $term->term_id,
+				'count'     => $term->count,
+				'isDefault' => Content_Model::is_default_term( $term->name, $taxonomy ),
+			)
+		);
+	}
+
+	/**
+	 * REST API callback to update a taxonomy term.
+	 *
+	 * @since 1.2
+	 *
+	 * @param object $request The request object.
+	 *
+	 * @return \WP_Error|\WP_REST_Response
+	 */
+	public static function rest_update_taxonomy_term( $request ) {
+		$taxonomy = $request->get_param( 'taxonomy' );
+		$id       = $request->get_param( 'id' );
+		$name     = $request->get_param( 'name' );
+
+		if ( ! taxonomy_exists( $taxonomy ) ) {
+			return new \WP_Error(
+				'invalid_taxonomy',
+				__( 'Invalid taxonomy.', 'tasty-recipes-lite' ),
+				array( 'status' => 400 )
+			);
+		}
+
+		$term = get_term( $id, $taxonomy );
+		if ( ! $term || is_wp_error( $term ) ) {
+			return new \WP_Error(
+				'invalid_term',
+				__( 'Invalid term.', 'tasty-recipes-lite' ),
+				array( 'status' => 404 )
+			);
+		}
+
+		if ( Content_Model::is_default_term( $term->name, $taxonomy ) ) {
+			return new \WP_Error(
+				'default_term',
+				__( 'Cannot edit default terms.', 'tasty-recipes-lite' ),
+				array( 'status' => 403 )
+			);
+		}
+
+		$result = wp_update_term(
+			$id,
+			$taxonomy,
+			array(
+				'name' => $name,
+			)
+		);
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		$updated_term = get_term( $result['term_id'], $taxonomy );
+
+		return rest_ensure_response(
+			array(
+				'value'     => $updated_term->name,
+				'label'     => $updated_term->name,
+				'id'        => $updated_term->term_id,
+				'count'     => $updated_term->count,
+				'isDefault' => Content_Model::is_default_term( $updated_term->name, $taxonomy ),
+			)
+		);
+	}
+
+	/**
+	 * REST API callback to delete a taxonomy term.
+	 *
+	 * @since 1.2
+	 *
+	 * @param object $request The request object.
+	 *
+	 * @return \WP_Error|\WP_REST_Response
+	 */
+	public static function rest_delete_taxonomy_term( $request ) {
+		$taxonomy = $request->get_param( 'taxonomy' );
+		$id       = $request->get_param( 'id' );
+
+		if ( ! taxonomy_exists( $taxonomy ) ) {
+			return new \WP_Error(
+				'invalid_taxonomy',
+				__( 'Invalid taxonomy.', 'tasty-recipes-lite' ),
+				array( 'status' => 400 )
+			);
+		}
+
+		$term = get_term( $id, $taxonomy );
+		if ( ! $term || is_wp_error( $term ) ) {
+			return new \WP_Error(
+				'invalid_term',
+				__( 'Invalid term.', 'tasty-recipes-lite' ),
+				array( 'status' => 404 )
+			);
+		}
+
+		if ( Content_Model::is_default_term( $term->name, $taxonomy ) ) {
+			return new \WP_Error(
+				'default_term',
+				__( 'Cannot delete default terms.', 'tasty-recipes-lite' ),
+				array( 'status' => 403 )
+			);
+		}
+
+		$result = wp_delete_term( $id, $taxonomy );
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		return rest_ensure_response( true );
+	}
+
+	/**
+	 * REST API callback to search taxonomy terms.
+	 *
+	 * @since 1.2
+	 *
+	 * @param object $request The request object.
+	 *
+	 * @return \WP_Error|\WP_REST_Response
+	 */
+	public static function rest_search_taxonomy_terms( $request ) {
+		$taxonomy = $request->get_param( 'taxonomy' );
+		$search   = $request->get_param( 'search' );
+
+		if ( ! taxonomy_exists( $taxonomy ) ) {
+			return new \WP_Error(
+				'invalid_taxonomy',
+				__( 'Invalid taxonomy.', 'tasty-recipes-lite' ),
+				array( 'status' => 400 )
+			);
+		}
+
+		$terms = get_terms(
+			array(
+				'taxonomy'   => $taxonomy,
+				'hide_empty' => false,
+				'search'     => $search,
+				'number'     => 20,
+				'orderby'    => 'name',
+				'order'      => 'ASC',
+			)
+		);
+
+		if ( is_wp_error( $terms ) ) {
+			return $terms;
+		}
+
+		$default_terms = Content_Model::get_default_taxonomy_terms();
+		$defaults      = $default_terms[ $taxonomy ] ?? array();
+
+		$default_options = array();
+		$custom_options  = array();
+
+		foreach ( $terms as $term ) {
+			$option = array(
+				'value'     => $term->name,
+				'label'     => $term->name,
+				'id'        => $term->term_id,
+				'count'     => $term->count,
+				'isDefault' => in_array( $term->name, $defaults, true ),
+			);
+
+			if ( $option['isDefault'] ) {
+				$default_options[] = $option;
+			} else {
+				$custom_options[] = $option;
+			}
+		}
+
+		$result = array();
+
+		if ( ! empty( $default_options ) ) {
+			$result[] = array(
+				'label'   => '',
+				'options' => $default_options,
+			);
+		}
+
+		if ( ! empty( $custom_options ) ) {
+			$result[] = array(
+				'label'   => __( 'Created by you', 'tasty-recipes-lite' ),
+				'options' => $custom_options,
+			);
+		}
+
+		return rest_ensure_response( $result );
 	}
 }
