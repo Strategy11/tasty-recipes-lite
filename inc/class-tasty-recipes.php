@@ -731,6 +731,8 @@ class Tasty_Recipes {
 	/**
 	 * Gets the customization options for Tasty Recipes.
 	 *
+	 * @param bool $raw Whether to return raw settings without defaults.
+	 *
 	 * @return array
 	 */
 	public static function get_customization_settings( $raw = false ) {

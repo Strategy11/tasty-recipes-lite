@@ -167,7 +167,7 @@ class Settings {
 		];
 
 		$design_settings = [
-			Tasty_Recipes::CUSTOMIZATION_OPTION => [
+			Tasty_Recipes::CUSTOMIZATION_OPTION      => [
 				'sanitize_callback' => array( __CLASS__, 'sanitize_customization_option' ),
 			],
 			Tasty_Recipes::TEMPLATE_OPTION           => $sanitize_title,

@@ -1007,8 +1007,8 @@ class Shortcodes {
 		wp_enqueue_style( 'tasty-recipes-before' );
 		wp_enqueue_style( 'tasty-recipes-main' );
 
-		$styles    = '';
-		$css_files = [];
+		$styles       = '';
+		$css_files    = [];
 		$template_obj = Template::get_object_by_name( self::$custom_template );
 		
 		if ( $template_obj->supports( 'variations' ) ) {

@@ -27,9 +27,11 @@ class Custom extends Abstract_Template {
 	/**
 	 * Get templates base path with trailing slash.
 	 *
+	 * @param int|false $variation Template variation.
+	 *
 	 * @return string
 	 */
-	protected function get_base_templates_path( $variation = false ) {
+	protected function get_base_templates_path( $variation = false ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		return trailingslashit( $this->get_template_plugin() );
 	}
 

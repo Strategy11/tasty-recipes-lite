@@ -37,6 +37,8 @@ class Default_Template extends Abstract_Template {
 	/**
 	 * Get current template path.
 	 *
+	 * @param int|false $variation Template variation.
+	 *
 	 * @return string
 	 */
 	public function get_template_path( $variation = false ) {
@@ -50,7 +52,8 @@ class Default_Template extends Abstract_Template {
 	 *
 	 * @return string
 	 */
-	public function get_style_path( $variation = false ) { // phpcs:ignore SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
+	public function get_style_path( $variation = false ) {
+		unset( $variation );
 		return '';
 	}
 }

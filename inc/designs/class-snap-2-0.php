@@ -26,4 +26,3 @@ class Snap_2_0 extends Abstract_Template {
 		$this->is_pro        = true;
 	}
 }
-
