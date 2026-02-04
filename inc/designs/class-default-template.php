@@ -37,7 +37,7 @@ class Default_Template extends Abstract_Template {
 	/**
 	 * Get current template path.
 	 *
-	 * @param int|false $variation Template variation.
+	 * @param false|int $variation Template variation.
 	 *
 	 * @return string
 	 */
@@ -48,7 +48,7 @@ class Default_Template extends Abstract_Template {
 	/**
 	 * Get current style path.
 	 *
-	 * @param int|false $variation Template variation.
+	 * @param false|int $variation Template variation.
 	 *
 	 * @return string
 	 */

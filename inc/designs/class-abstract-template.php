@@ -243,7 +243,7 @@ abstract class Abstract_Template {
 	/**
 	 * Get current template path.
 	 *
-	 * @param int|false $variation Variation number to use.
+	 * @param false|int $variation Variation number to use.
 	 *
 	 * @return string
 	 */
@@ -285,7 +285,7 @@ abstract class Abstract_Template {
 	/**
 	 * Get current template style's path.
 	 *
-	 * @param int|false $variation Template variation.
+	 * @param false|int $variation Template variation.
 	 *
 	 * @return string
 	 */
@@ -310,7 +310,7 @@ abstract class Abstract_Template {
 	 * Get current template style or template file path.
 	 *
 	 * @param string    $file      File name.
-	 * @param int|false $variation Template variation.
+	 * @param false|int $variation Template variation.
 	 *
 	 * @return string
 	 */
@@ -339,11 +339,12 @@ abstract class Abstract_Template {
 	/**
 	 * Get the mechanisms this template supports.
 	 * 
-	 * @param string $mechanism Mechanism to check.
 	 * 
 	 * @since x.x
 	 *
-	 * @return array
+	 * @param string $mechanism Mechanism to check.
+	 *
+	 * @return bool
 	 */
 	public function supports( $mechanism ) {
 		return in_array( $mechanism, $this->supports, true );

@@ -556,7 +556,7 @@ class Shortcodes {
 	 * @since 3.13
 	 *
 	 * @param bool|string $custom_design Custom design.
-	 * @param int|false   $variation     Template variation.
+	 * @param false|int   $variation     Template variation.
 	 *
 	 * @return void
 	 */
@@ -995,7 +995,7 @@ class Shortcodes {
 	 * Gets the styles to inject into the recipe card.
 	 *
 	 * @param string    $override_design Design being used if not the saved option.
-	 * @param int|false $variation       Template variation.
+	 * @param false|int $variation       Template variation.
 	 *
 	 * @return string
 	 */
