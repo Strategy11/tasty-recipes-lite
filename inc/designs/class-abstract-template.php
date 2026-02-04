@@ -338,8 +338,7 @@ abstract class Abstract_Template {
 
 	/**
 	 * Get the mechanisms this template supports.
-	 * 
-	 * 
+	 *
 	 * @since x.x
 	 *
 	 * @param string $mechanism Mechanism to check.
