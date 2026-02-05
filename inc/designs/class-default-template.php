@@ -21,7 +21,7 @@ class Default_Template extends Abstract_Template {
 	 * @return void
 	 */
 	public function set_vars() {
-		$this->id            = 'default';
+		$this->id            = '';
 		$this->template_name = 'Default';
 	}
 

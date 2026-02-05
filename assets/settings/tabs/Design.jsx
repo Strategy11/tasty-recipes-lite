@@ -12,8 +12,8 @@ export const Design = () => {
 	const { modalData, openModal, closeModal, generateUpgradeUrl } = useModal();
 
 	const [ selectedTemplate, setSelectedTemplate ] = useState( {
-		slug: template || 'default',
-		variation: Number( variation ) || 1,
+		slug: template ?? 'default',
+		variation: Number( variation ) ?? 1,
 	} );
 
 	const templateMeta = {
