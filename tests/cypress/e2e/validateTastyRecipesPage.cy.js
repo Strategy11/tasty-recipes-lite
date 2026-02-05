@@ -76,7 +76,7 @@ describe( 'WP Tasty recipe page', () => {
 			.its( 'length' )
 			.should( 'be.gt', 0 );
 
-		cy.contains( 'h3', 'Default (1/7)' ).should( 'be.visible' );
+		cy.contains( 'h3', 'Default (1/11)' ).should( 'be.visible' );
 
 		cy.log( 'Validate template preview' );
 		cy.get( '#tasty-recipes-card-preview' )
