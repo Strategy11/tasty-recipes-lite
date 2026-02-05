@@ -16,6 +16,20 @@ class Fresh_2_0 extends Abstract_Template {
 	use Singleton;
 
 	/**
+	 * Variation_count.
+	 *
+	 * @var int
+	 */
+	protected $variation_count = 3;
+
+	/**
+	 * What mechanisms this template supports.
+	 * 
+	 * @var array
+	 */
+	protected $supports = array( 'customization', 'variations' );
+
+	/**
 	 * Sets the variables.
 	 *
 	 * @return void

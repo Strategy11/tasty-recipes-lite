@@ -391,6 +391,7 @@ class Template {
 			'second_button'                 => Shortcodes::get_card_button( $recipe, 'second', $custom_design ),
 			'template'                      => $custom_design,
 			'template_object'               => ! empty( $template_object ) ? $template_object : false,
+			'variation'                     => $variation,
 		);
 		/**
 		 * Filter the template vars for the recipe card preview.
