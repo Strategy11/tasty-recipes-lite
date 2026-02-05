@@ -140,7 +140,7 @@ class Content_Model {
 		 * When set to false, the taxonomy archive pages will return 404.
 		 * This does not affect the admin UI or REST API access.
 		 *
-		 * @since x.x
+		 * @since 1.2.1
 		 *
 		 * @param bool   $has_archive   Whether archive pages are enabled. Default true.
 		 * @param string $taxonomy_name The full taxonomy name (e.g., 'tasty_recipe_category').
@@ -846,7 +846,7 @@ class Content_Model {
 		 * When set to false, taxonomy terms will be displayed as plain text
 		 * instead of links to their archive pages.
 		 *
-		 * @since x.x
+		 * @since 1.2.1
 		 *
 		 * @param bool   $enable_links Whether to render terms as links. Default true.
 		 * @param string $taxonomy     The taxonomy name (e.g., 'tasty_recipe_category').

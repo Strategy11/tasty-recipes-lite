@@ -246,7 +246,18 @@ class Template {
 			$styles .= Utils::get_contents( $compat_file );
 		}
 
-		$recipe      = new \stdClass();
+		$recipe      = new class() {
+			/**
+			 * Get a placeholder ID for preview context.
+			 *
+			 * @since x.x
+			 *
+			 * @return int
+			 */
+			public function get_id() {
+				return 0;
+			}
+		};
 		$recipe_json = array();
 
 		if ( 'card' === $nutrifox_display_style ) {

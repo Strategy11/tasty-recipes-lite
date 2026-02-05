@@ -18,12 +18,18 @@ const getTemplatePreviewUrl = ( template, settings, variation ) => {
 		.map( ( key ) => `${ key }=${ encodeURIComponent( settings[ key ] ) }` )
 		.join( '&' );
 
+	const parsedVariation = Number( variation );
+	const safeVariation =
+		Number.isFinite( parsedVariation ) && parsedVariation > 0
+			? parsedVariation
+			: 1;
+
 	return (
 		recipeCardPreviewUrlBase +
 		'&template=' +
 		template +
 		'&variation=' +
-		variation +
+		safeVariation +
 		'&' +
 		params
 	);

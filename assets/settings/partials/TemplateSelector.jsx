@@ -25,11 +25,19 @@ export const TemplateSelector = ( {
 } ) => {
 	const { generateUpgradeUrl } = useModal();
 	const { title, index, total } = selectedTemplate;
+	const safeTitle = title || {
+		name: __( 'Template', 'tasty-recipes-lite' ),
+		variation_count: 0,
+	};
+	const parsedVariationCount = Number( safeTitle.variation_count );
+	const variationCount = Number.isFinite( parsedVariationCount )
+		? parsedVariationCount
+		: 0;
 
 	const variations = [];
 
-	if ( title.variation_count && title.variation_count > 0 ) {
-		for ( let i = 1; i <= title.variation_count; i++ ) {
+	if ( variationCount > 0 ) {
+		for ( let i = 1; i <= variationCount; i++ ) {
 			variations.push( i );
 		}
 	}
@@ -75,7 +83,7 @@ export const TemplateSelector = ( {
 					</svg>
 				</button>
 				<h3>
-					{ `${ title.name } (${ index + 1 }/${ total })` }
+					{ `${ safeTitle.name } (${ index + 1 }/${ total })` }
 					{ lockedTemplates.includes( selectedTemplate.slug ) && (
 						<PremiumLock
 							upgradeUrl={ generateUpgradeUrl( {
@@ -110,9 +118,7 @@ export const TemplateSelector = ( {
 					</svg>
 				</button>
 			</div>
-			{ variationSelector &&
-				title.variation_count &&
-				title.variation_count > 0 && (
+			{ variationSelector && variationCount > 0 && (
 					<div className="tasty-recipes-template-variations">
 						{ variations.map( ( variation ) => (
 							<button
