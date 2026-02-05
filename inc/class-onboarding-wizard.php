@@ -371,7 +371,7 @@ class Onboarding_Wizard {
 
 		);
 		foreach ( $substrings as $substring ) {
-			if ( false !== strpos( $email, $substring ) ) {
+			if ( str_contains( $email, $substring ) ) {
 				return false;
 			}
 		}

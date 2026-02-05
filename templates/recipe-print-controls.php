@@ -48,7 +48,7 @@ $show_options = apply_filters( 'tasty_recipes_show_print_options', true );
 		<fieldset class="tasty-recipes-print-display-controls">
 			<legend><?php esc_html_e( 'Include in print view:', 'tasty-recipes-lite' ); ?></legend>
 			<?php
-			if ( ( empty( $recipe_nutrifox_embed ) && empty( $recipe_nutrition ) ) ) {
+			if ( empty( $recipe_nutrifox_embed ) && empty( $recipe_nutrition ) ) {
 				unset( $print_view_options['nutrition'] );
 			}
 			foreach ( $print_view_options as $key => $label ) {

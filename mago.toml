@@ -1,0 +1,136 @@
+# Welcome to Mago!
+# For full documentation, see https://mago.carthage.software/tools/overview
+php-version = "8.5.0"
+
+[source]
+workspace = "."
+paths = [
+    "tasty-recipes.php",
+    "inc",
+    "templates",
+    "tests",
+]
+includes = [
+    "vendor/php-stubs/wordpress-stubs/wordpress-stubs.php",
+    "stubs.php",
+]
+excludes = ["node_modules", "inc/libs/tasty-framework"]
+extensions = ["php"]
+
+[formatter]
+preset = "default"
+use-tabs = true
+
+[linter]
+integrations = []
+
+[linter.rules]
+array-style = { enabled = false }
+braced-string-interpolation = { enabled = false }
+class-name = { enabled = false }
+combine-consecutive-issets = { enabled = false }
+cyclomatic-complexity = { enabled = false }
+excessive-nesting = { enabled = false } # Consider enabling this soon.
+function-name = { enabled = false }
+halstead = { enabled = false } # Consider enabling this soon.
+inline-variable-return = { enabled = false }
+kan-defect = { enabled = false }
+literal-named-argument = { enabled = false }
+no-closing-tag = { enabled = false }
+no-else-clause = { enabled = false }
+no-empty = { enabled = false }
+no-global = { enabled = false }
+no-multi-assignments = { enabled = false }
+no-redundant-math = { enabled = false }
+no-redundant-use = { enabled = false }
+no-request-variable = { enabled = false }
+no-trailing-space = { enabled = false }
+prefer-arrow-function = { enabled = false }
+prefer-early-continue = { enabled = false }
+prefer-static-closure = { enabled = false }
+strict-types = { enabled = false }
+tagged-todo = { enabled = false }
+too-many-methods = { enabled = false }
+use-compound-assignment = { enabled = false } # Consider enabling this soon.
+
+[analyzer]
+plugins = []
+find-unused-definitions = true
+find-unused-expressions = false
+analyze-dead-code = true
+memoize-properties = true
+allow-possibly-undefined-array-keys = true
+check-throws = false
+check-missing-override = false
+find-unused-parameters = false
+strict-list-index-checks = false
+no-boolean-literal-comparison = false
+check-missing-type-hints = false
+register-super-globals = true
+ignore = [
+    "ambiguous-object-method-access",
+    "ambiguous-object-property-access",
+    "array-to-string-conversion",
+    "falsable-return-statement",
+    "impossible-condition",
+    "impossible-type-comparison",
+    "invalid-argument",
+    "invalid-callable",
+    "invalid-iterator",
+    "invalid-member-selector",
+    "invalid-method-access",
+    "invalid-operand",
+    "invalid-property-access",
+    "invalid-property-assignment-value",
+    "invalid-return-statement",
+    "invalid-type-cast",
+    "less-specific-argument",
+    "less-specific-nested-argument-type",
+    "less-specific-nested-return-statement",
+    "less-specific-return-statement",
+    "malformed-docblock-comment",
+    "mismatched-array-index",
+    "missing-return-statement",
+    "mixed-argument",
+    "mixed-array-access",
+    "mixed-array-assignment",
+    "mixed-array-index",
+    "mixed-assignment",
+    "mixed-method-access",
+    "mixed-operand",
+    "mixed-property-access",
+    "mixed-property-type-coercion",
+    "mixed-return-statement",
+    "non-documented-property",
+    "non-existent-class-like",
+    "non-existent-constant",
+    "non-existent-function",
+    "non-existent-method",
+    "non-existent-property",
+    "null-argument",
+    "null-operand",
+    "nullable-return-statement",
+    "possible-method-access-on-null",
+    "possibly-false-argument",
+    "possibly-false-operand",
+    "possibly-invalid-argument",
+    "possibly-invalid-iterator",
+    "possibly-invalid-operand",
+    "possibly-null-argument",
+    "possibly-null-array-index",
+    "possibly-null-operand",
+    "possibly-null-property-access",
+    "possibly-undefined-variable",
+    "redundant-cast",
+    "redundant-comparison",
+    "redundant-condition",
+    "redundant-docblock-type",
+    "redundant-logical-operation",
+    "reference-constraint-violation",
+    "reference-to-undefined-variable",
+    "string-member-selector",
+    "undefined-variable",
+    "unknown-class-instantiation",
+    "unused-method",
+    "unused-property",
+]

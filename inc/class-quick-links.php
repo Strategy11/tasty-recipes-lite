@@ -324,7 +324,7 @@ class Quick_Links {
 		}
 
 		foreach ( $links as $key => $link ) {
-			if ( false !== strpos( $link, 'tasty-recipes-scrollto' ) ) {
+			if ( str_contains( $link, 'tasty-recipes-scrollto' ) ) {
 				$links[ $key ] = str_replace( 'tasty-recipes-scrollto', '', $link );
 			}
 		}

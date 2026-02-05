@@ -1388,7 +1388,7 @@ class Distribution_Metadata {
 		$strings = self::empty_time_strings();
 
 		foreach ( $strings as $string => $translation ) {
-			if ( $string === $translation || strpos( $time, $translation ) === false ) {
+			if ( $string === $translation || ! str_contains( $time, $translation ) ) {
 				continue;
 			}
 

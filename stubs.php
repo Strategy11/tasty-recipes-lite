@@ -30,6 +30,16 @@ namespace {
 
 	function tasty_get_asset_meta( $path ) {
 	}
+
+	/**
+	 * @param int $post_id
+	 * @param int $recipe_id
+	 *
+	 * @return string
+	 */
+	function tasty_recipes_get_print_url( $post_id, $recipe_id ) {
+		return '';
+	}
 }
 
 namespace Elementor {

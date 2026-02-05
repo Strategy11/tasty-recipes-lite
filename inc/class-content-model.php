@@ -130,13 +130,27 @@ class Content_Model {
 	 * @return array
 	 */
 	private static function get_taxonomy_definition( $taxonomy, $plural ) {
-		$singular = ucfirst( $taxonomy );
-		$slug     = 'recipe-' . sanitize_title( $taxonomy );
+		$singular      = ucfirst( $taxonomy );
+		$slug          = 'recipe-' . sanitize_title( $taxonomy );
+		$taxonomy_name = 'tasty_recipe_' . sanitize_title( $taxonomy );
+
+		/**
+		 * Filters whether recipe taxonomy archive pages are enabled.
+		 *
+		 * When set to false, the taxonomy archive pages will return 404.
+		 * This does not affect the admin UI or REST API access.
+		 *
+		 * @since x.x
+		 *
+		 * @param bool   $has_archive   Whether archive pages are enabled. Default true.
+		 * @param string $taxonomy_name The full taxonomy name (e.g., 'tasty_recipe_category').
+		 */
+		$has_archive = apply_filters( 'tasty_recipes_taxonomy_has_archive', true, $taxonomy_name );
 
 		return array(
 			'legacy_meta' => $taxonomy,
 			'args'        => array(
-				'labels'            => array(
+				'labels'             => array(
 					// translators: %s is the plural of the taxonomy.
 					'name'                       => sprintf( __( 'Recipe %s', 'tasty-recipes-lite' ), $plural ),
 					'singular_name'              => $singular,
@@ -161,17 +175,18 @@ class Content_Model {
 					// translators: %s is the plural of the taxonomy.
 					'not_found'                  => sprintf( __( 'No %s found', 'tasty-recipes-lite' ), $plural ),
 				),
-				'hierarchical'      => false,
-				'public'            => true,
-				'show_ui'           => true,
-				'show_admin_column' => false,
-				'show_in_nav_menus' => true,
-				'show_tagcloud'     => false,
-				'show_in_rest'      => true,
-				'rewrite'           => array(
+				'hierarchical'       => false,
+				'public'             => true,
+				'publicly_queryable' => $has_archive,
+				'show_ui'            => true,
+				'show_admin_column'  => false,
+				'show_in_nav_menus'  => true,
+				'show_tagcloud'      => false,
+				'show_in_rest'       => true,
+				'rewrite'            => $has_archive ? array(
 					'slug'       => $slug,
 					'with_front' => false,
-				),
+				) : false,
 			),
 		);
 	}
@@ -427,7 +442,7 @@ class Content_Model {
 		}
 
 		// Looks like a shortcode.
-		if ( 0 === strpos( trim( $meta_value ), '[' ) ) {
+		if ( str_starts_with( trim( $meta_value ), '[' ) ) {
 			$shortcode = trim( $meta_value, '[] ' ); // Deliberate empty space.
 			// Only AdThrive shortcodes are supported.
 			$adthrive_beginning = 'adthrive-in-post-video-player ';
@@ -823,7 +838,26 @@ class Content_Model {
 			return $value;
 		}
 
-		$taxonomy     = $taxonomy_map[ $attribute ];
+		$taxonomy = $taxonomy_map[ $attribute ];
+
+		/**
+		 * Filters whether taxonomy terms should be rendered as links on the recipe card.
+		 *
+		 * When set to false, taxonomy terms will be displayed as plain text
+		 * instead of links to their archive pages.
+		 *
+		 * @since x.x
+		 *
+		 * @param bool   $enable_links Whether to render terms as links. Default true.
+		 * @param string $taxonomy     The taxonomy name (e.g., 'tasty_recipe_category').
+		 * @param string $attribute    The attribute name (e.g., 'category').
+		 */
+		$enable_links = apply_filters( 'tasty_recipes_enable_taxonomy_links', true, $taxonomy, $attribute );
+
+		if ( ! $enable_links ) {
+			return esc_html( $value );
+		}
+
 		$terms        = array_map( 'trim', explode( ',', $value ) );
 		$linked_terms = array();
 
@@ -834,7 +868,7 @@ class Content_Model {
 				$term_link = get_term_link( $term, $taxonomy );
 
 				if ( ! is_wp_error( $term_link ) ) {
-					$linked_terms[] = '<a href="' . esc_url( $term_link ) . '">' . esc_html( $term_name ) . '</a>';
+					$linked_terms[] = '<a data-tasty-recipes-customization="detail-value-color.color" href="' . esc_url( $term_link ) . '">' . esc_html( $term_name ) . '</a>';
 					continue;
 				}
 			}

@@ -194,21 +194,22 @@ class Settings {
 		}
 
 		$settings = array(
-			Tasty_Recipes::QUICK_LINKS_OPTION         => [
+			Tasty_Recipes::QUICK_LINKS_OPTION           => [
 				'sanitize_callback' => array( __CLASS__, 'sanitize_quick_links' ),
 			],
-			Tasty_Recipes::QUICK_LINKS_STYLE          => $sanitize_title,
-			Tasty_Recipes::CARD_BUTTONS_OPTION        => [
+			Tasty_Recipes::QUICK_LINKS_STYLE            => $sanitize_title,
+			Tasty_Recipes::CARD_BUTTONS_OPTION          => [
 				'sanitize_callback' => array( __CLASS__, 'sanitize_card_buttons' ),
 			],
-			Tasty_Recipes::COPY_TO_CLIPBOARD_OPTION   => $sanitize_title,
-			Tasty_Recipes::DEFAULT_AUTHOR_LINK_OPTION => [
+			Tasty_Recipes::COPY_TO_CLIPBOARD_OPTION     => $sanitize_title,
+			Tasty_Recipes::DEFAULT_AUTHOR_LINK_OPTION   => [
 				'sanitize_callback' => 'esc_url_raw',
 			],
-			Tasty_Recipes::POWEREDBY_OPTION           => $sanitize_title,
-			Tasty_Recipes::SHAREASALE_OPTION          => [
+			Tasty_Recipes::POWEREDBY_OPTION             => $sanitize_title,
+			Tasty_Recipes::SHAREASALE_OPTION            => [
 				'sanitize_callback' => 'sanitize_text_field',
 			],
+			Tasty_Recipes::ENABLE_TAXONOMY_LINKS_OPTION => $sanitize_title,
 		);
 
 		/**
@@ -268,7 +269,7 @@ class Settings {
 
 	/**
 	 * Add admin tabs to the head of all links admin pages.
-	 * 
+	 *
 	 * @since 1.1
 	 *
 	 * @return void
@@ -286,7 +287,7 @@ class Settings {
 
 	/**
 	 * Check if we're on the recipes admin page.
-	 * 
+	 *
 	 * @since 1.1
 	 *
 	 * @return bool
@@ -302,7 +303,7 @@ class Settings {
 
 	/**
 	 * Get all tabs.
-	 * 
+	 *
 	 * @since 1.1
 	 *
 	 * @return array
@@ -515,7 +516,7 @@ class Settings {
 			return '';
 		}
 
-		if ( false === strpos( $color, 'rgba' ) ) {
+		if ( ! str_contains( $color, 'rgba' ) ) {
 			return self::sanitize_hex_color( $color );
 		}
 
@@ -598,7 +599,7 @@ class Settings {
 
 	/**
 	 * Handle the onboarding consent tracking form submission.
-	 * 
+	 *
 	 * @since 1.1
 	 *
 	 * @return void

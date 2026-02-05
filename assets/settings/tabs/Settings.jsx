@@ -252,6 +252,21 @@ export const Settings = () => {
 					handleChange( 'shareasaleId', value );
 				} }
 			/>
+			<ToggleInput
+				label={ __( 'Taxonomy Key Links', 'tasty-recipes-lite' ) }
+				id="tasty_recipes_enable_taxonomy_links"
+				name="tasty_recipes_enable_taxonomy_links"
+				value={ String( formData.enableTaxonomyLinks ?? 0 ) }
+				onValue="1"
+				offValue="0"
+				setValue={ ( value ) => {
+					handleChange( 'enableTaxonomyLinks', value );
+				} }
+				helper={ __(
+					'Allow users to click a taxonomy key and see all recipes that are tagged similarly',
+					'tasty-recipes-lite'
+				) }
+			/>
 			<UpgradeBanner generateUpgradeUrl={ generateUpgradeUrl } />
 			<SelectInput
 				onClick={ () => {
