@@ -978,13 +978,8 @@ class Shortcodes {
 
 		$atts = array(
 			'recipe'        => $recipe,
-			'customization' => '',
+			'customization' => $template_obj->get_customized( 'admin_button' ),
 		);
-
-		if ( is_admin() ) {
-			// Set the colors dynamically in the preview.
-			$atts['customization'] = $template_obj->get_customized( 'admin_button' );
-		}
 		return Tasty_Recipes::get_template_part(
 			'buttons/' . $settings[ $position ],
 			$atts
