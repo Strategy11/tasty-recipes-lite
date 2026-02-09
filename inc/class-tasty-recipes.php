@@ -88,7 +88,7 @@ class Tasty_Recipes {
 	/**
 	 * Option name for enabling taxonomy links.
 	 *
-	 * @since x.x
+	 * @since 1.2.1
 	 *
 	 * @var string
 	 */
@@ -936,7 +936,7 @@ class Tasty_Recipes {
 	 *
 	 * Used for both archive pages and front-end links.
 	 *
-	 * @since x.x
+	 * @since 1.2.1
 	 *
 	 * @param bool $enabled Whether the taxonomy feature is enabled.
 	 *
@@ -954,7 +954,7 @@ class Tasty_Recipes {
 	/**
 	 * Flush rewrite rules when the taxonomy links setting changes.
 	 *
-	 * @since x.x
+	 * @since 1.2.1
 	 *
 	 * @param mixed $old_value The old option value.
 	 * @param mixed $new_value The new option value.
