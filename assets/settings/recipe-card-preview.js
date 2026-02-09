@@ -78,9 +78,21 @@ window.addEventListener( 'message', ( event ) => {
 			const settings = payload.data;
 
 			if ( ! settings.star_color ) {
-				settings.star_color = settings.detail_value_color
-					? settings.detail_value_color
-					: '#F2B955';
+				const urlParams = new URLSearchParams(
+					window.location.search
+				);
+				const template = urlParams.get( 'template' ) || '';
+				const is2_0Template = [
+					'bold-2-0',
+					'snap-2-0',
+					'fresh-2-0',
+					'elegant-2-0',
+				].includes( template );
+
+				settings.star_color =
+					! is2_0Template && settings.detail_value_color
+						? settings.detail_value_color
+						: '#F2B955';
 			}
 
 			document

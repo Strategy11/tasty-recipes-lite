@@ -472,7 +472,14 @@ class Ratings {
 			return $settings;
 		}
 
-		$settings['star_color'] = ! empty( $settings['detail_value_color'] ) ? $settings['detail_value_color'] : '#F2B955';
+		$template       = get_option( Tasty_Recipes::TEMPLATE_OPTION, '' );
+		$templates_2_0  = array( 'bold-2-0', 'snap-2-0', 'fresh-2-0', 'elegant-2-0' );
+		$is_2_0         = in_array( $template, $templates_2_0, true );
+
+		$settings['star_color'] = ! $is_2_0 && ! empty( $settings['detail_value_color'] )
+			? $settings['detail_value_color']
+			: '#F2B955';
+
 		return $settings;
 	}
 
