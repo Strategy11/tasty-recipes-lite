@@ -4,7 +4,7 @@ import apiFetch from '@wordpress/api-fetch';
 import { Breadcrumbs } from '../partials/Breadcrumbs';
 import { EmbedStepFooter } from '../partials/EmbedStepFooter';
 
-export const CreatePage = ( { recipe, setPage } ) => {
+export const CreatePage = ( { recipe, setPage, labels = {} } ) => {
 	const [ postName, setPostName ] = useState( recipe.post_title );
 
 	const embedClick = async () => {
@@ -22,7 +22,10 @@ export const CreatePage = ( { recipe, setPage } ) => {
 
 	return (
 		<div>
-			<Breadcrumbs step="embed" />
+			<Breadcrumbs
+				step="embed"
+				firstStepLabel={ labels.createBreadcrumb }
+			/>
 			<div className="tasty-recipes-modal-with-form-content">
 				<label htmlFor="tasty-post-name">
 					{ __( 'Enter title for new post', 'tasty-recipes-lite' ) }

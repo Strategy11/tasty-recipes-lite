@@ -18,6 +18,7 @@ export const AfterCreationForm = ( { recipe, closeEditorExtension } ) => {
 
 	const labels = useMemo( () => {
 		const defaultLabels = {
+			createBreadcrumb: __( 'Create Recipe', 'tasty-recipes-lite' ),
 			modalTitle: __( 'Embed Recipe', 'tasty-recipes-lite' ),
 			embedInExisting: __(
 				'Embed in existing post',
@@ -34,6 +35,10 @@ export const AfterCreationForm = ( { recipe, closeEditorExtension } ) => {
 			),
 			skipStep: __(
 				'<link>Skip this step</link> and add the recipe later from inside a post or page.',
+				'tasty-recipes-lite'
+			),
+			embedSearchLabel: __(
+				'Select post to embed recipe',
 				'tasty-recipes-lite'
 			),
 		};
@@ -87,10 +92,18 @@ export const AfterCreationForm = ( { recipe, closeEditorExtension } ) => {
 					<SelectPage setPage={ setPage } labels={ labels } />
 				) }
 				{ pageState.page === 'embed' && (
-					<EmbedPage recipe={ recipe } setPage={ setPage } />
+					<EmbedPage
+						recipe={ recipe }
+						setPage={ setPage }
+						labels={ labels }
+					/>
 				) }
 				{ pageState.page === 'create' && (
-					<CreatePage recipe={ recipe } setPage={ setPage } />
+					<CreatePage
+						recipe={ recipe }
+						setPage={ setPage }
+						labels={ labels }
+					/>
 				) }
 			</Modal>
 		</>
