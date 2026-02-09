@@ -240,9 +240,9 @@ class Recipe_Explorer {
 			return $columns;
 		}
 	
-		$columns['title']        = esc_html__( 'Recipe Title', 'tasty-recipes-lite' );
+		$columns['title']        = esc_html__( 'Title', 'tasty-recipes-lite' );
 		$columns['rating']       = esc_html__( 'Rating', 'tasty-recipes-lite' );
-		$columns['recipe-post']  = esc_html__( "Recipe's post", 'tasty-recipes-lite' );
+		$columns['recipe-post']  = esc_html__( 'Linked Post', 'tasty-recipes-lite' );
 		$columns['last-updated'] = esc_html__( 'Last updated', 'tasty-recipes-lite' );
 
 		// Hidden columns by default.
