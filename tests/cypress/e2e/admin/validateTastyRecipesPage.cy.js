@@ -324,7 +324,7 @@ describe( 'WP Tasty recipe page', () => {
 			{
 				label: 'Scaling',
 				id: 'tasty_recipes_disable_scaling',
-				helperText: 'Allow visitors to scale the recipe ½, 2x, or 3x.',
+				helperText: 'Allow visitors to scale the recipe 1/2, 2x, or 3x.',
 			},
 			{
 				label: 'Copy to Clipboard',
@@ -341,13 +341,22 @@ describe( 'WP Tasty recipe page', () => {
 		premiumToggles.forEach( ( { label, id, helperText } ) => {
 			cy.contains( 'label', label ).should( 'exist' );
 
-			const field = cy.contains( '.tasty-form-field', label );
+			const getField = () => cy.contains( '.tasty-form-field', label );
 
-			field.should( 'contain.text', helperText );
+			if ( label === 'Scaling' ) {
+				getField()
+					.invoke( 'text' )
+					.should(
+						'match',
+						/Allow visitors to scale the recipe (?:1\/2|½), 2x, or 3x\./
+					);
+			} else {
+				getField().should( 'contain.text', helperText );
+			}
 
 			cy.get( `#${ id }` ).should( 'exist' ).and( 'be.disabled' );
 
-			field.find( '.tasty-slider' ).first().click( { force: true } );
+			getField().find( '.tasty-slider' ).first().click( { force: true } );
 
 			cy.get( '.tasty-framework-modal-header' )
 				.should( 'be.visible' )
