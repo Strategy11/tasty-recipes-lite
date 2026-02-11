@@ -170,6 +170,35 @@ Cypress.Commands.add( 'setTastyOption', ( optionName, value ) => {
 } );
 
 /**
+ * Sets multiple Tasty Recipes options in a single WP-CLI call.
+ *
+ * @since x.x
+ *
+ * @param {Object<string, string|Array|Object>} options - Option map keyed by option name.
+ * @returns {Cypress.Chainable<{ stdout: string }>}
+ */
+Cypress.Commands.add( 'setTastyOptions', ( options = {} ) => {
+	const optionEntries = Object.entries( options );
+
+	if ( optionEntries.length === 0 ) {
+		return cy.wrap( { stdout: '' } );
+	}
+
+	const optionPhp = optionEntries
+		.map( ( [ optionName, value ] ) => {
+			if ( typeof value === 'object' && value !== null ) {
+				const serialized = JSON.stringify( value ).replace( /'/g, "\\'" );
+				return `update_option( '${ optionName }', json_decode( '${ serialized }', true ) );`;
+			}
+
+			return `update_option( '${ optionName }', '${ String( value ).replace( /'/g, "\\'" ) }' );`;
+		} )
+		.join( "\n" );
+
+	return wpDevCliEval( optionPhp );
+} );
+
+/**
  * Gets a Tasty Recipes option value via WP-CLI.
  *
  * @since x.x
@@ -220,4 +249,17 @@ Cypress.Commands.add( 'deleteAllTastyRecipes', () => {
  */
 Cypress.Commands.add( 'wpDevEval', ( php ) => {
 	return wpDevCliEval( php );
+} );
+
+/**
+ * Logs into WordPress admin once per run via Cypress session cache.
+ *
+ * @since x.x
+ *
+ * @returns {void}
+ */
+Cypress.Commands.add( 'loginCached', () => {
+	cy.session( 'wp-admin-login', () => {
+		cy.login();
+	} );
 } );

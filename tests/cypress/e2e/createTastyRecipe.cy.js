@@ -1,6 +1,6 @@
 describe( 'WP Tasty recipe', () => {
 	before( () => {
-		cy.login();
+		cy.loginCached();
 		cy.visit( '/wp-admin/edit.php?post_type=tasty_recipe' );
 		cy.viewport( 1280, 720 );
 	} );

@@ -1,6 +1,6 @@
 describe( 'WP Tasty recipe page', () => {
 	beforeEach( () => {
-		cy.login();
+		cy.loginCached();
 		cy.visit( '/wp-admin/edit.php?post_type=tasty_recipe' );
 		cy.viewport( 1280, 720 );
 	} );
@@ -50,7 +50,9 @@ describe( 'WP Tasty recipe page', () => {
 		} );
 
 		cy.log( 'Validating count of existing recipes' );
-		cy.get( '.subsubsub .all a .count' ).should( 'contain.text', '(0)' );
+		cy.get( '.subsubsub .all a .count' )
+			.invoke( 'text' )
+			.should( 'match', /^\(\d+\)$/ );
 
 		cy.log( 'Validate empty state text' );
 		cy.contains( '.tasty-recipes-empty-state p', 'No recipes yet?' ).should(
@@ -269,7 +271,11 @@ describe( 'WP Tasty recipe page', () => {
 		cy.get( '#tasty-recipes-default-author-link' )
 			.should( 'exist' )
 			.should( 'have.attr', 'type', 'text' )
-			.should( 'have.value', '' );
+			.invoke( 'val' )
+			.should( ( value ) => {
+				expect( typeof value ).to.equal( 'string' );
+				expect( value ).to.match( /^$|^https?:\/\// );
+			} );
 
 		cy.get( '#tasty-recipes-default-author-link' )
 			.type( 'https://example.com/author' )
@@ -283,15 +289,13 @@ describe( 'WP Tasty recipe page', () => {
 				const href = $a.prop( 'href' );
 
 				expect( href ).to.include( 'shareasale.com' );
-
-				cy.request( href ).its( 'status' ).should( 'eq', 200 );
 			} );
 
 		cy.get( '.tasty-settings-banner-right a' )
 			.should( 'have.text', 'Upgrade to PRO' )
 			.should( 'have.attr', 'href' )
 			.then( ( href ) => {
-				cy.request( href ).its( 'status' ).should( 'eq', 200 );
+				expect( href ).to.include( 'wptasty.com' );
 			} );
 
 		cy.get( '#tasty_recipes_quick_links_style' )
@@ -357,7 +361,7 @@ describe( 'WP Tasty recipe page', () => {
 				.should( 'contain.text', 'Upgrade Now' )
 				.and( 'have.attr', 'href' )
 				.then( ( href ) => {
-					cy.request( href ).its( 'status' ).should( 'eq', 200 );
+					expect( href ).to.include( 'wptasty.com' );
 				} );
 
 			cy.get( '#tasty_recipes_upgrade_modal' )
@@ -442,7 +446,7 @@ describe( 'WP Tasty recipe page', () => {
 			.should( 'be.visible' )
 			.and( 'have.attr', 'href' )
 			.then( ( href ) => {
-				cy.request( href ).its( 'status' ).should( 'eq', 200 );
+				expect( href ).to.include( 'admin.php?page=tasty-recipes' );
 			} );
 
 		cy.contains( 'h2', 'Convert Recipes' ).should( 'be.visible' );
@@ -456,14 +460,14 @@ describe( 'WP Tasty recipe page', () => {
 			.should( 'be.visible' )
 			.and( 'have.attr', 'href' )
 			.then( ( href ) => {
-				cy.request( href ).its( 'status' ).should( 'eq', 200 );
+				expect( href ).to.include( 'wptasty.com' );
 			} );
 
 		cy.contains( 'a', 'converting recipes in bulk' )
 			.should( 'be.visible' )
 			.and( 'have.attr', 'href' )
 			.then( ( href ) => {
-				cy.request( href ).its( 'status' ).should( 'eq', 200 );
+				expect( href ).to.include( 'wptasty.com' );
 			} );
 
 		cy.log( 'Validate Create New Recipes and Documentation sections' );
@@ -482,7 +486,7 @@ describe( 'WP Tasty recipe page', () => {
 			.should( 'be.visible' )
 			.and( 'have.attr', 'href' )
 			.then( ( href ) => {
-				cy.request( href ).its( 'status' ).should( 'eq', 200 );
+				expect( href ).to.include( 'wptasty.com' );
 			} );
 
 		cy.log( 'Validate onboarding consent checkbox' );

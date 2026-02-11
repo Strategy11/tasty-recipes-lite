@@ -3,7 +3,7 @@ describe( 'Recipe Render', () => {
 	let postUrl;
 
 	before( () => {
-		cy.login();
+		cy.loginCached();
 		cy.deleteAllTastyRecipes();
 
 		// Reset to default template.
@@ -42,7 +42,7 @@ describe( 'Recipe Render', () => {
 	} );
 
 	after( () => {
-		cy.login();
+		cy.loginCached();
 		cy.deleteAllTastyRecipes();
 	} );
 

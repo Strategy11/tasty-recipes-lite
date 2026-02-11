@@ -3,7 +3,7 @@ describe( 'Settings Execution', () => {
 	let postUrl;
 
 	before( () => {
-		cy.login();
+		cy.loginCached();
 		cy.deleteAllTastyRecipes();
 
 		cy.createTastyRecipe( {
@@ -20,20 +20,22 @@ describe( 'Settings Execution', () => {
 	} );
 
 	beforeEach( () => {
-		cy.login();
+		cy.loginCached();
 		cy.viewport( 1280, 720 );
 	} );
 
 	after( () => {
-		cy.login();
+		cy.loginCached();
 		cy.deleteAllTastyRecipes();
 
 		// Reset options to defaults.
-		cy.setTastyOption( 'tasty_recipes_quick_links', [ 'jump', 'print' ] );
-		cy.setTastyOption( 'tasty_recipes_card_buttons', '' );
-		cy.setTastyOption( 'tasty_recipes_default_author_link', '' );
-		cy.setTastyOption( 'tasty_recipes_shareasale', '' );
-		cy.setTastyOption( 'tasty_recipes_poweredby', '' );
+		cy.setTastyOptions( {
+			tasty_recipes_quick_links: [ 'jump', 'print' ],
+			tasty_recipes_card_buttons: '',
+			tasty_recipes_default_author_link: '',
+			tasty_recipes_shareasale: '',
+			tasty_recipes_poweredby: '',
+		} );
 	} );
 
 	describe( 'Quick Links', () => {
@@ -156,8 +158,10 @@ describe( 'Settings Execution', () => {
 		} );
 
 		it( 'should not show powered-by when no ID or poweredby option', () => {
-			cy.setTastyOption( 'tasty_recipes_shareasale', '' );
-			cy.setTastyOption( 'tasty_recipes_poweredby', '' );
+			cy.setTastyOptions( {
+				tasty_recipes_shareasale: '',
+				tasty_recipes_poweredby: '',
+			} );
 
 			cy.visit( postUrl );
 
