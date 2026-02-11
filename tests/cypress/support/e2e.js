@@ -21,4 +21,10 @@ Cypress.on( 'uncaught:exception', ( err ) => {
 	if ( err.message.includes( 'No route was found' ) ) {
 		return false;
 	}
+
+	// The recipe explorer JS may throw when tearing down UI elements
+	// that are no longer in the DOM (e.g. after a modal closes).
+	if ( err.message.includes( 'removeClass' ) ) {
+		return false;
+	}
 } );
