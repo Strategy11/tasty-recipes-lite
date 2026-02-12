@@ -50,6 +50,7 @@ phpcs.xml.dist
 .phpunit.result.*
 phpstan.neon
 stubs.php
+AGENTS.md
 webpack.config.js
 webpack.mix.js
 wp-cli.local.yml
