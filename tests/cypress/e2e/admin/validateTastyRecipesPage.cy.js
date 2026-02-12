@@ -278,6 +278,7 @@ describe( 'WP Tasty recipe page', () => {
 			} );
 
 		cy.get( '#tasty-recipes-default-author-link' )
+			.clear()
 			.type( 'https://example.com/author' )
 			.should( 'have.value', 'https://example.com/author' );
 

@@ -450,10 +450,6 @@ describe( 'Recipe Explorer', () => {
 			cy.get( '.tasty-recipes-modal-actions .tasty-button-primary' )
 				.should( 'be.visible' )
 				.and( 'have.text', 'Go to Post' );
-
-			cy.get(
-				'.tasty-recipes-modal-actions .tasty-secondary-button'
-			).click();
 		} );
 
 		it( 'should show permanent delete modal and delete recipe', () => {
