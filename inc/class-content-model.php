@@ -176,7 +176,7 @@ class Content_Model {
 					'not_found'                  => sprintf( __( 'No %s found', 'tasty-recipes-lite' ), $plural ),
 				),
 				'hierarchical'       => false,
-				'public'             => true,
+				'public'             => $has_archive,
 				'publicly_queryable' => $has_archive,
 				'show_ui'            => true,
 				'show_admin_column'  => false,

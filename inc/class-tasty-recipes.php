@@ -88,11 +88,20 @@ class Tasty_Recipes {
 	/**
 	 * Option name for enabling taxonomy links.
 	 *
-	 * @since x.x
+	 * @since 1.2.1
 	 *
 	 * @var string
 	 */
 	const ENABLE_TAXONOMY_LINKS_OPTION = 'tasty_recipes_enable_taxonomy_links';
+
+	/**
+	 * Option name for storing the installed plugin version.
+	 *
+	 * @since x.x
+	 *
+	 * @var string
+	 */
+	const PLUGIN_VERSION_OPTION = 'tasty_recipes_plugin_version';
 
 	/**
 	 * Option name for the powered by link.
@@ -275,6 +284,7 @@ class Tasty_Recipes {
 		Tasty_Recipes\Quick_Links::load_hooks();
 		add_action( 'init', array( 'Tasty_Recipes\Block_Editor', 'action_init_register' ) );
 		add_action( 'init', array( 'Tasty_Recipes\Content_Model', 'init_post_type' ) );
+		add_action( 'init', array( __CLASS__, 'maybe_flush_rewrite_rules_on_update' ), 20 );
 		add_action( 'tasty_recipes_process_thumbnails', array( 'Tasty_Recipes\Content_Model', 'action_tasty_recipes_process_thumbnails' ) );
 		add_action( 'rest_api_init', array( 'Tasty_Recipes\Recipe_Explorer', 'action_rest_api_init' ) );
 		add_action( 'rest_api_init', array( 'Tasty_Recipes\Onboarding_Wizard', 'register_api_routes' ) );
@@ -936,7 +946,7 @@ class Tasty_Recipes {
 	 *
 	 * Used for both archive pages and front-end links.
 	 *
-	 * @since x.x
+	 * @since 1.2.1
 	 *
 	 * @param bool $enabled Whether the taxonomy feature is enabled.
 	 *
@@ -954,7 +964,7 @@ class Tasty_Recipes {
 	/**
 	 * Flush rewrite rules when the taxonomy links setting changes.
 	 *
-	 * @since x.x
+	 * @since 1.2.1
 	 *
 	 * @param mixed $old_value The old option value.
 	 * @param mixed $new_value The new option value.
@@ -966,5 +976,24 @@ class Tasty_Recipes {
 			// We refresh the permalinks this way because using the flush_rewrite_rules function is against WP VIP.
 			delete_option( 'rewrite_rules' );
 		}
+	}
+
+	/**
+	 * Flush rewrite rules once when upgrading from a version prior to the
+	 * taxonomy `public` argument fix.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
+	 */
+	public static function maybe_flush_rewrite_rules_on_update() {
+		$stored_version = get_option( self::PLUGIN_VERSION_OPTION, '0' );
+
+		if ( version_compare( $stored_version, '1.2.1', '>' ) ) {
+			return;
+		}
+
+		delete_option( 'rewrite_rules' );
+		update_option( self::PLUGIN_VERSION_OPTION, TASTY_RECIPES_LITE_VERSION );
 	}
 }
