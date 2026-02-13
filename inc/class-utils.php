@@ -506,7 +506,6 @@ class Utils {
 			),
 			'use'            => array(
 				'href'                             => true,
-				'xlink:href'                       => true,
 				'class'                            => true,
 				'aria-hidden'                      => true,
 				'data-tasty-recipes-customization' => true,
