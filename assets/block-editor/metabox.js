@@ -17,7 +17,7 @@ const TastyRecipesMetaBox = () => {
 					'tasty-recipes-lite'
 				) }
 			</p>
-			{ Object.keys( converters ).map( ( converterKey ) => (
+			{ Object.keys( converters ).map( converterKey => (
 				<Button
 					key={ converterKey }
 					variant="primary"
