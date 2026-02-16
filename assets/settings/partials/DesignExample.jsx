@@ -54,12 +54,19 @@ export const DesignExample = ( {
 			true,
 			template.slug
 		);
+		const starColorFallback = applyFilters(
+			'tasty_recipes_star_color_preview_fallback',
+			'',
+			template.slug,
+			formData
+		);
 
 		const data = {
 			event: 'updateCustomization',
 			data: {
 				...formData,
 				_starColorUsesDetailValue: starColorUsesDetailValue,
+				_starColorFallback: starColorFallback,
 			},
 		};
 

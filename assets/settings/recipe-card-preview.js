@@ -79,10 +79,11 @@ window.addEventListener( 'message', ( event ) => {
 
 			if ( ! settings.star_color ) {
 				settings.star_color =
-					settings._starColorUsesDetailValue &&
+					settings._starColorFallback ||
+					( settings._starColorUsesDetailValue &&
 					settings.detail_value_color
 						? settings.detail_value_color
-						: '#F2B955';
+						: '#F2B955' );
 			}
 
 			document
