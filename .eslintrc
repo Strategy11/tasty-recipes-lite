@@ -39,6 +39,7 @@
 		"cypress/unsafe-to-chain-command": "off",
 		"cypress/no-assigning-return-values": "off",
 		"lines-around-comment": "off",
+		"react/react-in-jsx-scope": "off",
 		"react/display-name": "off",
 		"react/jsx-curly-spacing": [
 			"error",

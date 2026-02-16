@@ -1,1 +1,1 @@
-export const isSettingDisabled = ( setting ) => setting === undefined;
+export const isSettingDisabled = setting => setting === undefined;

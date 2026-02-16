@@ -40,8 +40,8 @@ registerBlockType( 'wp-tasty/tasty-recipe', {
 				attributes: {
 					id: {
 						type: 'number',
-						shortcode: ( props ) => {
-							if ( typeof props.named.id === 'undefined' ) {
+						shortcode: props => {
+							if ( props.named.id === undefined ) {
 								return 0;
 							}
 							return parseInt( props.named.id );
