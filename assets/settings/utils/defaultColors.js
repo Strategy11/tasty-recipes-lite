@@ -1,6 +1,6 @@
 import { applyFilters } from '@wordpress/hooks';
 
-export const getDefaultColors = ( template ) => {
+export const getDefaultColors = template => {
 	const isSnap = template === 'snap';
 
 	const defaultColors = {

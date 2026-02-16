@@ -1,6 +1,6 @@
 const recipeCard = document.querySelector( '.tasty-recipes' );
 
-const onWindowResize = function () {
+const onWindowResize = function() {
 	if ( ! recipeCard ) {
 		return;
 	}
@@ -22,7 +22,7 @@ const onWindowResize = function () {
 	);
 };
 
-const resizeAfterMediaLoad = function () {
+const resizeAfterMediaLoad = function() {
 	if ( ! recipeCard ) {
 		return;
 	}
@@ -34,12 +34,12 @@ const resizeAfterMediaLoad = function () {
 		return;
 	}
 
-	Array.from( iframes ).forEach( ( iframe ) => {
-		iframe.onload = onWindowResize;
+	Array.from( iframes ).forEach( iframe => {
+		iframe.addEventListener( 'load', onWindowResize );
 	} );
 
-	Array.from( images ).forEach( ( image ) => {
-		image.onload = onWindowResize;
+	Array.from( images ).forEach( image => {
+		image.addEventListener( 'load', onWindowResize );
 	} );
 };
 
@@ -65,7 +65,7 @@ window.addEventListener( 'DOMContentLoaded', () => {
 	}
 } );
 
-window.addEventListener( 'message', ( event ) => {
+window.addEventListener( 'message', event => {
 	if (
 		window.location.origin !== event.origin ||
 		typeof event.data !== 'string'
@@ -73,51 +73,47 @@ window.addEventListener( 'message', ( event ) => {
 		return;
 	}
 	const payload = JSON.parse( event.data );
-	switch ( payload.event ) {
-		case 'updateCustomization':
-			const settings = payload.data;
+	if ( payload.event === 'updateCustomization' ) {
+		const settings = payload.data;
 
-			if ( ! settings.star_color ) {
-				settings.star_color = settings.detail_value_color
-					? settings.detail_value_color
-					: '#F2B955';
-			}
+		if ( ! settings.star_color ) {
+			settings.star_color =
+				settings.detail_value_color || '#F2B955';
+		}
 
-			document
-				.querySelectorAll( '[data-tasty-recipes-customization]' )
-				.forEach( ( el ) => {
-					const customizations = el
-						.getAttribute( 'data-tasty-recipes-customization' )
-						.split( ' ' );
-					customizations.forEach( ( customization ) => {
-						if ( -1 === customization.indexOf( '.' ) ) {
-							return;
-						}
-						const bits = customization.split( '.' );
-						const settingsName = bits[ 0 ].replace( /-/g, '_' );
-						if ( typeof settings[ settingsName ] === 'undefined' ) {
-							return;
-						}
-						if ( 'innerText' === bits[ 1 ] ) {
-							el.innerText = settings[ settingsName ];
-							return;
-						}
-						if ( 'innerHTML' === bits[ 1 ] ) {
-							el.innerHTML = settings[ settingsName ];
-							return;
-						}
+		document
+			.querySelectorAll( '[data-tasty-recipes-customization]' )
+			.forEach( el => {
+				const customizations = el.dataset.tastyRecipesCustomization
+					.split( ' ' );
+				customizations.forEach( customization => {
+					if ( -1 === customization.indexOf( '.' ) ) {
+						return;
+					}
+					const bits = customization.split( '.' );
+					const settingsName = bits[ 0 ].replaceAll( '-', '_' );
+					if ( settings[ settingsName ] === undefined ) {
+						return;
+					}
+					if ( 'innerText' === bits[ 1 ] ) {
+						el.textContent = settings[ settingsName ];
+						return;
+					}
+					if ( 'innerHTML' === bits[ 1 ] ) {
+						el.innerHTML = settings[ settingsName ];
+						return;
+					}
 
-						if ( settings[ settingsName ].length ) {
-							el.style.setProperty(
-								bits[ 1 ],
-								settings[ settingsName ]
-							);
-						} else {
-							el.style.removeProperty( bits[ 1 ] );
-						}
-					} );
+					if ( settings[ settingsName ].length ) {
+						el.style.setProperty(
+							bits[ 1 ],
+							settings[ settingsName ]
+						);
+					} else {
+						el.style.removeProperty( bits[ 1 ] );
+					}
 				} );
-			onWindowResize();
-			break;
+			} );
+		onWindowResize();
 	}
 } );

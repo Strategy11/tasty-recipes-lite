@@ -22,11 +22,11 @@ export const Edit = ( { attributes, setAttributes } ) => {
 		}
 	}, [ attributes.id, setAttributes ] );
 
-	const handleModalClose = ( response ) => {
+	const handleModalClose = response => {
 		handleEditorModalUpdate( { attributes, setAttributes }, response );
 	};
 
-	if ( typeof attributes.id === 'undefined' || 0 === attributes.id ) {
+	if ( attributes.id === undefined || 0 === attributes.id ) {
 		return (
 			<RecipePlaceholder
 				handleModalClose={ handleModalClose }
