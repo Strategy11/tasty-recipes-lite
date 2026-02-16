@@ -99,13 +99,9 @@ window.addEventListener( 'message', ( event ) => {
 				'detail_label_color',
 				'icon_color',
 			].forEach( ( key ) => {
-				const cssVar =
-					'--tr-' + key.replace( /_/g, '-' );
+				const cssVar = '--tr-' + key.replace( /_/g, '-' );
 				if ( settings[ key ] && settings[ key ].length ) {
-					document.body.style.setProperty(
-						cssVar,
-						settings[ key ]
-					);
+					document.body.style.setProperty( cssVar, settings[ key ] );
 				} else {
 					document.body.style.removeProperty( cssVar );
 				}
@@ -135,15 +131,15 @@ window.addEventListener( 'message', ( event ) => {
 							return;
 						}
 
-					if ( settings[ settingsName ].length ) {
-						el.style.setProperty(
-							bits[ 1 ],
-							settings[ settingsName ],
-							'important'
-						);
-					} else {
-						el.style.removeProperty( bits[ 1 ] );
-					}
+						if ( settings[ settingsName ].length ) {
+							el.style.setProperty(
+								bits[ 1 ],
+								settings[ settingsName ],
+								'important'
+							);
+						} else {
+							el.style.removeProperty( bits[ 1 ] );
+						}
 					} );
 				} );
 			onWindowResize();
