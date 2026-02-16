@@ -20,6 +20,15 @@ const fullSettings = [
 	'detail_value_color',
 ];
 
+const v2Settings = [
+	'primary_color',
+	'icon_color',
+	'button_color',
+	'button_text_color',
+	'detail_label_color',
+	'detail_value_color',
+];
+
 export const templateFields = {
 	default: [
 		'button_color',
@@ -28,12 +37,12 @@ export const templateFields = {
 		'detail_value_color',
 	],
 	bold: fullSettings,
-	'bold-2-0': fullSettings,
+	'bold-2-0': v2Settings,
 	snap: fullSettings,
-	'snap-2-0': fullSettings,
+	'snap-2-0': v2Settings,
 	fresh: fullSettings,
-	'fresh-2-0': fullSettings,
-	'elegant-2-0': fullSettings,
+	'fresh-2-0': v2Settings,
+	'elegant-2-0': v2Settings,
 	simple: [
 		'primary_color',
 		'secondary_color',
