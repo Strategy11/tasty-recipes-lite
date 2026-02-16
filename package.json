@@ -9,7 +9,7 @@
     "@wordpress/scripts": "^30.26.0",
     "classnames": "^2.5.1",
     "cross-env": "^10.0.0",
-    "cypress": "^15.4.0",
+    "cypress": "^15.10.0",
     "cypress-file-upload": "^5.0.8",
     "eslint": "^8.57.0",
     "eslint-plugin-compat": "^6.1.0",
