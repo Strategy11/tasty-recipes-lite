@@ -16,3 +16,6 @@ node_modules/
 .wp-env.json
 cypress.config.js
 cypress/
+!tests/cypress/
+!tests/cypress/**
+cy-*.php
