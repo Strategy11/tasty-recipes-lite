@@ -135,14 +135,15 @@ window.addEventListener( 'message', ( event ) => {
 							return;
 						}
 
-						if ( settings[ settingsName ].length ) {
-							el.style.setProperty(
-								bits[ 1 ],
-								settings[ settingsName ]
-							);
-						} else {
-							el.style.removeProperty( bits[ 1 ] );
-						}
+					if ( settings[ settingsName ].length ) {
+						el.style.setProperty(
+							bits[ 1 ],
+							settings[ settingsName ],
+							'important'
+						);
+					} else {
+						el.style.removeProperty( bits[ 1 ] );
+					}
 					} );
 				} );
 			onWindowResize();
