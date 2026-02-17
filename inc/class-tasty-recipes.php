@@ -97,7 +97,7 @@ class Tasty_Recipes {
 	/**
 	 * Option name for storing the installed plugin version.
 	 *
-	 * @since x.x
+	 * @since 1.2.2
 	 *
 	 * @var string
 	 */
@@ -472,7 +472,7 @@ class Tasty_Recipes {
 		/**
 		 * Filters the shortcode tags to check for when determining if a post has a recipe.
 		 *
-		 * @since x.x
+		 * @since 1.2.2
 		 *
 		 * @param array $shortcode_tags Array of shortcode tags to check for.
 		 */
@@ -484,7 +484,7 @@ class Tasty_Recipes {
 		/**
 		 * Filters the block types to check for when determining if a post has a recipe.
 		 *
-		 * @since x.x
+		 * @since 1.2.2
 		 *
 		 * @param array $block_types Array of block types to check for.
 		 */
@@ -582,7 +582,7 @@ class Tasty_Recipes {
 		/**
 		 * Filters the shortcode tags to search for when finding recipes in content.
 		 *
-		 * @since x.x
+		 * @since 1.2.2
 		 *
 		 * @param array $shortcode_tags Array of shortcode tags to search for.
 		 */
@@ -640,7 +640,7 @@ class Tasty_Recipes {
 		/**
 		 * Filters the block types to search for when finding recipes in content.
 		 *
-		 * @since x.x
+		 * @since 1.2.2
 		 *
 		 * @param array $block_types Array of block types to search for.
 		 */
@@ -982,7 +982,7 @@ class Tasty_Recipes {
 	 * Flush rewrite rules once when upgrading from a version prior to the
 	 * taxonomy `public` argument fix.
 	 *
-	 * @since x.x
+	 * @since 1.2.2
 	 *
 	 * @return void
 	 */

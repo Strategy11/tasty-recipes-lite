@@ -925,7 +925,7 @@ class Shortcodes {
 		/**
 		 * Filters the shortcode for a given recipe.
 		 *
-		 * @since x.x
+		 * @since 1.2.2
 		 *
 		 * @param string $shortcode Shortcode string.
 		 * @param Recipe $recipe    Recipe instance.

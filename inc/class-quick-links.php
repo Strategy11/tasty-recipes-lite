@@ -346,7 +346,7 @@ class Quick_Links {
 	/**
 	 * Get the label for the jump to recipe link.
 	 *
-	 * @since x.x
+	 * @since 1.2.2
 	 *
 	 * @param string $type       The type of link.
 	 * @param int    $recipe_id  The recipe ID.

@@ -114,7 +114,7 @@ class Block_Editor {
 		 *
 		 * Allows Pro to modify the query to exclude how-tos.
 		 *
-		 * @since x.x
+		 * @since 1.2.2
 		 *
 		 * @param string $sql The SQL query.
 		 */
@@ -160,7 +160,7 @@ class Block_Editor {
 	/**
 	 * Render callback for the recipe block.
 	 *
-	 * @since x.x
+	 * @since 1.2.2
 	 *
 	 * @param array $attributes Block attributes.
 	 *
@@ -174,7 +174,7 @@ class Block_Editor {
 		/**
 		 * Filter to validate if a recipe block should render this ID and allows preventing certain recipe IDs from being rendered in recipe blocks.
 		 *
-		 * @since x.x
+		 * @since 1.2.2
 		 *
 		 * @param bool $is_valid   Whether the ID is valid for this block.
 		 * @param int  $recipe_id  The recipe ID.

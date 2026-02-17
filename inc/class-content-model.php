@@ -125,7 +125,7 @@ class Content_Model {
 		 * on the tasty_recipe post type. Each definition should include an 'args'
 		 * key compatible with register_taxonomy().
 		 *
-		 * @since x.x
+		 * @since 1.2.2
 		 *
 		 * @param array $definitions Taxonomy definitions keyed by taxonomy name.
 		 */
@@ -285,7 +285,7 @@ class Content_Model {
 		 * Allows adding default terms for additional taxonomies.
 		 * Terms are inserted once and protected from deletion.
 		 *
-		 * @since x.x
+		 * @since 1.2.2
 		 *
 		 * @param array $defaults Default terms keyed by taxonomy name.
 		 */

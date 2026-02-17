@@ -317,7 +317,7 @@ class Settings {
 		/**
 		 * Filters the recipes tab label and allows changing the label based on enabled features.
 		 *
-		 * @since x.x
+		 * @since 1.2.2
 		 *
 		 * @param string $label The tab label.
 		 */

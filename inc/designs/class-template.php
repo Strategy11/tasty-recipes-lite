@@ -89,7 +89,7 @@ class Template {
 	/**
 	 * Get all template objects.
 	 * 
-	 * @since x.x
+	 * @since 1.2.2
 	 * 
 	 * @return array
 	 */
@@ -250,7 +250,7 @@ class Template {
 			/**
 			 * Get a placeholder ID for preview context.
 			 *
-			 * @since x.x
+			 * @since 1.2.2
 			 *
 			 * @return int
 			 */
@@ -569,7 +569,7 @@ class Template {
 	/**
 	 * Get the heading name for the template.
 	 * 
-	 * @since x.x
+	 * @since 1.2.2
 	 *
 	 * @param string $name The name of the heading.
 	 * @param object $recipe_object The recipe object.
