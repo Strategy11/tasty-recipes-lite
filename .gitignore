@@ -17,3 +17,6 @@ node_modules/
 cypress.config.js
 cypress/
 bin/mago
+!tests/cypress/
+!tests/cypress/**
+cy-*.php
