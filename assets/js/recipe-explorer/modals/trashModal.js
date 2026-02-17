@@ -1,6 +1,7 @@
 import { createRoot } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { MessageModal } from '../components/MessageModal';
+import { applyFilters } from '@wordpress/hooks';
 
 let isOpen = false;
 let instance = null;
@@ -15,7 +16,7 @@ const closeTrashModal = () => {
 	root = null;
 };
 
-export const openTrashModal = ( postUrl ) => {
+export const openTrashModal = ( postUrl, recipeType = 'recipe' ) => {
 	if ( isOpen ) {
 		return;
 	}
@@ -31,13 +32,19 @@ export const openTrashModal = ( postUrl ) => {
 		</a>
 	);
 
-	root = createRoot( instance ).render(
+	const labels = {
+		title: applyFilters( 'tasty_recipes_trash_modal_title', __( "Recipe Can't be Deleted", 'tasty-recipes-lite' ), recipeType ),
+		description: applyFilters( 'tasty_recipes_trash_modal_description', __(
+			"This recipe can't be deleted since it is embedded in your site. Please remove the recipe from your page first.",
+			'tasty-recipes-lite'
+		), recipeType ),
+	};
+
+	root = createRoot( instance );
+	root.render(
 		<MessageModal
-			title={ __( 'Recipe Can’t be Deleted', 'tasty-recipes-lite' ) }
-			description={ __(
-				"This recipe can't be deleted since it is embedded in your site. Please remove the recipe from your page first.",
-				'tasty-recipes-lite'
-			) }
+			title={ labels.title }
+			description={ labels.description }
 			button={ button }
 			closeMessageModal={ closeTrashModal }
 		/>

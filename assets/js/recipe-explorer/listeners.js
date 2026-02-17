@@ -6,9 +6,13 @@ import { openPermanentDeleteModal } from './modals/permanentDeleteModal';
 import { toggleFiltersForm } from './manageFiltersForm';
 
 export const registerEvents = () => {
-	const addRecipeButton = document.getElementById( 'tasty-create-recipe' );
-	if ( addRecipeButton ) {
-		addRecipeButton.addEventListener( 'click', addRecipeListener );
+	const addRecipeItems = document.querySelectorAll(
+		'.tasty-recipes-add-new-item'
+	);
+	if ( addRecipeItems.length > 0 ) {
+		addRecipeItems.forEach( ( item ) => {
+			item.addEventListener( 'click', addRecipeListener );
+		} );
 	}
 
 	const columnsIconElements = document.querySelectorAll(
@@ -64,12 +68,14 @@ const handleModalClose = ( response ) => {
 
 const addRecipeListener = ( e ) => {
 	e.preventDefault();
+	const type = e.currentTarget?.dataset?.recipeType || 'recipe';
 
 	window.tastyRecipesEditorModal.open(
 		{
 			author_name: window.tastyRecipesEditorModalData.defaultAuthorName,
 			title: '',
 			diet: '',
+			recipe_type: type,
 		},
 		handleModalClose
 	);
@@ -109,7 +115,8 @@ const trashListener = ( e ) => {
 	e.preventDefault();
 
 	const postUrl = e.target.dataset.postUrl;
-	openTrashModal( postUrl );
+	const recipeType = e.target.dataset.recipeType ?? 'recipe';
+	openTrashModal( postUrl, recipeType );
 };
 
 const permanentDeleteListener = ( e ) => {

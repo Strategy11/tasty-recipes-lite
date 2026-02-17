@@ -24,7 +24,8 @@ export const openEditorExtension = ( recipe ) => {
 	instance = document.createElement( 'div' );
 	body.appendChild( instance );
 
-	createRoot( instance ).render(
+	root = createRoot( instance );
+	root.render(
 		<AfterCreationForm
 			recipe={ recipe }
 			closeEditorExtension={ closeEditorExtension }

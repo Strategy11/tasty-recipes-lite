@@ -18,7 +18,14 @@ export const DesignSettings = ( {
 	openModal,
 	generateUpgradeUrl,
 } ) => {
-	const templateName = selectedTemplate !== '' ? selectedTemplate : 'default';
+	const templateName = templateFields[ selectedTemplate.slug ]
+		? selectedTemplate.slug
+		: 'default';
+	const parsedVariation = Number( selectedTemplate.variation );
+	const safeVariation =
+		Number.isFinite( parsedVariation ) && parsedVariation > 0
+			? parsedVariation
+			: 1;
 	const defaultColors = getDefaultColors( templateName );
 
 	const socialFooter = applyFilters(
@@ -52,7 +59,12 @@ export const DesignSettings = ( {
 			<input
 				type="hidden"
 				name="tasty_recipes_template"
-				value={ selectedTemplate }
+				value={ selectedTemplate.slug }
+			/>
+			<input
+				type="hidden"
+				name="tasty_recipes_template_variation"
+				value={ safeVariation }
 			/>
 			<h2>{ __( 'Template Colors', 'tasty-recipes-lite' ) }</h2>
 			<div className="tasty-two-columns-field-group">
@@ -70,7 +82,7 @@ export const DesignSettings = ( {
 					/>
 				) ) }
 			</div>
-			<h3>{ __( 'Recipe Title (H2)', 'tasty-recipes-lite' ) }</h3>
+			<h3>{ __( 'Title (H2)', 'tasty-recipes-lite' ) }</h3>
 			<div className="tasty-two-columns-field-group">
 				<ColorInput
 					label=""
@@ -126,7 +138,7 @@ export const DesignSettings = ( {
 					] }
 				/>
 			</div>
-			<h3>{ __( 'Recipe Subtitles (H3)', 'tasty-recipes-lite' ) }</h3>
+			<h3>{ __( 'Subtitles (H3)', 'tasty-recipes-lite' ) }</h3>
 			<div className="tasty-two-columns-field-group">
 				<ColorInput
 					label=""

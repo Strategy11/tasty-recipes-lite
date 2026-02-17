@@ -5,26 +5,42 @@ import { DesignSettings } from '../partials/DesignSettings';
 
 const globalSettings = window.tastyRecipesSettings;
 const { design } = globalSettings;
-const { customization, template } = design;
+const { customization, template, variation } = design;
+const allTemplates = design.allTemplates;
+const templateSlugs = Object.keys( allTemplates );
+const parsedVariation = Number( variation );
+const initialVariation =
+	Number.isFinite( parsedVariation ) && parsedVariation > 0
+		? parsedVariation
+		: 1;
+const initialTemplateSlug = templateSlugs.includes( template )
+	? template
+	: 'default';
 
 export const Design = () => {
 	const { formData, handleChange } = useForm( customization );
 	const { modalData, openModal, closeModal, generateUpgradeUrl } = useModal();
 
-	const [ selectedTemplate, setSelectedTemplate ] = useState(
-		template ?? 'default'
-	);
+	const [ selectedTemplate, setSelectedTemplate ] = useState( {
+		slug: initialTemplateSlug,
+		variation: initialVariation,
+	} );
+
+	const activeTemplate =
+		templateSlugs.includes( selectedTemplate.slug )
+			? selectedTemplate
+			: {
+					...selectedTemplate,
+					slug: initialTemplateSlug,
+					variation: initialVariation,
+			  };
 
 	const templateMeta = {
-		slug: selectedTemplate,
-		index: Object.keys(
-			window.tastyRecipesSettings.design.allTemplates
-		).indexOf( selectedTemplate ),
-		title: window.tastyRecipesSettings.design.allTemplates[
-			selectedTemplate
-		],
-		total: Object.keys( window.tastyRecipesSettings.design.allTemplates )
-			.length,
+		slug: activeTemplate.slug,
+		variation: activeTemplate.variation,
+		index: templateSlugs.indexOf( activeTemplate.slug ),
+		title: allTemplates[ activeTemplate.slug ],
+		total: templateSlugs.length,
 	};
 
 	return (
@@ -43,7 +59,7 @@ export const Design = () => {
 				<div className="tasty-settings-column">
 					<DesignSettings
 						formData={ formData }
-						selectedTemplate={ selectedTemplate }
+						selectedTemplate={ activeTemplate }
 						handleChange={ handleChange }
 						openModal={ openModal }
 						generateUpgradeUrl={ generateUpgradeUrl }

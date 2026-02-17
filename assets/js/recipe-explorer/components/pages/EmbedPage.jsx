@@ -5,7 +5,7 @@ import { Breadcrumbs } from '../partials/Breadcrumbs';
 import { EmbedStepFooter } from '../partials/EmbedStepFooter';
 import { SearchComponent } from '../partials/SearchComponent';
 
-export const EmbedPage = ( { setPage, recipe } ) => {
+export const EmbedPage = ( { setPage, recipe, labels = {} } ) => {
 	const [ postId, setPostId ] = useState( null );
 	const [ disabledContinue, setDisabledContinue ] = useState( true );
 
@@ -28,10 +28,14 @@ export const EmbedPage = ( { setPage, recipe } ) => {
 
 	return (
 		<div>
-			<Breadcrumbs step="embed" />
+			<Breadcrumbs
+				step="embed"
+				firstStepLabel={ labels.createBreadcrumb }
+			/>
 			<SearchComponent
 				setPostId={ setPostId }
 				setDisabledContinue={ setDisabledContinue }
+				searchLabel={ labels.embedSearchLabel }
 			/>
 			<EmbedStepFooter
 				setPage={ setPage }

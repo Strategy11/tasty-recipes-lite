@@ -78,8 +78,33 @@ window.addEventListener( 'message', event => {
 
 		if ( ! settings.star_color ) {
 			settings.star_color =
-				settings.detail_value_color || '#F2B955';
+				settings._starColorFallback ||
+				( settings._starColorUsesDetailValue &&
+				settings.detail_value_color
+					? settings.detail_value_color
+					: '#F2B955' );
 		}
+
+		// Sync CSS custom properties on body so styles using
+		// var(--tr-*) update in real time.
+		[
+			'star_color',
+			'button_color',
+			'button_text_color',
+			'primary_color',
+			'body_color',
+			'h3_color',
+			'detail_value_color',
+			'detail_label_color',
+			'icon_color',
+		].forEach( key => {
+			const cssVar = '--tr-' + key.replaceAll( '_', '-' );
+			if ( settings[ key ] && settings[ key ].length ) {
+				document.body.style.setProperty( cssVar, settings[ key ] );
+			} else {
+				document.body.style.removeProperty( cssVar );
+			}
+		} );
 
 		document
 			.querySelectorAll( '[data-tasty-recipes-customization]' )

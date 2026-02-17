@@ -6,7 +6,7 @@ import { TemplateSelector } from './TemplateSelector';
 const recipeCardPreviewUrlBase =
 	window.tastyRecipesSettings.design.recipeCardPreviewUrlBase;
 
-const getTemplatePreviewUrl = ( template, settings ) => {
+const getTemplatePreviewUrl = ( template, settings, variation ) => {
 	const include = applyFilters(
 		'tasty_recipes_design_example_includes',
 		[ 'nutrifox_display_style', 'star_ratings_style' ],
@@ -18,7 +18,21 @@ const getTemplatePreviewUrl = ( template, settings ) => {
 		.map( ( key ) => `${ key }=${ encodeURIComponent( settings[ key ] ) }` )
 		.join( '&' );
 
-	return recipeCardPreviewUrlBase + '&template=' + template + '&' + params;
+	const parsedVariation = Number( variation );
+	const safeVariation =
+		Number.isFinite( parsedVariation ) && parsedVariation > 0
+			? parsedVariation
+			: 1;
+
+	return (
+		recipeCardPreviewUrlBase +
+		'&template=' +
+		template +
+		'&variation=' +
+		safeVariation +
+		'&' +
+		params
+	);
 };
 
 export const DesignExample = ( {
@@ -35,19 +49,34 @@ export const DesignExample = ( {
 			return;
 		}
 
+		const starColorUsesDetailValue = applyFilters(
+			'tasty_recipes_star_color_uses_detail_value',
+			true,
+			template.slug
+		);
+		const starColorFallback = applyFilters(
+			'tasty_recipes_star_color_preview_fallback',
+			'',
+			template.slug,
+			formData
+		);
+
 		const data = {
 			event: 'updateCustomization',
 			data: {
 				...formData,
+				_starColorUsesDetailValue: starColorUsesDetailValue,
+				_starColorFallback: starColorFallback,
 			},
 		};
+
 		setTimeout( () => {
 			iframeRef.current.contentWindow.postMessage(
 				JSON.stringify( data ),
 				'*'
 			);
 		}, 100 ); // We wait for the new template url to be loaded.
-	}, [ formData ] );
+	}, [ formData, template.slug ] );
 
 	// Handle iframe resize.
 	useEffect( () => {
@@ -116,7 +145,11 @@ export const DesignExample = ( {
 				ref={ iframeRef }
 				title="Template Preview"
 				id="tasty-recipes-card-preview"
-				src={ getTemplatePreviewUrl( template.slug, formData ) }
+				src={ getTemplatePreviewUrl(
+					template.slug,
+					formData,
+					template.variation
+				) }
 				style={ {
 					minHeight: '200px',
 				} }
@@ -124,6 +157,7 @@ export const DesignExample = ( {
 			<TemplateSelector
 				selectedTemplate={ template }
 				setSelectedTemplate={ setSelectedTemplate }
+				variationSelector={ false }
 			/>
 		</div>
 	);

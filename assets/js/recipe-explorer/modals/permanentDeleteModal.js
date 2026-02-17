@@ -43,7 +43,8 @@ export const openPermanentDeleteModal = ( postId, name ) => {
 
 	const modalName = name.length > 0 ? `"${ name }"` : '';
 
-	createRoot( instance ).render(
+	root = createRoot( instance );
+	root.render(
 		<MessageModal
 			title={ __( 'Permanently Delete Recipe', 'tasty-recipes-lite' ) }
 			description={ sprintf(
