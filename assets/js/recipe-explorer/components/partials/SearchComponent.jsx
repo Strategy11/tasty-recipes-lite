@@ -2,7 +2,10 @@ import { useState, useEffect, useRef } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import apiFetch from '@wordpress/api-fetch';
 
-export const SearchComponent = ( { setPostId } ) => {
+export const SearchComponent = ( {
+	setPostId,
+	searchLabel = __( 'Select post to embed recipe', 'tasty-recipes-lite' ),
+} ) => {
 	const [ innerValue, setInnerValue ] = useState( '' );
 	const [ selectedValue, setSelectedValue ] = useState( null );
 	const [ posts, setPosts ] = useState( [] );
@@ -59,12 +62,7 @@ export const SearchComponent = ( { setPostId } ) => {
 	return (
 		<div>
 			<div className="tasty-recipes-modal-with-form-content">
-				<label htmlFor="search">
-					{ __(
-						'Select post to embed recipe',
-						'tasty-recipes-lite'
-					) }
-				</label>
+				<label htmlFor="search">{ searchLabel }</label>
 				<input
 					type="text"
 					onChange={ ( e ) => {

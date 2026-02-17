@@ -49,10 +49,24 @@ export const DesignExample = ( {
 			return;
 		}
 
+		const starColorUsesDetailValue = applyFilters(
+			'tasty_recipes_star_color_uses_detail_value',
+			true,
+			template.slug
+		);
+		const starColorFallback = applyFilters(
+			'tasty_recipes_star_color_preview_fallback',
+			'',
+			template.slug,
+			formData
+		);
+
 		const data = {
 			event: 'updateCustomization',
 			data: {
 				...formData,
+				_starColorUsesDetailValue: starColorUsesDetailValue,
+				_starColorFallback: starColorFallback,
 			},
 		};
 
@@ -62,7 +76,7 @@ export const DesignExample = ( {
 				'*'
 			);
 		}, 100 ); // We wait for the new template url to be loaded.
-	}, [ formData ] );
+	}, [ formData, template.slug ] );
 
 	// Handle iframe resize.
 	useEffect( () => {

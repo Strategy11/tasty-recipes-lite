@@ -65,12 +65,18 @@ Related plugin location:
 ## Safety Checklist Before Finishing
 
 - Validate that changed hooks/contracts still support Pro overrides/extensions.
-- Run targeted lint/static checks for touched files/languages.
+- Run targeted lint/static checks for touched files/languages:
+  - `phpcs`
+  - `phpstan`
+  - `phpcsfixer`
+  - `eslint` (eslite)
 - For shortcode/content/model changes, run relevant tests or provide manual verification steps.
 - Confirm text domain usage matches Lite conventions in new strings.
 
 ## Command Notes
 
 - You may run lint/tests as needed.
+- For PHP tooling, always use Composer custom commands (for example: `composer phpcs`, `composer phpstan`, `composer phpcsfixer`).
+- For JavaScript lint/format tooling, always use PNPM custom commands for eslint and prettier (for example: `pnpm lint-js`, and `pnpm prettier`/equivalent script when present). Do not run `eslint` or `prettier` directly.
 - Ask before running build commands (for example, asset production builds).
 - Avoid destructive git commands unless explicitly requested.

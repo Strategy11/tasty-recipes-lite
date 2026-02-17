@@ -96,38 +96,24 @@ class Recipe_Explorer {
 			return '';
 		}
 
-		$create_options = array(
-			array(
-				'type'  => 'recipe',
-				'label' => __( 'Recipe', 'tasty-recipes-lite' ),
-			),
-		);
+		$button  = '<button type="button"';
+		$button .= ' class="tasty-button tasty-button-pink tasty-recipes-add-new-item"';
+		$button .= ' id="tasty-create-recipe"';
+		$button .= ' data-recipe-type="recipe">';
+		$button .= esc_html__( 'Create Recipe', 'tasty-recipes-lite' );
+		$button .= '</button>';
+
 		/**
-		 * Filters the create options shown in the recipe explorer button.
+		 * Filters the "Add New" button HTML in the recipe explorer.
 		 *
 		 * @since x.x
 		 *
-		 * @param array $create_options Create options.
+		 * @param string $button The button HTML.
 		 */
-		$create_options = apply_filters( 'tasty_recipes_recipe_explorer_create_options', $create_options );
+		$button = apply_filters( 'tasty_recipes_recipe_explorer_add_new_button', $button );
 
 		$html  = '<p class="tasty-tabs-buttons">';
-		$html .= '<span class="tasty-recipes-add-new">';
-		$html .= '<button type="button" class="tasty-button tasty-button-pink" id="tasty-create-recipe" aria-haspopup="true">';
-		$html .= esc_html__( 'Add New', 'tasty-recipes-lite' );
-		$html .= '<span class="dashicons dashicons-arrow-down-alt2" aria-hidden="true"></span>';
-		$html .= '</button>';
-		$html .= '<span class="tasty-recipes-add-new-menu" role="menu">';
-		foreach ( $create_options as $option ) {
-			if ( empty( $option['type'] ) || empty( $option['label'] ) ) {
-				continue;
-			}
-			$html .= '<button type="button" class="tasty-recipes-add-new-item" role="menuitem" data-recipe-type="' . esc_attr( $option['type'] ) . '">';
-			$html .= esc_html( $option['label'] );
-			$html .= '</button>';
-		}
-		$html .= '</span>';
-		$html .= '</span>';
+		$html .= $button;
 
 		return $html;
 	}
@@ -254,9 +240,9 @@ class Recipe_Explorer {
 			return $columns;
 		}
 	
-		$columns['title']        = esc_html__( 'Recipe Title', 'tasty-recipes-lite' );
+		$columns['title']        = esc_html__( 'Title', 'tasty-recipes-lite' );
 		$columns['rating']       = esc_html__( 'Rating', 'tasty-recipes-lite' );
-		$columns['recipe-post']  = esc_html__( "Recipe's post", 'tasty-recipes-lite' );
+		$columns['recipe-post']  = esc_html__( 'Linked Post', 'tasty-recipes-lite' );
 		$columns['last-updated'] = esc_html__( 'Last updated', 'tasty-recipes-lite' );
 
 		// Hidden columns by default.

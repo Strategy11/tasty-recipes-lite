@@ -13,12 +13,15 @@ const separatorIcon = (
 	/>
 );
 
-export const Breadcrumbs = ( { step } ) => {
+export const Breadcrumbs = ( {
+	step,
+	firstStepLabel = __( 'Create Recipe', 'tasty-recipes-lite' ),
+} ) => {
 	return (
 		<div className="tasty-recipes-modal-breadcrumbs">
 			<p className="tasty-recipes-modal-breadcrumbs-complete">
 				<span>{ completeIcon }</span>
-				{ __( 'Create Recipe', 'tasty-recipes-lite' ) }
+				{ firstStepLabel }
 			</p>
 			<span>{ separatorIcon }</span>
 			<p

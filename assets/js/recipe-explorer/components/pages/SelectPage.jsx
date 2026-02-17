@@ -13,7 +13,10 @@ export const SelectPage = ( { setPage, labels } ) => {
 
 	return (
 		<div>
-			<Breadcrumbs step="select" />
+			<Breadcrumbs
+				step="select"
+				firstStepLabel={ labels.createBreadcrumb }
+			/>
 			<div className="tasty-recipes-modal-select-options">
 				<SelectOption
 					icon={
