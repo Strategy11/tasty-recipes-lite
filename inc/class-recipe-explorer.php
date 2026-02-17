@@ -106,7 +106,7 @@ class Recipe_Explorer {
 		/**
 		 * Filters the "Add New" button HTML in the recipe explorer.
 		 *
-		 * @since x.x
+		 * @since 1.2.2
 		 *
 		 * @param string $button The button HTML.
 		 */
@@ -261,7 +261,7 @@ class Recipe_Explorer {
 		/**
 		 * Filters the Recipe Explorer columns.
 		 *
-		 * @since x.x
+		 * @since 1.2.2
 		 *
 		 * @param array $columns The columns array.
 		 */
@@ -337,7 +337,7 @@ class Recipe_Explorer {
 				/**
 				 * Fires when rendering a custom column in the Recipe Explorer.
 				 *
-				 * @since x.x
+				 * @since 1.2.2
 				 *
 				 * @param string $column_name The column name.
 				 * @param int    $recipe_id   The recipe ID.
@@ -545,7 +545,7 @@ class Recipe_Explorer {
 		/**
 		 * Filters the success message after creating a post with a recipe.
 		 *
-		 * @since x.x
+		 * @since 1.2.2
 		 *
 		 * @param string $success_message The success message.
 		 * @param int    $recipe_id       The recipe ID.
@@ -582,7 +582,7 @@ class Recipe_Explorer {
 		/**
 		 * Filters the recipe JSON data returned by the API and allows extending the recipe data with additional fields.
 		 *
-		 * @since x.x
+		 * @since 1.2.2
 		 *
 		 * @param array $recipe_json The recipe JSON data.
 		 */
@@ -705,7 +705,7 @@ class Recipe_Explorer {
 		/**
 		 * Filters the success heading after embedding a recipe.
 		 *
-		 * @since x.x
+		 * @since 1.2.2
 		 *
 		 * @param string $success_heading The success heading.
 		 * @param int    $recipe_id       The recipe ID.
@@ -715,7 +715,7 @@ class Recipe_Explorer {
 		/**
 		 * Filters the success message after embedding a recipe.
 		 *
-		 * @since x.x
+		 * @since 1.2.2
 		 *
 		 * @param string $success_message The success message.
 		 * @param int    $recipe_id       The recipe ID.
@@ -749,7 +749,7 @@ class Recipe_Explorer {
 		/**
 		 * Filters the shortcode used for embedding recipes.
 		 *
-		 * @since x.x
+		 * @since 1.2.2
 		 *
 		 * @param string $shortcode The shortcode string.
 		 * @param object $recipe    The recipe object.
@@ -762,7 +762,7 @@ class Recipe_Explorer {
 			/**
 			 * Filters the block content used for embedding recipes and allows changing the block type based on the recipe.
 			 *
-			 * @since x.x
+			 * @since 1.2.2
 			 *
 			 * @param string $block  The block content string.
 			 * @param object $recipe The recipe object.
@@ -1015,7 +1015,7 @@ class Recipe_Explorer {
 		/**
 		 * Fires after the default recipe explorer filters have been applied and allows adding custom query filters to the recipe explorer.
 		 *
-		 * @since x.x
+		 * @since 1.2.2
 		 *
 		 * @param \WP_Query $query The query object.
 		 */

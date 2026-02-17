@@ -475,7 +475,7 @@ class Ratings {
 		/**
 		 * Whether to use detail_value_color as the default star color.
 		 *
-		 * @since x.x
+		 * @since 1.2.2
 		 *
 		 * @param bool $use_detail_value Whether to fall back to detail_value_color. Default true.
 		 */

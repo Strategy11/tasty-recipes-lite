@@ -119,7 +119,7 @@ class Assets {
 			/**
 			 * Filters the explorer page data and allows extending the data passed to the explorer page JavaScript.
 			 *
-			 * @since x.x
+			 * @since 1.2.2
 			 *
 			 * @param array $explorer_data The explorer page data.
 			 */
@@ -489,7 +489,7 @@ class Assets {
 		/**
 		 * Filter the block editor data before it's localized.
 		 *
-		 * @since x.x
+		 * @since 1.2.2
 		 *
 		 * @param array $blocks_data The block editor data.
 		 */
@@ -567,7 +567,7 @@ class Assets {
 		/**
 		 * Filters the recipe editor data sent to the client.
 		 *
-		 * @since x.x
+		 * @since 1.2.2
 		 *
 		 * @param array $editor_data Editor data.
 		 */

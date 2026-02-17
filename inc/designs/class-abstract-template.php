@@ -178,7 +178,7 @@ abstract class Abstract_Template {
 	/**
 	 * Get current template base folder path.
 	 * 
-	 * @since x.x
+	 * @since 1.2.2
 	 *
 	 * @return string
 	 */
@@ -192,7 +192,7 @@ abstract class Abstract_Template {
 	/**
 	 * Get current template variation folder path.
 	 * 
-	 * @since x.x
+	 * @since 1.2.2
 	 * 
 	 * @param bool $hard_variation If true, use the hard variation.
 	 *
@@ -264,7 +264,7 @@ abstract class Abstract_Template {
 	/**
 	 * Get current template object.
 	 * 
-	 * @since x.x
+	 * @since 1.2.2
 	 * 
 	 * @return array
 	 */
@@ -339,7 +339,7 @@ abstract class Abstract_Template {
 	/**
 	 * Get the mechanisms this template supports.
 	 *
-	 * @since x.x
+	 * @since 1.2.2
 	 *
 	 * @param string $mechanism Mechanism to check.
 	 *
@@ -352,7 +352,7 @@ abstract class Abstract_Template {
 	/**
 	 * Get the variation count.
 	 * 
-	 * @since x.x
+	 * @since 1.2.2
 	 *
 	 * @return int
 	 */

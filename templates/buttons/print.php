@@ -24,7 +24,7 @@ $template_obj = Tasty_Recipes\Designs\Template::get_object_by_name( 'current' );
 /**
  * Filters the print button label.
  *
- * @since x.x
+ * @since 1.2.2
  *
  * @param string $label     The button label.
  * @param int    $recipe_id The recipe ID.
