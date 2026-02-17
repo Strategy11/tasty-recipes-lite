@@ -18,7 +18,7 @@
     "eslint-plugin-jsdoc": "39.9.1",
     "eslint-plugin-jsx-a11y": "^6.7.1",
     "eslint-plugin-no-jquery": "^2.7.0",
-    "eslint-plugin-prettier": "5.0.0",
+    "eslint-plugin-prettier": "5.5.5",
     "eslint-plugin-react": "^7.20.6",
     "eslint-plugin-sonarjs": "0.23.0",
     "eslint-plugin-unicorn": "^54.0.0",
