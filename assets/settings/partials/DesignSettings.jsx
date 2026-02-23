@@ -26,7 +26,7 @@ export const DesignSettings = ( {
 		Number.isFinite( parsedVariation ) && parsedVariation > 0
 			? parsedVariation
 			: 1;
-	const defaultColors = getDefaultColors( templateName );
+	const defaultColors = getDefaultColors( templateName, selectedTemplate );
 
 	const socialFooter = applyFilters(
 		'tasty_recipes_design_social_footer',

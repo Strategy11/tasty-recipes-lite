@@ -58,7 +58,7 @@ export const DesignExample = ( {
 			'tasty_recipes_star_color_preview_fallback',
 			'',
 			template.slug,
-			formData
+			{ ...formData, variation: template.variation }
 		);
 
 		const data = {

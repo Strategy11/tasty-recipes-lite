@@ -1,6 +1,6 @@
 import { applyFilters } from '@wordpress/hooks';
 
-export const getDefaultColors = template => {
+export const getDefaultColors = ( template, selectedTemplate = {} ) => {
 	const isSnap = template === 'snap';
 
 	const defaultColors = {
@@ -20,6 +20,7 @@ export const getDefaultColors = template => {
 	return applyFilters(
 		'tasty_recipes_default_template_colors',
 		defaultColors,
-		template
+		template,
+		selectedTemplate
 	);
 };
