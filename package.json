@@ -12,7 +12,7 @@
     "cypress": "^15.4.0",
     "cypress-file-upload": "^5.0.8",
     "eslint": "^8.57.0",
-    "eslint-plugin-compat": "^6.1.0",
+    "eslint-plugin-compat": "^6.2.1",
     "eslint-plugin-cypress": "^2.12.1",
     "eslint-plugin-import": "2.25.2",
     "eslint-plugin-jsdoc": "39.9.1",
