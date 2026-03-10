@@ -48,7 +48,7 @@
   },
   "dependencies": {
     "@uiw/react-color-chrome": "^2.9.0",
-    "@wordpress/icons": "^11.0.0",
+    "@wordpress/icons": "^11.8.0",
     "react-select": "^5.10.2"
   }
 }
