@@ -982,7 +982,7 @@ class Shortcodes {
 		 * When false, button colors from the Design tab are only used
 		 * in the admin preview and the frontend relies on template CSS.
 		 *
-		 * @since x.x
+		 * @since 1.2.3
 		 *
 		 * @param bool $apply Whether to apply button customization on the frontend.
 		 */
