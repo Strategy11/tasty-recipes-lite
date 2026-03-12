@@ -21,7 +21,17 @@
 		"cypress",
 		"no-jquery"
 	],
+	"settings": {
+		"import/resolver": {
+			"node": {
+				"extensions": [".js", ".jsx"]
+			}
+		}
+	},
 	"rules": {
+		"import/no-unresolved": ["error", {
+			"ignore": ["^@wordpress/"]
+		}],
 		"@wordpress/i18n-text-domain": [
 			"error",
 			{
