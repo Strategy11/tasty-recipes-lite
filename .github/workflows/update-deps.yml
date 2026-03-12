@@ -1,0 +1,12 @@
+name: Update Dependencies
+
+on:
+  schedule:
+    - cron: '0 10 1,15 * *'
+  workflow_dispatch:
+
+jobs:
+  update:
+    uses: Strategy11/tasty-framework/.github/workflows/update-npm-deps.yml@master
+    secrets:
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}

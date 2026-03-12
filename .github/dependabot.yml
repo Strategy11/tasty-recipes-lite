@@ -24,10 +24,3 @@ updates:
     versions:
     - ">= 9.a"
     - "< 10"
-- package-ecosystem: npm
-  directory: "/"
-  schedule:
-    interval: weekly
-    timezone: America/Los_Angeles
-    day: tuesday
-  open-pull-requests-limit: 99
