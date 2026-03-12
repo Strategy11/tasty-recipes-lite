@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  eslint-plugin-cypress: ^2.12.1
+
 importers:
 
   .:
