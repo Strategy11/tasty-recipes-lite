@@ -8,5 +8,7 @@ on:
 jobs:
   update:
     uses: Strategy11/tasty-framework/.github/workflows/update-npm-deps.yml@master
+    with:
+      issue-repo: Strategy11/tasty-recipes
     secrets:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
