@@ -378,7 +378,12 @@ class Shortcodes {
 				if ( is_admin() ) {
 					$template_vars['recipe_video_embed'] = sprintf( '<img src="%s">', esc_url( $embed_data->thumbnail_url ) );
 				} else {
-					$template_vars['recipe_video_embed'] = sprintf( '<div class="adthrive-video-player in-post" data-video-id="%s"></div>', $embed_data->video_id );
+					$video_id = $embed_data->video_id ?? '';
+					if ( '' !== $video_id ) {
+						$template_vars['recipe_video_embed'] = sprintf( '<div class="adthrive-video-player in-post" data-video-id="%s"></div>', esc_attr( $video_id ) );
+					} else {
+						$template_vars['recipe_video_embed'] = $recipe->get_video_url();
+					}
 				}
 				// Fallback is to display the shortcode.
 			} else {
