@@ -605,6 +605,8 @@ class Shortcodes {
 	/**
 	 * Add cooking attributes to the recipe template like yield, diet, etc.
 	 *
+	 * @since 1.2.4
+	 *
 	 * @param array $template_vars Template variables.
 	 *
 	 * @return void
@@ -629,7 +631,7 @@ class Shortcodes {
 				$label = $value;
 				$value = '<span data-tasty-recipes-customization="detail-value-color.color" ' .
 					'class="' . esc_attr( 'tasty-recipes-additional-time' ) . '">' .
-					$recipe_json['additional_time_value'] .
+					esc_html( $recipe_json['additional_time_value'] ) .
 					'</span>';
 				$template_vars['recipe_details']['additional_time'] = array(
 					'label' => $label,
@@ -650,6 +652,10 @@ class Shortcodes {
 			 * @since 1.0
 			 */
 			$value = apply_filters( 'tasty_recipes_cooking_html', $value, $attribute, $template_vars );
+			// Taxonomy attributes may return HTML links from the filter; other values are plain text.
+			if ( ! in_array( $attribute, array( 'category', 'method', 'cuisine', 'diet' ), true ) ) {
+				$value = esc_html( $value );
+			}
 			$value = '<span data-tasty-recipes-customization="detail-value-color.color" ' .
 				'class="' . esc_attr( 'tasty-recipes-' . str_replace( '_', '-', $attribute ) ) . '">'
 				. $value .
