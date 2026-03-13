@@ -1,0 +1,268 @@
+name: Codex Auto-Fix Issues
+
+on:
+  repository_dispatch:
+    types: [codex-fix]
+
+jobs:
+  precheck:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      branch_exists: ${{ steps.check.outputs.branch_exists }}
+      branch_name: ${{ steps.check.outputs.branch_name }}
+      existing_pr_url: ${{ steps.check.outputs.existing_pr_url }}
+    steps:
+      - name: Check for existing codex-fix branch
+        id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.client_payload.issue_number }}
+        run: |
+          BRANCH_NAME="codex-fix/issue-${ISSUE_NUMBER}"
+          BRANCH_REF=$(gh api "repos/${{ github.repository }}/git/matching-refs/heads/${BRANCH_NAME}" --jq '.[0].ref // ""' 2>/dev/null || true)
+          EXISTING_PR_URL=""
+
+          if [ -n "$BRANCH_REF" ]; then
+            EXISTING_PR_URL=$(gh pr list --repo "${{ github.repository }}" --head "$BRANCH_NAME" --json url --jq '.[0].url // ""')
+            echo "branch_exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "branch_exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+          echo "branch_name=$BRANCH_NAME" >> "$GITHUB_OUTPUT"
+          echo "existing_pr_url=$EXISTING_PR_URL" >> "$GITHUB_OUTPUT"
+
+  notify-existing-branch:
+    needs: precheck
+    if: needs.precheck.outputs.branch_exists == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify requester about existing branch
+        env:
+          GH_TOKEN: ${{ secrets.CROSS_REPO_PAT }}
+          ISSUE_NUMBER: ${{ github.event.client_payload.issue_number }}
+          ISSUES_REPO: ${{ github.event.client_payload.issues_repo }}
+          REQUESTED_BY: ${{ github.event.client_payload.sender }}
+          BRANCH_NAME: ${{ needs.precheck.outputs.branch_name }}
+          EXISTING_PR_URL: ${{ needs.precheck.outputs.existing_pr_url }}
+        run: |
+          if [ -n "$EXISTING_PR_URL" ]; then
+            gh issue comment "$ISSUE_NUMBER" \
+              --repo "$ISSUES_REPO" \
+              --body "A Codex fix branch already exists for this issue in the Lite repository (\`$BRANCH_NAME\`), so this run was skipped to avoid duplicate work.
+
+          Existing PR: $EXISTING_PR_URL
+
+          @$REQUESTED_BY please continue review/testing on the existing PR."
+          else
+            gh issue comment "$ISSUE_NUMBER" \
+              --repo "$ISSUES_REPO" \
+              --body "A Codex fix branch already exists for this issue in the Lite repository (\`$BRANCH_NAME\`), so this run was skipped to avoid duplicate work.
+
+          @$REQUESTED_BY please review that branch or remove it before requesting another automated fix."
+          fi
+
+  fix:
+    needs: precheck
+    if: needs.precheck.outputs.branch_exists != 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    outputs:
+      pr_url: ${{ steps.create_pr.outputs.pr_url }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+          tools: composer
+
+      - name: Install Composer dependencies
+        env:
+          COMPOSER_AUTH: '{"github-oauth":{"github.com":"${{ secrets.GH_TOKEN }}"}}'
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Create fix branch
+        id: branch
+        env:
+          BRANCH_NAME: ${{ needs.precheck.outputs.branch_name }}
+        run: |
+          git switch -c "$BRANCH_NAME"
+          echo "branch_name=$BRANCH_NAME" >> "$GITHUB_OUTPUT"
+
+      - name: Fix the issue
+        id: codex_fix
+        continue-on-error: true
+        uses: openai/codex-action@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          sandbox: workspace-write
+          codex-args: '["--full-auto"]'
+          output-file: /tmp/codex-pr-body.md
+          prompt: |
+            REPO: ${{ github.repository }}
+            ISSUE NUMBER: ${{ github.event.client_payload.issue_number }}
+            ISSUE TITLE: ${{ github.event.client_payload.issue_title }}
+            ISSUE BODY: ${{ github.event.client_payload.issue_body }}
+            ISSUE AUTHOR: ${{ github.event.client_payload.issue_author }}
+            ISSUES REPO: ${{ github.event.client_payload.issues_repo }}
+
+            You are fixing a low-complexity bug in Tasty Recipes Lite, a WordPress plugin.
+            The issue is tracked in a separate repository (${{ github.event.client_payload.issues_repo }})
+            but the code lives here in ${{ github.repository }}.
+
+            Steps:
+            1. Read the issue carefully and understand what needs to change.
+            2. Find the relevant code in the codebase.
+            3. Implement the minimal, targeted fix. Do not refactor unrelated code.
+            4. Follow WordPress coding standards. Use tabs for indentation.
+            5. Every new or modified PHP function/method must have a doc comment with an @since x.x tag.
+            6. If you modified PHP files, run: vendor/bin/phpcs --standard=phpcs.xml.dist <changed_files>
+               Fix any violations before completing.
+            7. Do not create commits or pull requests. Only change files in the working tree.
+            8. Your final response must be a PR description in Markdown with these exact sections:
+               - "## Summary"
+               - "## Test plan"
+               Keep it specific to the issue and code changes you made.
+               The test plan must be written for support agents (non-developers) with concrete, step-by-step actions.
+               Include checkboxes in the test plan and avoid generic wording.
+
+            Rules:
+            - Do NOT modify files in vendor/, vendors/, node_modules/, languages/, or inc/libs/
+            - Do NOT run build commands (npm run build, pnpm build, grunt, webpack)
+            - Keep changes minimal and focused on the reported issue
+            - Use isset() or null coalescing when accessing potentially undefined variables
+            - Escape output with appropriate WordPress functions (esc_html, esc_attr, etc.)
+            - Use the text domain "tasty-recipes-lite" for any translatable strings
+
+      - name: Notify issue requester when Codex fix run fails
+        if: steps.codex_fix.outcome != 'success'
+        env:
+          GH_TOKEN: ${{ secrets.CROSS_REPO_PAT }}
+          ISSUE_NUMBER: ${{ github.event.client_payload.issue_number }}
+          ISSUES_REPO: ${{ github.event.client_payload.issues_repo }}
+          REQUESTED_BY: ${{ github.event.client_payload.sender }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" \
+            --repo "$ISSUES_REPO" \
+            --body "I ran the \`codex-fix\` workflow in the Lite repository but the automated fix step failed before producing a safe patch.
+
+          @$REQUESTED_BY please review and handle this issue manually."
+
+      - name: Commit and push changes
+        id: commit_push
+        if: steps.codex_fix.outcome == 'success'
+        env:
+          BRANCH_NAME: ${{ steps.branch.outputs.branch_name }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+
+          if git diff --cached --quiet; then
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          git commit -m "fix: automated codex fix for issue #${{ github.event.client_payload.issue_number }}"
+          git push -u origin "$BRANCH_NAME"
+          echo "has_changes=true" >> "$GITHUB_OUTPUT"
+
+      - name: Create pull request
+        id: create_pr
+        if: steps.commit_push.outputs.has_changes == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH_NAME: ${{ steps.branch.outputs.branch_name }}
+          ISSUE_NUMBER: ${{ github.event.client_payload.issue_number }}
+          ISSUE_TITLE: ${{ github.event.client_payload.issue_title }}
+          ISSUES_REPO: ${{ github.event.client_payload.issues_repo }}
+          BASE_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          PR_BODY_FILE=$(mktemp)
+          CHANGED_FILES=$(git diff --name-only "origin/$BASE_BRANCH...HEAD" | sed 's/^/- `/' | sed 's/$/`/' )
+          if [ -z "$CHANGED_FILES" ]; then
+            CHANGED_FILES="- Unable to determine changed files in CI context."
+          fi
+
+          if [ -s /tmp/codex-pr-body.md ]; then
+            cp /tmp/codex-pr-body.md "$PR_BODY_FILE"
+            printf "\n\n### Files changed\n\n%s\n" "$CHANGED_FILES" >> "$PR_BODY_FILE"
+            printf "\n\nFixes %s#%s\n" "$ISSUES_REPO" "$ISSUE_NUMBER" >> "$PR_BODY_FILE"
+          else
+            cat > "$PR_BODY_FILE" <<EOF
+          ## Summary
+
+          - Automated fix generated by Codex for issue **$ISSUES_REPO#$ISSUE_NUMBER**.
+          - Source issue title: "$ISSUE_TITLE".
+          - Kept scope minimal and focused on the reported problem.
+
+          ### Files changed
+
+          $CHANGED_FILES
+
+          ## Test plan
+
+          _Codex did not return an issue-specific test plan in this run._
+          _Please add concrete, support-friendly reproduction and verification steps before merging._
+
+          Fixes $ISSUES_REPO#$ISSUE_NUMBER
+          EOF
+          fi
+
+          PR_URL=$(gh pr create \
+            --repo "${{ github.repository }}" \
+            --base "$BASE_BRANCH" \
+            --head "$BRANCH_NAME" \
+            --title "fix: automated codex fix for issue #$ISSUE_NUMBER" \
+            --body-file "$PR_BODY_FILE")
+          echo "pr_url=$PR_URL" >> "$GITHUB_OUTPUT"
+
+      - name: Add run-analysis label to PR
+        if: steps.create_pr.outputs.pr_url != ''
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_URL: ${{ steps.create_pr.outputs.pr_url }}
+        run: |
+          gh pr edit "$PR_URL" --repo "${{ github.repository }}" --add-label "run analysis"
+
+      - name: Notify issue requester when no code changes were made
+        if: steps.codex_fix.outcome == 'success' && steps.commit_push.outputs.has_changes != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.CROSS_REPO_PAT }}
+          ISSUE_NUMBER: ${{ github.event.client_payload.issue_number }}
+          ISSUES_REPO: ${{ github.event.client_payload.issues_repo }}
+          REQUESTED_BY: ${{ github.event.client_payload.sender }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" \
+            --repo "$ISSUES_REPO" \
+            --body "I ran the \`codex-fix\` workflow in the Lite repository but no code changes were produced for this issue.
+
+          @$REQUESTED_BY please review and handle this issue manually."
+
+      - name: Notify issue requester with PR
+        if: steps.create_pr.outputs.pr_url != ''
+        env:
+          GH_TOKEN: ${{ secrets.CROSS_REPO_PAT }}
+          PR_URL: ${{ steps.create_pr.outputs.pr_url }}
+          REQUESTED_BY: ${{ github.event.client_payload.sender }}
+          ISSUE_NUMBER: ${{ github.event.client_payload.issue_number }}
+          ISSUES_REPO: ${{ github.event.client_payload.issues_repo }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" \
+            --repo "$ISSUES_REPO" \
+            --body "An automated Codex fix has been created for this issue in the Lite repository: $PR_URL
+
+          @$REQUESTED_BY please review and test the changes."
