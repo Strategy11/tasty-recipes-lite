@@ -142,9 +142,17 @@ jobs:
             - Do NOT modify files in vendor/, vendors/, node_modules/, languages/, or inc/libs/
             - Do NOT run build commands (npm run build, pnpm build, grunt, webpack)
             - Keep changes minimal and focused on the reported issue
-            - Use isset() or null coalescing when accessing potentially undefined variables
+            - Use null coalescing or ternary operators when accessing potentially undefined
+              variables. Never stack ternaries or null coalescing operators.
             - Escape output with appropriate WordPress functions (esc_html, esc_attr, etc.)
             - Use the text domain "tasty-recipes-lite" for any translatable strings
+            - Do not change existing behavior that is not part of the problem. Your fix
+              should make the broken thing work correctly without altering how anything
+              else works.
+            - Do not refactor, reorganize, or "improve" surrounding code while you are
+              there. Touch only what is necessary to solve the reported problem.
+            - Aim for the smallest diff that fixes the issue. If your change is larger
+              than you expected, you are probably doing too much.
 
       - name: Notify issue requester when Codex fix run fails
         if: steps.codex_fix.outcome != 'success'
