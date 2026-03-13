@@ -172,8 +172,6 @@ class Shortcodes {
 	/**
 	 * Renders the Tasty Recipes shortcode.
 	 *
-	 * @since 1.2.3
-	 *
 	 * @param array $atts Shortcode attributes.
 	 *
 	 * @return string
