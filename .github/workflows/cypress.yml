@@ -1,20 +1,15 @@
 name: E2E Test
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
-    types: [opened, labeled, synchronize]
+    types: [labeled]
 
 jobs:
   cypress:
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
-    if: |
-      github.event_name == 'push' ||
-      contains(github.event.pull_request.labels.*.name, 'run tests')
+    if: contains(github.event.pull_request.labels.*.name, 'run tests')
 
     name: Cypress Tests
 
