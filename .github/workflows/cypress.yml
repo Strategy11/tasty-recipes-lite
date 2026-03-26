@@ -48,6 +48,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Ensure Cypress binary
+        run: pnpm exec cypress install
+
       - name: Build assets
         run: pnpm run build
 
