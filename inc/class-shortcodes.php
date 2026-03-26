@@ -830,7 +830,7 @@ class Shortcodes {
 
 		$url = Url::add_utm_params( 'tasty-recipes', array( 'utm_content' => 'poweredby' ) );
 		if ( $shareasale ) {
-			$url = sprintf( 'https://shareasale.com/r.cfm?b=973044&u=%s&m=69860&urllink=&afftrack=trattr', $shareasale );
+			$url = filter_var( $shareasale, FILTER_VALIDATE_URL ) ? $shareasale : sprintf( 'https://www.wptasty.com/ref/%s/', $shareasale );
 		}
 
 		$ret .= '<div class="tasty-recipes-plug">';
