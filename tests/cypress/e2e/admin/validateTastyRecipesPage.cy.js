@@ -282,14 +282,14 @@ describe( 'WP Tasty recipe page', () => {
 			.type( 'https://example.com/author' )
 			.should( 'have.value', 'https://example.com/author' );
 
-		cy.log( 'Validate ShareASale Affiliate ID field and helper links' );
+		cy.log( 'Validate WP Tasty Affiliate Link field and helper links' );
 		cy.get( '#tasty-recipes-shareasale-affiliate-id' )
 			.closest( '.tasty-form-field' )
 			.find( '.tasty-form-helper a' )
-			.each( ( $a ) => {
-				const href = $a.prop( 'href' );
+			.then( ( $links ) => {
+				const hrefs = [ ...$links ].map( ( a ) => a.href );
 
-				expect( href ).to.include( 'shareasale.com' );
+				expect( hrefs.some( ( h ) => h.includes( 'wptasty.com' ) ) ).to.be.true;
 			} );
 
 		cy.get( '.tasty-settings-banner-right a' )

@@ -313,8 +313,8 @@ describe( 'Recipe Render', () => {
 		} );
 	} );
 
-	describe( 'ShareASale Affiliate ID', () => {
-		it( 'should show powered-by with ShareASale link when ID is set', () => {
+	describe( 'WP Tasty Affiliate Link', () => {
+		it( 'should show powered-by with affiliate link when ID is set', () => {
 			cy.setTastyOption( 'tasty_recipes_shareasale', '12345' );
 
 			cy.visit( postUrl );
@@ -323,8 +323,7 @@ describe( 'Recipe Render', () => {
 
 			cy.get( '.tasty-recipes-plug a' )
 				.should( 'have.attr', 'href' )
-				.and( 'include', 'shareasale.com' )
-				.and( 'include', '12345' );
+				.and( 'include', 'wptasty.com/ref/12345' );
 		} );
 
 		it( 'should not show powered-by when no ID or poweredby option', () => {
