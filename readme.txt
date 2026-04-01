@@ -2,7 +2,7 @@
 Contributors: strategy11team, sswells, srwells, danielbachhuber
 Tags: recipe, recipe maker, recipe card, rating, food blogging
 Requires at least: 5.9
-Tested up to: 6.9
+Tested up to: 7.0
 Requires PHP: 7.2
 Stable tag: 1.2.4
 License: GPLv2 or later
