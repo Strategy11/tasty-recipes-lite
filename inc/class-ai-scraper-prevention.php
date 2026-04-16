@@ -47,22 +47,6 @@ class AI_Scraper_Prevention {
 	);
 
 	/**
-	 * Map of Yoast Premium option keys to bot user-agent strings.
-	 *
-	 * When Yoast Premium is active and one of these options is false,
-	 * the user has intentionally left that bot allowed.
-	 *
-	 * @since x.x
-	 *
-	 * @var array<string, string>
-	 */
-	const YOAST_PREMIUM_BOT_OPTIONS = array(
-		'deny_ccbot_crawling'           => 'CCBot',
-		'deny_gptbot_crawling'          => 'GPTBot',
-		'deny_google_extended_crawling' => 'Google-Extended',
-	);
-
-	/**
 	 * Maybe load hooks if the feature is enabled.
 	 *
 	 * @since x.x
@@ -75,7 +59,7 @@ class AI_Scraper_Prevention {
 		}
 
 		// phpcs:ignore WordPressVIPMinimum.Hooks.RestrictedHooks.robots_txt
-		add_filter( 'robots_txt', array( __CLASS__, 'filter_robots_txt' ), 500, 2 );
+		add_filter( 'robots_txt', array( __CLASS__, 'filter_robots_txt' ), 100000, 2 );
 
 		self::register_meta_tag_hooks();
 	}
@@ -128,8 +112,9 @@ class AI_Scraper_Prevention {
 	/**
 	 * Append AI bot disallow rules to robots.txt output.
 	 *
-	 * Skips bots that already have a User-agent entry in the output and
-	 * bots that Yoast Premium has explicitly left allowed.
+	 * Runs at priority 100000 (after all known SEO plugins) so that
+	 * parse_existing_user_agents() naturally deduplicates against any
+	 * bots already added by Yoast Premium, AIOSEO, Rank Math, etc.
 	 *
 	 * @since x.x
 	 *
@@ -144,27 +129,29 @@ class AI_Scraper_Prevention {
 		}
 
 		$existing_agents = self::parse_existing_user_agents( $output );
-		$seo_allowed     = self::get_seo_allowed_bots();
 		$bots            = self::get_blocked_bots();
-		$additions       = '';
+		$rules           = '';
 
 		foreach ( $bots as $bot ) {
 			if ( in_array( strtolower( $bot ), $existing_agents, true ) ) {
 				continue;
 			}
 
-			if ( in_array( $bot, $seo_allowed, true ) ) {
-				continue;
-			}
-
-			$additions .= "\nUser-agent: " . $bot . "\nDisallow: /\n";
+			$rules .= "\nUser-agent: " . $bot . "\nDisallow: /\n";
 		}
 
 		if ( ! in_array( '*', $existing_agents, true ) ) {
-			$additions .= "\nUser-agent: *\nAllow: /\n";
+			$rules .= "\nUser-agent: *\nAllow: /\n";
 		}
 
-		return $output . $additions;
+		if ( '' === $rules ) {
+			return $output;
+		}
+
+		$trimmed   = rtrim( $output );
+		$separator = "\n\n";
+
+		return $trimmed . $separator . "# START TASTY RECIPES BLOCK\n# ---------------------------" . $rules . "# ---------------------------\n# END TASTY RECIPES BLOCK\n";
 	}
 
 	/**
@@ -207,28 +194,5 @@ class AI_Scraper_Prevention {
 		}
 
 		return array_unique( $agents );
-	}
-
-	/**
-	 * Get bots that active SEO plugins have explicitly allowed.
-	 *
-	 * @since x.x
-	 *
-	 * @return string[] Bot user-agent strings to skip.
-	 */
-	private static function get_seo_allowed_bots() {
-		$allowed = array();
-
-		if ( ! class_exists( 'Yoast\WP\SEO\Premium\Integrations\Front_End\Robots_Txt_Integration' ) ) {
-			return $allowed;
-		}
-
-		foreach ( self::YOAST_PREMIUM_BOT_OPTIONS as $option_key => $bot ) {
-			if ( ! \WPSEO_Options::get( $option_key ) ) {
-				$allowed[] = $bot;
-			}
-		}
-
-		return $allowed;
 	}
 }
