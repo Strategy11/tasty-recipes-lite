@@ -411,7 +411,6 @@ export const Settings = () => {
 				setValue={ ( value ) => {
 					handleChange( 'enableAiScraperPrevention', value );
 				} }
-				isNew
 			/>
 			<TabletSaveButton />
 		</div>
