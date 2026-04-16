@@ -394,6 +394,13 @@ export const Settings = () => {
 				generateUpgradeUrl={ generateUpgradeUrl }
 			/>
 			{ EnableHowTos }
+			<hr
+				style={ {
+					border: 'none',
+					borderTop: '1px solid var(--grey-300)',
+					margin: 0,
+				} }
+			/>
 			<ToggleInput
 				label={ __( 'AI Scraper Prevention', 'tasty-recipes-lite' ) }
 				id="tasty_recipes_ai_scraper_prevention"
