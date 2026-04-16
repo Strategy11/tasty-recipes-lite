@@ -394,6 +394,18 @@ export const Settings = () => {
 				generateUpgradeUrl={ generateUpgradeUrl }
 			/>
 			{ EnableHowTos }
+			<ToggleInput
+				label={ __( 'AI Scraper Prevention', 'tasty-recipes-lite' ) }
+				id="tasty_recipes_ai_scraper_prevention"
+				name="tasty_recipes_ai_scraper_prevention"
+				value={ String( formData.enableAiScraperPrevention ?? 0 ) }
+				onValue="1"
+				offValue="0"
+				setValue={ ( value ) => {
+					handleChange( 'enableAiScraperPrevention', value );
+				} }
+				isNew
+			/>
 			<TabletSaveButton />
 		</div>
 	);
