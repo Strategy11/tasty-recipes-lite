@@ -34,7 +34,57 @@ class AI_Scraper_Prevention {
 		// phpcs:ignore WordPressVIPMinimum.Hooks.RestrictedHooks.robots_txt
 		add_filter( 'robots_txt', array( __CLASS__, 'filter_robots_txt' ), 100000, 2 );
 
+		add_action( 'template_redirect', array( __CLASS__, 'maybe_block_ai_bot' ) );
+
 		self::register_meta_tag_hooks();
+	}
+
+	/**
+	 * Return a 403 response when a known AI bot requests a recipe page.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
+	 */
+	public static function maybe_block_ai_bot() {
+		if ( ! self::current_post_has_recipe() ) {
+			return;
+		}
+
+		if ( ! self::is_ai_bot_request() ) {
+			return;
+		}
+
+		nocache_headers();
+		wp_die( '', '', array( 'response' => 403 ) );
+	}
+
+	/**
+	 * Whether the current request's User-Agent matches a blocked AI bot.
+	 *
+	 * @since x.x
+	 *
+	 * @return bool
+	 */
+	private static function is_ai_bot_request() {
+		// phpcs:disable WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___SERVER__HTTP_USER_AGENT__
+		if ( empty( $_SERVER['HTTP_USER_AGENT'] ) ) {
+			return false;
+		}
+
+		$user_agent = strtolower( sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) );
+
+		if ( '' === $user_agent ) {
+			return false;
+		}
+
+		foreach ( self::get_blocked_bots() as $bot ) {
+			if ( false !== stripos( $user_agent, $bot ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
