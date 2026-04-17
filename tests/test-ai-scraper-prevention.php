@@ -6,6 +6,7 @@
  */
 
 use Tasty_Recipes\AI_Scraper_Prevention;
+use Tasty_Recipes\Shortcodes;
 
 /**
  * Tests the AI Scraper Prevention feature.
@@ -14,6 +15,8 @@ class Test_AI_Scraper_Prevention extends Tasty_Recipes_Testcase {
 
 	/**
 	 * Tear down after each test.
+	 *
+	 * @since x.x
 	 *
 	 * @return void
 	 */
@@ -25,6 +28,10 @@ class Test_AI_Scraper_Prevention extends Tasty_Recipes_Testcase {
 
 	/**
 	 * Verifies robots.txt output includes all AI bots when site is public.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
 	 */
 	public function test_filter_robots_txt_appends_all_bots() {
 		$output = "User-agent: *\nDisallow: /wp-admin/\nAllow: /wp-admin/admin-ajax.php\n";
@@ -38,6 +45,10 @@ class Test_AI_Scraper_Prevention extends Tasty_Recipes_Testcase {
 
 	/**
 	 * Verifies robots.txt is unchanged when site is not public.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
 	 */
 	public function test_filter_robots_txt_skips_private_site() {
 		$output = "User-agent: *\nDisallow: /\n";
@@ -48,6 +59,10 @@ class Test_AI_Scraper_Prevention extends Tasty_Recipes_Testcase {
 
 	/**
 	 * Verifies duplicate user-agents are not added when already present.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
 	 */
 	public function test_filter_robots_txt_skips_existing_bots() {
 		$output = "User-agent: GPTBot\nDisallow: /\n\nUser-agent: CCBot\nDisallow: /\n";
@@ -59,6 +74,10 @@ class Test_AI_Scraper_Prevention extends Tasty_Recipes_Testcase {
 
 	/**
 	 * Verifies case-insensitive deduplication of user-agents.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
 	 */
 	public function test_filter_robots_txt_case_insensitive_dedup() {
 		$output = "User-agent: gptbot\nDisallow: /\n";
@@ -69,6 +88,10 @@ class Test_AI_Scraper_Prevention extends Tasty_Recipes_Testcase {
 
 	/**
 	 * Verifies User-agent: * / Allow: / is appended when not already present.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
 	 */
 	public function test_filter_robots_txt_adds_wildcard_allow() {
 		$output = "User-agent: Googlebot\nAllow: /\n";
@@ -79,6 +102,10 @@ class Test_AI_Scraper_Prevention extends Tasty_Recipes_Testcase {
 
 	/**
 	 * Verifies User-agent: * is not duplicated when already present.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
 	 */
 	public function test_filter_robots_txt_skips_wildcard_when_present() {
 		$output = "User-agent: *\nDisallow: /wp-admin/\n";
@@ -89,6 +116,10 @@ class Test_AI_Scraper_Prevention extends Tasty_Recipes_Testcase {
 
 	/**
 	 * Verifies get_blocked_bots returns the default list.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
 	 */
 	public function test_get_blocked_bots_returns_defaults() {
 		$bots = AI_Scraper_Prevention::get_blocked_bots();
@@ -98,11 +129,15 @@ class Test_AI_Scraper_Prevention extends Tasty_Recipes_Testcase {
 
 	/**
 	 * Verifies the tasty_recipes_ai_scraper_bots filter modifies the bot list.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
 	 */
 	public function test_get_blocked_bots_is_filterable() {
 		add_filter(
 			'tasty_recipes_ai_scraper_bots',
-			function () {
+			static function () {
 				return array( 'CustomBot' );
 			}
 		);
@@ -114,11 +149,15 @@ class Test_AI_Scraper_Prevention extends Tasty_Recipes_Testcase {
 
 	/**
 	 * Verifies filtered bot list is used in robots.txt output.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
 	 */
 	public function test_filter_robots_txt_uses_filtered_bots() {
 		add_filter(
 			'tasty_recipes_ai_scraper_bots',
-			function () {
+			static function () {
 				return array( 'OnlyThisBot' );
 			}
 		);
@@ -132,6 +171,10 @@ class Test_AI_Scraper_Prevention extends Tasty_Recipes_Testcase {
 
 	/**
 	 * Verifies maybe_load_hooks does not register filters when option is off.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
 	 */
 	public function test_maybe_load_hooks_skips_when_disabled() {
 		delete_option( Tasty_Recipes::AI_SCRAPER_PREVENTION_OPTION );
@@ -143,6 +186,10 @@ class Test_AI_Scraper_Prevention extends Tasty_Recipes_Testcase {
 
 	/**
 	 * Verifies maybe_load_hooks registers filters when option is enabled.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
 	 */
 	public function test_maybe_load_hooks_registers_when_enabled() {
 		update_option( Tasty_Recipes::AI_SCRAPER_PREVENTION_OPTION, '1' );
@@ -154,11 +201,21 @@ class Test_AI_Scraper_Prevention extends Tasty_Recipes_Testcase {
 
 	/**
 	 * Verifies meta tag output on a recipe post.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
 	 */
 	public function test_meta_tag_output_on_recipe_post() {
-		$post_id = $this->prime_basic_test_post();
-		$this->create_mock_recipe( $post_id );
-		$this->go_to( get_permalink( $post_id ) );
+		$this->prime_basic_test_post();
+		$recipe = $this->create_mock_recipe();
+		wp_update_post(
+			array(
+				'ID'           => $this->post_id,
+				'post_content' => Shortcodes::get_shortcode_for_recipe( $recipe ),
+			)
+		);
+		$this->go_to( get_permalink( $this->post_id ) );
 
 		ob_start();
 		AI_Scraper_Prevention::action_wp_head();
@@ -169,6 +226,10 @@ class Test_AI_Scraper_Prevention extends Tasty_Recipes_Testcase {
 
 	/**
 	 * Verifies meta tag is not output on a non-recipe post.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
 	 */
 	public function test_meta_tag_skips_non_recipe_post() {
 		$post_id = $this->factory->post->create( array( 'post_content' => 'No recipe here.' ) );
@@ -183,6 +244,10 @@ class Test_AI_Scraper_Prevention extends Tasty_Recipes_Testcase {
 
 	/**
 	 * Verifies no search engine crawlers are in the default bot list.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
 	 */
 	public function test_no_search_crawlers_in_default_list() {
 		$search_crawlers = array( 'Googlebot', 'Bingbot', 'Applebot', 'Yandex', 'DuckDuckBot', 'Slurp' );
