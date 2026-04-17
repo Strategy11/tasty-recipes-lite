@@ -267,6 +267,22 @@ export const Settings = () => {
 					'tasty-recipes-lite'
 				) }
 			/>
+			<ToggleInput
+				label={ __( 'AI Scraper Prevention', 'tasty-recipes-lite' ) }
+				id="tasty_recipes_ai_scraper_prevention"
+				name="tasty_recipes_ai_scraper_prevention"
+				value={ String( formData.enableAiScraperPrevention ?? 0 ) }
+				onValue="1"
+				offValue="0"
+				setValue={ ( value ) => {
+					handleChange( 'enableAiScraperPrevention', value );
+				} }
+				helper={ __(
+					'Prevents compliant AI crawlers that honor robots.txt from scraping your site.',
+					'tasty-recipes-lite'
+				) }
+				isNew
+			/>
 			<UpgradeBanner generateUpgradeUrl={ generateUpgradeUrl } />
 			<SelectInput
 				onClick={ () => {
@@ -394,24 +410,6 @@ export const Settings = () => {
 				generateUpgradeUrl={ generateUpgradeUrl }
 			/>
 			{ EnableHowTos }
-			<hr
-				style={ {
-					border: 'none',
-					borderTop: '1px solid var(--grey-300)',
-					margin: 0,
-				} }
-			/>
-			<ToggleInput
-				label={ __( 'AI Scraper Prevention', 'tasty-recipes-lite' ) }
-				id="tasty_recipes_ai_scraper_prevention"
-				name="tasty_recipes_ai_scraper_prevention"
-				value={ String( formData.enableAiScraperPrevention ?? 0 ) }
-				onValue="1"
-				offValue="0"
-				setValue={ ( value ) => {
-					handleChange( 'enableAiScraperPrevention', value );
-				} }
-			/>
 			<TabletSaveButton />
 		</div>
 	);
