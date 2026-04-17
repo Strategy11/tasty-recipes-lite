@@ -141,7 +141,9 @@ class AI_Scraper_Prevention {
 		 *
 		 * @param string[] $bots Array of user-agent strings to block.
 		 */
-		return apply_filters( 'tasty_recipes_ai_scraper_bots', $bots );
+		$bots = apply_filters( 'tasty_recipes_ai_scraper_bots', $bots );
+
+		return self::sanitize_token_list( $bots );
 	}
 
 	/**
@@ -241,7 +243,9 @@ class AI_Scraper_Prevention {
 		 *
 		 * @param string[] $directives Array of robots meta directive tokens.
 		 */
-		return apply_filters( 'tasty_recipes_ai_directives', array( 'noai', 'noimageai' ) );
+		$directives = apply_filters( 'tasty_recipes_ai_directives', array( 'noai', 'noimageai' ) );
+
+		return self::sanitize_token_list( $directives );
 	}
 
 	/**
@@ -263,5 +267,38 @@ class AI_Scraper_Prevention {
 		}
 
 		return Tasty_Recipes::has_recipe( $post_id );
+	}
+
+	/**
+	 * Coerce a filter return value into a clean, re-indexed list of trimmed strings.
+	 *
+	 * @since x.x
+	 *
+	 * @param mixed $values Raw value returned by a filter.
+	 *
+	 * @return string[]
+	 */
+	private static function sanitize_token_list( $values ) {
+		if ( ! is_array( $values ) ) {
+			return array();
+		}
+
+		$tokens = array();
+
+		foreach ( $values as $value ) {
+			if ( ! is_string( $value ) ) {
+				continue;
+			}
+
+			$value = trim( $value );
+
+			if ( '' === $value ) {
+				continue;
+			}
+
+			$tokens[] = $value;
+		}
+
+		return array_values( array_unique( $tokens ) );
 	}
 }
