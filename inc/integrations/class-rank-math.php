@@ -7,8 +7,6 @@
 
 namespace Tasty_Recipes\Integrations;
 
-use Tasty_Recipes;
-
 /**
  * Integrates Tasty Recipes with Rank Math.
  */
@@ -33,47 +31,5 @@ class Rank_Math {
 			(string) $time,
 			true
 		);
-	}
-
-	/**
-	 * Load AI scraper prevention hooks for Rank Math.
-	 *
-	 * @since x.x
-	 *
-	 * @return void
-	 */
-	public static function load_ai_scraper_hooks() {
-		add_filter( 'rank_math/frontend/robots', array( __CLASS__, 'filter_robots' ) );
-	}
-
-	/**
-	 * Add noai and noimageai to Rank Math's robots meta array for recipe posts.
-	 *
-	 * @since x.x
-	 *
-	 * @param array $robots The meta robots directives array.
-	 *
-	 * @return array
-	 */
-	public static function filter_robots( $robots ) {
-		if ( ! is_singular() ) {
-			return $robots;
-		}
-
-		$post_id = get_queried_object_id();
-
-		if ( ! $post_id || ! Tasty_Recipes::has_recipe( $post_id ) ) {
-			return $robots;
-		}
-
-		if ( ! in_array( 'noai', $robots, true ) ) {
-			$robots['noai'] = 'noai';
-		}
-
-		if ( ! in_array( 'noimageai', $robots, true ) ) {
-			$robots['noimageai'] = 'noimageai';
-		}
-
-		return $robots;
 	}
 }

@@ -23,6 +23,7 @@ class Test_AI_Scraper_Prevention extends Tasty_Recipes_Testcase {
 	public function tearDown(): void {
 		delete_option( Tasty_Recipes::AI_SCRAPER_PREVENTION_OPTION );
 		remove_all_filters( 'tasty_recipes_ai_scraper_bots' );
+		remove_all_filters( 'tasty_recipes_ai_directives' );
 		parent::tearDown();
 	}
 
@@ -37,7 +38,7 @@ class Test_AI_Scraper_Prevention extends Tasty_Recipes_Testcase {
 		$output = "User-agent: *\nDisallow: /wp-admin/\nAllow: /wp-admin/admin-ajax.php\n";
 		$result = AI_Scraper_Prevention::filter_robots_txt( $output, true );
 
-		foreach ( AI_Scraper_Prevention::AI_BOTS as $bot ) {
+		foreach ( AI_Scraper_Prevention::get_blocked_bots() as $bot ) {
 			$this->assertStringContainsString( "User-agent: {$bot}", $result );
 			$this->assertStringContainsString( 'Disallow: /', $result );
 		}
@@ -115,7 +116,7 @@ class Test_AI_Scraper_Prevention extends Tasty_Recipes_Testcase {
 	}
 
 	/**
-	 * Verifies get_blocked_bots returns the default list.
+	 * Verifies get_blocked_bots returns a non-empty list including known AI bots.
 	 *
 	 * @since x.x
 	 *
@@ -124,7 +125,10 @@ class Test_AI_Scraper_Prevention extends Tasty_Recipes_Testcase {
 	public function test_get_blocked_bots_returns_defaults() {
 		$bots = AI_Scraper_Prevention::get_blocked_bots();
 
-		$this->assertSame( AI_Scraper_Prevention::AI_BOTS, $bots );
+		$this->assertNotEmpty( $bots );
+		$this->assertContains( 'GPTBot', $bots );
+		$this->assertContains( 'ClaudeBot', $bots );
+		$this->assertContains( 'CCBot', $bots );
 	}
 
 	/**

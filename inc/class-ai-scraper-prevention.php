@@ -11,9 +11,6 @@
 namespace Tasty_Recipes;
 
 use Tasty_Recipes;
-use Tasty_Recipes\Integrations\Yoast;
-use Tasty_Recipes\Integrations\Rank_Math;
-use Tasty_Recipes\Integrations\AIOSEO;
 
 /**
  * AI Scraper Prevention.
@@ -21,30 +18,6 @@ use Tasty_Recipes\Integrations\AIOSEO;
  * @since x.x
  */
 class AI_Scraper_Prevention {
-
-	/**
-	 * AI training/scraping bot user-agents to block.
-	 *
-	 * @since x.x
-	 *
-	 * @var string[]
-	 */
-	const AI_BOTS = array(
-		'ClaudeBot',
-		'claudebot',
-		'GPTBot',
-		'Google-Extended',
-		'PerplexityBot',
-		'Meta-ExternalAgent',
-		'Applebot-Extended',
-		'CCBot',
-		'cohere-ai',
-		'Bytespider',
-		'Amazonbot',
-		'ai2bot',
-		'Diffbot',
-		'Omgilibot',
-	);
 
 	/**
 	 * Maybe load hooks if the feature is enabled.
@@ -74,39 +47,21 @@ class AI_Scraper_Prevention {
 	 */
 	private static function register_meta_tag_hooks() {
 		if ( defined( 'WPSEO_VERSION' ) ) {
-			Yoast::load_ai_scraper_hooks();
+			add_filter( 'wpseo_robots_array', array( __CLASS__, 'filter_listed_robots' ) );
 			return;
 		}
 
 		if ( class_exists( 'RankMath' ) ) {
-			Rank_Math::load_ai_scraper_hooks();
+			add_filter( 'rank_math/frontend/robots', array( __CLASS__, 'filter_keyed_robots' ) );
 			return;
 		}
 
 		if ( function_exists( 'aioseo' ) ) {
-			AIOSEO::load_ai_scraper_hooks();
+			add_filter( 'aioseo_robots_meta', array( __CLASS__, 'filter_keyed_robots' ) );
 			return;
 		}
 
 		add_action( 'wp_head', array( __CLASS__, 'action_wp_head' ), 7 );
-	}
-
-	/**
-	 * Get the list of AI bot user-agents to block.
-	 *
-	 * @since x.x
-	 *
-	 * @return string[] Array of user-agent strings to block.
-	 */
-	public static function get_blocked_bots() {
-		/**
-		 * Filters the list of AI training/scraping bot user-agents to block.
-		 *
-		 * @since x.x
-		 *
-		 * @param string[] $bots Array of user-agent strings to block.
-		 */
-		return apply_filters( 'tasty_recipes_ai_scraper_bots', self::AI_BOTS );
 	}
 
 	/**
@@ -155,24 +110,38 @@ class AI_Scraper_Prevention {
 	}
 
 	/**
-	 * Output noai/noimageai meta tag on recipe posts (standalone, no SEO plugin).
+	 * Get the list of AI bot user-agents to block.
 	 *
 	 * @since x.x
 	 *
-	 * @return void
+	 * @return string[] Array of user-agent strings to block.
 	 */
-	public static function action_wp_head() {
-		if ( ! is_singular() ) {
-			return;
-		}
+	public static function get_blocked_bots() {
+		$bots = array(
+			'ClaudeBot',
+			'claudebot',
+			'GPTBot',
+			'Google-Extended',
+			'PerplexityBot',
+			'Meta-ExternalAgent',
+			'Applebot-Extended',
+			'CCBot',
+			'cohere-ai',
+			'Bytespider',
+			'Amazonbot',
+			'ai2bot',
+			'Diffbot',
+			'Omgilibot',
+		);
 
-		$post_id = get_queried_object_id();
-
-		if ( ! $post_id || ! Tasty_Recipes::has_recipe( $post_id ) ) {
-			return;
-		}
-
-		echo '<meta name="robots" content="noai, noimageai">' . PHP_EOL;
+		/**
+		 * Filters the list of AI training/scraping bot user-agents to block.
+		 *
+		 * @since x.x
+		 *
+		 * @param string[] $bots Array of user-agent strings to block.
+		 */
+		return apply_filters( 'tasty_recipes_ai_scraper_bots', $bots );
 	}
 
 	/**
@@ -194,5 +163,105 @@ class AI_Scraper_Prevention {
 		}
 
 		return array_unique( $agents );
+	}
+
+	/**
+	 * Add AI directives to a list-based robots array (Yoast SEO).
+	 *
+	 * @since x.x
+	 *
+	 * @param array $robots Existing robots directive tokens.
+	 *
+	 * @return array
+	 */
+	public static function filter_listed_robots( $robots ) {
+		if ( ! self::current_post_has_recipe() ) {
+			return $robots;
+		}
+
+		foreach ( self::get_ai_directives() as $directive ) {
+			if ( ! in_array( $directive, $robots, true ) ) {
+				$robots[] = $directive;
+			}
+		}
+
+		return $robots;
+	}
+
+	/**
+	 * Add AI directives to a keyed robots array (Rank Math, AIOSEO).
+	 *
+	 * @since x.x
+	 *
+	 * @param array $robots Existing robots directives, keyed by token.
+	 *
+	 * @return array
+	 */
+	public static function filter_keyed_robots( $robots ) {
+		if ( ! self::current_post_has_recipe() ) {
+			return $robots;
+		}
+
+		foreach ( self::get_ai_directives() as $directive ) {
+			if ( ! isset( $robots[ $directive ] ) ) {
+				$robots[ $directive ] = $directive;
+			}
+		}
+
+		return $robots;
+	}
+
+	/**
+	 * Output noai/noimageai meta tag on recipe posts (standalone, no SEO plugin).
+	 *
+	 * @since x.x
+	 *
+	 * @return void
+	 */
+	public static function action_wp_head() {
+		if ( ! self::current_post_has_recipe() ) {
+			return;
+		}
+
+		echo '<meta name="robots" content="' . esc_attr( implode( ', ', self::get_ai_directives() ) ) . '">' . PHP_EOL;
+	}
+
+	/**
+	 * Get the robots meta directives that opt out of AI training and image scraping.
+	 *
+	 * @since x.x
+	 *
+	 * @return string[] Array of robots meta directive tokens.
+	 */
+	public static function get_ai_directives() {
+		/**
+		 * Filters the robots meta directives used to opt out of AI training and image scraping.
+		 *
+		 * @since x.x
+		 *
+		 * @param string[] $directives Array of robots meta directive tokens.
+		 */
+		return apply_filters( 'tasty_recipes_ai_directives', array( 'noai', 'noimageai' ) );
+	}
+
+	/**
+	 * Whether the current singular request is a post that contains a recipe.
+	 *
+	 * @since x.x
+	 *
+	 * @return bool
+	 */
+	public static function current_post_has_recipe() {
+		if ( ! is_singular() ) {
+			return false;
+		}
+
+		$post_id = get_queried_object_id();
+
+		if ( ! $post_id ) {
+			return false;
+		}
+
+		return Tasty_Recipes::has_recipe( $post_id );
 	}
 }
