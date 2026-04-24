@@ -141,6 +141,7 @@ jobs:
             - Aim for the smallest diff that fixes the issue. If your change is larger
               than you expected, you are probably doing too much.
           claude_args: |
+            ${{ github.event.client_payload.smartest_model && '--model claude-opus-4-7' || '' }}
             --allowedTools "Read,Write,Edit,Bash(git:*),Bash(gh pr create:*),Bash(vendor/bin/phpcs:*),Bash(vendor/bin/phpcbf:*),Bash(find:*),Bash(grep:*),Bash(cat:*),Bash(ls:*)"
 
       - name: Notify issue requester with PR
