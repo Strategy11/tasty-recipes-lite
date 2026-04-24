@@ -111,6 +111,7 @@ jobs:
           codex-args: ${{ github.event.client_payload.smartest_model && '["--model","gpt-5.4","--full-auto"]' || '["--full-auto"]' }}
           output-file: /tmp/codex-pr-body.md
           prompt: |
+            ${{ github.event.client_payload.caveman && 'CAVEMAN MODE: Terse like caveman. Technical substance exact. Drop articles, filler, pleasantries, hedging. Fragments OK. Code unchanged. Apply to reasoning, issue/PR comments. Commit messages and PR descriptions stay normal.' || '' }}
             REPO: ${{ github.repository }}
             ISSUE NUMBER: ${{ github.event.client_payload.issue_number }}
             ISSUE TITLE: ${{ github.event.client_payload.issue_title }}

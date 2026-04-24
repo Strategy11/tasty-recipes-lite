@@ -99,6 +99,7 @@ jobs:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           branch: ${{ needs.precheck.outputs.branch_name }}
           prompt: |
+            ${{ github.event.client_payload.caveman && 'CAVEMAN MODE: Terse like caveman. Technical substance exact. Drop articles, filler, pleasantries, hedging. Fragments OK. Code unchanged. Apply to reasoning, issue/PR comments. Commit messages and PR descriptions stay normal.' || '' }}
             REPO: ${{ github.repository }}
             ISSUE NUMBER: ${{ github.event.client_payload.issue_number }}
             ISSUE TITLE: ${{ github.event.client_payload.issue_title }}
