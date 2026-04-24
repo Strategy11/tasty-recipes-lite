@@ -108,7 +108,7 @@ jobs:
         with:
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
           sandbox: workspace-write
-          codex-args: '["--full-auto"]'
+          codex-args: ${{ github.event.client_payload.smartest_model && '["--model","gpt-5.4","--full-auto"]' || '["--full-auto"]' }}
           output-file: /tmp/codex-pr-body.md
           prompt: |
             REPO: ${{ github.repository }}
