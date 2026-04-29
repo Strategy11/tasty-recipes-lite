@@ -279,8 +279,8 @@ class Quick_Links {
 				'</a>';
 		}
 		if ( in_array( 'trusted_source', $should_prepend_jump_to, true ) ) {
-			$trusted_url = add_query_arg( 'q', self::get_trusted_source_host(), 'https://google.com/preferences/source' );
-			$icon        = self::is_buttons_style() ? self::get_trusted_source_icon() : '';
+			$trusted_url = add_query_arg( 'q', wp_parse_url( home_url(), PHP_URL_HOST ), 'https://google.com/preferences/source' );
+			$icon        = 'buttons' === get_option( Tasty_Recipes::QUICK_LINKS_STYLE ) ? self::get_trusted_source_icon() : '';
 
 			$links['trusted_source'] = '<a class="tasty-recipes-trusted-source-link' . esc_attr( $btn_class ) . '" ' .
 				'href="' . esc_url( $trusted_url ) . '" target="_blank" rel="noopener nofollow">' .
@@ -376,44 +376,6 @@ class Quick_Links {
 		}
 
 		return apply_filters( 'tasty_recipes_quick_links_label', $labels[ $type ], $type, $recipe_id );
-	}
-
-	/**
-	 * Whether the Quick Links style is set to "buttons".
-	 *
-	 * @since x.x
-	 *
-	 * @return bool
-	 */
-	private static function is_buttons_style() {
-		return 'buttons' === get_option( Tasty_Recipes::QUICK_LINKS_STYLE );
-	}
-
-	/**
-	 * Get the host used in the Google Trusted Source URL.
-	 *
-	 * Defaults to the host of `home_url()` (preserving any `www.` prefix so
-	 * the URL matches the site's canonical address).
-	 *
-	 * @since x.x
-	 *
-	 * @return string
-	 */
-	private static function get_trusted_source_host() {
-		$host = wp_parse_url( home_url(), PHP_URL_HOST );
-
-		if ( ! is_string( $host ) ) {
-			$host = '';
-		}
-
-		/**
-		 * Filters the host used in the Google Trusted Source quick link URL.
-		 *
-		 * @since x.x
-		 *
-		 * @param string $host Site host parsed from `home_url()`.
-		 */
-		return (string) apply_filters( 'tasty_recipes_trusted_source_host', $host );
 	}
 
 	/**

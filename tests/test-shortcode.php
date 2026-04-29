@@ -406,41 +406,6 @@ EOT;
 	}
 
 	/**
-	 * Ensures the tasty_recipes_trusted_source_host filter overrides the URL host.
-	 *
-	 * @since x.x
-	 */
-	public function test_trusted_source_host_filter() {
-		global $post;
-
-		$this->prime_basic_test_post();
-		$recipe = $this->create_mock_recipe();
-		$post   = get_post( $this->post_id );
-		update_option( Tasty_Recipes::QUICK_LINKS_OPTION, array( 'trusted_source' ) );
-		wp_update_post(
-			array(
-				'ID'           => $this->post_id,
-				'post_content' => Shortcodes::get_shortcode_for_recipe( $recipe ),
-			)
-		);
-		$this->go_to( get_permalink( $this->post_id ) );
-
-		add_filter(
-			'tasty_recipes_trusted_source_host',
-			static function () {
-				return 'override.example';
-			}
-		);
-
-		$actual = Quick_Links::filter_the_content_late( $post->post_content );
-
-		remove_all_filters( 'tasty_recipes_trusted_source_host' );
-		delete_option( Tasty_Recipes::QUICK_LINKS_OPTION );
-
-		$this->assertStringContainsString( 'q=override.example', $actual );
-	}
-
-	/**
 	 * Ensure the filter_tasty_recipes_recipe_card_output method works as expected.
 	 */
 	public function test_filter_tasty_recipes_recipe_card_output() {
