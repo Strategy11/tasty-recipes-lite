@@ -366,7 +366,7 @@ EOT;
 		$this->assertStringContainsString( 'href="https://google.com/preferences/source?q=' . $host . '"', $actual );
 		$this->assertStringContainsString( 'target="_blank"', $actual );
 		$this->assertStringContainsString( 'rel="noopener nofollow"', $actual );
-		$this->assertStringContainsString( 'Google Trusted Source', $actual );
+		$this->assertStringContainsString( 'Trust With Google', $actual );
 
 		delete_option( Tasty_Recipes::QUICK_LINKS_OPTION );
 	}
