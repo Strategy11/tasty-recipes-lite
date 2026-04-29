@@ -339,6 +339,108 @@ EOT;
 	}
 
 	/**
+	 * Ensures the Google Trusted Source quick link renders with the site host.
+	 *
+	 * @since x.x
+	 */
+	public function test_render_trusted_source_quick_link() {
+		global $post;
+
+		$this->prime_basic_test_post();
+		$recipe = $this->create_mock_recipe();
+		$post   = get_post( $this->post_id );
+		update_option( Tasty_Recipes::QUICK_LINKS_OPTION, array( 'trusted_source' ) );
+		wp_update_post(
+			array(
+				'ID'           => $this->post_id,
+				'post_content' => Shortcodes::get_shortcode_for_recipe( $recipe ),
+			)
+		);
+
+		$this->go_to( get_permalink( $this->post_id ) );
+		$actual = Quick_Links::filter_the_content_late( $post->post_content );
+
+		$host = wp_parse_url( home_url(), PHP_URL_HOST );
+
+		$this->assertStringContainsString( 'tasty-recipes-trusted-source-link', $actual );
+		$this->assertStringContainsString( 'href="https://google.com/preferences/source?q=' . $host . '"', $actual );
+		$this->assertStringContainsString( 'target="_blank"', $actual );
+		$this->assertStringContainsString( 'rel="noopener nofollow"', $actual );
+		$this->assertStringContainsString( 'Google Trusted Source', $actual );
+
+		delete_option( Tasty_Recipes::QUICK_LINKS_OPTION );
+	}
+
+	/**
+	 * Ensures the Google logo icon only renders when the quick links style is "buttons".
+	 *
+	 * @since x.x
+	 */
+	public function test_trusted_source_icon_gated_by_buttons_style() {
+		global $post;
+
+		$this->prime_basic_test_post();
+		$recipe = $this->create_mock_recipe();
+		$post   = get_post( $this->post_id );
+		update_option( Tasty_Recipes::QUICK_LINKS_OPTION, array( 'trusted_source' ) );
+		wp_update_post(
+			array(
+				'ID'           => $this->post_id,
+				'post_content' => Shortcodes::get_shortcode_for_recipe( $recipe ),
+			)
+		);
+		$this->go_to( get_permalink( $this->post_id ) );
+
+		// Default (links) style: no icon.
+		delete_option( Tasty_Recipes::QUICK_LINKS_STYLE );
+		$without_icon = Quick_Links::filter_the_content_late( $post->post_content );
+		$this->assertStringNotContainsString( 'tasty-recipes-trusted-source-icon', $without_icon );
+
+		// Buttons style: icon present.
+		update_option( Tasty_Recipes::QUICK_LINKS_STYLE, 'buttons' );
+		$with_icon = Quick_Links::filter_the_content_late( $post->post_content );
+		$this->assertStringContainsString( 'tasty-recipes-trusted-source-icon', $with_icon );
+
+		delete_option( Tasty_Recipes::QUICK_LINKS_OPTION );
+		delete_option( Tasty_Recipes::QUICK_LINKS_STYLE );
+	}
+
+	/**
+	 * Ensures the tasty_recipes_trusted_source_host filter overrides the URL host.
+	 *
+	 * @since x.x
+	 */
+	public function test_trusted_source_host_filter() {
+		global $post;
+
+		$this->prime_basic_test_post();
+		$recipe = $this->create_mock_recipe();
+		$post   = get_post( $this->post_id );
+		update_option( Tasty_Recipes::QUICK_LINKS_OPTION, array( 'trusted_source' ) );
+		wp_update_post(
+			array(
+				'ID'           => $this->post_id,
+				'post_content' => Shortcodes::get_shortcode_for_recipe( $recipe ),
+			)
+		);
+		$this->go_to( get_permalink( $this->post_id ) );
+
+		add_filter(
+			'tasty_recipes_trusted_source_host',
+			static function () {
+				return 'override.example';
+			}
+		);
+
+		$actual = Quick_Links::filter_the_content_late( $post->post_content );
+
+		remove_all_filters( 'tasty_recipes_trusted_source_host' );
+		delete_option( Tasty_Recipes::QUICK_LINKS_OPTION );
+
+		$this->assertStringContainsString( 'q=override.example', $actual );
+	}
+
+	/**
 	 * Ensure the filter_tasty_recipes_recipe_card_output method works as expected.
 	 */
 	public function test_filter_tasty_recipes_recipe_card_output() {

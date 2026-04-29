@@ -191,6 +191,26 @@ export const Settings = () => {
 						'tasty-recipes-lite'
 					) }
 				/>
+				<CheckInput
+					id="tasty-recipes-quick-links-trusted-source"
+					name="tasty_recipes_quick_links[]"
+					label={ __(
+						"'Google Trusted Source' link",
+						'tasty-recipes-lite'
+					) }
+					value="trusted_source"
+					isChecked={ formData.quickLinks.includes(
+						'trusted_source'
+					) }
+					setValue={ ( checked ) =>
+						handleQuickLinksChange( checked, 'trusted_source' )
+					}
+					helper={ __(
+						'Adds a link that lets visitors set your site as a Google Preferred Source.',
+						'tasty-recipes-lite'
+					) }
+					isNew
+				/>
 			</SettingsGroup>
 			<SelectGroup
 				groupId="tasty-recipes-card-buttons"

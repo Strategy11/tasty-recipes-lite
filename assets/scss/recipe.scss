@@ -93,6 +93,23 @@ body.tasty-recipes-print-view{
 	display: none;
 }
 
+.tasty-recipes-quick-links .tasty-recipes-trusted-source-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4em;
+}
+
+.tasty-recipes-quick-links .tasty-recipes-trusted-source-icon {
+	display: inline-flex;
+	align-items: center;
+	line-height: 0;
+
+	svg {
+		width: 1em;
+		height: 1em;
+	}
+}
+
 .tasty-recipes-quick-links a.button:hover,
 .tasty-recipes-buttons a.button:hover,
 .tasty-recipes-image-button-container .tasty-recipes-buttons .button:hover,
