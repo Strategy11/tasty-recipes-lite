@@ -209,7 +209,6 @@ export const Settings = () => {
 						'Adds a link that lets visitors set your site as a Google Preferred Source.',
 						'tasty-recipes-lite'
 					) }
-					isNew
 				/>
 			</SettingsGroup>
 			<SelectGroup

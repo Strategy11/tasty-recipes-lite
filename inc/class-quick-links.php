@@ -417,30 +417,19 @@ class Quick_Links {
 	}
 
 	/**
-	 * Get the placeholder Google logo SVG used inside the Trusted Source button.
-	 *
-	 * Replace the inner SVG with the official Google "G" mark when ready;
-	 * the surrounding `<span>` keeps the layout/spacing rules intact.
+	 * Get the Google logo SVG used inside the Trusted Source button.
 	 *
 	 * @since x.x
 	 *
 	 * @return string
 	 */
 	private static function get_trusted_source_icon() {
-		$placeholder = '<span class="tasty-recipes-trusted-source-icon" aria-hidden="true">'
-			. '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" focusable="false">'
-			. '<circle cx="12" cy="12" r="10" fill="currentColor"></circle>'
-			. '<text x="12" y="16" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#fff">G</text>'
-			. '</svg>'
-			. '</span>';
+		$svg = Utils::get_contents( 'assets/images/google-trusted-source.svg', 'path' );
 
-		/**
-		 * Filters the icon markup rendered to the left of the Google Trusted Source button label.
-		 *
-		 * @since x.x
-		 *
-		 * @param string $placeholder Default placeholder SVG markup wrapped in `<span class="tasty-recipes-trusted-source-icon">`.
-		 */
-		return (string) apply_filters( 'tasty_recipes_trusted_source_icon', $placeholder );
+		if ( ! is_string( $svg ) || '' === $svg ) {
+			return '';
+		}
+
+		return '<span class="tasty-recipes-trusted-source-icon" aria-hidden="true">' . trim( $svg ) . '</span>';
 	}
 }
