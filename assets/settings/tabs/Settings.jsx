@@ -177,6 +177,7 @@ export const Settings = () => {
 				<CheckInput
 					id="tasty-recipes-quick-links-rating"
 					name="tasty_recipes_quick_links[]"
+					className="tasty-form-field-no-helper-margin"
 					label={ __(
 						"'Leave a Review' link",
 						'tasty-recipes-lite'
@@ -195,7 +196,7 @@ export const Settings = () => {
 					id="tasty-recipes-quick-links-trusted-source"
 					name="tasty_recipes_quick_links[]"
 					label={ __(
-						"'Google Trusted Source' link",
+						"'Trust With Google' link",
 						'tasty-recipes-lite'
 					) }
 					value="trusted_source"

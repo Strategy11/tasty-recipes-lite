@@ -368,7 +368,7 @@ class Quick_Links {
 			'jump'           => esc_html__( 'Jump to Recipe', 'tasty-recipes-lite' ),
 			'print'          => esc_html__( 'Print Recipe', 'tasty-recipes-lite' ),
 			'rating'         => esc_html__( 'Leave a Review', 'tasty-recipes-lite' ),
-			'trusted_source' => esc_html__( 'Google Trusted Source', 'tasty-recipes-lite' ),
+			'trusted_source' => esc_html__( 'Trust With Google', 'tasty-recipes-lite' ),
 		);
 
 		if ( ! isset( $labels[ $type ] ) ) {

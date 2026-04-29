@@ -102,11 +102,19 @@ body.tasty-recipes-print-view{
 .tasty-recipes-quick-links .tasty-recipes-trusted-source-icon {
 	display: inline-flex;
 	align-items: center;
+	justify-content: center;
 	line-height: 0;
+	margin-right: 5px;
+	background-color: #fff;
+	border-radius: 50%;
+	padding: 2px;
+	box-shadow: 0px 1px 2px 0px #0A0D1408;
+	width: 16px;
+	height: 16px;
 
 	svg {
-		width: 1em;
-		height: 1em;
+		width: 12px;
+		height: 12px;
 	}
 }
 
