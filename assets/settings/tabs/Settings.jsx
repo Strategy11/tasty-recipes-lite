@@ -387,6 +387,56 @@ export const Settings = () => {
 					'tasty-recipes-lite'
 				) }
 			/>
+			{ applyFilters(
+				'tasty_recipes_save_recipe_newsletter',
+				<ToggleInput
+					onClick={ () => {
+						if (
+							isSettingDisabled(
+								formData.saveRecipeNewsletter
+							)
+						) {
+							openModal( {
+								id: 'tasty_recipes_upgrade_modal',
+								title: __(
+									'Save Recipe/Newsletter',
+									'tasty-recipes-lite'
+								),
+								upgradeUrl: generateUpgradeUrl( {
+									medium: 'tasty-recipes',
+									content: 'save-recipe-newsletter',
+								} ),
+							} );
+						}
+					} }
+					label={ __(
+						'Save Recipe/Newsletter',
+						'tasty-recipes-lite'
+					) }
+					id="tasty_recipes_save_recipe_newsletter"
+					name="tasty_recipes_save_recipe_newsletter"
+					value={ String(
+						formData.saveRecipeNewsletter ?? 0
+					) }
+					onValue="1"
+					offValue="0"
+					setValue={ ( value ) => {
+						handleChange(
+							'saveRecipeNewsletter',
+							value
+						);
+					} }
+					disabled={ isSettingDisabled(
+						formData.saveRecipeNewsletter
+					) }
+					helper={ __(
+						'Allow visitors to send a recipe via email.',
+						'tasty-recipes-lite'
+					) }
+				/>,
+				formData,
+				handleChange
+			) }
 			<InstacartButton
 				formData={ formData }
 				handleChange={ handleChange }
