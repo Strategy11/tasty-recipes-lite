@@ -17,6 +17,8 @@ jobs:
         run: composer install --dev --prefer-dist --no-progress
 
       - name: "⚡ Install Mago"
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           mkdir -p bin
           curl --proto '=https' --tlsv1.2 -sSf https://carthage.software/mago.sh | bash -s -- --install-dir=bin

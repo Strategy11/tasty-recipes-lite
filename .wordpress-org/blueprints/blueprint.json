@@ -1,0 +1,37 @@
+{
+	"$schema": "https://playground.wordpress.net/blueprint-schema.json",
+	"meta": {
+		"title": "Tasty Recipes Lite",
+		"description": "Preview Tasty Recipes Lite with a sample recipe card featuring a classic chocolate chip cookies recipe.",
+		"author": "wptasty",
+		"categories": ["content", "food"]
+	},
+	"landingPage": "/wp-admin/edit.php?post_type=tasty_recipe",
+	"preferredVersions": {
+		"php": "7.4",
+		"wp": "latest"
+	},
+	"login": true,
+	"steps": [
+		{
+			"step": "installPlugin",
+			"pluginData": {
+				"resource": "wordpress.org/plugins",
+				"slug": "tasty-recipes-lite"
+			},
+			"ifAlreadyInstalled": "skip"
+		},
+		{
+			"step": "runPHP",
+			"code": "<?php require '/wordpress/wp-load.php'; update_option( 'tasty_recipes_onboarding_skipped', true ); update_option( 'tasty_recipes_welcome_redirect', '1.2.4' ); delete_transient( 'tasty_recipes_activation_redirect' );"
+		},
+		{
+			"step": "runPHP",
+			"code": "<?php require '/wordpress/wp-load.php'; global $wp_rewrite; $wp_rewrite->set_permalink_structure( '/%postname%/' ); $wp_rewrite->flush_rules( true );"
+		},
+		{
+			"step": "runPHP",
+			"code": "<?php require '/wordpress/wp-load.php'; $recipe_id = wp_insert_post( array( 'post_type' => 'tasty_recipe', 'post_status' => 'publish', 'post_title' => 'Classic Chocolate Chip Cookies' ) ); if ( ! is_wp_error( $recipe_id ) ) { update_post_meta( $recipe_id, 'title', 'Classic Chocolate Chip Cookies' ); update_post_meta( $recipe_id, 'description', 'These classic chocolate chip cookies are perfectly crispy on the outside and chewy on the inside. A timeless recipe that never disappoints!' ); update_post_meta( $recipe_id, 'ingredients', '<ul><li>2 1/4 cups all-purpose flour</li><li>1 tsp baking soda</li><li>1 tsp salt</li><li>1 cup (2 sticks) butter, softened</li><li>3/4 cup granulated sugar</li><li>3/4 cup packed brown sugar</li><li>2 large eggs</li><li>2 tsp vanilla extract</li><li>2 cups chocolate chips</li></ul>' ); update_post_meta( $recipe_id, 'instructions', '<ol><li>Preheat the oven to 375°F (190°C).</li><li>In a small bowl, whisk together the flour, baking soda, and salt. Set aside.</li><li>In a large bowl, beat the butter, granulated sugar, and brown sugar until creamy.</li><li>Add the eggs and vanilla extract to the butter mixture. Beat until well combined.</li><li>Gradually stir in the flour mixture until just combined.</li><li>Fold in the chocolate chips.</li><li>Drop rounded tablespoons of dough onto ungreased baking sheets.</li><li>Bake for 9 to 11 minutes or until golden brown.</li><li>Let cool on the baking sheet for 2 minutes, then transfer to a wire rack.</li></ol>' ); update_post_meta( $recipe_id, 'notes', 'For extra chewy cookies, slightly underbake by 1 minute. Store in an airtight container for up to 5 days.' ); update_post_meta( $recipe_id, 'prep_time', '15 mins' ); update_post_meta( $recipe_id, 'cook_time', '11 mins' ); update_post_meta( $recipe_id, 'total_time', '26 mins' ); update_post_meta( $recipe_id, 'yield', '48 cookies' ); wp_set_object_terms( $recipe_id, 'Dessert', 'tasty_recipe_category' ); wp_set_object_terms( $recipe_id, 'American', 'tasty_recipe_cuisine' ); update_post_meta( $recipe_id, 'keywords', 'cookies, chocolate chip, baking, dessert' ); $post_id = wp_insert_post( array( 'post_type' => 'post', 'post_status' => 'publish', 'post_title' => 'Classic Chocolate Chip Cookies', 'post_content' => '<!-- wp:paragraph --><p>Nothing beats a warm, freshly baked chocolate chip cookie. This classic recipe is simple, reliable, and produces perfectly chewy cookies every time.</p><!-- /wp:paragraph --><!-- wp:shortcode -->[tasty-recipe id=\"' . $recipe_id . '\"]<!-- /wp:shortcode -->' ) ); update_option( 'tasty_recipes_db_version', '1.0' ); }"
+		}
+	]
+}
