@@ -96,6 +96,10 @@
 	color: red;
 }
 
+.tasty-tab-content .tasty-settings-main .tasty-form-field.tasty-form-field-no-helper-margin .tasty-form-helper {
+	margin-bottom: 0;
+}
+
 .tasty-recipes-disabled[data-modal_parent] {
 	opacity: 0.5;
 	pointer-events: none;
