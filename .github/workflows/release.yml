@@ -37,6 +37,45 @@ jobs:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 
+  notify-pr:
+    if: github.event_name == 'workflow_dispatch' && inputs.phase == 'prepare'
+    needs: prepare
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      actions: read
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: tasty-recipes-lite-${{ inputs.version }}
+          path: ./dist
+
+      - name: Repackage as installable ZIP
+        run: |
+          cd dist
+          unzip tasty-recipes-lite-${{ inputs.version }}.zip
+          rm tasty-recipes-lite-${{ inputs.version }}.zip
+
+      - name: Upload installable artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tasty-recipes-lite-${{ inputs.version }}-installable
+          path: ./dist/
+
+      - name: Comment on PR
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          PR_NUMBER=$(gh pr list --repo "${{ github.repository }}" --head "release/${{ inputs.version }}" --json number -q '.[0].number')
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          gh pr comment "$PR_NUMBER" --repo "${{ github.repository }}" --body "## Build ready for testing
+
+          **Download:** [tasty-recipes-lite-${{ inputs.version }}-installable](${RUN_URL}#artifacts)
+
+          Install in WordPress via **Plugins → Add New → Upload Plugin**. The downloaded ZIP is ready to install directly."
+
   publish-manual:
     if: github.event_name == 'workflow_dispatch' && inputs.phase == 'publish'
     uses: Strategy11/tasty-framework/.github/workflows/release.yml@master
