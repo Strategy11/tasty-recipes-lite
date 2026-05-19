@@ -381,7 +381,7 @@ class Quick_Links {
 	/**
 	 * Get the Google logo SVG used inside the Trusted Source button.
 	 *
-	 * @since x.x
+	 * @since 1.2.5
 	 *
 	 * @return string
 	 */

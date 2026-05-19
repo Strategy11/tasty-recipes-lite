@@ -15,14 +15,14 @@ use Tasty_Recipes;
 /**
  * AI Scraper Prevention.
  *
- * @since x.x
+ * @since 1.2.5
  */
 class AI_Scraper_Prevention {
 
 	/**
 	 * Maybe load hooks if the feature is enabled.
 	 *
-	 * @since x.x
+	 * @since 1.2.5
 	 *
 	 * @return void
 	 */
@@ -42,7 +42,7 @@ class AI_Scraper_Prevention {
 	/**
 	 * Return a 403 response when a known AI bot requests a recipe page.
 	 *
-	 * @since x.x
+	 * @since 1.2.5
 	 *
 	 * @return void
 	 */
@@ -62,7 +62,7 @@ class AI_Scraper_Prevention {
 	/**
 	 * Whether the current request's User-Agent matches a blocked AI bot.
 	 *
-	 * @since x.x
+	 * @since 1.2.5
 	 *
 	 * @return bool
 	 */
@@ -91,7 +91,7 @@ class AI_Scraper_Prevention {
 	 * Register the noai/noimageai meta tag hooks for the active SEO plugin,
 	 * or fall back to a standalone wp_head output.
 	 *
-	 * @since x.x
+	 * @since 1.2.5
 	 *
 	 * @return void
 	 */
@@ -121,7 +121,7 @@ class AI_Scraper_Prevention {
 	 * parse_existing_user_agents() naturally deduplicates against any
 	 * bots already added by Yoast Premium, AIOSEO, Rank Math, etc.
 	 *
-	 * @since x.x
+	 * @since 1.2.5
 	 *
 	 * @param string $output    Robots.txt content.
 	 * @param bool   $is_public Whether the site is public.
@@ -162,7 +162,7 @@ class AI_Scraper_Prevention {
 	/**
 	 * Get the list of AI bot user-agents to block.
 	 *
-	 * @since x.x
+	 * @since 1.2.5
 	 *
 	 * @return string[] Array of user-agent strings to block.
 	 */
@@ -187,7 +187,7 @@ class AI_Scraper_Prevention {
 		/**
 		 * Filters the list of AI training/scraping bot user-agents to block.
 		 *
-		 * @since x.x
+		 * @since 1.2.5
 		 *
 		 * @param string[] $bots Array of user-agent strings to block.
 		 */
@@ -199,7 +199,7 @@ class AI_Scraper_Prevention {
 	/**
 	 * Parse existing User-agent values from a robots.txt string.
 	 *
-	 * @since x.x
+	 * @since 1.2.5
 	 *
 	 * @param string $output Robots.txt content.
 	 *
@@ -220,7 +220,7 @@ class AI_Scraper_Prevention {
 	/**
 	 * Add AI directives to a list-based robots array (Yoast SEO).
 	 *
-	 * @since x.x
+	 * @since 1.2.5
 	 *
 	 * @param array $robots Existing robots directive tokens.
 	 *
@@ -243,7 +243,7 @@ class AI_Scraper_Prevention {
 	/**
 	 * Add AI directives to a keyed robots array (Rank Math, AIOSEO).
 	 *
-	 * @since x.x
+	 * @since 1.2.5
 	 *
 	 * @param array $robots Existing robots directives, keyed by token.
 	 *
@@ -266,7 +266,7 @@ class AI_Scraper_Prevention {
 	/**
 	 * Output noai/noimageai meta tag on recipe posts (standalone, no SEO plugin).
 	 *
-	 * @since x.x
+	 * @since 1.2.5
 	 *
 	 * @return void
 	 */
@@ -281,7 +281,7 @@ class AI_Scraper_Prevention {
 	/**
 	 * Get the robots meta directives that opt out of AI training and image scraping.
 	 *
-	 * @since x.x
+	 * @since 1.2.5
 	 *
 	 * @return string[] Array of robots meta directive tokens.
 	 */
@@ -289,7 +289,7 @@ class AI_Scraper_Prevention {
 		/**
 		 * Filters the robots meta directives used to opt out of AI training and image scraping.
 		 *
-		 * @since x.x
+		 * @since 1.2.5
 		 *
 		 * @param string[] $directives Array of robots meta directive tokens.
 		 */
@@ -301,7 +301,7 @@ class AI_Scraper_Prevention {
 	/**
 	 * Whether the current singular request is a post that contains a recipe.
 	 *
-	 * @since x.x
+	 * @since 1.2.5
 	 *
 	 * @return bool
 	 */
@@ -322,7 +322,7 @@ class AI_Scraper_Prevention {
 	/**
 	 * Coerce a filter return value into a clean, re-indexed list of trimmed strings.
 	 *
-	 * @since x.x
+	 * @since 1.2.5
 	 *
 	 * @param mixed $values Raw value returned by a filter.
 	 *
