@@ -189,7 +189,7 @@ class Tasty_Recipes {
 	/**
 	 * Option name for the AI scraper prevention toggle.
 	 *
-	 * @since x.x
+	 * @since 1.2.5
 	 *
 	 * @var string
 	 */
