@@ -129,6 +129,7 @@ export const Converters = () => {
 										return {
 											...prev,
 											converter: converterName,
+											message: '',
 										};
 									} );
 								} }
@@ -153,7 +154,7 @@ export const Converters = () => {
 			{ converterStatus.converter && (
 				<div className="tasty-recipes-converter-action">
 					{ converterStatus.message && (
-						<div className="tasty-recipes-converter-error">
+						<div className="tasty-recipes-converter-error" role="alert">
 							<p>{ converterStatus.message }</p>
 						</div>
 					) }
