@@ -129,6 +129,7 @@ export const Converters = () => {
 										return {
 											...prev,
 											converter: converterName,
+											message: '',
 										};
 									} );
 								} }
@@ -152,6 +153,11 @@ export const Converters = () => {
 			</div>
 			{ converterStatus.converter && (
 				<div className="tasty-recipes-converter-action">
+					{ converterStatus.message && (
+						<div className="tasty-recipes-converter-error" role="alert">
+							<p>{ converterStatus.message }</p>
+						</div>
+					) }
 					{ converterStatus.status === 'idle' && (
 						<button
 							className="button tasty-recipes-start-import"
@@ -161,6 +167,7 @@ export const Converters = () => {
 									return {
 										...prev,
 										status: 'importing',
+										message: '',
 									};
 								} );
 

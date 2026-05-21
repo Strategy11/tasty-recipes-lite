@@ -200,6 +200,20 @@
 		}
 	}
 
+	.tasty-recipes-converter-error {
+		background-color: #fee2e2;
+		border: 1px solid #f87171;
+		border-radius: 4px;
+		padding: 10px 15px;
+		margin-top: 10px;
+
+		p {
+			color: #dc2626;
+			margin: 0;
+			font-size: 14px;
+		}
+	}
+
 	.tasty-recipes-start-import {
 		margin-top: 20px !important;
 		padding: 5px 10px;
