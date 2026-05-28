@@ -1,0 +1,113 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version (e.g. 1.3.0)'
+        required: true
+        type: string
+      tested_up_to:
+        description: 'WP "Tested up to" version (blank = keep current)'
+        required: false
+        type: string
+      phase:
+        description: 'Release phase'
+        required: true
+        type: choice
+        options:
+          - prepare
+          - publish
+
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+jobs:
+  prepare:
+    if: github.event_name == 'workflow_dispatch' && inputs.phase == 'prepare'
+    uses: Strategy11/tasty-framework/.github/workflows/release.yml@master
+    with:
+      plugin-slug: tasty-recipes-lite
+      version: ${{ inputs.version }}
+      tested-up-to: ${{ inputs.tested_up_to }}
+      phase: prepare
+      base-branch: main
+    secrets:
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+  notify-pr:
+    if: github.event_name == 'workflow_dispatch' && inputs.phase == 'prepare'
+    needs: prepare
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      actions: read
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: tasty-recipes-lite-${{ inputs.version }}
+          path: ./dist
+
+      - name: Repackage as installable ZIP
+        run: |
+          cd dist
+          unzip tasty-recipes-lite-${{ inputs.version }}.zip
+          rm tasty-recipes-lite-${{ inputs.version }}.zip
+
+      - name: Upload installable artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tasty-recipes-lite-${{ inputs.version }}-installable
+          path: ./dist/
+
+      - name: Comment on PR
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          PR_NUMBER=$(gh pr list --repo "${{ github.repository }}" --head "release/${{ inputs.version }}" --json number -q '.[0].number')
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          gh pr comment "$PR_NUMBER" --repo "${{ github.repository }}" --body "## Build ready for testing
+
+          **Download:** [tasty-recipes-lite-${{ inputs.version }}-installable](${RUN_URL}#artifacts)
+
+          Install in WordPress via **Plugins → Add New → Upload Plugin**. The downloaded ZIP is ready to install directly."
+
+  publish-manual:
+    if: github.event_name == 'workflow_dispatch' && inputs.phase == 'publish'
+    uses: Strategy11/tasty-framework/.github/workflows/release.yml@master
+    with:
+      plugin-slug: tasty-recipes-lite
+      version: ${{ inputs.version }}
+      phase: publish
+      base-branch: main
+    secrets:
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+  extract-version:
+    if: github.event_name == 'pull_request' && github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/')
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.parse.outputs.version }}
+    steps:
+      - name: Extract version from branch name
+        id: parse
+        run: |
+          BRANCH="${{ github.event.pull_request.head.ref }}"
+          echo "version=${BRANCH#release/}" >> "$GITHUB_OUTPUT"
+
+  publish-on-merge:
+    needs: extract-version
+    uses: Strategy11/tasty-framework/.github/workflows/release.yml@master
+    with:
+      plugin-slug: tasty-recipes-lite
+      version: ${{ needs.extract-version.outputs.version }}
+      phase: publish
+      base-branch: main
+    secrets:
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}

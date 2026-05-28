@@ -177,6 +177,7 @@ export const Settings = () => {
 				<CheckInput
 					id="tasty-recipes-quick-links-rating"
 					name="tasty_recipes_quick_links[]"
+					className="tasty-form-field-no-helper-margin"
 					label={ __(
 						"'Leave a Review' link",
 						'tasty-recipes-lite'
@@ -188,6 +189,25 @@ export const Settings = () => {
 					}
 					helper={ __(
 						'Enable or disable quick links below the post title.',
+						'tasty-recipes-lite'
+					) }
+				/>
+				<CheckInput
+					id="tasty-recipes-quick-links-trusted-source"
+					name="tasty_recipes_quick_links[]"
+					label={ __(
+						"'Trust With Google' link",
+						'tasty-recipes-lite'
+					) }
+					value="trusted_source"
+					isChecked={ formData.quickLinks.includes(
+						'trusted_source'
+					) }
+					setValue={ ( checked ) =>
+						handleQuickLinksChange( checked, 'trusted_source' )
+					}
+					helper={ __(
+						'Adds a link that lets visitors set your site as a Google Preferred Source.',
 						'tasty-recipes-lite'
 					) }
 				/>
@@ -266,6 +286,22 @@ export const Settings = () => {
 					'Allow users to click a taxonomy key and see all recipes that are tagged similarly',
 					'tasty-recipes-lite'
 				) }
+			/>
+			<ToggleInput
+				label={ __( 'AI Scraper Prevention', 'tasty-recipes-lite' ) }
+				id="tasty_recipes_ai_scraper_prevention"
+				name="tasty_recipes_ai_scraper_prevention"
+				value={ String( formData.enableAiScraperPrevention ?? 0 ) }
+				onValue="1"
+				offValue="0"
+				setValue={ ( value ) => {
+					handleChange( 'enableAiScraperPrevention', value );
+				} }
+				helper={ __(
+					'Prevents compliant AI crawlers that honor robots.txt from scraping your site.',
+					'tasty-recipes-lite'
+				) }
+				isNew
 			/>
 			<UpgradeBanner generateUpgradeUrl={ generateUpgradeUrl } />
 			<SelectInput
