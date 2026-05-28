@@ -449,6 +449,7 @@ export const Settings = () => {
 						'Save Recipe/Newsletter',
 						'tasty-recipes-lite'
 					) }
+					isNew
 					id="tasty_recipes_save_recipe_newsletter"
 					name="tasty_recipes_save_recipe_newsletter"
 					value={ String(
