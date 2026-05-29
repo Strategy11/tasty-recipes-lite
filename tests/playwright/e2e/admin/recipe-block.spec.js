@@ -2,6 +2,7 @@ const { expect, test } = require( '../../support/test' );
 const {
 	closeWelcomeGuide,
 	getEditorCanvas,
+	insertTastyRecipeBlock,
 	openBlockSettingsSidebar,
 	selectEmbeddedRecipeInBlock,
 } = require( '../../support/ui' );
@@ -28,7 +29,7 @@ test.describe( 'Recipe Block', () => {
 			page,
 		} ) => {
 			await closeWelcomeGuide( page );
-			await editor.insertBlock( { name: 'wp-tasty/tasty-recipe' } );
+			await insertTastyRecipeBlock( editor, page );
 
 			const canvas = getEditorCanvas( editor, page );
 			await expect(
@@ -54,7 +55,7 @@ test.describe( 'Recipe Block', () => {
 			page,
 		} ) => {
 			await closeWelcomeGuide( page );
-			await editor.insertBlock( { name: 'wp-tasty/tasty-recipe' } );
+			await insertTastyRecipeBlock( editor, page );
 			const canvas = getEditorCanvas( editor, page );
 
 			await canvas
@@ -75,7 +76,7 @@ test.describe( 'Recipe Block', () => {
 			page,
 		} ) => {
 			await closeWelcomeGuide( page );
-			await editor.insertBlock( { name: 'wp-tasty/tasty-recipe' } );
+			await insertTastyRecipeBlock( editor, page );
 			const canvas = getEditorCanvas( editor, page );
 
 			await selectEmbeddedRecipeInBlock( editor, page );
@@ -95,7 +96,7 @@ test.describe( 'Recipe Block', () => {
 			page,
 		} ) => {
 			await closeWelcomeGuide( page );
-			await editor.insertBlock( { name: 'wp-tasty/tasty-recipe' } );
+			await insertTastyRecipeBlock( editor, page );
 			await selectEmbeddedRecipeInBlock( editor, page );
 			await openBlockSettingsSidebar( page );
 
@@ -119,7 +120,7 @@ test.describe( 'Recipe Block', () => {
 			page,
 		} ) => {
 			await closeWelcomeGuide( page );
-			await editor.insertBlock( { name: 'wp-tasty/tasty-recipe' } );
+			await insertTastyRecipeBlock( editor, page );
 			await selectEmbeddedRecipeInBlock( editor, page );
 			await openBlockSettingsSidebar( page );
 
@@ -157,7 +158,7 @@ test.describe( 'Recipe Block', () => {
 				.locator( 'h1.editor-post-title__input, #post-title-0' )
 				.first()
 				.fill( 'Author Link Override Test' );
-			await editor.insertBlock( { name: 'wp-tasty/tasty-recipe' } );
+			await insertTastyRecipeBlock( editor, page );
 			await selectEmbeddedRecipeInBlock( editor, page );
 			await openBlockSettingsSidebar( page );
 			await page

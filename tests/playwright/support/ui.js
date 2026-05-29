@@ -49,6 +49,31 @@ const closeWelcomeGuide = async page => {
 	}
 };
 
+const insertTastyRecipeBlock = async ( editor, page ) => {
+	const inserterButton = page
+		.getByRole( 'button', { name: 'Block Inserter' } )
+		.first();
+
+	if ( ( await inserterButton.getAttribute( 'aria-pressed' ) ) !== 'true' ) {
+		await inserterButton.click();
+	}
+
+	const searchField = page.locator( 'input[placeholder="Search"]' ).first();
+	await expectVisible( searchField );
+	await searchField.fill( 'Tasty Recipe' );
+
+	const recipeBlock = page
+		.locator( '.editor-block-list-item-wp-tasty-tasty-recipe' )
+		.first();
+	await expectVisible( recipeBlock );
+	await recipeBlock.click();
+
+	await getEditorCanvas( editor, page )
+		.locator( '.tasty-recipes-block-placeholder, .tasty-recipes' )
+		.first()
+		.waitFor( { state: 'attached', timeout: 10000 } );
+};
+
 const openBlockSettingsSidebar = async page => {
 	const settingsButton = page
 		.getByRole( 'button', { name: /Settings/ } )
@@ -86,6 +111,7 @@ module.exports = {
 	expectVisible,
 	fillTinyMceFrame,
 	getEditorCanvas,
+	insertTastyRecipeBlock,
 	openBlockSettingsSidebar,
 	openCreateRecipeModal,
 	selectEmbeddedRecipeInBlock,
