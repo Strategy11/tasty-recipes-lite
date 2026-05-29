@@ -5,13 +5,19 @@ on:
     types: [labeled, synchronize]
 
 jobs:
-  cypress:
+  playwright:
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
     if: contains(github.event.pull_request.labels.*.name, 'run tests')
 
-    name: Cypress Tests
+    name: Playwright Tests (${{ matrix.shard }}/${{ matrix.total }})
+
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2]
+        total: [2]
 
     steps:
       - name: Checkout
@@ -38,28 +44,30 @@ jobs:
           node-version: 20
           cache: 'pnpm'
 
-      - name: Cache Cypress binary
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/Cypress
-          key: cypress-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: cypress-${{ runner.os }}-
-
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Ensure Cypress binary
-        run: pnpm exec cypress install
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
 
       - name: Build assets
         run: pnpm run build
 
-      - name: Cypress run
-        uses: cypress-io/github-action@v6
+      - name: Playwright run
+        run: pnpm exec playwright test --config playwright.config.js --shard=${{ matrix.shard }}/${{ matrix.total }}
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: failure()
         with:
-          start: pnpm run env start
-          wait-on: 'http://localhost:3000'
-          wait-on-timeout: 300
-          browser: chrome
-          command: pnpm run e2e:run
-          install: false  # Already installed via pnpm
+          name: playwright-report-${{ matrix.shard }}-${{ matrix.total }}
+          path: playwright-report/
+          retention-days: 7
+
+      - name: Upload Playwright test results
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-test-results-${{ matrix.shard }}-${{ matrix.total }}
+          path: test-results/
+          retention-days: 7

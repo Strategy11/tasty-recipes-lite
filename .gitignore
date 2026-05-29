@@ -14,10 +14,9 @@ node_modules/
 /.idea/**
 .php-cs-fixer.cache
 .wp-env.json
-cypress.config.js
-cypress/
 bin/mago
-!tests/cypress/
-!tests/cypress/**
 cy-*.php
 .pnpm-store
+artifacts/
+playwright-report/
+test-results/

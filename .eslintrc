@@ -4,21 +4,16 @@
 		"plugin:react/recommended",
 		"plugin:jsx-a11y/recommended",
 		"plugin:sonarjs/recommended",
-		"plugin:cypress/recommended",
 		"plugin:no-jquery/deprecated",
 		"plugin:compat/recommended",
 		"plugin:unicorn/all"
 	],
-	"env": {
-		"cypress/globals": true
-	},
 	"globals": {
 		"lodash": true,
 		"wp": true,
 		"MutationObserver": true
 	},
 	"plugins": [
-		"cypress",
 		"no-jquery"
 	],
 	"settings": {
@@ -46,8 +41,6 @@
 		"sonarjs/no-collapsible-if": "off",
 		"sonarjs/no-duplicated-branches": "off",
 		"sonarjs/no-nested-template-literals": "off",
-		"cypress/unsafe-to-chain-command": "off",
-		"cypress/no-assigning-return-values": "off",
 		"lines-around-comment": "off",
 		"react/react-in-jsx-scope": "off",
 		"react/display-name": "off",
@@ -156,5 +149,25 @@
 		"unicorn/prefer-switch": "off",
 		"unicorn/no-useless-switch-case": "off",
 		"unicorn/prefer-prototype-methods": "off"
-	}
+	},
+	"overrides": [
+		{
+			"files": [ "tests/playwright/**/*.js" ],
+			"extends": [ "plugin:playwright/recommended" ],
+			"plugins": [ "playwright" ],
+			"env": {
+				"node": true
+			},
+			"rules": {
+				"compat/compat": "off",
+				"jsx-a11y/anchor-is-valid": "off",
+				"unicorn/prefer-string-raw": "off",
+				"unicorn/prefer-string-replace-all": "off",
+				"unicorn/numeric-separators-style": "off",
+				"unicorn/no-anonymous-default-export": "off",
+				"playwright/no-networkidle": "off",
+				"playwright/no-force-option": "off"
+			}
+		}
+	]
 }

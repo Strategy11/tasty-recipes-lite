@@ -6,8 +6,10 @@ node_modules/**
 php-tests/**
 .idea/**
 pnpm-lock.yaml
-cypress
-cypress.config.js
+artifacts
+playwright.config.js
+playwright-report
+test-results
 .wp-env.json
 .nvmrc
 AGENTS.md
