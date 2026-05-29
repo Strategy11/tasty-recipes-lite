@@ -1,6 +1,13 @@
 packages:
   - '.'
 
+ignoredBuiltDependencies:
+  - '@parcel/watcher'
+  - core-js
+  - core-js-pure
+  - fs-ext-extra-prebuilt
+  - unrs-resolver
+
 overrides:
   eslint: ^8.57.0
   '@wordpress/eslint-plugin': ^24.5.0
