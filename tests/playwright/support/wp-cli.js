@@ -3,7 +3,12 @@ const { execFile } = require( 'node:child_process' );
 const escapePhpString = value =>
 	String( value ).replace( /\\/g, '\\\\' ).replace( /'/g, "\\'" );
 
-const runWpCli = ( args, options = {} ) =>
+const wait = milliseconds =>
+	new Promise( resolve => {
+		setTimeout( resolve, milliseconds );
+	} );
+
+const runWpCliOnce = ( args, options = {} ) =>
 	new Promise( ( resolve, reject ) => {
 		execFile(
 			'pnpm',
@@ -24,6 +29,27 @@ const runWpCli = ( args, options = {} ) =>
 			}
 		);
 	} );
+
+const runWpCli = async ( args, options = {} ) => {
+	const retries = options.retries ?? 5;
+
+	for ( let attempt = 0; attempt <= retries; attempt++ ) {
+		try {
+			return await runWpCliOnce( args, options );
+		} catch ( error ) {
+			if (
+				attempt === retries ||
+				! String( error.stderr || error.stdout ).includes(
+					'Environment not initialized'
+				)
+			) {
+				throw error;
+			}
+
+			await wait( 2000 );
+		}
+	}
+};
 
 const wpDevEval = async ( command, options = {} ) => {
 	const phpCode = command.replace( /^<\?php /, '' );

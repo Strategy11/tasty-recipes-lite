@@ -9,6 +9,9 @@ test.describe( 'WP Tasty recipe page', () => {
 
 	test( 'should validate recipes page content', async ( { page } ) => {
 		await expect(
+			page.locator( '.tasty-nav-tab', { hasText: 'Recipes' } )
+		).toBeVisible();
+		await expect(
 			page.locator( '.tasty-framework-header-logo img' )
 		).toBeVisible();
 		await expect(
