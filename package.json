@@ -5,11 +5,11 @@
   "author": "WP Tasty",
   "devDependencies": {
     "@10up/cypress-wp-utils": "^0.6.0",
-    "@wordpress/env": "^11.6.0",
-    "@wordpress/scripts": "^32.2.0",
+    "@wordpress/env": "^11.8.0",
+    "@wordpress/scripts": "^32.4.0",
     "classnames": "^2.5.1",
     "cross-env": "^10.1.0",
-    "cypress": "^15.15.0",
+    "cypress": "^15.17.0",
     "cypress-file-upload": "^5.0.8",
     "eslint": "^8.57.0",
     "eslint-plugin-compat": "^6.1.0",
@@ -18,7 +18,7 @@
     "eslint-plugin-jsdoc": "39.9.1",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-no-jquery": "^2.7.0",
-    "eslint-plugin-prettier": "5.5.5",
+    "eslint-plugin-prettier": "5.5.6",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-sonarjs": "0.23.0",
     "eslint-plugin-unicorn": "^54.0.0",
@@ -47,8 +47,8 @@
     "e2e:githubrun": "cypress run --config-file cypress.config.js --env TASTY_RECIPES=tasty-recipes"
   },
   "dependencies": {
-    "@uiw/react-color-chrome": "^2.10.1",
-    "@wordpress/icons": "^13.1.0",
+    "@uiw/react-color-chrome": "^2.10.3",
+    "@wordpress/icons": "^14.0.0",
     "react-select": "^5.10.2"
   },
   "pnpm": {
