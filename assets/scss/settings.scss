@@ -152,6 +152,15 @@
 		}
 	}
 
+	&.tasty-recipes-save-recipe-wrap {
+		padding: 0 !important;
+		border-bottom: 1px solid var(--grey-300) !important;
+
+		.tasty-form-field {
+			padding: var(--gap-md) !important;
+		}
+	}
+
 	&.tasty-recipes-pro-feature-with-error {
 		border-bottom: 1px solid var(--grey-300) !important;
 
