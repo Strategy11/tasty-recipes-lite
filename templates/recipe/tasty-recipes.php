@@ -68,7 +68,7 @@ do_action( 'tasty_recipes_card_after_title', $vars );
 	/**
 	 * Fires before the entire ingredients section, above the heading.
 	 *
-	 * @since x.x
+	 * @since 1.2.6
 	 *
 	 * @param array $vars Template variables.
 	 */
