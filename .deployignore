@@ -11,3 +11,4 @@ cypress.config.js
 .wp-env.json
 .nvmrc
 AGENTS.md
+pnpm-workspace.yaml
