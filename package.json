@@ -2,6 +2,7 @@
   "name": "tasty-recipes-lite",
   "version": "1.0.0",
   "main": "Gruntfile.js",
+  "packageManager": "pnpm@11.5.3",
   "author": "WP Tasty",
   "devDependencies": {
     "@10up/cypress-wp-utils": "^0.6.0",
@@ -50,17 +51,5 @@
     "@uiw/react-color-chrome": "^2.10.1",
     "@wordpress/icons": "^13.1.0",
     "react-select": "^5.10.2"
-  },
-  "pnpm": {
-    "overrides": {
-      "eslint": "^8.57.0",
-      "@wordpress/eslint-plugin": "^24.5.0",
-      "eslint-plugin-compat": "^6.1.0",
-      "eslint-plugin-cypress": "^2.12.1",
-      "eslint-plugin-jsdoc": "39.9.1",
-      "eslint-plugin-no-jquery": "^2.7.0",
-      "eslint-plugin-sonarjs": "0.23.0",
-      "eslint-plugin-unicorn": "^54.0.0"
-    }
   }
 }
