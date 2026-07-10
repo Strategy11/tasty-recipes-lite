@@ -72,7 +72,7 @@ class Shortcodes {
 
 		add_filter( 'tasty_recipes_recipe_card_output', array( __CLASS__, 'filter_tasty_recipes_recipe_card_output' ), 10, 2 );
 
-		add_filter( 'tasty_recipes_the_content', array( __CLASS__, 'add_inside_ingredients' ), 10, 2 );
+		add_filter( 'tasty_recipes_the_content', array( __CLASS__, 'add_inside_ingredients' ), 11, 2 );
 		add_filter( 'tasty_recipes_recipe_card_output', array( __CLASS__, 'inside_ingredients_handler' ), 10, 3 );
 		add_action( 'tasty_recipes_card_after_ingredients', array( __CLASS__, 'run_after_ingredients' ) );
 		add_action( 'tasty_recipes_card_after_title', array( __CLASS__, 'print_ratings' ) );
