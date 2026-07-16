@@ -97,24 +97,60 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 		{
 			name: 'description',
 			label: __( 'Description', 'tasty-recipes-lite' ),
+			placeholder: __(
+				'Tell us about this recipe...',
+				'tasty-recipes-lite'
+			),
 			initialValue: recipe.description,
 			initialVideoSettingsValue: recipe.description_video_settings,
 		},
 		{
 			name: 'ingredients',
 			label: __( 'Ingredients', 'tasty-recipes-lite' ),
+			placeholder: __(
+				'Enter ingredient name or paste the full list to bulk add',
+				'tasty-recipes-lite'
+			),
+			actions: [
+				{
+					label: __( 'Add Ingredient', 'tasty-recipes-lite' ),
+					icon: 'add',
+				},
+				{
+					label: __( 'Add Section Title', 'tasty-recipes-lite' ),
+					icon: 'section',
+				},
+			],
 			initialValue: recipe.ingredients,
 			initialVideoSettingsValue: recipe.ingredients_video_settings,
 		},
 		{
 			name: 'instructions',
 			label: __( 'Instructions', 'tasty-recipes-lite' ),
+			placeholder: __(
+				'Enter instruction description or paste the full list to bulk add',
+				'tasty-recipes-lite'
+			),
+			actions: [
+				{
+					label: __( 'Add Step', 'tasty-recipes-lite' ),
+					icon: 'add',
+				},
+				{
+					label: __( 'Add Section Title', 'tasty-recipes-lite' ),
+					icon: 'section',
+				},
+			],
 			initialValue: recipe.instructions,
 			initialVideoSettingsValue: recipe.instructions_video_settings,
 		},
 		{
 			name: 'notes',
 			label: __( 'Notes', 'tasty-recipes-lite' ),
+			placeholder: __(
+				'Add any tips, substitutions, or storage notes...',
+				'tasty-recipes-lite'
+			),
 			initialValue: recipe.notes,
 			initialVideoSettingsValue: recipe.notes_video_settings,
 		},
@@ -125,6 +161,12 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 			...( typeSettings.richTextareas?.[ field.name ] || {} ),
 		} ) )
 		.filter( ( field ) => false !== field.show );
+	const descriptionField = richTextareaSettings.find(
+		( field ) => 'description' === field.name
+	);
+	const remainingRichTextareas = richTextareaSettings.filter(
+		( field ) => 'description' !== field.name
+	);
 	const detailsGroupSettings = typeSettings.groups?.details || {};
 	const nutritionGroupSettings = typeSettings.groups?.nutrition || {};
 
@@ -206,25 +248,112 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 			<input type="hidden" name="id" value={ recipe.id } />
 			<input type="hidden" name="recipe_type" value={ recipeType } />
 			{ typeSelector }
-			<fieldset className="tasty-recipes-modal-form-row">
-				<div>
-					<label htmlFor="title">
-						{ __( 'Title', 'tasty-recipes-lite' ) }
-					</label>
-					<input
-						type="text"
-						name="title"
-						id="title"
-						className="regular-text"
-						value={ recipe.title || '' }
-						onChange={ ( e ) =>
-							handleRecipeChange( 'title', e.target.value )
-						}
+			<fieldset className="tasty-recipes-title-field">
+				<label htmlFor="title">
+					{ __( 'Recipe Title', 'tasty-recipes-lite' ) }
+				</label>
+				<input
+					type="text"
+					name="title"
+					id="title"
+					className="regular-text"
+					placeholder={ __(
+						'e.g. Lemon Ricotta Pancakes',
+						'tasty-recipes-lite'
+					) }
+					value={ recipe.title || '' }
+					onChange={ ( e ) =>
+						handleRecipeChange( 'title', e.target.value )
+					}
+				/>
+			</fieldset>
+			{ descriptionField && (
+				<RichTextarea
+					{ ...descriptionField }
+					onChange={ ( value ) =>
+						handleRecipeChange( descriptionField.name, value )
+					}
+				/>
+			) }
+			<ImageField
+				recipe={ recipe }
+				handleRecipeChange={ handleRecipeChange }
+				labels={ imageLabels }
+			/>
+			{ remainingRichTextareas.map( ( field ) => (
+				<RichTextarea
+					key={ field.name }
+					{ ...field }
+					onChange={ ( value ) =>
+						handleRecipeChange( field.name, value )
+					}
+				/>
+			) ) }
+			<section className="tasty-recipes-details-section">
+				{ showDetailsGroup && isRecipeType && (
+					<>
+						<FieldGroup
+							className="tasty-recipes-details"
+							heading={ detailsHeading }
+							fields={ detailsFieldsBefore }
+							initialFieldValues={ recipe }
+							onFieldChange={ handleRecipeChange }
+							showAdditionalTime={ showAdditionalTime }
+							group="details"
+							recipe={ recipe }
+						/>
+						<ImprovedKeysNotice
+							isDismissed={ isNoticeDismissed }
+							onDismiss={ handleNoticeDismiss }
+						/>
+						{ detailsFieldsAfter && (
+							<FieldGroup
+								className="tasty-recipes-details"
+								fields={ detailsFieldsAfter }
+								initialFieldValues={ recipe }
+								onFieldChange={ handleRecipeChange }
+								group="details"
+								recipe={ recipe }
+							/>
+						) }
+					</>
+				) }
+				{ showDetailsGroup && ! isRecipeType && (
+					<FieldGroup
+						className="tasty-recipes-details"
+						heading={ detailsHeading }
+						fields={ detailsFields }
+						initialFieldValues={ recipe }
+						onFieldChange={ handleRecipeChange }
+						showAdditionalTime={ showAdditionalTime }
+						group="details"
+						recipe={ recipe }
 					/>
-				</div>
-				<div>
+				) }
+				<FieldGroup
+					className="tasty-recipes-video-url"
+					fields={ {
+						video_url: {
+							label: __( 'Video URL', 'tasty-recipes-lite' ),
+							placeholder: 'youtube.com/watch?v=...',
+						},
+					} }
+					initialFieldValues={ recipe }
+					onFieldChange={ handleRecipeChange }
+					group="video"
+					recipe={ recipe }
+				/>
+				{ editorConfig.after_video_url_markup && (
+					<div
+						className="tasty-recipes-after-video-url"
+						dangerouslySetInnerHTML={ {
+							__html: editorConfig.after_video_url_markup,
+						} }
+					/>
+				) }
+				<fieldset className="tasty-recipes-author-field">
 					<label htmlFor="author_name">
-						{ __( 'Author Name', 'tasty-recipes-lite' ) }
+						{ __( 'Author', 'tasty-recipes-lite' ) }
 					</label>
 					<input
 						type="text"
@@ -236,86 +365,8 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 							handleRecipeChange( 'author_name', e.target.value )
 						}
 					/>
-				</div>
-			</fieldset>
-			<ImageField
-				recipe={ recipe }
-				handleRecipeChange={ handleRecipeChange }
-				labels={ imageLabels }
-			/>
-			{ richTextareaSettings.map( ( field ) => (
-				<RichTextarea
-					key={ field.name }
-					name={ field.name }
-					label={ field.label }
-					initialValue={ field.initialValue }
-					initialVideoSettingsValue={
-						field.initialVideoSettingsValue
-					}
-					onChange={ ( value ) =>
-						handleRecipeChange( field.name, value )
-					}
-				/>
-			) ) }
-			{ showDetailsGroup && isRecipeType && (
-				<>
-					<FieldGroup
-						className="tasty-recipes-details"
-						heading={ detailsHeading }
-						fields={ detailsFieldsBefore }
-						initialFieldValues={ recipe }
-						onFieldChange={ handleRecipeChange }
-						showAdditionalTime={ showAdditionalTime }
-						group="details"
-						recipe={ recipe }
-					/>
-					<ImprovedKeysNotice
-						isDismissed={ isNoticeDismissed }
-						onDismiss={ handleNoticeDismiss }
-					/>
-					{ detailsFieldsAfter && (
-						<FieldGroup
-							className="tasty-recipes-details"
-							fields={ detailsFieldsAfter }
-							initialFieldValues={ recipe }
-							onFieldChange={ handleRecipeChange }
-							group="details"
-							recipe={ recipe }
-						/>
-					) }
-				</>
-			) }
-			{ showDetailsGroup && ! isRecipeType && (
-				<FieldGroup
-					className="tasty-recipes-details"
-					heading={ detailsHeading }
-					fields={ detailsFields }
-					initialFieldValues={ recipe }
-					onFieldChange={ handleRecipeChange }
-					showAdditionalTime={ showAdditionalTime }
-					group="details"
-					recipe={ recipe }
-				/>
-			) }
-			<FieldGroup
-				className="tasty-recipes-video-url"
-				fields={ {
-					video_url: {
-						label: __( 'Video URL', 'tasty-recipes-lite' ),
-					},
-				} }
-				initialFieldValues={ recipe }
-				onFieldChange={ handleRecipeChange }
-				group="video"
-				recipe={ recipe }
-			/>
-			{ editorConfig.after_video_url_markup && (
-				<div
-					dangerouslySetInnerHTML={ {
-						__html: editorConfig.after_video_url_markup,
-					} }
-				/>
-			) }
+				</fieldset>
+			</section>
 			{ showNutritionGroup && (
 				<FieldGroup
 					className="tasty-recipes-nutrition"

@@ -16,10 +16,10 @@ export const ImageField = ( { recipe, handleRecipeChange, labels = {} } ) => {
 		mediaButton: __( 'Select Image', 'tasty-recipes-lite' ),
 		placeholderTitle: __( 'Recipe Image', 'tasty-recipes-lite' ),
 		placeholderSubtitle: __(
-			'Select an image file from your library.',
+			'Drag images or select from your library',
 			'tasty-recipes-lite'
 		),
-		placeholderButton: __( 'Select Image', 'tasty-recipes-lite' ),
+		placeholderButton: __( 'Media Library', 'tasty-recipes-lite' ),
 		removeButton: __( 'Remove Image', 'tasty-recipes-lite' ),
 		...labels,
 	};
@@ -114,6 +114,7 @@ const ImagePreview = ( {
 				<p> { getFileName( recipeThumbnail.url ) } </p>
 			</div>
 			<button
+				type="button"
 				className="tasty-secondary-button"
 				onClick={ handleClickRemoveImage }
 			>
@@ -135,6 +136,7 @@ const Placeholder = ( { handleClickSelectImage, labels } ) => {
 				{ labels.placeholderSubtitle }
 			</p>
 			<button
+				type="button"
 				className="tasty-secondary-button"
 				onClick={ handleClickSelectImage }
 			>

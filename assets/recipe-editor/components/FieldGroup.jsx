@@ -73,6 +73,20 @@ export const FieldGroup = ( {
 	const title = ! isAdditionalTimeOpen
 		? __( '+ Time', 'tasty-recipes-lite' )
 		: __( '- Time', 'tasty-recipes-lite' );
+	const fieldPlaceholders = {
+		prep_time: __( 'e.g. 15 min', 'tasty-recipes-lite' ),
+		cook_time: __( 'e.g. 30 min', 'tasty-recipes-lite' ),
+		total_time: __( 'Defaults to prep + cook', 'tasty-recipes-lite' ),
+		yield: __( 'e.g. 4 servings', 'tasty-recipes-lite' ),
+		category: __( 'Select category...', 'tasty-recipes-lite' ),
+		method: __( 'Select method...', 'tasty-recipes-lite' ),
+		cuisine: __( 'Select cuisine...', 'tasty-recipes-lite' ),
+		diet: __( 'Select diet...', 'tasty-recipes-lite' ),
+		keywords: __(
+			'e.g. easy, weeknight, kid-friendly',
+			'tasty-recipes-lite'
+		),
+	};
 
 	if (
 		group === 'nutrition' &&
@@ -97,6 +111,9 @@ export const FieldGroup = ( {
 				<TaxonomySelect
 					name={ name }
 					taxonomy={ field.taxonomy }
+					placeholder={
+						field.placeholder || fieldPlaceholders[ name ] || ''
+					}
 					value={ fieldValues[ field.object_key || name ] || '' }
 					onChange={ ( newValue ) =>
 						handleFieldChange( field.object_key || name, newValue )
@@ -112,6 +129,9 @@ export const FieldGroup = ( {
 					name={ name }
 					value={ fieldValues[ field.object_key || name ] || '' }
 					className="inline-field"
+					placeholder={
+						field.placeholder || fieldPlaceholders[ name ] || ''
+					}
 					onChange={ ( e ) =>
 						handleFieldChange(
 							field.object_key || name,
@@ -134,7 +154,9 @@ export const FieldGroup = ( {
 			<input
 				id={ `tasty-recipes-recipe-${ name }` }
 				type="text"
-				placeholder={ field.placeholder }
+				placeholder={
+					fieldPlaceholders[ name ] || field.placeholder || ''
+				}
 				name={ name }
 				className="inline-field"
 				value={ fieldValues[ field.object_key || name ] || '' }

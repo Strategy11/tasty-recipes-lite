@@ -4,7 +4,9 @@ export const selectStyles = {
 		minHeight: '40px',
 		backgroundColor: '#fff',
 		borderColor: state.isFocused ? '#ED4996' : '#CACFD8',
-		borderRadius: '10px',
+		borderRadius: '8px',
+		fontFamily: 'Inter, sans-serif',
+		fontSize: '14px',
 		boxShadow: state.isFocused
 			? '0 0 0 1px #ED4996'
 			: '0px 1px 2px 0px rgba(10, 13, 20, 0.03)',
@@ -15,7 +17,7 @@ export const selectStyles = {
 	} ),
 	valueContainer: ( base ) => ( {
 		...base,
-		padding: '4px 8px',
+		padding: '4px 12px',
 		gap: '4px',
 		flexWrap: 'wrap',
 		overflow: 'hidden',
@@ -71,14 +73,20 @@ export const selectStyles = {
 		padding: 0,
 		overflow: 'hidden',
 	} ),
+	placeholder: ( base ) => ( {
+		...base,
+		color: '#99A0AE',
+		margin: 0,
+	} ),
 	indicatorSeparator: () => ( {
 		display: 'none',
 	} ),
 	dropdownIndicator: ( base ) => ( {
 		...base,
-		color: '#6B7280',
+		color: '#717784',
+		padding: '8px 12px 8px 8px',
 		'&:hover': {
-			color: '#6B7280',
+			color: '#717784',
 		},
 	} ),
 };

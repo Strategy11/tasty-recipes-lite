@@ -5,6 +5,8 @@ export const RichTextarea = ( {
 	initialValue,
 	name,
 	label,
+	placeholder = '',
+	actions = [],
 	initialVideoSettingsValue,
 	onChange = () => {},
 } ) => {
@@ -41,6 +43,7 @@ export const RichTextarea = ( {
 		);
 		settings.selector = `#${ id }`;
 		settings.statusbar = true;
+		settings.placeholder = placeholder;
 		settings.setup = ( ed ) => {
 			ed.on( 'change', () => {
 				const content = ed.getContent();
@@ -82,6 +85,7 @@ export const RichTextarea = ( {
 				id={ id }
 				name={ name }
 				className="tasty-recipes-tinymce"
+				placeholder={ placeholder }
 				defaultValue={ value || '' }
 				onChange={ ( e ) => {
 					setValue( e.target.value );
@@ -119,6 +123,23 @@ export const RichTextarea = ( {
 						name={ `${ name }_video_settings` }
 						value={ videoSettingsValue.join( ' ' ) }
 					/>
+				</div>
+			) }
+			{ !! actions.length && (
+				<div className="tasty-recipes-rich-textarea-actions">
+					{ actions.map( ( action ) => (
+						<button
+							key={ action.label }
+							type="button"
+							className={ `tasty-recipes-rich-textarea-action tasty-recipes-rich-textarea-action--${ action.icon }` }
+						>
+							<span
+								className="tasty-recipes-rich-textarea-action-icon"
+								aria-hidden="true"
+							></span>
+							{ action.label }
+						</button>
+					) ) }
 				</div>
 			) }
 		</fieldset>

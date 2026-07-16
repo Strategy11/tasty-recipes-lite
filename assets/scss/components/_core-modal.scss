@@ -8,23 +8,20 @@
 	right: 0;
 	bottom: 0;
 	min-height: 360px;
-	background: #000;
-	opacity: 0.7;
+	background: rgba( 14, 18, 27, 0.4 );
 	z-index: 10100;
 }
 .tasty-recipes-modal {
 	position: fixed;
-	top: 30px;
-	left: 30px;
-	right: 30px;
-	bottom: 30px;
+	top: 36px;
+	left: 50%;
+	width: min( 620px, calc( 100vw - 32px ) );
+	height: calc( 100vh - 72px );
+	min-height: 360px;
+	max-height: 1040px;
+	transform: translateX( -50% );
 	z-index: 10150;
-	@media (min-width: 920px) {
-		left: 50%;
-		right: 50%;
-		margin-right: -430px;
-		margin-left: -430px;
-	}
+
 	* {
 		-webkit-box-sizing: border-box;
 		-moz-box-sizing: border-box;
@@ -36,11 +33,11 @@
 }
 .tasty-recipes-modal-close {
 	position: absolute;
-	top: 0;
-	right: 0;
-	width: 50px;
-	height: 50px;
-	padding: 0;
+	top: 14px;
+	right: 16px;
+	width: 24px;
+	height: 24px;
+	padding: 2px;
 	z-index: 1000;
 	-webkit-transition: color 0.1s ease-in-out,background 0.1s ease-in-out;
 	transition: color 0.1s ease-in-out,background 0.1s ease-in-out;
@@ -53,13 +50,22 @@
 	background: none;
 	outline: none;
 	cursor: pointer;
+	color: #525866;
 	.tasty-recipes-modal-icon:before {
 		content: "\2715";
-		font-size: 20px;
+		font-size: 16px;
+		line-height: 20px;
 		speak: none;
 		vertical-align: middle;
 		-webkit-font-smoothing: antialiased;
 		-moz-osx-font-smoothing: grayscale;
+	}
+
+	&:hover,
+	&:focus {
+		background: #F2F5F8;
+		border-radius: 6px;
+		color: #181B25;
 	}
 }
 .tasty-recipes-modal-content {
@@ -68,13 +74,13 @@
 	left: 0;
 	right: 0;
 	bottom: 0;
-	overflow: auto;
+	overflow: hidden;
 	min-height: 300px;
-	-webkit-box-shadow: 0 5px 15px rgba(0,0,0,.7);
-	box-shadow: 0 5px 15px rgba(0,0,0,.7);
-	background: #fcfcfc;
+	-webkit-box-shadow: 0 24px 48px -12px rgba( 14, 18, 27, 0.18 );
+	box-shadow: 0 24px 48px -12px rgba( 14, 18, 27, 0.18 );
+	background: #fff;
 	-webkit-font-smoothing: subpixel-antialiased;
-	border-radius: 4px;
+	border-radius: 12px;
 }
 .tasty-recipes-frame {
 	overflow: hidden;
@@ -97,7 +103,9 @@
 }
 .tasty-recipes-frame-title {
 	top: 0;
-	height: 50px;
+	height: 53px;
+	background: #fff;
+	border-bottom: 1px solid #E1E4EA;
 }
 .tasty-recipes-frame-router,
 .tasty-recipes-frame-title {
@@ -160,8 +168,9 @@
 	border-top: 1px solid #ddd;
 }
 .tasty-recipes-frame-title h1 {
-	padding: 16px;
+	padding: 16px 48px 16px 20px;
 	font-size: 14px;
+	line-height: 20px;
 	font-weight: 500;
 	font-family: Inter, sans-serif;
 	color: #181B25;
@@ -208,17 +217,16 @@
 }
 .tasty-recipes-frame-content {
 	position: absolute;
-	top: 50px;
+	top: 53px;
 	left: 200px;
 	right: 0;
-	bottom: 61px;
+	bottom: 69px;
 	height: auto;
 	width: auto;
 	margin: 0;
 	overflow: auto;
 	background: #fff;
-	border-top: 1px solid #ddd;
-	border-bottom: 1px solid #ddd;
+	border: 0;
 }
 .tasty-recipes-frame-content-tab {
 	margin: 20px;
@@ -231,8 +239,10 @@
 	left: 200px;
 	right: 0;
 	bottom: 0;
-	height: 60px;
+	height: 69px;
 	z-index: 100;
+	background: #fff;
+	border-top: 1px solid #E1E4EA;
 }
 .tasty-recipes-toolbar {
 	position: absolute;
@@ -240,17 +250,20 @@
 	left: 0;
 	right: 0;
 	z-index: 100;
-	height: 60px;
-	padding: 0 16px;
-	border: 0 solid #ddd;
+	height: 69px;
+	padding: 16px 20px;
+	border: 0;
 	overflow: hidden;
 }
 .tasty-recipes-modal-content .tasty-recipes-toolbar-primary.search-form {
-	width: 33%;
+	width: auto;
 }
 .tasty-recipes-toolbar-primary {
 	float: right;
-	height: 100%;
+	height: auto;
+	display: flex;
+	align-items: center;
+	gap: 12px;
 }
 .tasty-recipes-modal-content .tasty-recipes-toolbar-primary .tasty-recipes-button {
 	float: right;
@@ -262,9 +275,8 @@
 }
 .tasty-recipes-toolbar-primary > .tasty-recipes-button,
 .tasty-recipes-toolbar-primary > .tasty-recipes-button-group {
-	margin-left: 10px;
-	float: left;
-	margin-top: 15px;
+	margin: 0;
+	float: none;
 }
 @media only screen and (max-width: 900px) {
 	.tasty-recipes-frame:not(.hide-menu) .tasty-recipes-frame-title .dashicons {
@@ -324,8 +336,17 @@
 		left: 0;
 		right: 0;
 		bottom: 0;
+		width: 100%;
+		height: 100%;
+		max-height: none;
+		transform: none;
+
+		.tasty-recipes-modal-content {
+			border-radius: 0;
+		}
+
 		.tasty-recipes-frame-title {
-			height: 40px;
+			height: 53px;
 		}
 	}
 }
@@ -335,14 +356,14 @@
 	}
 	.tasty-recipes-frame-router,
 	.tasty-recipes-frame:not(.hide-menu) .tasty-recipes-menu {
-		top: 40px;
+		top: 53px;
 	}
 	.tasty-recipes-frame:not(.hide-menu) .tasty-recipes-frame-title h1,
 	.tasty-recipes-modal .tasty-recipes-frame-title h1 {
-		font-size: 18px;
-		line-height: 40px;
+		font-size: 14px;
+		line-height: 20px;
 	}
 	.tasty-recipes-frame-content {
-		top: 74px;
+		top: 53px;
 	}
 }
