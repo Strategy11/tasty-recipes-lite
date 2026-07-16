@@ -2,11 +2,10 @@ export const selectStyles = {
 	control: ( base, state ) => ( {
 		...base,
 		minHeight: '40px',
+		alignItems: 'center',
 		backgroundColor: '#fff',
 		borderColor: state.isFocused ? '#ED4996' : '#CACFD8',
-		borderRadius: '8px',
-		fontFamily: 'Inter, sans-serif',
-		fontSize: '14px',
+		borderRadius: '10px',
 		boxShadow: state.isFocused
 			? '0 0 0 1px #ED4996'
 			: '0px 1px 2px 0px rgba(10, 13, 20, 0.03)',
@@ -17,9 +16,10 @@ export const selectStyles = {
 	} ),
 	valueContainer: ( base ) => ( {
 		...base,
-		padding: '4px 12px',
+		padding: '4px 8px',
 		gap: '4px',
 		flexWrap: 'wrap',
+		alignItems: 'center',
 		overflow: 'hidden',
 	} ),
 	multiValue: ( base ) => ( {
@@ -73,20 +73,14 @@ export const selectStyles = {
 		padding: 0,
 		overflow: 'hidden',
 	} ),
-	placeholder: ( base ) => ( {
-		...base,
-		color: '#99A0AE',
-		margin: 0,
-	} ),
 	indicatorSeparator: () => ( {
 		display: 'none',
 	} ),
 	dropdownIndicator: ( base ) => ( {
 		...base,
-		color: '#717784',
-		padding: '8px 12px 8px 8px',
+		color: '#6B7280',
 		'&:hover': {
-			color: '#717784',
+			color: '#6B7280',
 		},
 	} ),
 };

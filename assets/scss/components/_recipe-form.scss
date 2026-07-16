@@ -455,13 +455,18 @@
 	.tasty-taxonomy-select-container {
 		width: 100%;
 
+		.tasty-taxonomy-select__control {
+			align-items: center;
+		}
+
 		.tasty-taxonomy-select__value-container {
 			min-width: 0;
+			align-items: center;
 		}
 
 		.tasty-taxonomy-select__input-container {
-			flex: 1 1 auto;
-			min-width: 0;
+			flex: 1 1 0%;
+			min-width: 2px;
 			display: inline-grid;
 			grid-template-columns: 0 minmax(0, 1fr);
 
