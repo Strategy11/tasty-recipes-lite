@@ -270,6 +270,7 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 			{ descriptionField && (
 				<RichTextarea
 					{ ...descriptionField }
+					bubbleToolbar
 					onChange={ ( value ) =>
 						handleRecipeChange( descriptionField.name, value )
 					}

@@ -313,6 +313,47 @@
 		}
 	}
 
+	.tasty-recipes-inline-editor {
+		box-sizing: border-box;
+		width: 100%;
+		min-height: 60px;
+		margin: 0;
+		padding: 8px 12px;
+		border: 1px solid #CACFD8;
+		border-radius: 8px;
+		background: #fff;
+		box-shadow: 0 1px 2px rgba( 10, 13, 20, 0.03 );
+		color: #0E121B;
+		font-family: 'Inter', sans-serif;
+		font-size: 14px;
+		line-height: 20px;
+		outline: none;
+		resize: vertical;
+		overflow: auto;
+		cursor: text;
+
+		&:focus,
+		&.mce-edit-focus {
+			border-color: #ED4996;
+			box-shadow: 0 0 0 1px #ED4996;
+		}
+
+		&:empty::before,
+		&[data-mce-placeholder]:not(.mce-visual-caret)::before {
+			content: attr( data-placeholder );
+			color: #99A0AE;
+			pointer-events: none;
+		}
+
+		p {
+			margin: 0 0 0.5em;
+
+			&:last-child {
+				margin-bottom: 0;
+			}
+		}
+	}
+
 	textarea {
 		width: 100%;
 		max-width: 100%;

@@ -27,6 +27,255 @@
 	display: none !important;
 }
 
+.tasty-recipes-modal-open .mce-tinymce-inline.mce-floatpanel {
+	position: fixed !important;
+	z-index: 10200 !important;
+	margin: 0 !important;
+	border: 1px solid #E1E4EA;
+	border-radius: 10px;
+	box-shadow: 0 12px 32px rgba( 14, 18, 27, 0.16 );
+	overflow: hidden;
+	background: #fff;
+
+	&.mce-arrow::before,
+	&.mce-arrow::after {
+		display: none;
+	}
+
+	.mce-container-body,
+	.mce-toolbar,
+	.mce-toolbar-grp,
+	.mce-stack-layout,
+	.mce-stack-layout-item {
+		background: #fff;
+	}
+
+	.mce-toolbar-grp {
+		padding: 4px;
+	}
+
+	.mce-btn {
+		margin: 0;
+		border: 0;
+		background: transparent;
+		box-shadow: none;
+
+		button {
+			box-sizing: content-box;
+			width: auto;
+			height: auto;
+			padding: 6.5px;
+			line-height: 15px;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		&:hover,
+		&:focus,
+		&.mce-active {
+			background: #F5F7FA;
+			border: 0;
+			box-shadow: none;
+		}
+	}
+
+	.mce-ico {
+		font-size: 15px !important;
+		line-height: 15px;
+		width: 15px;
+		height: 15px;
+		color: #181B25;
+		text-align: center;
+	}
+
+	.mce-splitbtn .mce-open,
+	.mce-caret {
+		display: none;
+	}
+
+	&:has( .mce-form:not( [style*="display: none"] ) ) {
+		width: auto !important;
+		min-width: 0 !important;
+		max-width: none !important;
+		height: auto !important;
+		overflow: visible !important;
+
+		> .mce-container-body {
+			width: auto !important;
+			max-width: none !important;
+			height: auto !important;
+			overflow: visible !important;
+		}
+
+		.mce-toolbar:has( .mce-i-bold ),
+		.mce-toolbar:has( .mce-i-link ) {
+			display: block !important;
+			position: relative !important;
+			left: auto !important;
+			top: auto !important;
+			width: auto !important;
+			height: auto !important;
+		}
+	}
+
+	.mce-form {
+		position: fixed !important;
+		z-index: 10201 !important;
+		box-sizing: border-box !important;
+		width: 283px !important;
+		max-width: 283px !important;
+		height: auto !important;
+		margin: 0 !important;
+		border: 1px solid #E1E4EA !important;
+		border-radius: 10px !important;
+		background: #fff !important;
+		box-shadow: 0 12px 32px rgba( 14, 18, 27, 0.16 ) !important;
+		overflow: visible !important;
+
+		.mce-container-body,
+		.mce-abs-layout {
+			position: relative !important;
+			display: flex !important;
+			align-items: center;
+			gap: 6px;
+			box-sizing: border-box !important;
+			width: 283px !important;
+			max-width: 283px !important;
+			height: auto !important;
+			padding: 4px 6px;
+			overflow: visible !important;
+			background: #fff;
+		}
+
+		.mce-abs-layout-item,
+		.mce-abs-end {
+			position: relative !important;
+			left: auto !important;
+			top: auto !important;
+		}
+
+		.mce-abs-end {
+			display: none;
+		}
+
+		.mce-combobox,
+		.mce-filepicker {
+			position: relative !important;
+			flex: 1 1 0% !important;
+			width: auto !important;
+			min-width: 0 !important;
+			max-width: none !important;
+			overflow: visible !important;
+		}
+
+		.mce-textbox {
+			box-sizing: border-box !important;
+			width: 100% !important;
+			min-width: 0 !important;
+			max-width: none !important;
+			height: 28px !important;
+			margin: 0 !important;
+			padding: 6px 8px !important;
+			border: 1px solid #ED4996 !important;
+			border-radius: 6px !important;
+			background: #fff !important;
+			box-shadow: 0 0 0 2px #FCEEF5 !important;
+			color: #181B25 !important;
+			font-family: 'Inter', sans-serif !important;
+			font-size: 13px !important;
+			line-height: normal !important;
+
+			&::placeholder {
+				color: #757575;
+				opacity: 1;
+			}
+
+			&:focus {
+				border-color: #ED4996 !important;
+				box-shadow: 0 0 0 2px #FCEEF5 !important;
+				outline: none !important;
+			}
+		}
+
+		.mce-status {
+			display: none !important;
+		}
+
+		.mce-btn {
+			flex: 0 0 auto !important;
+			width: auto !important;
+			height: auto !important;
+			overflow: visible !important;
+
+			button {
+				box-sizing: border-box !important;
+				width: auto !important;
+				height: 28px !important;
+				min-width: 0;
+				min-height: 0;
+				padding: 0 10px !important;
+				border-radius: 6px;
+				line-height: normal;
+			}
+		}
+
+		.mce-btn.mce-primary {
+			width: auto !important;
+			min-width: 45px !important;
+			background: transparent !important;
+			overflow: visible !important;
+
+			button {
+				background: #ED4996 !important;
+				border: 0 !important;
+				box-shadow: none !important;
+				color: #fff !important;
+				font-family: 'Inter', sans-serif !important;
+				font-size: 13px !important;
+				font-weight: 500 !important;
+				min-width: 45px !important;
+				padding: 0 10px !important;
+				overflow: visible !important;
+				white-space: nowrap !important;
+			}
+
+			&:hover button,
+			&:focus button {
+				background: #d63e86 !important;
+				color: #fff !important;
+			}
+
+			.mce-ico {
+				display: none !important;
+			}
+		}
+
+		.mce-btn:has( .mce-i-unlink ) {
+			width: auto !important;
+
+			&:not( .mce-disabled ) button {
+				padding: 4px !important;
+				background: transparent !important;
+				color: #181B25 !important;
+			}
+
+			&.mce-disabled {
+				display: none !important;
+			}
+		}
+
+		.mce-btn:has( .mce-i-unlink ) .mce-ico {
+			display: block !important;
+			color: #181B25;
+		}
+	}
+}
+
+.tasty-recipes-modal-open .mce-tooltip {
+	display: none !important;
+}
+
 #wp-link {
 	#link-options {
 		.link-nofollow {
