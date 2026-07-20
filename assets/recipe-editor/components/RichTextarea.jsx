@@ -3,12 +3,196 @@ import { __ } from '@wordpress/i18n';
 
 const CUSTOM_PLUGINS = [ 'tr_heading', 'tr_image', 'tr_video' ];
 
-/**
- * Strip Lite custom TinyMCE plugins that target the classic toolbar.
- *
- * @param {Object} settings TinyMCE init settings.
- * @return {Object} Settings without custom plugins.
- */
+// Shared across Description/Notes so only one scroll handler moves the toolbar.
+let activeBubbleEditorId = null;
+
+const getVisibleFloatPanel = () => {
+	const panels = document.querySelectorAll(
+		'.tasty-recipes-modal-open .mce-tinymce-inline.mce-floatpanel'
+	);
+
+	return (
+		Array.from( panels ).find(
+			panel => getComputedStyle( panel ).display !== 'none'
+		) || null
+	);
+};
+
+const getModifierKey = () => {
+	const platform = navigator.platform || '';
+	const userAgent = navigator.userAgent || '';
+	const isApple =
+		/Mac|iPhone|iPod|iPad/.test( platform ) ||
+		/Mac OS X/.test( userAgent );
+
+	return isApple ? '⌘' : 'Ctrl';
+};
+
+const getBubbleToolbarHelpers = () => {
+	const mod = getModifierKey();
+
+	return [
+		{ icon: 'mce-i-bold', label: 'Bold', keys: [ mod, 'B' ] },
+		{ icon: 'mce-i-italic', label: 'Italic', keys: [ mod, 'I' ] },
+		{ icon: 'mce-i-underline', label: 'Underline', keys: [ mod, 'U' ] },
+		{ icon: 'mce-i-link', label: 'Add link', keys: [ mod, 'K' ] },
+	];
+};
+
+const getHelperAriaLabel = ( { label, keys } ) =>
+	`${ label } (${ keys.join( '+' ) })`;
+
+const getActiveBubbleTooltip = () =>
+	Array.from( document.querySelectorAll( '.mce-tooltip' ) ).find(
+		tip => getComputedStyle( tip ).display !== 'none'
+	) || null;
+
+const applyBubbleToolbarHelpers = panel => {
+	if ( ! panel ) {
+		return;
+	}
+
+	getBubbleToolbarHelpers().forEach( helper => {
+		const iconEl = panel.querySelector( `.${ helper.icon }` );
+		if ( ! iconEl ) {
+			return;
+		}
+
+		const button = iconEl.closest( 'button' );
+		const btnWrap = iconEl.closest( '.mce-btn' );
+		const ariaLabel = getHelperAriaLabel( helper );
+		const keysValue = helper.keys.join( '\u0001' );
+
+		// Avoid native browser tooltips; TinyMCE uses settings.tooltip.
+		button?.removeAttribute( 'title' );
+		btnWrap?.removeAttribute( 'title' );
+		button?.setAttribute( 'aria-label', ariaLabel );
+		button?.setAttribute( 'data-tasty-helper-label', helper.label );
+		button?.setAttribute( 'data-tasty-helper-keys', keysValue );
+		btnWrap?.setAttribute( 'aria-label', ariaLabel );
+		btnWrap?.setAttribute( 'data-tasty-helper-label', helper.label );
+		btnWrap?.setAttribute( 'data-tasty-helper-keys', keysValue );
+
+		if ( btnWrap?.id && window.tinymce?.ui?.Control?.getById ) {
+			const control = window.tinymce.ui.Control.getById( btnWrap.id );
+			if ( control?.settings ) {
+				control.settings.tooltip = ariaLabel;
+			}
+		}
+	} );
+};
+
+const renderBubbleTooltipContent = ( inner, label, keys ) => {
+	if ( ! inner || ! label ) {
+		return false;
+	}
+
+	const currentLabel = inner.querySelector(
+		'.tasty-mce-tooltip__label'
+	)?.textContent;
+	const currentKeys = Array.from(
+		inner.querySelectorAll( '.tasty-mce-tooltip__key' )
+	).map( keyEl => keyEl.textContent );
+
+	if (
+		currentLabel === label &&
+		currentKeys.join( '\u0001' ) === keys.join( '\u0001' )
+	) {
+		return false;
+	}
+
+	inner.replaceChildren();
+
+	const wrap = document.createElement( 'span' );
+	wrap.className = 'tasty-mce-tooltip';
+
+	const labelEl = document.createElement( 'span' );
+	labelEl.className = 'tasty-mce-tooltip__label';
+	labelEl.textContent = label;
+	wrap.appendChild( labelEl );
+
+	if ( keys.length ) {
+		const keysEl = document.createElement( 'span' );
+		keysEl.className = 'tasty-mce-tooltip__keys';
+		keys.forEach( key => {
+			const keyEl = document.createElement( 'kbd' );
+			keyEl.className = 'tasty-mce-tooltip__key';
+			keyEl.textContent = key;
+			keysEl.appendChild( keyEl );
+		} );
+		wrap.appendChild( keysEl );
+	}
+
+	inner.appendChild( wrap );
+	return true;
+};
+
+const positionBubbleTooltipAbove = ( tip, anchor ) => {
+	if ( ! tip || ! anchor ) {
+		return;
+	}
+
+	const anchorRect = anchor.getBoundingClientRect();
+	const tipRect = tip.getBoundingClientRect();
+	const gap = 6;
+	const top = anchorRect.top - tipRect.height - gap;
+	const left =
+		anchorRect.left + ( anchorRect.width - tipRect.width ) / 2;
+
+	// mce-tooltip-s = arrow on bottom = tooltip sits above the button.
+	tip.classList.remove(
+		'mce-tooltip-n',
+		'mce-tooltip-e',
+		'mce-tooltip-w',
+		'mce-tooltip-ne',
+		'mce-tooltip-nw',
+		'mce-tooltip-se',
+		'mce-tooltip-sw'
+	);
+	tip.classList.add( 'mce-tooltip-s' );
+	tip.style.setProperty( 'position', 'fixed', 'important' );
+	tip.style.setProperty( 'top', `${ Math.max( 8, top ) }px`, 'important' );
+	tip.style.setProperty( 'left', `${ Math.max( 8, left ) }px`, 'important' );
+};
+
+const syncBubbleTooltipHelper = () => {
+	const tip = getActiveBubbleTooltip();
+	if ( ! tip || getComputedStyle( tip ).display === 'none' ) {
+		return;
+	}
+
+	const anchor =
+		document.querySelector(
+			'.tasty-recipes-modal-open .mce-tinymce-inline.mce-floatpanel .mce-btn:hover'
+		) ||
+		document.querySelector(
+			'.tasty-recipes-modal-open .mce-tinymce-inline.mce-floatpanel [data-tasty-helper-label]:hover'
+		);
+
+	if ( ! anchor ) {
+		return;
+	}
+
+	const label =
+		anchor.getAttribute( 'data-tasty-helper-label' ) ||
+		anchor
+			.querySelector( '[data-tasty-helper-label]' )
+			?.getAttribute( 'data-tasty-helper-label' );
+	const keys = (
+		anchor.getAttribute( 'data-tasty-helper-keys' ) ||
+		anchor
+			.querySelector( '[data-tasty-helper-keys]' )
+			?.getAttribute( 'data-tasty-helper-keys' ) ||
+		''
+	)
+		.split( '\u0001' )
+		.filter( Boolean );
+
+	const inner = tip.querySelector( '.mce-tooltip-inner' );
+	renderBubbleTooltipContent( inner, label, keys );
+	positionBubbleTooltipAbove( tip, anchor );
+};
+
 const stripCustomPlugins = settings => {
 	const next = { ...settings };
 
@@ -49,6 +233,7 @@ export const RichTextarea = ( {
 	bubbleToolbar = false,
 	initialVideoSettingsValue,
 	onChange = () => {},
+	onFocus = () => {},
 } ) => {
 	const [ value, setValue ] = useState( initialValue );
 	const [ videoSettingsValue, setVideoSettingsValue ] = useState(
@@ -113,92 +298,180 @@ export const RichTextarea = ( {
 				onChange( content );
 			};
 
-			// Keep last non-collapsed selection while toolbar buttons steal focus.
-			let lastSelectionRect = null;
+			ed.on( 'focus click', () => {
+				onFocus();
+			} );
+
+			// Keep last non-collapsed range while toolbar buttons steal focus.
+			let lastSelectionRange = null;
 			let positionFrame = 0;
+			let scrollFrame = 0;
 			const positionTimeouts = [];
 
-			/**
-			 * Pin the inlite bubble above the selection in viewport space.
-			 *
-			 * @param {DOMRect|ClientRect|null} selectionRect Selection bounds.
-			 */
-			const pinBubbleAbove = selectionRect => {
-				const panel = document.querySelector(
-					'.tasty-recipes-modal-open .mce-tinymce-inline.mce-floatpanel'
+			const getModalHeaderBottom = () => {
+				const title = document.querySelector(
+					'.tasty-recipes-modal-open .tasty-recipes-frame-title'
 				);
-				if (
-					! panel ||
-					getComputedStyle( panel ).display === 'none'
-				) {
+				if ( ! title ) {
+					return 0;
+				}
+
+				return title.getBoundingClientRect().bottom;
+			};
+
+			const getModalFooterTop = () => {
+				const footer = document.querySelector(
+					'.tasty-recipes-modal-open .tasty-recipes-frame-toolbar'
+				);
+				if ( ! footer ) {
+					const modal = document.querySelector(
+						'.tasty-recipes-modal-open .tasty-recipes-modal'
+					);
+					return modal
+						? modal.getBoundingClientRect().bottom
+						: Number.POSITIVE_INFINITY;
+				}
+
+				return footer.getBoundingClientRect().top;
+			};
+
+			const setFloatingUiVisible = ( panel, visible ) => {
+				if ( ! panel ) {
+					return;
+				}
+
+				panel.style.setProperty(
+					'visibility',
+					visible ? 'visible' : 'hidden',
+					'important'
+				);
+				panel.style.setProperty(
+					'pointer-events',
+					visible ? 'auto' : 'none',
+					'important'
+				);
+			};
+
+			const pinBubbleAbove = selectionRect => {
+				const panel = getVisibleFloatPanel();
+				if ( ! panel ) {
 					return;
 				}
 
 				if ( ! selectionRect || ! selectionRect.height ) {
+					setFloatingUiVisible( panel, false );
 					return;
 				}
 
 				const panelRect = panel.getBoundingClientRect();
 				const gap = 8;
+				const headerBottom = getModalHeaderBottom();
+				const footerTop = getModalFooterTop();
 				const top = selectionRect.top - panelRect.height - gap;
+				const panelBottom = top + panelRect.height;
 				const left =
 					selectionRect.left +
 					( selectionRect.width - panelRect.width ) / 2;
 
+				// Hide when selection/toolbar would leave the scrollable content area.
+				if (
+					top < headerBottom ||
+					selectionRect.top < headerBottom ||
+					panelBottom > footerTop ||
+					selectionRect.bottom > footerTop
+				) {
+					setFloatingUiVisible( panel, false );
+					return;
+				}
+
+				setFloatingUiVisible( panel, true );
 				panel.style.setProperty( 'margin', '0', 'important' );
 				panel.style.setProperty( 'position', 'fixed', 'important' );
-				panel.style.setProperty(
-					'top',
-					`${ Math.max( 8, top ) }px`,
-					'important'
-				);
+				panel.style.setProperty( 'top', `${ top }px`, 'important' );
 				panel.style.setProperty(
 					'left',
 					`${ Math.max( 8, left ) }px`,
 					'important'
 				);
 
-				panel
-					.querySelectorAll( '[title]' )
-					.forEach( el => el.removeAttribute( 'title' ) );
+				applyBubbleToolbarHelpers( panel );
 			};
 
-			/**
-			 * Prefer live selection bounds; fall back while toolbar steals focus.
-			 *
-			 * @return {Object|null} Viewport rect snapshot.
-			 */
 			const getSelectionRectSnapshot = () => {
-				if ( ! ed.selection.isCollapsed() ) {
-					const rect = ed.selection.getBoundingClientRect();
-					if ( rect && rect.height ) {
-						lastSelectionRect = {
-							top: rect.top,
-							left: rect.left,
-							width: rect.width,
-							height: rect.height,
-							bottom: rect.bottom,
-							right: rect.right,
-						};
+				try {
+					if ( ! ed.selection.isCollapsed() ) {
+						lastSelectionRange = ed.selection
+							.getRng()
+							.cloneRange();
 					}
+				} catch ( error ) {
+					// Selection may be unavailable while the editor tears down.
 				}
 
-				return lastSelectionRect;
+				if ( ! lastSelectionRange ) {
+					return null;
+				}
+
+				const rect = lastSelectionRange.getBoundingClientRect();
+				if ( ! rect || ! rect.height ) {
+					return null;
+				}
+
+				return {
+					top: rect.top,
+					left: rect.left,
+					width: rect.width,
+					height: rect.height,
+					bottom: rect.bottom,
+					right: rect.right,
+				};
 			};
 
-			/**
-			 * Schedule pins after TinyMCE's own async reposition finishes.
-			 */
+			const pinQuicklinkFormBelow = selectionRect => {
+				const panel = getVisibleFloatPanel();
+				const form = panel?.querySelector( '.mce-form' );
+				if (
+					! form ||
+					! selectionRect ||
+					getComputedStyle( form ).display === 'none'
+				) {
+					return;
+				}
+
+				const formWidth = 283;
+				const formGap = 8;
+				const left = Math.max(
+					8,
+					selectionRect.left +
+						( selectionRect.width - formWidth ) / 2
+				);
+				const top = selectionRect.bottom + formGap;
+
+				form.style.setProperty( 'left', `${ left }px`, 'important' );
+				form.style.setProperty( 'top', `${ top }px`, 'important' );
+			};
+
+			const ownsActiveBubble = () =>
+				!! ed.id && ed.id === activeBubbleEditorId;
+
+			const repositionFloatingUi = () => {
+				if ( ! ownsActiveBubble() ) {
+					return;
+				}
+
+				const selectionRect = getSelectionRectSnapshot();
+				pinBubbleAbove( selectionRect );
+				pinQuicklinkFormBelow( selectionRect );
+				syncBubbleTooltipHelper();
+			};
+
 			const positionBubbleAboveSelection = () => {
 				if ( ! bubbleToolbar ) {
 					return;
 				}
 
-				const pin = () => {
-					pinBubbleAbove( getSelectionRectSnapshot() );
-				};
-
-				pin();
+				activeBubbleEditorId = ed.id;
+				repositionFloatingUi();
 
 				window.cancelAnimationFrame( positionFrame );
 				positionTimeouts.forEach( timeoutId =>
@@ -206,10 +479,30 @@ export const RichTextarea = ( {
 				);
 				positionTimeouts.length = 0;
 
-				positionFrame = window.requestAnimationFrame( pin );
+				positionFrame = window.requestAnimationFrame(
+					repositionFloatingUi
+				);
+
 				// Inlite repositions again after ExecCommand / button clicks.
 				[ 0, 16, 50, 100 ].forEach( delay => {
-					positionTimeouts.push( window.setTimeout( pin, delay ) );
+					positionTimeouts.push(
+						window.setTimeout( repositionFloatingUi, delay )
+					);
+				} );
+			};
+
+			const onScrollOrResize = () => {
+				if ( ! bubbleToolbar || ! ownsActiveBubble() ) {
+					return;
+				}
+
+				if ( scrollFrame ) {
+					return;
+				}
+
+				scrollFrame = window.requestAnimationFrame( () => {
+					scrollFrame = 0;
+					repositionFloatingUi();
 				} );
 			};
 
@@ -223,18 +516,12 @@ export const RichTextarea = ( {
 			let quicklinkObserver = null;
 			let isStylingQuicklink = false;
 
-			/**
-			 * Match prototype: keep toolbar above selection, float link chip below.
-			 * TinyMCE inlite swaps toolbar for form — undo that and restyle.
-			 */
 			const styleQuicklinkForm = () => {
-				if ( isStylingQuicklink ) {
+				if ( isStylingQuicklink || ! ownsActiveBubble() ) {
 					return;
 				}
 
-				const panel = document.querySelector(
-					'.mce-tinymce-inline.mce-floatpanel'
-				);
+				const panel = getVisibleFloatPanel();
 				const form = panel?.querySelector( '.mce-form' );
 				const input = form?.querySelector( '.mce-textbox' );
 				if ( ! panel || ! form || ! input ) {
@@ -268,12 +555,10 @@ export const RichTextarea = ( {
 				);
 				const selectionRect = getSelectionRectSnapshot();
 				const formWidth = 283;
-				const formGap = 8;
 
 				input.setAttribute( 'placeholder', 'https://example.com' );
 				input.setAttribute( 'aria-label', 'https://example.com' );
 
-				// Panel stays the toolbar bubble — not the link chip.
 				panel.style.setProperty( 'width', 'auto', 'important' );
 				panel.style.setProperty( 'min-width', '0', 'important' );
 				panel.style.setProperty( 'max-width', 'none', 'important' );
@@ -328,7 +613,6 @@ export const RichTextarea = ( {
 					);
 				}
 
-				// Independent chip below selection (prototype link-popover).
 				form.style.setProperty( 'position', 'fixed', 'important' );
 				form.style.setProperty( 'z-index', '10201', 'important' );
 				form.style.setProperty( 'width', `${ formWidth }px`, 'important' );
@@ -340,16 +624,7 @@ export const RichTextarea = ( {
 				form.style.setProperty( 'height', 'auto', 'important' );
 				form.style.setProperty( 'overflow', 'visible', 'important' );
 
-				if ( selectionRect ) {
-					const left = Math.max(
-						8,
-						selectionRect.left +
-							( selectionRect.width - formWidth ) / 2
-					);
-					const top = selectionRect.bottom + formGap;
-					form.style.setProperty( 'left', `${ left }px`, 'important' );
-					form.style.setProperty( 'top', `${ top }px`, 'important' );
-				}
+				pinQuicklinkFormBelow( selectionRect );
 
 				if ( body ) {
 					body.style.setProperty(
@@ -472,13 +747,29 @@ export const RichTextarea = ( {
 			};
 
 			const scheduleQuicklinkFormStyle = () => {
-				[ 0, 16, 50, 100, 200, 400 ].forEach( delay => {
+				[ 0, 16, 50, 100, 200, 400, 600 ].forEach( delay => {
 					window.setTimeout( styleQuicklinkForm, delay );
 				} );
 			};
 
+			const onLinkShortcutKeyDown = event => {
+				const key = event.key?.toLowerCase?.() || '';
+				const isLinkShortcut =
+					( event.metaKey || event.ctrlKey ) && key === 'k';
+
+				if ( ! isLinkShortcut ) {
+					return;
+				}
+
+				// Inlite opens quicklink on meta+k; claim ownership + pin form.
+				activeBubbleEditorId = ed.id;
+				positionBubbleAboveSelection();
+				scheduleQuicklinkFormStyle();
+			};
+
 			const onBubbleMouseDown = event => {
 				if (
+					! ownsActiveBubble() ||
 					! event.target.closest(
 						'.mce-tinymce-inline.mce-floatpanel'
 					)
@@ -489,28 +780,149 @@ export const RichTextarea = ( {
 				scheduleQuicklinkFormStyle();
 			};
 
+			let tooltipFrame = 0;
+			let tooltipObserver = null;
+			const tooltipTimeouts = [];
+
+			const scheduleBubbleTooltipSync = () => {
+				if ( ! ownsActiveBubble() ) {
+					return;
+				}
+
+				if ( tooltipFrame ) {
+					return;
+				}
+
+				tooltipFrame = window.requestAnimationFrame( () => {
+					tooltipFrame = 0;
+					syncBubbleTooltipHelper();
+				} );
+			};
+
+			const onBubbleTooltipMouseOver = event => {
+				if (
+					! ownsActiveBubble() ||
+					! event.target.closest(
+						'.mce-tinymce-inline.mce-floatpanel .mce-btn'
+					)
+				) {
+					return;
+				}
+
+				scheduleBubbleTooltipSync();
+				tooltipTimeouts.forEach( timeoutId =>
+					window.clearTimeout( timeoutId )
+				);
+				tooltipTimeouts.length = 0;
+				// TinyMCE shows/positions its tooltip after a short delay.
+				[ 50, 120, 250, 400 ].forEach( delay => {
+					tooltipTimeouts.push(
+						window.setTimeout( scheduleBubbleTooltipSync, delay )
+					);
+				} );
+			};
+
 			if ( bubbleToolbar ) {
 				ed.on(
 					'mouseup keyup NodeChange ExecCommand',
 					positionBubbleAboveSelection
 				);
-				ed.on( 'ExecCommand NodeChange', scheduleQuicklinkFormStyle );
+				ed.on(
+					'keyup ExecCommand NodeChange',
+					scheduleQuicklinkFormStyle
+				);
+				ed.on( 'keydown', onLinkShortcutKeyDown );
 
-				// Toolbar button mousedown can collapse selection briefly.
 				document.addEventListener( 'mousedown', onBubbleMouseDown, true );
+				document.addEventListener(
+					'mouseover',
+					onBubbleTooltipMouseOver,
+					true
+				);
+				window.addEventListener( 'scroll', onScrollOrResize, true );
+				window.addEventListener( 'resize', onScrollOrResize );
+
+				tooltipObserver = new window.MutationObserver( mutations => {
+					const tipAdded = mutations.some( mutation =>
+						Array.from( mutation.addedNodes ).some(
+							node =>
+								node.nodeType === 1 &&
+								( node.classList?.contains( 'mce-tooltip' ) ||
+									node.querySelector?.( '.mce-tooltip' ) )
+						)
+					);
+					if ( tipAdded ) {
+						scheduleBubbleTooltipSync();
+					}
+
+					const formTouched = mutations.some( mutation => {
+						const nodes = [
+							...Array.from( mutation.addedNodes ),
+							mutation.target,
+						];
+						return nodes.some( node => {
+							if ( ! node || node.nodeType !== 1 ) {
+								return false;
+							}
+							return (
+								node.classList?.contains( 'mce-form' ) ||
+								node.classList?.contains(
+									'mce-tinymce-inline'
+								) ||
+								!! node.querySelector?.(
+									'.mce-form, .mce-tinymce-inline'
+								)
+							);
+						} );
+					} );
+					if ( formTouched && ownsActiveBubble() ) {
+						scheduleQuicklinkFormStyle();
+					}
+				} );
+				tooltipObserver.observe( document.body, {
+					childList: true,
+					subtree: true,
+					attributes: true,
+					attributeFilter: [ 'style', 'class' ],
+				} );
+
 				ed.on( 'remove', () => {
+					if ( activeBubbleEditorId === ed.id ) {
+						activeBubbleEditorId = null;
+					}
 					document.removeEventListener(
 						'mousedown',
 						onBubbleMouseDown,
 						true
 					);
+					document.removeEventListener(
+						'mouseover',
+						onBubbleTooltipMouseOver,
+						true
+					);
+					window.removeEventListener(
+						'scroll',
+						onScrollOrResize,
+						true
+					);
+					window.removeEventListener( 'resize', onScrollOrResize );
 					window.cancelAnimationFrame( positionFrame );
+					window.cancelAnimationFrame( scrollFrame );
+					window.cancelAnimationFrame( tooltipFrame );
 					positionTimeouts.forEach( timeoutId =>
 						window.clearTimeout( timeoutId )
 					);
+					tooltipTimeouts.forEach( timeoutId =>
+						window.clearTimeout( timeoutId )
+					);
+
 					if ( quicklinkObserver ) {
 						quicklinkObserver.disconnect();
 						quicklinkObserver = null;
+					}
+					if ( tooltipObserver ) {
+						tooltipObserver.disconnect();
+						tooltipObserver = null;
 					}
 				} );
 			}
@@ -569,6 +981,7 @@ export const RichTextarea = ( {
 					className="tasty-recipes-tinymce"
 					placeholder={ placeholder }
 					defaultValue={ value || '' }
+					onFocus={ onFocus }
 					onChange={ ( e ) => {
 						setValue( e.target.value );
 						onChange( e.target.value );

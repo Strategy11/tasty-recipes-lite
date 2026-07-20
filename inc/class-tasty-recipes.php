@@ -203,6 +203,13 @@ class Tasty_Recipes {
 	const IMPROVED_KEYS_NOTICE_DISMISSED_OPTION = 'tasty_recipes_improved_keys_notice_dismissed';
 
 	/**
+	 * User meta key for the description format tip dismissal.
+	 *
+	 * @var string
+	 */
+	const DESCRIPTION_FORMAT_TIP_DISMISSED_META = 'tasty_recipes_description_format_tip_dismissed';
+
+	/**
 	 * Instantiates and gets the singleton instance for the class.
 	 *
 	 * @return Tasty_Recipes
@@ -331,6 +338,7 @@ class Tasty_Recipes {
 		add_action( 'wp_ajax_tasty_recipes_parse_shortcode', array( 'Tasty_Recipes\Editor', 'handle_wp_ajax_parse_shortcode' ) );
 		add_action( 'wp_ajax_tasty_recipes_modify_recipe', array( 'Tasty_Recipes\Editor', 'handle_wp_ajax_modify_recipe' ) );
 		add_action( 'wp_ajax_tasty_recipes_dismiss_improved_keys_notice', array( 'Tasty_Recipes\Editor', 'handle_wp_ajax_dismiss_improved_keys_notice' ) );
+		add_action( 'wp_ajax_tasty_recipes_dismiss_description_format_tip', array( 'Tasty_Recipes\Editor', 'handle_wp_ajax_dismiss_description_format_tip' ) );
 		add_action( 'rest_api_init', array( 'Tasty_Recipes\Editor', 'action_rest_api_init' ) );
 
 		add_action( 'wp_insert_post', array( 'Tasty_Recipes\Editor', 'handle_add_new_post' ), 10, 3 );

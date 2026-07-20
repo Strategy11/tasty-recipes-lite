@@ -841,6 +841,28 @@ class Editor {
 	}
 
 	/**
+	 * Handles an AJAX request to permanently dismiss the description format tip.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
+	 */
+	public static function handle_wp_ajax_dismiss_description_format_tip() {
+		check_ajax_referer( 'tasty_recipes_modify_recipe', 'nonce' );
+
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			wp_send_json_error();
+		}
+
+		update_user_meta(
+			get_current_user_id(),
+			\Tasty_Recipes::DESCRIPTION_FORMAT_TIP_DISMISSED_META,
+			1
+		);
+		wp_send_json_success();
+	}
+
+	/**
 	 * Register REST API routes for the editor.
 	 *
 	 * @since 1.2

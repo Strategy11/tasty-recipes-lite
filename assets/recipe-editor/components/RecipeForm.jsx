@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import { FieldGroup } from './FieldGroup';
+import { DescriptionFormatTip } from './DescriptionFormatTip';
 import { ImprovedKeysNotice } from './ImprovedKeysNotice';
 import { RichTextarea } from './RichTextarea';
 import { ImageField } from './ImageField';
@@ -19,6 +20,10 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 	const [ recipe, setRecipe ] = useState( initialRecipeState );
 	const [ isNoticeDismissed, setIsNoticeDismissed ] = useState(
 		!! config.improvedKeysNoticeDismissed
+	);
+	const [ formatTipAnchor, setFormatTipAnchor ] = useState( null );
+	const [ isFormatTipDismissed, setIsFormatTipDismissed ] = useState(
+		!! config.descriptionFormatTipDismissed
 	);
 
 	const handleNoticeDismiss = () => {
@@ -55,12 +60,6 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 	const cookingAttributesBefore = Object.fromEntries(
 		cookingKeys
 			.slice( 0, splitIndex > -1 ? splitIndex : cookingKeys.length )
-			.map( ( key ) => [ key, cookingAttributes[ key ] ] )
-	);
-
-	const cookingAttributesAfter = Object.fromEntries(
-		cookingKeys
-			.slice( splitIndex > -1 ? splitIndex : cookingKeys.length )
 			.map( ( key ) => [ key, cookingAttributes[ key ] ] )
 	);
 
@@ -172,10 +171,9 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 
 	// Use split cooking attributes for recipe type to support ImprovedKeysNotice placement
 	const isRecipeType = recipeType === 'recipe';
-	const detailsFieldsBefore = isRecipeType
-		? cookingAttributesBefore
-		: detailsGroupSettings.fields || attributes.cooking;
-	const detailsFieldsAfter = isRecipeType ? cookingAttributesAfter : null;
+	const detailsNoticeAfterField = Object.keys(
+		cookingAttributesBefore
+	).slice( -1 )[ 0 ];
 
 	const detailsFields = applyFilters(
 		'tasty_recipes_recipe_editor_group_fields',
@@ -268,58 +266,63 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 				/>
 			</fieldset>
 			{ descriptionField && (
-				<RichTextarea
-					{ ...descriptionField }
-					bubbleToolbar
-					onChange={ ( value ) =>
-						handleRecipeChange( descriptionField.name, value )
-					}
-				/>
+				<div className="tasty-recipes-format-tip-field">
+					<RichTextarea
+						{ ...descriptionField }
+						bubbleToolbar
+						onChange={ ( value ) =>
+							handleRecipeChange( descriptionField.name, value )
+						}
+						onFocus={ () => setFormatTipAnchor( 'description' ) }
+					/>
+					<DescriptionFormatTip
+						isRevealed={ 'description' === formatTipAnchor }
+						initialDismissed={ isFormatTipDismissed }
+						onDismiss={ () => setIsFormatTipDismissed( true ) }
+						modifyNonce={ config.modifyNonce }
+					/>
+				</div>
 			) }
 			<ImageField
 				recipe={ recipe }
 				handleRecipeChange={ handleRecipeChange }
 				labels={ imageLabels }
 			/>
-			{ remainingRichTextareas.map( ( field ) => (
-				<RichTextarea
-					key={ field.name }
-					{ ...field }
-					onChange={ ( value ) =>
-						handleRecipeChange( field.name, value )
-					}
-				/>
-			) ) }
+			{ remainingRichTextareas.map( ( field ) =>
+				'notes' === field.name ? (
+					<div
+						key={ field.name }
+						className="tasty-recipes-format-tip-field"
+					>
+						<RichTextarea
+							{ ...field }
+							bubbleToolbar
+							onChange={ ( value ) =>
+								handleRecipeChange( field.name, value )
+							}
+							onFocus={ () => setFormatTipAnchor( 'notes' ) }
+						/>
+						<DescriptionFormatTip
+							isRevealed={ 'notes' === formatTipAnchor }
+							initialDismissed={ isFormatTipDismissed }
+							onDismiss={ () =>
+								setIsFormatTipDismissed( true )
+							}
+							modifyNonce={ config.modifyNonce }
+						/>
+					</div>
+				) : (
+					<RichTextarea
+						key={ field.name }
+						{ ...field }
+						onChange={ ( value ) =>
+							handleRecipeChange( field.name, value )
+						}
+					/>
+				)
+			) }
 			<section className="tasty-recipes-details-section">
-				{ showDetailsGroup && isRecipeType && (
-					<>
-						<FieldGroup
-							className="tasty-recipes-details"
-							heading={ detailsHeading }
-							fields={ detailsFieldsBefore }
-							initialFieldValues={ recipe }
-							onFieldChange={ handleRecipeChange }
-							showAdditionalTime={ showAdditionalTime }
-							group="details"
-							recipe={ recipe }
-						/>
-						<ImprovedKeysNotice
-							isDismissed={ isNoticeDismissed }
-							onDismiss={ handleNoticeDismiss }
-						/>
-						{ detailsFieldsAfter && (
-							<FieldGroup
-								className="tasty-recipes-details"
-								fields={ detailsFieldsAfter }
-								initialFieldValues={ recipe }
-								onFieldChange={ handleRecipeChange }
-								group="details"
-								recipe={ recipe }
-							/>
-						) }
-					</>
-				) }
-				{ showDetailsGroup && ! isRecipeType && (
+				{ showDetailsGroup && (
 					<FieldGroup
 						className="tasty-recipes-details"
 						heading={ detailsHeading }
@@ -329,6 +332,24 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 						showAdditionalTime={ showAdditionalTime }
 						group="details"
 						recipe={ recipe }
+						renderAfterField={
+							isRecipeType &&
+							detailsNoticeAfterField &&
+							! isNoticeDismissed
+								? {
+										[ detailsNoticeAfterField ]: () => (
+											<ImprovedKeysNotice
+												isDismissed={
+													isNoticeDismissed
+												}
+												onDismiss={
+													handleNoticeDismiss
+												}
+											/>
+										),
+								  }
+								: null
+						}
 					/>
 				) }
 				<FieldGroup
@@ -376,58 +397,77 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 					fields={ nutritionAttributes }
 					initialFieldValues={ recipe }
 					onFieldChange={ handleRecipeChange }
+					defaultCollapsed
 					renderBeforeFields={ () => (
 						<fieldset className="tasty-recipes-nutrifox-container">
-							<div className="tasty-recipes-nutrifox-id-container">
+							<div className="tasty-recipes-nutrifox-card-head">
 								<label htmlFor="tasty-recipes-recipe-nutrifox_id">
 									{ attributes.nutrition.nutrifox_id.label }
-								</label>
-								<input
-									id="tasty-recipes-recipe-nutrifox_id"
-									type="text"
-									name="nutrifox_id"
-									className="inline-field"
-									value={ recipe.nutrifox_id || '' }
-									onChange={ ( e ) => {
-										handleRecipeChange(
-											'nutrifox_id',
-											e.target.value
-										);
-									} }
-								/>
-
-								{ recipe.nutrifox_id && (
-									<a
-										className="nutrifox-edit"
-										href={ `https://nutrifox.com/recipes/${ parseInt(
-											recipe.nutrifox_id
-										) }/edit` }
-										target="_blank"
-										rel="noopener noreferrer"
-									>
-										<NutrifoxIcon />
-										{ __(
-											'Edit recipe in Nutrifox',
+									<span
+										className="tasty-tooltip-icon"
+										tabIndex={ 0 }
+										role="img"
+										aria-label={ __(
+											'What is this?',
 											'tasty-recipes-lite'
 										) }
-									</a>
-								) }
-							</div>
-							<div className="tasty-recipes-nutrifox-logo-container">
+										data-tasty-tooltip={ __(
+											'Pull nutrition automatically from your existing Nutrifox recipe.',
+											'tasty-recipes-lite'
+										) }
+									/>
+								</label>
 								<a
 									className="nutrifox-logo"
 									href="https://nutrifox.com/?utm_source=tasty-recipes&utm_medium=dashboard&utm_campaign=recipe-editor"
 									target="_blank"
 									rel="noopener noreferrer"
+									aria-label={ __(
+										'Nutrifox',
+										'tasty-recipes-lite'
+									) }
 								>
 									<img
-										alt="Nutrifox logo"
+										alt=""
 										src={ nutrifoxLogoUrl }
 										width="96"
 										height="22"
 									/>
 								</a>
 							</div>
+							<input
+								id="tasty-recipes-recipe-nutrifox_id"
+								type="text"
+								name="nutrifox_id"
+								className="inline-field"
+								placeholder={ __(
+									'Paste your Nutrifox recipe ID',
+									'tasty-recipes-lite'
+								) }
+								value={ recipe.nutrifox_id || '' }
+								onChange={ ( e ) => {
+									handleRecipeChange(
+										'nutrifox_id',
+										e.target.value
+									);
+								} }
+							/>
+							{ recipe.nutrifox_id && (
+								<a
+									className="nutrifox-edit"
+									href={ `https://nutrifox.com/recipes/${ parseInt(
+										recipe.nutrifox_id
+									) }/edit` }
+									target="_blank"
+									rel="noopener noreferrer"
+								>
+									<NutrifoxIcon />
+									{ __(
+										'Edit recipe in Nutrifox',
+										'tasty-recipes-lite'
+									) }
+								</a>
+							) }
 						</fieldset>
 					) }
 					recipe={ recipe }

@@ -128,13 +128,15 @@ const ImagePreview = ( {
 const Placeholder = ( { handleClickSelectImage, labels } ) => {
 	return (
 		<>
-			<Icon icon={ UploadIcon } width={ 20 } height={ 18 } />
-			<p className="tasty-recipes-image-placeholder-title">
-				{ labels.placeholderTitle }
-			</p>
-			<p className="tasty-recipes-image-placeholder-subtitle">
-				{ labels.placeholderSubtitle }
-			</p>
+			<Icon icon={ UploadIcon } width={ 24 } height={ 24 } />
+			<div className="tasty-recipes-image-placeholder-text">
+				<p className="tasty-recipes-image-placeholder-title">
+					{ labels.placeholderTitle }
+				</p>
+				<p className="tasty-recipes-image-placeholder-subtitle">
+					{ labels.placeholderSubtitle }
+				</p>
+			</div>
 			<button
 				type="button"
 				className="tasty-secondary-button"

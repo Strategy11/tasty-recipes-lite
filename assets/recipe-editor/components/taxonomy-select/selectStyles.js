@@ -12,15 +12,25 @@ export const selectStyles = {
 		'&:hover': {
 			borderColor: state.isFocused ? '#ED4996' : '#a0a5ae',
 		},
-		overflow: 'hidden',
 	} ),
 	valueContainer: ( base ) => ( {
 		...base,
-		padding: '4px 8px',
+		padding: '2px 8px',
 		gap: '4px',
 		flexWrap: 'wrap',
 		alignItems: 'center',
-		overflow: 'hidden',
+	} ),
+	placeholder: ( base ) => ( {
+		...base,
+		margin: 0,
+	} ),
+	singleValue: ( base ) => ( {
+		...base,
+		margin: 0,
+	} ),
+	indicatorsContainer: ( base ) => ( {
+		...base,
+		height: '38px',
 	} ),
 	multiValue: ( base ) => ( {
 		...base,
@@ -78,9 +88,14 @@ export const selectStyles = {
 	} ),
 	dropdownIndicator: ( base ) => ( {
 		...base,
+		padding: '8px',
 		color: '#6B7280',
 		'&:hover': {
 			color: '#6B7280',
 		},
+	} ),
+	clearIndicator: ( base ) => ( {
+		...base,
+		padding: '8px',
 	} ),
 };
