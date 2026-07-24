@@ -111,18 +111,7 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 				'Enter ingredient name or paste the full list to bulk add',
 				'tasty-recipes-lite'
 			),
-			actions: [
-				{
-					label: __( 'Add Ingredient', 'tasty-recipes-lite' ),
-					icon: 'add',
-				},
-				{
-					label: __( 'Add Section Title', 'tasty-recipes-lite' ),
-					icon: 'section',
-				},
-			],
 			initialValue: recipe.ingredients,
-			initialVideoSettingsValue: recipe.ingredients_video_settings,
 		},
 		{
 			name: 'instructions',
@@ -131,18 +120,7 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 				'Enter instruction description or paste the full list to bulk add',
 				'tasty-recipes-lite'
 			),
-			actions: [
-				{
-					label: __( 'Add Step', 'tasty-recipes-lite' ),
-					icon: 'add',
-				},
-				{
-					label: __( 'Add Section Title', 'tasty-recipes-lite' ),
-					icon: 'section',
-				},
-			],
 			initialValue: recipe.instructions,
-			initialVideoSettingsValue: recipe.instructions_video_settings,
 		},
 		{
 			name: 'notes',

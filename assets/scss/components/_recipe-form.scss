@@ -27,8 +27,7 @@
 		margin-top: 0;
 	}
 
-	.tasty-recipes-format-tip-field,
-	.tasty-recipes-description-field {
+	.tasty-recipes-format-tip-field {
 		display: flex;
 		flex-direction: column;
 		gap: 6px;
@@ -490,19 +489,6 @@
 				margin-bottom: 0;
 			}
 		}
-
-		&--single {
-			min-height: 40px;
-			height: auto;
-			padding: 10px 12px;
-			border-radius: 10px;
-			resize: none;
-			overflow: auto;
-
-			p {
-				margin: 0;
-			}
-		}
 	}
 
 	textarea {
@@ -752,55 +738,6 @@
 		}
 	}
 
-	// Tasty Links Equipment field (react-select).
-	.tasty-recipes-react-select__control {
-		align-items: center;
-		min-height: 40px !important;
-		border-color: #CACFD8 !important;
-		border-radius: 10px !important;
-		box-shadow: 0px 1px 2px 0px rgba(10, 13, 20, 0.03) !important;
-	}
-
-	.tasty-recipes-react-select__control--is-focused {
-		border-color: #ED4996 !important;
-		box-shadow: 0 0 0 1px #ED4996 !important;
-	}
-
-	.tasty-recipes-react-select__value-container {
-		padding-top: 2px !important;
-		padding-bottom: 2px !important;
-		padding-left: 12px !important;
-		padding-right: 8px !important;
-	}
-
-	.tasty-recipes-react-select__indicators {
-		height: 38px;
-	}
-
-	.tasty-recipes-react-select__dropdown-indicator {
-		padding: 8px !important;
-		color: #6B7280 !important;
-	}
-
-	.tasty-recipes-react-select__placeholder {
-		color: #99A0AE !important;
-		margin: 0;
-	}
-
-	.tasty-recipes-react-select__input,
-	.tasty-recipes-react-select__input input,
-	.tasty-recipes-react-select__input-container input {
-		border: none !important;
-		border-radius: 0 !important;
-		outline: none !important;
-		box-shadow: none !important;
-		min-height: auto !important;
-		padding: 0 !important;
-		background: transparent !important;
-		width: auto !important;
-		margin: 0 !important;
-	}
-
 	.tasty-recipes-rich-textarea-actions {
 		display: flex;
 		align-items: center;
@@ -882,8 +819,7 @@
 	}
 
 	// Ingredients / instructions row list (prototype item-row / group-row).
-	.tasty-recipes-row-list-field,
-	.tasty-recipes-ingredients-list {
+	.tasty-recipes-row-list-field {
 		display: flex;
 		flex-direction: column;
 		gap: 0;

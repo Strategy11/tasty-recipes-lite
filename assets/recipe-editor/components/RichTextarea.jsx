@@ -229,9 +229,7 @@ export const RichTextarea = ( {
 	name,
 	label,
 	placeholder = '',
-	actions = [],
 	bubbleToolbar = false,
-	singleRow = false,
 	initialVideoSettingsValue,
 	onChange = () => {},
 	onFocus = () => {},
@@ -987,11 +985,7 @@ export const RichTextarea = ( {
 					<div
 						ref={ inlineEditorRef }
 						id={ id }
-						className={
-							singleRow
-								? 'tasty-recipes-inline-editor tasty-recipes-inline-editor--single'
-								: 'tasty-recipes-inline-editor'
-						}
+						className="tasty-recipes-inline-editor"
 						data-placeholder={ placeholder }
 					/>
 					<input
@@ -1047,23 +1041,6 @@ export const RichTextarea = ( {
 						name={ `${ name }_video_settings` }
 						value={ videoSettingsValue.join( ' ' ) }
 					/>
-				</div>
-			) }
-			{ !! actions.length && (
-				<div className="tasty-recipes-rich-textarea-actions">
-					{ actions.map( ( action ) => (
-						<button
-							key={ action.label }
-							type="button"
-							className={ `tasty-recipes-rich-textarea-action tasty-recipes-rich-textarea-action--${ action.icon }` }
-						>
-							<span
-								className="tasty-recipes-rich-textarea-action-icon"
-								aria-hidden="true"
-							></span>
-							{ action.label }
-						</button>
-					) ) }
 				</div>
 			) }
 		</fieldset>

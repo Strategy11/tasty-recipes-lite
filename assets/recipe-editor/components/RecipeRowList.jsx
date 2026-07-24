@@ -711,7 +711,7 @@ const RecipeRow = ( {
 	);
 };
 
-export const RecipeRowList = ( {
+const RecipeRowList = ( {
 	name,
 	label,
 	placeholder = '',
@@ -1176,12 +1176,7 @@ export const RecipeRowList = ( {
 	const itemCount = rows.filter( ( entry ) => 'item' === entry.type ).length;
 
 	return (
-		<fieldset
-			className={ classNames( 'tasty-recipes-row-list-field', {
-				'tasty-recipes-row-list-field--ingredients': ! isInstructions,
-				'tasty-recipes-row-list-field--instructions': isInstructions,
-			} ) }
-		>
+		<fieldset className="tasty-recipes-row-list-field">
 			<label>{ label }</label>
 			<input
 				type="hidden"

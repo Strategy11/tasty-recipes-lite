@@ -25,10 +25,6 @@ export const selectStyles = {
 		margin: 0,
 		color: '#99A0AE',
 	} ),
-	singleValue: ( base ) => ( {
-		...base,
-		margin: 0,
-	} ),
 	indicatorsContainer: ( base ) => ( {
 		...base,
 		height: '38px',
@@ -94,9 +90,5 @@ export const selectStyles = {
 		'&:hover': {
 			color: '#6B7280',
 		},
-	} ),
-	clearIndicator: ( base ) => ( {
-		...base,
-		padding: '8px',
 	} ),
 };
