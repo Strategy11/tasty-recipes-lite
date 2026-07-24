@@ -37,10 +37,179 @@ class Test_Mediavine_Create_Converter extends Tasty_Recipes_Converter_Testcase {
 	 * @param string $expected_content Expected post content value, when relevant.
 	 */
 	public function test_recipe_conversion( $source, $expected, $expected_image, $expected_content = '' ) {
+		$before_count = $this->count_tasty_recipes();
+
 		parent::test_recipe_conversion( $source, $expected, $expected_image, $expected_content );
 		$post_content = get_post( $this->post_id )->post_content;
 		$this->assertStringNotContainsString( 'wp:mv/recipe', $post_content );
 		$this->assertStringNotContainsString( '[mv_create]', $post_content );
+
+		$this->assertSame( $before_count + 1, $this->count_tasty_recipes() );
+
+		$recipe_ids = get_posts(
+			array(
+				'post_type'      => 'tasty_recipe',
+				'posts_per_page' => 1,
+				'orderby'        => 'ID',
+				'order'          => 'DESC',
+				'fields'         => 'ids',
+			)
+		);
+		$this->assertNotEmpty( $recipe_ids );
+		$create_key = get_post_meta( $recipe_ids[0], \Tasty_Recipes\Converters\Mediavine_Create::CREATE_KEY_META, true );
+		$this->assertNotEmpty( $create_key );
+	}
+
+	/**
+	 * Missing Create DB row must not leave empty-title recipe posts behind.
+	 */
+	public function test_missing_create_row_creates_no_recipe() {
+		$before_count = $this->count_tasty_recipes();
+		$shortcode    = '[mv_create key="999999" type="recipe"]';
+		$recipe       = \Tasty_Recipes\Converters\Mediavine_Create::create_recipe_from_existing( $shortcode, $this->post_id );
+
+		$this->assertFalse( $recipe );
+		$this->assertSame( $before_count, $this->count_tasty_recipes() );
+	}
+
+	/**
+	 * Elementor-only Create shortcodes are discovered and rewritten.
+	 */
+	public function test_elementor_only_create_shortcode_conversion() {
+		global $wpdb;
+
+		$wpdb->update(
+			$wpdb->posts,
+			array( 'post_content' => 'Elementor-only host post without Create shortcode.' ),
+			array( 'ID' => $this->post_id )
+		);
+		clean_post_cache( $this->post_id );
+
+		$elementor_data = wp_json_encode(
+			array(
+				array(
+					'elType'     => 'widget',
+					'widgetType' => 'shortcode',
+					'settings'   => array(
+						'shortcode' => '[mv_create key="13" type="recipe"]',
+					),
+				),
+			),
+			JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
+		);
+		update_post_meta( $this->post_id, '_elementor_data', wp_slash( $elementor_data ) );
+		update_post_meta( $this->post_id, '_elementor_css', 'stale-css' );
+
+		$conversion_class = static::$conversion_class;
+		$this->assertContains( $this->post_id, $conversion_class::get_post_ids() );
+		$this->assertGreaterThan( 0, $conversion_class::get_count() );
+
+		$recipe = $conversion_class::convert_post( $this->post_id );
+		$this->assertInstanceOf( Recipe::class, $recipe );
+
+		$updated_elementor = get_post_meta( $this->post_id, '_elementor_data', true );
+		$this->assertStringContainsString( '[tasty-recipe id="' . $recipe->get_id() . '"]', $updated_elementor );
+		$this->assertStringNotContainsString( '[mv_create', $updated_elementor );
+		$this->assertSame( '', (string) get_post_meta( $this->post_id, '_elementor_css', true ) );
+		$this->assertSame(
+			'13',
+			(string) get_post_meta( $recipe->get_id(), \Tasty_Recipes\Converters\Mediavine_Create::CREATE_KEY_META, true )
+		);
+	}
+
+	/**
+	 * Second convert for the same Create key reuses the existing Tasty recipe.
+	 */
+	public function test_create_key_reuse_across_posts() {
+		global $wpdb;
+
+		$conversion_class = static::$conversion_class;
+		$shortcode        = '[mv_create key="13" type="recipe"]';
+
+		$wpdb->update( $wpdb->posts, array( 'post_content' => $shortcode ), array( 'ID' => $this->post_id ) );
+		clean_post_cache( $this->post_id );
+		$first_recipe = $conversion_class::convert_post( $this->post_id );
+		$this->assertInstanceOf( Recipe::class, $first_recipe );
+
+		$second_post_id = self::factory()->post->create(
+			array(
+				'post_content' => $shortcode,
+			)
+		);
+		$second_recipe  = $conversion_class::convert_post( $second_post_id );
+		$this->assertInstanceOf( Recipe::class, $second_recipe );
+		$this->assertSame( $first_recipe->get_id(), $second_recipe->get_id() );
+	}
+
+	/**
+	 * Non-recipe Create shortcodes must not be converted.
+	 */
+	public function test_non_recipe_create_shortcode_is_not_converted() {
+		global $wpdb;
+
+		$before_count = $this->count_tasty_recipes();
+		$shortcode    = '[mv_create key="13" type="list"]';
+
+		$wpdb->update( $wpdb->posts, array( 'post_content' => $shortcode ), array( 'ID' => $this->post_id ) );
+		clean_post_cache( $this->post_id );
+
+		$conversion_class = static::$conversion_class;
+		$this->assertNotContains( $this->post_id, $conversion_class::get_post_ids() );
+
+		$recipe = $conversion_class::convert_post( $this->post_id );
+		$this->assertFalse( $recipe );
+		$this->assertSame( $before_count, $this->count_tasty_recipes() );
+		$this->assertStringContainsString( $shortcode, get_post_field( 'post_content', $this->post_id ) );
+	}
+
+	/**
+	 * Unused empty-title tasty_recipe posts are removed by cleanup.
+	 */
+	public function test_cleanup_empty_title_orphans() {
+		$orphan_id = self::factory()->post->create(
+			array(
+				'post_type'   => 'tasty_recipe',
+				'post_title'  => '',
+				'post_status' => 'publish',
+			)
+		);
+		$kept_id   = self::factory()->post->create(
+			array(
+				'post_type'   => 'tasty_recipe',
+				'post_title'  => '',
+				'post_status' => 'publish',
+			)
+		);
+
+		$embed_post_id = self::factory()->post->create(
+			array(
+				'post_content' => '[tasty-recipe id="' . $kept_id . '"]',
+			)
+		);
+		$this->assertNotEmpty( $embed_post_id );
+
+		$deleted = \Tasty_Recipes\Converters\Mediavine_Create::cleanup_empty_title_orphans();
+		$this->assertGreaterThanOrEqual( 1, $deleted );
+		$this->assertNull( get_post( $orphan_id ) );
+		$this->assertNotNull( get_post( $kept_id ) );
+	}
+
+	/**
+	 * Count tasty_recipe posts currently in the database.
+	 *
+	 * @return int
+	 */
+	private function count_tasty_recipes() {
+		return (int) count(
+			get_posts(
+				array(
+					'post_type'      => 'tasty_recipe',
+					'post_status'    => 'any',
+					'posts_per_page' => -1,
+					'fields'         => 'ids',
+				)
+			)
+		);
 	}
 
 	/**

@@ -8,6 +8,7 @@
 namespace Tasty_Recipes;
 
 use Tasty_Recipes;
+use Tasty_Recipes\Converters\Mediavine_Create;
 use Tasty_Recipes\Objects\Recipe;
 use WP_Post;
 
@@ -216,8 +217,12 @@ class Editor {
 		$content = str_replace( "\r\n", "\n", $content );
 		$content = str_replace( "\r", "\n", $content );
 		foreach ( Tasty_Recipes::get_converters() as $key => $config ) {
-			$class = $config['class'];
-			if ( ! $class::get_existing_to_convert( $content ) ) {
+			$class     = $config['class'];
+			$has_match = (bool) $class::get_existing_to_convert( $content );
+			if ( ! $has_match && 'create' === $key ) {
+				$has_match = Mediavine_Create::has_elementor_create_shortcode( $post_id );
+			}
+			if ( ! $has_match ) {
 				continue;
 			}
 			if ( self::is_ignored_post_for_conversion_type( $post_id, $key ) ) {
