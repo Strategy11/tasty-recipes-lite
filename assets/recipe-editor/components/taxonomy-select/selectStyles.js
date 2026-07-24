@@ -23,6 +23,7 @@ export const selectStyles = {
 	placeholder: ( base ) => ( {
 		...base,
 		margin: 0,
+		color: '#99A0AE',
 	} ),
 	singleValue: ( base ) => ( {
 		...base,

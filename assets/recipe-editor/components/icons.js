@@ -61,3 +61,143 @@ export const ChevronIcon = (
 		/>
 	</svg>
 );
+
+export const DragGripIcon = (
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		width="14"
+		height="20"
+		viewBox="0 0 16 24"
+		fill="none"
+		aria-hidden="true"
+	>
+		<circle cx="5.5" cy="6" r="1.3" fill="currentColor" />
+		<circle cx="10.5" cy="6" r="1.3" fill="currentColor" />
+		<circle cx="5.5" cy="12" r="1.3" fill="currentColor" />
+		<circle cx="10.5" cy="12" r="1.3" fill="currentColor" />
+		<circle cx="5.5" cy="18" r="1.3" fill="currentColor" />
+		<circle cx="10.5" cy="18" r="1.3" fill="currentColor" />
+	</svg>
+);
+
+export const MoveUpIcon = (
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		width="18"
+		height="18"
+		viewBox="0 0 20 20"
+		fill="none"
+		aria-hidden="true"
+	>
+		<path
+			d="M14.5 12.5L10 7.5L5.5 12.5"
+			stroke="currentColor"
+			strokeWidth="1.5"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		/>
+	</svg>
+);
+
+export const MoveDownIcon = (
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		width="18"
+		height="18"
+		viewBox="0 0 20 20"
+		fill="none"
+		aria-hidden="true"
+	>
+		<path
+			d="M14.5 7.5L10 12.5L5.5 7.5"
+			stroke="currentColor"
+			strokeWidth="1.5"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		/>
+	</svg>
+);
+
+export const SectionTitleIcon = (
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		width="18"
+		height="18"
+		viewBox="1 1 22 22"
+		fill="none"
+		aria-hidden="true"
+	>
+		<path
+			d="M5.75 5.75H7.25M7.25 5.75H8.25M7.25 5.75V11.75M7.25 11.75V18.25M7.25 11.75H16.75M7.25 18.25H5.75M7.25 18.25H8.25M16.75 11.75V5.75M16.75 11.75V18.25M16.75 5.75H18.25M16.75 5.75H15.75M16.75 18.25H18.25M16.75 18.25H15.75"
+			stroke="currentColor"
+			strokeWidth="1.65"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		/>
+	</svg>
+);
+
+export const ParagraphIcon = (
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		width="18"
+		height="18"
+		viewBox="0 0 20 20"
+		fill="none"
+		aria-hidden="true"
+	>
+		<path
+			d="M4 6h12M4 10h12M4 14h7"
+			stroke="currentColor"
+			strokeWidth="1.5"
+			strokeLinecap="round"
+		/>
+	</svg>
+);
+
+export const RowTrashIcon = (
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		width="18"
+		height="18"
+		viewBox="0 0 20 20"
+		fill="none"
+		aria-hidden="true"
+	>
+		<path
+			d="M4.79167 6.45833L5.49262 14.5194C5.56752 15.3807 6.28852 16.0417 7.15302 16.0417H12.0137C12.8782 16.0417 13.5992 15.3807 13.674 14.5194L14.375 6.45833H4.79167Z"
+			stroke="currentColor"
+			strokeWidth="1.5"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		/>
+		<path
+			d="M8.125 8.95833V13.5417"
+			stroke="currentColor"
+			strokeWidth="1.5"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		/>
+		<path
+			d="M11.0417 8.95833V13.5417"
+			stroke="currentColor"
+			strokeWidth="1.5"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		/>
+		<path
+			d="M7.29167 6.45833V5.625C7.29167 4.70452 8.03786 3.95833 8.95833 3.95833H10.2083C11.1288 3.95833 11.875 4.70452 11.875 5.625V6.45833"
+			stroke="currentColor"
+			strokeWidth="1.5"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		/>
+		<path
+			d="M3.95833 6.45833H15.2083"
+			stroke="currentColor"
+			strokeWidth="1.5"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		/>
+	</svg>
+);

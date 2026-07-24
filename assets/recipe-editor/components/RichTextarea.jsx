@@ -231,6 +231,7 @@ export const RichTextarea = ( {
 	placeholder = '',
 	actions = [],
 	bubbleToolbar = false,
+	singleRow = false,
 	initialVideoSettingsValue,
 	onChange = () => {},
 	onFocus = () => {},
@@ -506,11 +507,34 @@ export const RichTextarea = ( {
 				} );
 			};
 
-			if ( bubbleToolbar && initialValue ) {
+			if ( bubbleToolbar ) {
+				const syncPlaceholderAttr = () => {
+					const body = ed.getBody();
+					if ( ! body || ! placeholder ) {
+						return;
+					}
+
+					if ( ed.dom.isEmpty( body ) ) {
+						body.setAttribute(
+							'data-mce-placeholder',
+							placeholder
+						);
+					} else {
+						body.removeAttribute( 'data-mce-placeholder' );
+					}
+				};
+
 				ed.on( 'init', () => {
-					ed.setContent( initialValue );
-					syncContent();
+					if ( initialValue ) {
+						ed.setContent( initialValue );
+						syncContent();
+					}
+					syncPlaceholderAttr();
 				} );
+				ed.on(
+					'SetContent keyup change NodeChange blur',
+					syncPlaceholderAttr
+				);
 			}
 
 			let quicklinkObserver = null;
@@ -963,7 +987,11 @@ export const RichTextarea = ( {
 					<div
 						ref={ inlineEditorRef }
 						id={ id }
-						className="tasty-recipes-inline-editor"
+						className={
+							singleRow
+								? 'tasty-recipes-inline-editor tasty-recipes-inline-editor--single'
+								: 'tasty-recipes-inline-editor'
+						}
 						data-placeholder={ placeholder }
 					/>
 					<input

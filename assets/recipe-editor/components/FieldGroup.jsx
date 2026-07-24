@@ -106,7 +106,12 @@ export const FieldGroup = ( {
 			'e.g. easy, weeknight, kid-friendly',
 			'tasty-recipes-lite'
 		),
+		serving_size: __( 'e.g. 1 pancake', 'tasty-recipes-lite' ),
+		calories: __( 'kcal', 'tasty-recipes-lite' ),
 	};
+
+	const getFieldPlaceholder = ( name, field ) =>
+		fieldPlaceholders[ name ] || field.placeholder || '';
 
 	const renderToggle = () => {
 		if ( ! heading ) {
@@ -169,14 +174,14 @@ export const FieldGroup = ( {
 	}
 
 	const renderFieldInput = ( name, field ) => {
+		const placeholder = getFieldPlaceholder( name, field );
+
 		if ( field.taxonomy ) {
 			return (
 				<TaxonomySelect
 					name={ name }
 					taxonomy={ field.taxonomy }
-					placeholder={
-						field.placeholder || fieldPlaceholders[ name ] || ''
-					}
+					placeholder={ placeholder }
 					value={ fieldValues[ field.object_key || name ] || '' }
 					onChange={ newValue =>
 						handleFieldChange( field.object_key || name, newValue )
@@ -192,9 +197,7 @@ export const FieldGroup = ( {
 					name={ name }
 					value={ fieldValues[ field.object_key || name ] || '' }
 					className="inline-field"
-					placeholder={
-						field.placeholder || fieldPlaceholders[ name ] || ''
-					}
+					placeholder={ placeholder }
 					onChange={ e =>
 						handleFieldChange(
 							field.object_key || name,
@@ -217,9 +220,7 @@ export const FieldGroup = ( {
 			<input
 				id={ `tasty-recipes-recipe-${ name }` }
 				type="text"
-				placeholder={
-					fieldPlaceholders[ name ] || field.placeholder || ''
-				}
+				placeholder={ placeholder }
 				name={ name }
 				className="inline-field"
 				value={ fieldValues[ field.object_key || name ] || '' }

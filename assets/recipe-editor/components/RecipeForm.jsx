@@ -4,6 +4,7 @@ import { applyFilters } from '@wordpress/hooks';
 import { FieldGroup } from './FieldGroup';
 import { DescriptionFormatTip } from './DescriptionFormatTip';
 import { ImprovedKeysNotice } from './ImprovedKeysNotice';
+import { IngredientsList, InstructionsList } from './RecipeRowList';
 import { RichTextarea } from './RichTextarea';
 import { ImageField } from './ImageField';
 
@@ -288,39 +289,78 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 				handleRecipeChange={ handleRecipeChange }
 				labels={ imageLabels }
 			/>
-			{ remainingRichTextareas.map( ( field ) =>
-				'notes' === field.name ? (
-					<div
-						key={ field.name }
-						className="tasty-recipes-format-tip-field"
-					>
-						<RichTextarea
-							{ ...field }
-							bubbleToolbar
+			{ remainingRichTextareas.map( ( field ) => {
+				const isNotes = 'notes' === field.name;
+				const isIngredients = 'ingredients' === field.name;
+				const isInstructions = 'instructions' === field.name;
+
+				if ( isIngredients ) {
+					return (
+						<IngredientsList
+							key={ field.name }
+							name={ field.name }
+							label={ field.label }
+							placeholder={ field.placeholder }
 							onChange={ ( value ) =>
 								handleRecipeChange( field.name, value )
 							}
-							onFocus={ () => setFormatTipAnchor( 'notes' ) }
 						/>
-						<DescriptionFormatTip
-							isRevealed={ 'notes' === formatTipAnchor }
-							initialDismissed={ isFormatTipDismissed }
-							onDismiss={ () =>
-								setIsFormatTipDismissed( true )
+					);
+				}
+
+				if ( isInstructions ) {
+					return (
+						<InstructionsList
+							key={ field.name }
+							name={ field.name }
+							label={ field.label }
+							placeholder={ field.placeholder }
+							onChange={ ( value ) =>
+								handleRecipeChange( field.name, value )
 							}
-							modifyNonce={ config.modifyNonce }
 						/>
-					</div>
-				) : (
+					);
+				}
+
+				if ( isNotes ) {
+					return (
+						<div
+							key={ field.name }
+							className="tasty-recipes-format-tip-field"
+						>
+							<RichTextarea
+								{ ...field }
+								bubbleToolbar
+								onChange={ ( value ) =>
+									handleRecipeChange( field.name, value )
+								}
+								onFocus={ () =>
+									setFormatTipAnchor( 'notes' )
+								}
+							/>
+							<DescriptionFormatTip
+								isRevealed={ 'notes' === formatTipAnchor }
+								initialDismissed={ isFormatTipDismissed }
+								onDismiss={ () =>
+									setIsFormatTipDismissed( true )
+								}
+								modifyNonce={ config.modifyNonce }
+							/>
+						</div>
+					);
+				}
+
+				return (
 					<RichTextarea
 						key={ field.name }
 						{ ...field }
+						bubbleToolbar
 						onChange={ ( value ) =>
 							handleRecipeChange( field.name, value )
 						}
 					/>
-				)
-			) }
+				);
+			} ) }
 			<section className="tasty-recipes-details-section">
 				{ showDetailsGroup && (
 					<FieldGroup
@@ -357,7 +397,10 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 					fields={ {
 						video_url: {
 							label: __( 'Video URL', 'tasty-recipes-lite' ),
-							placeholder: 'youtube.com/watch?v=...',
+							placeholder: __(
+								'youtube.com/watch?v=...',
+								'tasty-recipes-lite'
+							),
 						},
 					} }
 					initialFieldValues={ recipe }

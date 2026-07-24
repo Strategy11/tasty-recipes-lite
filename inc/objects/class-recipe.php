@@ -153,7 +153,7 @@ class Recipe {
 				'label'       => __( 'Total Time', 'tasty-recipes-lite' ),
 				'property'    => 'totalTime',
 				'object_key'  => 'total_time_raw',
-				'placeholder' => __( 'Default to prep + cook.', 'tasty-recipes-lite' ),
+				'placeholder' => __( 'Defaults to prep + cook', 'tasty-recipes-lite' ),
 			),
 			'yield'                 => array(
 				'label'    => __( 'Yield', 'tasty-recipes-lite' ),
