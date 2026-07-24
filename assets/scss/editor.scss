@@ -146,6 +146,7 @@
 			padding: 4px 6px;
 			overflow: visible !important;
 			background: #fff;
+			border-radius: 10px !important;
 		}
 
 		.mce-abs-layout-item,
@@ -178,7 +179,7 @@
 			margin: 0 !important;
 			padding: 6px 8px !important;
 			border: 1px solid #ED4996 !important;
-			border-radius: 6px !important;
+			border-radius: 10px !important;
 			background: #fff !important;
 			box-shadow: 0 0 0 2px #FCEEF5 !important;
 			color: #181B25 !important;
@@ -215,7 +216,7 @@
 				min-width: 0;
 				min-height: 0;
 				padding: 0 10px !important;
-				border-radius: 6px;
+				border-radius: 10px;
 				line-height: normal;
 			}
 		}
@@ -268,6 +269,48 @@
 		.mce-btn:has( .mce-i-unlink ) .mce-ico {
 			display: block !important;
 			color: #181B25;
+		}
+	}
+}
+
+// Row-list link popover — same pink focus ring as Description .mce-form .mce-textbox.
+.tasty-recipes-modal-open .tasty-recipes-selection-link-popover {
+	border-radius: 10px !important;
+
+	input {
+		box-sizing: border-box !important;
+		height: 28px !important;
+		min-height: 28px !important;
+		max-height: 28px !important;
+		margin: 0 !important;
+		padding: 0 8px !important;
+		border: 1px solid #ED4996 !important;
+		border-radius: 10px !important;
+		background: #fff !important;
+		box-shadow: 0 0 0 2px #FCEEF5 !important;
+		font-size: 13px !important;
+		line-height: 26px !important;
+		outline: none !important;
+
+		&:focus,
+		&:focus-visible {
+			border-color: #ED4996 !important;
+			box-shadow: 0 0 0 2px #FCEEF5 !important;
+			outline: none !important;
+		}
+	}
+
+	button:not( .tasty-recipes-selection-link-popover__remove ) {
+		background: #ED4996 !important;
+		border: 0 !important;
+		border-radius: 10px !important;
+		box-shadow: none !important;
+		color: #fff !important;
+
+		&:hover,
+		&:focus {
+			background: #d63e86 !important;
+			color: #fff !important;
 		}
 	}
 }

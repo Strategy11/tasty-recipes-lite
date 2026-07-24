@@ -645,6 +645,7 @@ export const RichTextarea = ( {
 				);
 				form.style.setProperty( 'height', 'auto', 'important' );
 				form.style.setProperty( 'overflow', 'visible', 'important' );
+				form.style.setProperty( 'border-radius', '10px', 'important' );
 
 				pinQuicklinkFormBelow( selectionRect );
 
@@ -664,6 +665,11 @@ export const RichTextarea = ( {
 					body.style.setProperty(
 						'overflow',
 						'visible',
+						'important'
+					);
+					body.style.setProperty(
+						'border-radius',
+						'10px',
 						'important'
 					);
 				}
@@ -694,6 +700,7 @@ export const RichTextarea = ( {
 				}
 
 				input.style.setProperty( 'width', '100%', 'important' );
+				input.style.setProperty( 'border-radius', '10px', 'important' );
 
 				if ( primary ) {
 					primary.style.setProperty( 'left', 'auto', 'important' );
@@ -731,6 +738,11 @@ export const RichTextarea = ( {
 					primaryButton.style.setProperty(
 						'overflow',
 						'visible',
+						'important'
+					);
+					primaryButton.style.setProperty(
+						'border-radius',
+						'10px',
 						'important'
 					);
 				}

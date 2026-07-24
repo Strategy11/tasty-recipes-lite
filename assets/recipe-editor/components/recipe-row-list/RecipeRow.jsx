@@ -3,6 +3,7 @@ import { __ } from '@wordpress/i18n';
 import classNames from 'classnames';
 import { DragGripIcon } from '../icons';
 import { RowActions } from './RowActions';
+import { sanitizeInlineHtml, stripHtml } from './utils';
 
 export const RecipeRow = ( {
 	row,
@@ -23,8 +24,9 @@ export const RecipeRow = ( {
 } ) => {
 	const inputRef = useRef( null );
 	const isGroup = 'group' === row.type;
+	const isEmpty = ! stripHtml( row.value );
 
-	const handleRowKeyDown = ( event ) => {
+	const handleRowKeyDown = event => {
 		if ( ! event.altKey ) {
 			return;
 		}
@@ -45,7 +47,7 @@ export const RecipeRow = ( {
 		}
 	};
 
-	// Re-sync after every render. React clears contentEditable DOM text when
+	// Re-sync after every render. React clears contentEditable DOM when
 	// parent re-renders (no React children), which wiped hydrated values.
 	useLayoutEffect( () => {
 		const el = inputRef.current;
@@ -53,8 +55,9 @@ export const RecipeRow = ( {
 			return;
 		}
 
-		if ( ( el.textContent || '' ) !== ( row.value || '' ) ) {
-			el.textContent = row.value || '';
+		const next = sanitizeInlineHtml( row.value || '' );
+		if ( sanitizeInlineHtml( el.innerHTML ) !== next ) {
+			el.innerHTML = next;
 		}
 	} );
 
@@ -72,7 +75,7 @@ export const RecipeRow = ( {
 		}
 
 		if ( ! isGroup ) {
-			const selection = window.getSelection();
+			const selection = el.ownerDocument.defaultView.getSelection();
 			const range = document.createRange();
 			range.selectNodeContents( el );
 			range.collapse( false );
@@ -95,7 +98,7 @@ export const RecipeRow = ( {
 				className="tasty-recipes-drag-grip"
 				tabIndex={ -1 }
 				aria-label={ __( 'Drag to reorder', 'tasty-recipes-lite' ) }
-				onPointerDown={ ( event ) => onGripPointerDown( event, row.id ) }
+				onPointerDown={ event => onGripPointerDown( event, row.id ) }
 			>
 				{ DragGripIcon }
 			</button>
@@ -108,7 +111,7 @@ export const RecipeRow = ( {
 					className="tasty-recipes-row-input"
 					placeholder={ groupPlaceholder }
 					value={ row.value }
-					onChange={ ( event ) =>
+					onChange={ event =>
 						onValueChange( row.id, event.target.value )
 					}
 					onKeyDown={ handleRowKeyDown }
@@ -118,16 +121,17 @@ export const RecipeRow = ( {
 					key={ `${ row.id }-item` }
 					ref={ inputRef }
 					className={ classNames( 'tasty-recipes-row-input', {
-						'is-empty': ! row.value,
+						'is-empty': isEmpty,
 					} ) }
 					contentEditable
 					suppressContentEditableWarning
 					role="textbox"
+					tabIndex={ 0 }
 					aria-multiline="false"
 					data-placeholder={ placeholder }
 					onKeyDown={ handleRowKeyDown }
-					onPaste={ ( event ) => onPaste( event, row.id ) }
-					onInput={ ( event ) => {
+					onPaste={ event => onPaste( event, row.id ) }
+					onInput={ event => {
 						const el = event.currentTarget;
 						if (
 							'<br>' === el.innerHTML ||
@@ -135,7 +139,10 @@ export const RecipeRow = ( {
 						) {
 							el.innerHTML = '';
 						}
-						onValueChange( row.id, el.textContent || '' );
+						onValueChange(
+							row.id,
+							sanitizeInlineHtml( el.innerHTML || '' )
+						);
 					} }
 				/>
 			) }

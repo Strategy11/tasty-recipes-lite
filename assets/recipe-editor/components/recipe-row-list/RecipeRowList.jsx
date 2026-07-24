@@ -3,6 +3,7 @@ import { __ } from '@wordpress/i18n';
 import { REORDER_DURATION_MS, REORDER_EASING } from './constants';
 import { parseClipboardParts } from './paste';
 import { RecipeRow } from './RecipeRow';
+import { SelectionToolbar } from './SelectionToolbar';
 import {
 	createGroupRow,
 	createItemRow,
@@ -10,6 +11,7 @@ import {
 	moveRow,
 	parseRowsFromHtml,
 	serializeRows,
+	stripHtml,
 } from './utils';
 
 const RecipeRowList = ( {
@@ -266,9 +268,15 @@ const RecipeRowList = ( {
 					return { ...row, isNew: false };
 				}
 
+				const nextType = 'group' === row.type ? 'item' : 'group';
 				return {
 					...row,
-					type: 'group' === row.type ? 'item' : 'group',
+					type: nextType,
+					// Section titles are plain text; strip inline markup.
+					value:
+						'group' === nextType
+							? stripHtml( row.value )
+							: row.value,
 					isNew: true,
 				};
 			} )
@@ -465,64 +473,67 @@ const RecipeRowList = ( {
 	const itemCount = rows.filter( ( entry ) => 'item' === entry.type ).length;
 
 	return (
-		<fieldset className="tasty-recipes-row-list-field">
-			<label>{ label }</label>
-			<input
-				type="hidden"
-				name={ name }
-				value={ serializeRows( rows, mode ) }
-			/>
-			<div
-				className="tasty-recipes-row-list"
-				ref={ listRef }
-				data-mode={ mode }
-			>
-				{ rows.map( ( row, index ) => (
-					<RecipeRow
-						key={ row.id }
-						row={ row }
-						mode={ mode }
-						placeholder={ placeholder }
-						groupPlaceholder={ groupPlaceholder }
-						canMoveUp={ index > 0 }
-						canMoveDown={ index < rows.length - 1 }
-						canDelete={ 'group' === row.type || itemCount > 1 }
-						isDragging={ draggingId === row.id }
-						onValueChange={ handleValueChange }
-						onMoveUp={ () => handleMoveRow( row.id, -1 ) }
-						onMoveDown={ () => handleMoveRow( row.id, 1 ) }
-						onConvert={ () => handleConvertRow( row.id ) }
-						onDelete={ () => handleDeleteRow( row.id ) }
-						onPaste={ handlePaste }
-						onGripPointerDown={ handleGripPointerDown }
-					/>
-				) ) }
-			</div>
-			<div className="tasty-recipes-rich-textarea-actions">
-				<button
-					type="button"
-					className="tasty-recipes-rich-textarea-action tasty-recipes-rich-textarea-action--add"
-					onClick={ handleAddItem }
+		<>
+			<fieldset className="tasty-recipes-row-list-field">
+				<label>{ label }</label>
+				<input
+					type="hidden"
+					name={ name }
+					value={ serializeRows( rows, mode ) }
+				/>
+				<div
+					className="tasty-recipes-row-list"
+					ref={ listRef }
+					data-mode={ mode }
 				>
-					<span
-						className="tasty-recipes-rich-textarea-action-icon"
-						aria-hidden="true"
-					></span>
-					{ addItemLabel }
-				</button>
-				<button
-					type="button"
-					className="tasty-recipes-rich-textarea-action tasty-recipes-rich-textarea-action--section"
-					onClick={ handleAddSectionTitle }
-				>
-					<span
-						className="tasty-recipes-rich-textarea-action-icon"
-						aria-hidden="true"
-					></span>
-					{ __( 'Add Section Title', 'tasty-recipes-lite' ) }
-				</button>
-			</div>
-		</fieldset>
+					{ rows.map( ( row, index ) => (
+						<RecipeRow
+							key={ row.id }
+							row={ row }
+							mode={ mode }
+							placeholder={ placeholder }
+							groupPlaceholder={ groupPlaceholder }
+							canMoveUp={ index > 0 }
+							canMoveDown={ index < rows.length - 1 }
+							canDelete={ 'group' === row.type || itemCount > 1 }
+							isDragging={ draggingId === row.id }
+							onValueChange={ handleValueChange }
+							onMoveUp={ () => handleMoveRow( row.id, -1 ) }
+							onMoveDown={ () => handleMoveRow( row.id, 1 ) }
+							onConvert={ () => handleConvertRow( row.id ) }
+							onDelete={ () => handleDeleteRow( row.id ) }
+							onPaste={ handlePaste }
+							onGripPointerDown={ handleGripPointerDown }
+						/>
+					) ) }
+				</div>
+				<div className="tasty-recipes-rich-textarea-actions">
+					<button
+						type="button"
+						className="tasty-recipes-rich-textarea-action tasty-recipes-rich-textarea-action--add"
+						onClick={ handleAddItem }
+					>
+						<span
+							className="tasty-recipes-rich-textarea-action-icon"
+							aria-hidden="true"
+						></span>
+						{ addItemLabel }
+					</button>
+					<button
+						type="button"
+						className="tasty-recipes-rich-textarea-action tasty-recipes-rich-textarea-action--section"
+						onClick={ handleAddSectionTitle }
+					>
+						<span
+							className="tasty-recipes-rich-textarea-action-icon"
+							aria-hidden="true"
+						></span>
+						{ __( 'Add Section Title', 'tasty-recipes-lite' ) }
+					</button>
+				</div>
+			</fieldset>
+			<SelectionToolbar containerRef={ listRef } />
+		</>
 	);
 };
 
