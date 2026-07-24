@@ -8,6 +8,7 @@
 namespace Tasty_Recipes;
 
 use Tasty_Recipes;
+use Tasty_Recipes\Converters\Mediavine_Create;
 use Tasty_Recipes\Objects\Recipe;
 use WP_Post;
 
@@ -216,8 +217,12 @@ class Editor {
 		$content = str_replace( "\r\n", "\n", $content );
 		$content = str_replace( "\r", "\n", $content );
 		foreach ( Tasty_Recipes::get_converters() as $key => $config ) {
-			$class = $config['class'];
-			if ( ! $class::get_existing_to_convert( $content ) ) {
+			$class     = $config['class'];
+			$has_match = (bool) $class::get_existing_to_convert( $content );
+			if ( ! $has_match && 'create' === $key ) {
+				$has_match = Mediavine_Create::has_elementor_create_shortcode( $post_id );
+			}
+			if ( ! $has_match ) {
 				continue;
 			}
 			if ( self::is_ignored_post_for_conversion_type( $post_id, $key ) ) {
@@ -672,14 +677,17 @@ class Editor {
 	 *
 	 * @param WP_Post $post Post object to extract recipes from.
 	 *
-	 * @return array
+	 * @return int[]
 	 */
 	private static function get_recipe_ids_from_post( $post ) {
 		if ( ! self::post_has_recipes( $post ) ) {
 			return array();
 		}
 
-		return array_unique( Tasty_Recipes::get_recipe_ids_from_content( $post->post_content ) );
+		$recipe_ids = Tasty_Recipes::get_recipe_ids_from_content( $post->post_content );
+		$recipe_ids = array_map( 'intval', $recipe_ids );
+
+		return array_values( array_unique( $recipe_ids ) );
 	}
 
 	/**
