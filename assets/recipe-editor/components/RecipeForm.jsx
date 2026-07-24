@@ -301,6 +301,7 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 							name={ field.name }
 							label={ field.label }
 							placeholder={ field.placeholder }
+							initialValue={ field.initialValue }
 							onChange={ ( value ) =>
 								handleRecipeChange( field.name, value )
 							}
@@ -315,6 +316,7 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 							name={ field.name }
 							label={ field.label }
 							placeholder={ field.placeholder }
+							initialValue={ field.initialValue }
 							onChange={ ( value ) =>
 								handleRecipeChange( field.name, value )
 							}

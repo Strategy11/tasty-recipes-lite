@@ -104,24 +104,182 @@ const escapeHtml = ( value ) =>
 		.replace( /"/g, '&quot;' );
 
 /**
- * Serializes ingredient rows to HTML for form persistence.
+ * Serializes recipe rows to canonical list HTML for form persistence.
+ *
+ * Groups consecutive items into a single `<ul>` or `<ol>`. Section titles
+ * become `<h4>` and split lists. Item text is plain (escaped) — no amount spans.
  *
  * @since x.x
  *
- * @param {Array} rows Ingredient rows.
+ * @param {Array}  rows Ingredient or instruction rows.
+ * @param {string} mode `ingredients` or `instructions`.
  * @return {string} HTML string.
  */
-const serializeRows = ( rows ) =>
-	rows
-		.map( ( row ) => {
-			const text = escapeHtml( row.value || '' );
-			if ( 'group' === row.type ) {
-				return text ? `<h4>${ text }</h4>` : '';
+const serializeRows = ( rows, mode = 'ingredients' ) => {
+	const listTag = 'instructions' === mode ? 'ol' : 'ul';
+	const parts = [];
+	let pendingItems = [];
+
+	const flushItems = () => {
+		if ( ! pendingItems.length ) {
+			return;
+		}
+
+		parts.push(
+			`<${ listTag }>${ pendingItems
+				.map( ( text ) => `<li>${ text }</li>` )
+				.join( '' ) }</${ listTag }>`
+		);
+		pendingItems = [];
+	};
+
+	rows.forEach( ( row ) => {
+		const text = escapeHtml( ( row.value || '' ).trim() );
+		if ( ! text ) {
+			return;
+		}
+
+		if ( 'group' === row.type ) {
+			flushItems();
+			parts.push( `<h4>${ text }</h4>` );
+			return;
+		}
+
+		pendingItems.push( text );
+	} );
+
+	flushItems();
+	return parts.join( '' );
+};
+
+/**
+ * Normalizes whitespace in parsed row text.
+ *
+ * @since x.x
+ *
+ * @param {string} value Raw text.
+ * @return {string} Normalized text.
+ */
+const normalizeRowText = ( value ) =>
+	String( value || '' )
+		.replace( /\u00a0/g, ' ' )
+		.replace( /\s+/g, ' ' )
+		.trim();
+
+/**
+ * Parses stored recipe HTML into row list state.
+ *
+ * Prefers headings + list items. Falls back to paragraphs / line breaks for
+ * legacy TinyMCE and plain-text content.
+ *
+ * @since x.x
+ *
+ * @param {string} html Stored ingredients or instructions HTML.
+ * @return {Array} Row objects.
+ */
+const parseRowsFromHtml = ( html ) => {
+	const empty = () => [ createItemRow() ];
+
+	if ( ! html || ! String( html ).trim() ) {
+		return empty();
+	}
+
+	try {
+		// Use a detached element — more reliable for HTML fragments than
+		// DOMParser with a wrapper (lists/paragraphs from wpautop / TinyMCE).
+		const root = document.createElement( 'div' );
+		root.innerHTML = String( html );
+
+		const rows = [];
+		const pushItem = ( value ) => {
+			const text = normalizeRowText( value );
+			if ( text ) {
+				rows.push( createItemRow( { value: text } ) );
 			}
-			return text ? `<p>${ text }</p>` : '';
-		} )
-		.filter( Boolean )
-		.join( '' );
+		};
+		const pushGroup = ( value ) => {
+			const text = normalizeRowText( value );
+			if ( text ) {
+				rows.push( createGroupRow( { value: text } ) );
+			}
+		};
+
+		const walk = ( node ) => {
+			if ( ! node ) {
+				return;
+			}
+
+			if ( Node.TEXT_NODE === node.nodeType ) {
+				const text = normalizeRowText( node.textContent );
+				if ( text ) {
+					pushItem( text );
+				}
+				return;
+			}
+
+			if ( Node.ELEMENT_NODE !== node.nodeType ) {
+				return;
+			}
+
+			const tag = node.tagName.toLowerCase();
+
+			if ( /^h[1-6]$/.test( tag ) ) {
+				pushGroup( node.textContent );
+				return;
+			}
+
+			if ( 'li' === tag ) {
+				pushItem( node.textContent );
+				return;
+			}
+
+			if ( 'p' === tag || 'div' === tag ) {
+				// Standalone blocks (legacy TinyMCE). Skip empty wrappers.
+				if (
+					! node.querySelector( 'ul,ol,li,h1,h2,h3,h4,h5,h6,p' )
+				) {
+					pushItem( node.textContent );
+					return;
+				}
+			}
+
+			if ( 'br' === tag ) {
+				return;
+			}
+
+			if ( 'ul' === tag || 'ol' === tag ) {
+				Array.from( node.children ).forEach( ( child ) => {
+					if ( 'LI' === child.tagName ) {
+						pushItem( child.textContent );
+					} else {
+						walk( child );
+					}
+				} );
+				return;
+			}
+
+			Array.from( node.childNodes ).forEach( walk );
+		};
+
+		Array.from( root.childNodes ).forEach( walk );
+
+		if ( ! rows.length ) {
+			const fallback = String( root.innerHTML || '' )
+				.replace( /<br\s*\/?>/gi, '\n' )
+				.replace( /<\/p>/gi, '\n' )
+				.replace( /<[^>]+>/g, '' );
+			fallback
+				.split( /\r?\n/ )
+				.map( normalizeRowText )
+				.filter( Boolean )
+				.forEach( ( line ) => pushItem( line ) );
+		}
+
+		return rows.length ? rows : empty();
+	} catch ( error ) {
+		return empty();
+	}
+};
 
 /**
  * Creates an empty ingredient item row.
@@ -628,32 +786,41 @@ const RecipeRow = ( {
 		}
 	};
 
+	// Re-sync after every render. React clears contentEditable DOM text when
+	// parent re-renders (no React children), which wiped hydrated values.
 	useLayoutEffect( () => {
 		const el = inputRef.current;
-		if ( ! el ) {
+		if ( ! el || isGroup ) {
 			return;
 		}
 
-		// Keep contenteditable text in sync when value is set from paste/reorder.
-		if ( ! isGroup && ( el.textContent || '' ) !== ( row.value || '' ) ) {
+		if ( ( el.textContent || '' ) !== ( row.value || '' ) ) {
 			el.textContent = row.value || '';
 		}
+	} );
 
-		if ( row.isNew ) {
-			el.focus();
-			if ( isGroup && 'function' === typeof el.setSelectionRange ) {
-				const end = el.value.length;
-				el.setSelectionRange( end, end );
-			} else if ( ! isGroup ) {
-				const selection = window.getSelection();
-				const range = document.createRange();
-				range.selectNodeContents( el );
-				range.collapse( false );
-				selection.removeAllRanges();
-				selection.addRange( range );
-			}
+	useLayoutEffect( () => {
+		const el = inputRef.current;
+		if ( ! el || ! row.isNew ) {
+			return;
 		}
-	}, [ row.isNew, row.id, isGroup, row.value ] );
+
+		el.focus();
+		if ( isGroup && 'function' === typeof el.setSelectionRange ) {
+			const end = el.value.length;
+			el.setSelectionRange( end, end );
+			return;
+		}
+
+		if ( ! isGroup ) {
+			const selection = window.getSelection();
+			const range = document.createRange();
+			range.selectNodeContents( el );
+			range.collapse( false );
+			selection.removeAllRanges();
+			selection.addRange( range );
+		}
+	}, [ row.isNew, row.id, isGroup ] );
 
 	return (
 		<div
@@ -737,9 +904,10 @@ const RecipeRow = ( {
  * @param {Object}   props             Component props.
  * @param {string}   props.name        Field name.
  * @param {string}   props.label       Field label.
- * @param {string}   props.placeholder Item placeholder.
- * @param {string}   props.mode        `ingredients` or `instructions`.
- * @param {Function} props.onChange    Change callback.
+ * @param {string}   props.placeholder  Item placeholder.
+ * @param {string}   props.mode         `ingredients` or `instructions`.
+ * @param {string}   props.initialValue Stored HTML to hydrate rows from.
+ * @param {Function} props.onChange     Change callback.
  * @return {Object} Row list fieldset.
  */
 export const RecipeRowList = ( {
@@ -747,9 +915,12 @@ export const RecipeRowList = ( {
 	label,
 	placeholder = '',
 	mode = 'ingredients',
+	initialValue = '',
 	onChange = () => {},
 } ) => {
-	const [ rows, setRows ] = useState( () => [ createItemRow() ] );
+	const [ rows, setRows ] = useState( () =>
+		parseRowsFromHtml( initialValue )
+	);
 	const [ draggingId, setDraggingId ] = useState( null );
 	const listRef = useRef( null );
 	const rowsRef = useRef( rows );
@@ -832,7 +1003,8 @@ export const RecipeRowList = ( {
 				nextRows.map( ( row ) => ( {
 					...row,
 					isNew: false,
-				} ) )
+				} ) ),
+				mode
 			)
 		);
 	};
@@ -1244,7 +1416,11 @@ export const RecipeRowList = ( {
 			} ) }
 		>
 			<label>{ label }</label>
-			<input type="hidden" name={ name } value={ serializeRows( rows ) } />
+			<input
+				type="hidden"
+				name={ name }
+				value={ serializeRows( rows, mode ) }
+			/>
 			<div
 				className="tasty-recipes-row-list"
 				ref={ listRef }
