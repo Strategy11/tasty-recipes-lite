@@ -464,36 +464,11 @@ class Mediavine_Create extends Converter {
 			if ( ! isset( $ingredients[ $ingredient['group'] ] ) ) {
 				$ingredients[ $ingredient['group'] ] = array();
 			}
-			$output = '';
-			if ( ! empty( $ingredient['link'] ) ) {
-				preg_match( '/([^[]*?)\[(.*)\](.*)/', $ingredient['original_text'], $matches );
-				if ( empty( $matches ) ) {
-					$before    = '';
-					$after     = '';
-					$link_text = $ingredient['original_text'];
-				} else {
-					$before    = $matches[1];
-					$link_text = $matches[2];
-					$after     = $matches[3];
-				}
-
-				$output .= wp_filter_post_kses( $before );
-				$output .= '<a href="' . esc_url( $ingredient['link'] ) . '"';
-				if ( $ingredient['nofollow'] ) {
-					$output .= ' rel="nofollow"';
-				}
-				// Check for internal links.
-				if ( ! str_starts_with( $ingredient['link'], get_site_url() ) ) {
-					$output .= ' target="_blank"';
-				}
-				$output .= '>';
-				$output .= wp_filter_post_kses( $link_text );
-				$output .= '</a>';
-				$output .= wp_filter_post_kses( $after );
-			} else {
-				$output .= wp_filter_post_kses( $ingredient['original_text'] );
-			}
-			$ingredients[ $ingredient['group'] ][] = $output;
+			$ingredients[ $ingredient['group'] ][] = self::format_create_ingredient_text(
+				(string) $ingredient['original_text'],
+				isset( $ingredient['link'] ) ? (string) $ingredient['link'] : '',
+				! empty( $ingredient['nofollow'] )
+			);
 		}
 		$output = '';
 		foreach ( $ingredients as $group => $lines ) {
@@ -575,6 +550,57 @@ class Mediavine_Create extends Converter {
 		update_post_meta( $recipe->get_id(), self::CREATE_KEY_META, $create_id );
 
 		return $recipe;
+	}
+
+	/**
+	 * Format a Create supply row into ingredient HTML.
+	 *
+	 * Create marks a partial link target with brackets in original_text and stores
+	 * the URL in the link column. Orphan brackets (link removed) are stripped.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $original_text Ingredient text, possibly with [linked span].
+	 * @param string $link          Ingredient link URL, if any.
+	 * @param bool   $nofollow      Whether the link should be nofollow.
+	 *
+	 * @return string
+	 */
+	private static function format_create_ingredient_text( $original_text, $link = '', $nofollow = false ) {
+		$original_text = (string) $original_text;
+		$link          = trim( (string) $link );
+
+		if ( '' === $link ) {
+			$text = preg_replace( '/\[([^\]]*)\]/', '$1', $original_text, 1 );
+			return wp_filter_post_kses( null === $text ? $original_text : $text );
+		}
+
+		preg_match( '/([^[]*?)\[([^\]]*)\](.*)/s', $original_text, $matches );
+		if ( empty( $matches ) ) {
+			$before    = '';
+			$after     = '';
+			$link_text = $original_text;
+		} else {
+			$before    = $matches[1];
+			$link_text = $matches[2];
+			$after     = $matches[3];
+		}
+
+		$output  = wp_filter_post_kses( $before );
+		$output .= '<a href="' . esc_url( $link ) . '"';
+		if ( $nofollow ) {
+			$output .= ' rel="nofollow"';
+		}
+		// Check for internal links.
+		if ( ! str_starts_with( $link, get_site_url() ) ) {
+			$output .= ' target="_blank"';
+		}
+		$output .= '>';
+		$output .= wp_filter_post_kses( $link_text );
+		$output .= '</a>';
+		$output .= wp_filter_post_kses( $after );
+
+		return $output;
 	}
 
 	/**
