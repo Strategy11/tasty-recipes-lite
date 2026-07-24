@@ -22,13 +22,6 @@ const TOOLTIP_SHOW_DELAY_MS = 400;
 const EMPTY_SHORTCUT = [];
 const ROW_VISIBILITY_PADDING_PX = 16;
 
-/**
- * Scrolls the modal content so a row stays fully in view.
- *
- * @since x.x
- *
- * @param {string} rowId Row id.
- */
 const ensureRowVisible = ( rowId ) => {
 	const rowEl = document.querySelector(
 		`.tasty-recipes-item-row[data-row-id="${ rowId }"]`
@@ -57,13 +50,6 @@ const ensureRowVisible = ( rowId ) => {
 	}
 };
 
-/**
- * Returns the Option/Alt key symbol for the current platform.
- *
- * @since x.x
- *
- * @return {string} Shortcut key label.
- */
 const getOptionKeySymbol = () => {
 	const platform = navigator.platform || '';
 	const userAgent = navigator.userAgent || '';
@@ -76,26 +62,11 @@ const getOptionKeySymbol = () => {
 
 let rowIdCounter = 0;
 
-/**
- * Creates a unique row id for ingredient list rows.
- *
- * @since x.x
- *
- * @return {string} Unique row id.
- */
 const createRowId = () => {
 	rowIdCounter += 1;
 	return `tasty-recipe-row-${ rowIdCounter }`;
 };
 
-/**
- * Escapes text for safe HTML serialization.
- *
- * @since x.x
- *
- * @param {string} value Raw text.
- * @return {string} Escaped text.
- */
 const escapeHtml = ( value ) =>
 	String( value )
 		.replace( /&/g, '&amp;' )
@@ -103,18 +74,6 @@ const escapeHtml = ( value ) =>
 		.replace( />/g, '&gt;' )
 		.replace( /"/g, '&quot;' );
 
-/**
- * Serializes recipe rows to canonical list HTML for form persistence.
- *
- * Groups consecutive items into a single `<ul>` or `<ol>`. Section titles
- * become `<h4>` and split lists. Item text is plain (escaped) — no amount spans.
- *
- * @since x.x
- *
- * @param {Array}  rows Ingredient or instruction rows.
- * @param {string} mode `ingredients` or `instructions`.
- * @return {string} HTML string.
- */
 const serializeRows = ( rows, mode = 'ingredients' ) => {
 	const listTag = 'instructions' === mode ? 'ol' : 'ul';
 	const parts = [];
@@ -152,31 +111,12 @@ const serializeRows = ( rows, mode = 'ingredients' ) => {
 	return parts.join( '' );
 };
 
-/**
- * Normalizes whitespace in parsed row text.
- *
- * @since x.x
- *
- * @param {string} value Raw text.
- * @return {string} Normalized text.
- */
 const normalizeRowText = ( value ) =>
 	String( value || '' )
 		.replace( /\u00a0/g, ' ' )
 		.replace( /\s+/g, ' ' )
 		.trim();
 
-/**
- * Parses stored recipe HTML into row list state.
- *
- * Prefers headings + list items. Falls back to paragraphs / line breaks for
- * legacy TinyMCE and plain-text content.
- *
- * @since x.x
- *
- * @param {string} html Stored ingredients or instructions HTML.
- * @return {Array} Row objects.
- */
 const parseRowsFromHtml = ( html ) => {
 	const empty = () => [ createItemRow() ];
 
@@ -281,16 +221,6 @@ const parseRowsFromHtml = ( html ) => {
 	}
 };
 
-/**
- * Creates an empty ingredient item row.
- *
- * @since x.x
- *
- * @param {Object}  options       Options.
- * @param {boolean} options.isNew Whether to focus/animate the row.
- * @param {string}  options.value Initial ingredient text.
- * @return {Object} Item row.
- */
 const createItemRow = ( { isNew = false, value = '' } = {} ) => ( {
 	id: createRowId(),
 	type: 'item',
@@ -298,16 +228,6 @@ const createItemRow = ( { isNew = false, value = '' } = {} ) => ( {
 	isNew,
 } );
 
-/**
- * Creates an empty section title row.
- *
- * @since x.x
- *
- * @param {Object}  options       Options.
- * @param {boolean} options.isNew Whether to focus/animate the row.
- * @param {string}  options.value Initial section title text.
- * @return {Object} Group row.
- */
 const createGroupRow = ( { isNew = false, value = '' } = {} ) => ( {
 	id: createRowId(),
 	type: 'group',
@@ -315,14 +235,6 @@ const createGroupRow = ( { isNew = false, value = '' } = {} ) => ( {
 	isNew,
 } );
 
-/**
- * Strips common list / step prefixes from a pasted line.
- *
- * @since x.x
- *
- * @param {string} value Raw line text.
- * @return {string} Cleaned line text.
- */
 const stripItemPrefix = ( value ) =>
 	String( value || '' )
 		.trim()
@@ -331,14 +243,6 @@ const stripItemPrefix = ( value ) =>
 		.replace( /^step\s*\d{1,3}\s*[.:\-–—]?\s*/i, '' )
 		.trim();
 
-/**
- * Splits plain clipboard text into ingredient lines.
- *
- * @since x.x
- *
- * @param {string} text Plain clipboard text.
- * @return {string[]} Non-empty cleaned lines.
- */
 const parsePasteLines = ( text ) => {
 	if ( ! text ) {
 		return [];
@@ -350,17 +254,6 @@ const parsePasteLines = ( text ) => {
 		.filter( Boolean );
 };
 
-/**
- * Parses clipboard HTML into ingredient / section-title parts.
- *
- * Uses heading tags and fully-bold blocks as section titles. Falls back to
- * null when the HTML yields nothing usable.
- *
- * @since x.x
- *
- * @param {string} html Clipboard HTML.
- * @return {Array|null} Parsed parts or null.
- */
 const parsePasteHtml = ( html ) => {
 	if ( ! html ) {
 		return null;
@@ -436,15 +329,6 @@ const parsePasteHtml = ( html ) => {
 	}
 };
 
-/**
- * Builds paste parts from clipboard text + HTML flavors.
- *
- * @since x.x
- *
- * @param {string} text Plain clipboard text.
- * @param {string} html Clipboard HTML.
- * @return {Array} Parsed parts with `text` and `type`.
- */
 const parseClipboardParts = ( text, html ) => {
 	const textParts = parsePasteLines( text ).map( ( line ) => ( {
 		text: line,
@@ -463,16 +347,6 @@ const parseClipboardParts = ( text, html ) => {
 	return htmlParts;
 };
 
-/**
- * Moves a row from one index to another.
- *
- * @since x.x
- *
- * @param {Array}  rows      Current rows.
- * @param {number} fromIndex Source index.
- * @param {number} toIndex   Destination index.
- * @return {Array} Reordered rows.
- */
 const moveRow = ( rows, fromIndex, toIndex ) => {
 	if (
 		fromIndex === toIndex ||
@@ -493,20 +367,6 @@ const moveRow = ( rows, fromIndex, toIndex ) => {
 	} ) );
 };
 
-/**
- * Renders a toolbar icon button with an optional kbd tooltip.
- *
- * @since x.x
- *
- * @param {Object}          props           Component props.
- * @param {string}          props.label     Tooltip / aria label.
- * @param {string[]}        props.shortcut  Shortcut key labels.
- * @param {boolean}         props.disabled  Disabled state.
- * @param {boolean}         props.danger    Danger styling.
- * @param {Function}        props.onClick   Click handler.
- * @param {React.ReactNode} props.children  Icon content.
- * @return {Object} Icon button.
- */
 const RowIconButton = ( {
 	label,
 	shortcut = EMPTY_SHORTCUT,
@@ -644,23 +504,6 @@ const RowIconButton = ( {
 	);
 };
 
-/**
- * Renders the hover toolbar for an ingredient or section title row.
- *
- * @since x.x
- *
- * @param {Object}   props             Component props.
- * @param {string}   props.type        Row type (`item` or `group`).
- * @param {boolean}  props.canMoveUp   Whether move up is available.
- * @param {boolean}  props.canMoveDown Whether move down is available.
- * @param {boolean}  props.canDelete   Whether delete is available.
- * @param {Function} props.onMoveUp    Move up handler.
- * @param {Function} props.onMoveDown  Move down handler.
- * @param {Function} props.onConvert   Convert type handler.
- * @param {Function} props.onDelete    Delete handler.
- * @param {string}   props.mode        `ingredients` or `instructions`.
- * @return {Object} Row actions toolbar.
- */
 const RowActions = ( {
 	type,
 	canMoveUp = true,
@@ -715,29 +558,6 @@ const RowActions = ( {
 	);
 };
 
-/**
- * Renders a single ingredient or section title row.
- *
- * @since x.x
- *
- * @param {Object}   props                   Component props.
- * @param {Object}   props.row               Row data.
- * @param {string}   props.placeholder       Item placeholder.
- * @param {string}   props.groupPlaceholder  Group placeholder.
- * @param {boolean}  props.canMoveUp         Whether move up is available.
- * @param {boolean}  props.canMoveDown       Whether move down is available.
- * @param {boolean}  props.canDelete         Whether delete is available.
- * @param {boolean}  props.isDragging        Whether this row is being dragged.
- * @param {Function} props.onValueChange     Value change handler.
- * @param {Function} props.onMoveUp          Move up handler.
- * @param {Function} props.onMoveDown        Move down handler.
- * @param {Function} props.onConvert         Convert type handler.
- * @param {Function} props.onDelete          Delete handler.
- * @param {Function} props.onPaste           Smart paste handler for item rows.
- * @param {Function} props.onGripPointerDown Grip pointerdown handler.
- * @param {string}   props.mode              `ingredients` or `instructions`.
- * @return {Object} Ingredient row.
- */
 const RecipeRow = ( {
 	row,
 	placeholder,
@@ -758,13 +578,8 @@ const RecipeRow = ( {
 	const inputRef = useRef( null );
 	const isGroup = 'group' === row.type;
 
-	/**
-	 * Moves the focused row with Option/Alt + ArrowUp/ArrowDown.
-	 *
-	 * @since x.x
-	 *
-	 * @param {KeyboardEvent} event Keyboard event.
-	 */
+	
+
 	const handleRowKeyDown = ( event ) => {
 		if ( ! event.altKey ) {
 			return;
@@ -896,20 +711,6 @@ const RecipeRow = ( {
 	);
 };
 
-/**
- * Recipe row list (ingredients or instructions) with add-item / add-section actions.
- *
- * @since x.x
- *
- * @param {Object}   props             Component props.
- * @param {string}   props.name        Field name.
- * @param {string}   props.label       Field label.
- * @param {string}   props.placeholder  Item placeholder.
- * @param {string}   props.mode         `ingredients` or `instructions`.
- * @param {string}   props.initialValue Stored HTML to hydrate rows from.
- * @param {Function} props.onChange     Change callback.
- * @return {Object} Row list fieldset.
- */
 export const RecipeRowList = ( {
 	name,
 	label,
@@ -935,11 +736,8 @@ export const RecipeRowList = ( {
 
 	rowsRef.current = rows;
 
-	/**
-	 * Plays a short FLIP slide after an arrow-button reorder.
-	 *
-	 * @since x.x
-	 */
+	
+
 	useLayoutEffect( () => {
 		const firstTops = pendingFlipRef.current;
 		const list = listRef.current;
@@ -1037,17 +835,8 @@ export const RecipeRowList = ( {
 		] );
 	};
 
-	/**
-	 * Handles smart paste into an ingredient row.
-	 *
-	 * Multi-line / list / heading clipboard content is split into rows.
-	 * Single-line paste inserts plain text only.
-	 *
-	 * @since x.x
-	 *
-	 * @param {ClipboardEvent} event Paste event.
-	 * @param {string}         rowId Target row id.
-	 */
+	
+
 	const handlePaste = ( event, rowId ) => {
 		const clipboard = event.clipboardData;
 		if ( ! clipboard ) {
@@ -1145,14 +934,8 @@ export const RecipeRowList = ( {
 		commitRows( nextRows );
 	};
 
-	/**
-	 * Moves a row one position in the given direction.
-	 *
-	 * @since x.x
-	 *
-	 * @param {string} rowId     Row id.
-	 * @param {number} direction `-1` for up, `1` for down.
-	 */
+	
+
 	const handleMoveRow = ( rowId, direction ) => {
 		const fromIndex = rows.findIndex( ( row ) => row.id === rowId );
 		if ( fromIndex < 0 ) {
@@ -1181,13 +964,8 @@ export const RecipeRowList = ( {
 		commitRows( nextRows );
 	};
 
-	/**
-	 * Toggles a row between ingredient and section title.
-	 *
-	 * @since x.x
-	 *
-	 * @param {string} rowId Row id.
-	 */
+	
+
 	const handleConvertRow = ( rowId ) => {
 		commitRows(
 			rows.map( ( row ) => {
@@ -1204,13 +982,8 @@ export const RecipeRowList = ( {
 		);
 	};
 
-	/**
-	 * Deletes a row. Keeps at least one ingredient field available.
-	 *
-	 * @since x.x
-	 *
-	 * @param {string} rowId Row id.
-	 */
+	
+
 	const handleDeleteRow = ( rowId ) => {
 		let nextRows = rows
 			.filter( ( row ) => row.id !== rowId )
@@ -1227,14 +1000,8 @@ export const RecipeRowList = ( {
 		commitRows( nextRows );
 	};
 
-	/**
-	 * Starts a grip drag and attaches document pointer listeners.
-	 *
-	 * @since x.x
-	 *
-	 * @param {PointerEvent} event Pointer event.
-	 * @param {string}       rowId Dragged row id.
-	 */
+	
+
 	const handleGripPointerDown = ( event, rowId ) => {
 		if ( 0 !== event.button || dragRef.current ) {
 			return;
@@ -1475,26 +1242,10 @@ export const RecipeRowList = ( {
 	);
 };
 
-/**
- * Ingredients row list.
- *
- * @since x.x
- *
- * @param {Object} props Component props.
- * @return {Object} Ingredients list.
- */
 export const IngredientsList = ( props ) => (
 	<RecipeRowList mode="ingredients" { ...props } />
 );
 
-/**
- * Instructions row list.
- *
- * @since x.x
- *
- * @param {Object} props Component props.
- * @return {Object} Instructions list.
- */
 export const InstructionsList = ( props ) => (
 	<RecipeRowList mode="instructions" { ...props } />
 );
