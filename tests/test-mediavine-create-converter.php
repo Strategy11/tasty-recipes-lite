@@ -108,7 +108,12 @@ class Test_Mediavine_Create_Converter extends Tasty_Recipes_Converter_Testcase {
 		$this->assertInstanceOf( Recipe::class, $recipe );
 
 		$updated_elementor = get_post_meta( $this->post_id, '_elementor_data', true );
-		$this->assertStringContainsString( '[tasty-recipe id="' . $recipe->get_id() . '"]', $updated_elementor );
+		$decoded_elementor = json_decode( $updated_elementor, true );
+		$this->assertIsArray( $decoded_elementor );
+		$this->assertSame(
+			'[tasty-recipe id="' . $recipe->get_id() . '"]',
+			$decoded_elementor[0]['settings']['shortcode']
+		);
 		$this->assertStringNotContainsString( '[mv_create', $updated_elementor );
 		$this->assertSame( '', (string) get_post_meta( $this->post_id, '_elementor_css', true ) );
 		$this->assertSame(
