@@ -4,7 +4,7 @@ import { applyFilters } from '@wordpress/hooks';
 import { FieldGroup } from './FieldGroup';
 import { DescriptionFormatTip } from './DescriptionFormatTip';
 import { ImprovedKeysNotice } from './ImprovedKeysNotice';
-import { IngredientsList, InstructionsList } from './RecipeRowList';
+import { IngredientsList, InstructionsList } from './recipe-row-list';
 import { RichTextarea } from './RichTextarea';
 import { ImageField } from './ImageField';
 

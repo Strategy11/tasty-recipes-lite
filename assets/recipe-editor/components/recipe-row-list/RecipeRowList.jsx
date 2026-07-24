@@ -1,0 +1,535 @@
+import { useLayoutEffect, useRef, useState } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
+import { REORDER_DURATION_MS, REORDER_EASING } from './constants';
+import { parseClipboardParts } from './paste';
+import { RecipeRow } from './RecipeRow';
+import {
+	createGroupRow,
+	createItemRow,
+	ensureRowVisible,
+	moveRow,
+	parseRowsFromHtml,
+	serializeRows,
+} from './utils';
+
+const RecipeRowList = ( {
+	name,
+	label,
+	placeholder = '',
+	mode = 'ingredients',
+	initialValue = '',
+	onChange = () => {},
+} ) => {
+	const [ rows, setRows ] = useState( () =>
+		parseRowsFromHtml( initialValue )
+	);
+	const [ draggingId, setDraggingId ] = useState( null );
+	const listRef = useRef( null );
+	const rowsRef = useRef( rows );
+	const dragRef = useRef( null );
+	const pendingFlipRef = useRef( null );
+	const pendingScrollRowIdRef = useRef( null );
+	const groupPlaceholder = __( 'For the …', 'tasty-recipes-lite' );
+	const isInstructions = 'instructions' === mode;
+	const addItemLabel = isInstructions
+		? __( 'Add Step', 'tasty-recipes-lite' )
+		: __( 'Add Ingredient', 'tasty-recipes-lite' );
+
+	rowsRef.current = rows;
+
+	useLayoutEffect( () => {
+		const firstTops = pendingFlipRef.current;
+		const list = listRef.current;
+		const scrollRowId = pendingScrollRowIdRef.current;
+		pendingScrollRowIdRef.current = null;
+
+		if ( scrollRowId ) {
+			ensureRowVisible( scrollRowId );
+			window.requestAnimationFrame( () => {
+				ensureRowVisible( scrollRowId );
+			} );
+		}
+
+		if ( ! firstTops || ! list ) {
+			return;
+		}
+
+		pendingFlipRef.current = null;
+
+		const items = Array.from(
+			list.querySelectorAll( '.tasty-recipes-item-row' )
+		);
+
+		items.forEach( ( el ) => {
+			const prevTop = firstTops.get( el.dataset.rowId );
+			if ( undefined === prevTop ) {
+				return;
+			}
+
+			const dy = prevTop - el.getBoundingClientRect().top;
+			if ( ! dy ) {
+				return;
+			}
+
+			el.style.transition = 'none';
+			el.style.transform = `translateY(${ dy }px)`;
+			// Force layout so the invert is applied before animating back.
+			el.getBoundingClientRect();
+			el.style.transition = `transform ${ REORDER_DURATION_MS }ms ${ REORDER_EASING }`;
+			el.style.transform = '';
+
+			const clearStyles = () => {
+				el.style.transition = '';
+				el.style.transform = '';
+			};
+			el.addEventListener( 'transitionend', clearStyles, { once: true } );
+			window.setTimeout( clearStyles, REORDER_DURATION_MS + 80 );
+		} );
+
+		if ( scrollRowId ) {
+			window.setTimeout( () => {
+				ensureRowVisible( scrollRowId );
+			}, REORDER_DURATION_MS + 20 );
+		}
+	}, [ rows ] );
+
+	const commitRows = ( nextRows ) => {
+		setRows( nextRows );
+		onChange(
+			serializeRows(
+				nextRows.map( ( row ) => ( {
+					...row,
+					isNew: false,
+				} ) ),
+				mode
+			)
+		);
+	};
+
+	const handleValueChange = ( id, value ) => {
+		commitRows(
+			rows.map( ( row ) =>
+				row.id === id
+					? {
+							...row,
+							value,
+							isNew: false,
+					  }
+					: { ...row, isNew: false }
+			)
+		);
+	};
+
+	const handleAddItem = () => {
+		commitRows( [
+			...rows.map( ( row ) => ( { ...row, isNew: false } ) ),
+			createItemRow( { isNew: true } ),
+		] );
+	};
+
+	const handleAddSectionTitle = () => {
+		commitRows( [
+			...rows.map( ( row ) => ( { ...row, isNew: false } ) ),
+			createGroupRow( { isNew: true } ),
+		] );
+	};
+
+	const handlePaste = ( event, rowId ) => {
+		const clipboard = event.clipboardData;
+		if ( ! clipboard ) {
+			return;
+		}
+
+		const text = clipboard.getData( 'text' ) || '';
+		const html = clipboard.getData( 'text/html' ) || '';
+		if ( ! text && ! html ) {
+			return;
+		}
+
+		const parsed = parseClipboardParts( text, html );
+		if ( ! parsed.length ) {
+			event.preventDefault();
+			return;
+		}
+
+		const fromIndex = rows.findIndex( ( row ) => row.id === rowId );
+		if ( fromIndex < 0 ) {
+			return;
+		}
+
+		const current = rows[ fromIndex ];
+		const existing = ( current.value || '' ).trim();
+
+		// Single plain item — insert as plain text into the current field.
+		if ( 1 === parsed.length && 'item' === parsed[ 0 ].type ) {
+			event.preventDefault();
+			const plain = parsed[ 0 ].text || text;
+			if (
+				'function' === typeof document.queryCommandSupported &&
+				document.queryCommandSupported( 'insertText' )
+			) {
+				document.execCommand( 'insertText', false, plain );
+				return;
+			}
+
+			const selection = window.getSelection();
+			if ( selection?.rangeCount ) {
+				const range = selection.getRangeAt( 0 );
+				range.deleteContents();
+				range.insertNode( document.createTextNode( plain ) );
+				range.collapse( false );
+				const el = event.currentTarget;
+				if ( el ) {
+					handleValueChange( rowId, el.textContent || '' );
+				}
+			}
+			return;
+		}
+
+		event.preventDefault();
+
+		const parts = [ ...parsed ];
+		if ( existing ) {
+			parts.unshift( { text: existing, type: 'item' } );
+		}
+
+		const created = parts.map( ( part, index ) => {
+			const isLast = index === parts.length - 1;
+			if ( 'heading' === part.type ) {
+				return createGroupRow( {
+					value: part.text,
+					isNew: isLast,
+				} );
+			}
+
+			return createItemRow( {
+				value: part.text,
+				isNew: isLast,
+			} );
+		} );
+
+		// Keep the original row id on the first replacement so React remounts less.
+		created[ 0 ] = {
+			...created[ 0 ],
+			id: current.id,
+			isNew: 1 === created.length,
+		};
+
+		const nextRows = [
+			...rows.slice( 0, fromIndex ).map( ( row ) => ( {
+				...row,
+				isNew: false,
+			} ) ),
+			...created,
+			...rows.slice( fromIndex + 1 ).map( ( row ) => ( {
+				...row,
+				isNew: false,
+			} ) ),
+		];
+
+		pendingScrollRowIdRef.current = created[ created.length - 1 ].id;
+		commitRows( nextRows );
+	};
+
+	const handleMoveRow = ( rowId, direction ) => {
+		const fromIndex = rows.findIndex( ( row ) => row.id === rowId );
+		if ( fromIndex < 0 ) {
+			return;
+		}
+
+		const toIndex = fromIndex + direction;
+		const nextRows = moveRow( rows, fromIndex, toIndex );
+		if ( nextRows === rows ) {
+			return;
+		}
+
+		const list = listRef.current;
+		if ( list ) {
+			pendingFlipRef.current = new Map(
+				Array.from(
+					list.querySelectorAll( '.tasty-recipes-item-row' )
+				).map( ( el ) => [
+					el.dataset.rowId,
+					el.getBoundingClientRect().top,
+				] )
+			);
+		}
+
+		pendingScrollRowIdRef.current = rowId;
+		commitRows( nextRows );
+	};
+
+	const handleConvertRow = ( rowId ) => {
+		commitRows(
+			rows.map( ( row ) => {
+				if ( row.id !== rowId ) {
+					return { ...row, isNew: false };
+				}
+
+				return {
+					...row,
+					type: 'group' === row.type ? 'item' : 'group',
+					isNew: true,
+				};
+			} )
+		);
+	};
+
+	const handleDeleteRow = ( rowId ) => {
+		let nextRows = rows
+			.filter( ( row ) => row.id !== rowId )
+			.map( ( row ) => ( {
+				...row,
+				isNew: false,
+			} ) );
+
+		const hasItemRow = nextRows.some( ( row ) => 'item' === row.type );
+		if ( ! hasItemRow ) {
+			nextRows = [ ...nextRows, createItemRow() ];
+		}
+
+		commitRows( nextRows );
+	};
+
+	const handleGripPointerDown = ( event, rowId ) => {
+		if ( 0 !== event.button || dragRef.current ) {
+			return;
+		}
+
+		const list = listRef.current;
+		if ( ! list || rowsRef.current.length < 2 ) {
+			return;
+		}
+
+		event.preventDefault();
+
+		const startIndex = rowsRef.current.findIndex(
+			( row ) => row.id === rowId
+		);
+		if ( startIndex < 0 ) {
+			return;
+		}
+
+		dragRef.current = {
+			rowId,
+			index: startIndex,
+			startY: event.clientY,
+			lastY: event.clientY,
+			raf: null,
+		};
+		setDraggingId( rowId );
+		document.body.classList.add( 'tasty-recipes-is-dragging' );
+
+		try {
+			event.currentTarget.setPointerCapture( event.pointerId );
+		} catch ( error ) {
+			// Pointer capture is best-effort.
+		}
+
+		const getRowElement = ( id ) =>
+			list.querySelector( `[data-row-id="${ id }"]` );
+
+		const tickDrag = () => {
+			const drag = dragRef.current;
+			if ( ! drag ) {
+				return;
+			}
+
+			const rowEl = getRowElement( drag.rowId );
+			if ( ! rowEl ) {
+				return;
+			}
+
+			rowEl.style.transform = `translate3d(0, ${
+				drag.lastY - drag.startY
+			}px, 0)`;
+
+			const others = Array.from(
+				list.querySelectorAll( '.tasty-recipes-item-row' )
+			).filter( ( el ) => el.dataset.rowId !== drag.rowId );
+			const listTop = list.getBoundingClientRect().top;
+			let targetIndex = others.length;
+
+			for ( let i = 0; i < others.length; i++ ) {
+				const mid =
+					listTop +
+					others[ i ].offsetTop +
+					others[ i ].offsetHeight / 2;
+				if ( drag.lastY < mid ) {
+					targetIndex = i;
+					break;
+				}
+			}
+
+			if ( targetIndex !== drag.index ) {
+				const before = rowEl.offsetTop;
+				const nextRows = moveRow(
+					rowsRef.current,
+					drag.index,
+					targetIndex
+				);
+				drag.index = targetIndex;
+				commitRows( nextRows );
+
+				window.requestAnimationFrame( () => {
+					if ( ! dragRef.current ) {
+						return;
+					}
+					const after = rowEl.offsetTop;
+					dragRef.current.startY += after - before;
+					rowEl.style.transform = `translate3d(0, ${
+						dragRef.current.lastY - dragRef.current.startY
+					}px, 0)`;
+				} );
+			}
+
+			const scrollBody = document.querySelector(
+				'.tasty-recipes-frame-content'
+			);
+			if ( scrollBody ) {
+				const bounds = scrollBody.getBoundingClientRect();
+				if ( drag.lastY < bounds.top + 48 ) {
+					scrollBody.scrollTop -= 10;
+				} else if ( drag.lastY > bounds.bottom - 48 ) {
+					scrollBody.scrollTop += 10;
+				}
+			}
+		};
+
+		const onPointerMove = ( moveEvent ) => {
+			const drag = dragRef.current;
+			if ( ! drag ) {
+				return;
+			}
+
+			moveEvent.preventDefault();
+			drag.lastY = moveEvent.clientY;
+			if ( ! drag.raf ) {
+				drag.raf = window.requestAnimationFrame( () => {
+					if ( dragRef.current ) {
+						dragRef.current.raf = null;
+					}
+					tickDrag();
+				} );
+			}
+		};
+
+		const endDrag = () => {
+			const drag = dragRef.current;
+			if ( ! drag ) {
+				return;
+			}
+
+			const rowEl = getRowElement( drag.rowId );
+			if ( rowEl ) {
+				rowEl.style.transition =
+					'transform 0.22s cubic-bezier(0.34, 1.32, 0.64, 1)';
+				rowEl.style.transform = '';
+				const clearDragStyles = () => {
+					rowEl.style.transition = '';
+				};
+				rowEl.addEventListener( 'transitionend', clearDragStyles, {
+					once: true,
+				} );
+				window.setTimeout( clearDragStyles, 300 );
+			}
+
+			if ( drag.raf ) {
+				window.cancelAnimationFrame( drag.raf );
+			}
+
+			dragRef.current = null;
+			setDraggingId( null );
+			document.body.classList.remove( 'tasty-recipes-is-dragging' );
+			window.removeEventListener( 'pointermove', onPointerMove );
+			window.removeEventListener( 'pointerup', onPointerUp );
+			window.removeEventListener( 'pointercancel', onPointerUp );
+			window.removeEventListener( 'keydown', onKeyDown );
+		};
+
+		const onPointerUp = () => endDrag();
+		const onKeyDown = ( keyEvent ) => {
+			if ( 'Escape' === keyEvent.key ) {
+				endDrag();
+			}
+		};
+
+		window.addEventListener( 'pointermove', onPointerMove, {
+			passive: false,
+		} );
+		window.addEventListener( 'pointerup', onPointerUp );
+		window.addEventListener( 'pointercancel', onPointerUp );
+		window.addEventListener( 'keydown', onKeyDown );
+	};
+
+	const itemCount = rows.filter( ( entry ) => 'item' === entry.type ).length;
+
+	return (
+		<fieldset className="tasty-recipes-row-list-field">
+			<label>{ label }</label>
+			<input
+				type="hidden"
+				name={ name }
+				value={ serializeRows( rows, mode ) }
+			/>
+			<div
+				className="tasty-recipes-row-list"
+				ref={ listRef }
+				data-mode={ mode }
+			>
+				{ rows.map( ( row, index ) => (
+					<RecipeRow
+						key={ row.id }
+						row={ row }
+						mode={ mode }
+						placeholder={ placeholder }
+						groupPlaceholder={ groupPlaceholder }
+						canMoveUp={ index > 0 }
+						canMoveDown={ index < rows.length - 1 }
+						canDelete={ 'group' === row.type || itemCount > 1 }
+						isDragging={ draggingId === row.id }
+						onValueChange={ handleValueChange }
+						onMoveUp={ () => handleMoveRow( row.id, -1 ) }
+						onMoveDown={ () => handleMoveRow( row.id, 1 ) }
+						onConvert={ () => handleConvertRow( row.id ) }
+						onDelete={ () => handleDeleteRow( row.id ) }
+						onPaste={ handlePaste }
+						onGripPointerDown={ handleGripPointerDown }
+					/>
+				) ) }
+			</div>
+			<div className="tasty-recipes-rich-textarea-actions">
+				<button
+					type="button"
+					className="tasty-recipes-rich-textarea-action tasty-recipes-rich-textarea-action--add"
+					onClick={ handleAddItem }
+				>
+					<span
+						className="tasty-recipes-rich-textarea-action-icon"
+						aria-hidden="true"
+					></span>
+					{ addItemLabel }
+				</button>
+				<button
+					type="button"
+					className="tasty-recipes-rich-textarea-action tasty-recipes-rich-textarea-action--section"
+					onClick={ handleAddSectionTitle }
+				>
+					<span
+						className="tasty-recipes-rich-textarea-action-icon"
+						aria-hidden="true"
+					></span>
+					{ __( 'Add Section Title', 'tasty-recipes-lite' ) }
+				</button>
+			</div>
+		</fieldset>
+	);
+};
+
+export const IngredientsList = ( props ) => (
+	<RecipeRowList mode="ingredients" { ...props } />
+);
+
+export const InstructionsList = ( props ) => (
+	<RecipeRowList mode="instructions" { ...props } />
+);
