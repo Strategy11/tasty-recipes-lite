@@ -168,6 +168,65 @@ class Test_Mediavine_Create_Converter extends Tasty_Recipes_Converter_Testcase {
 	}
 
 	/**
+	 * Partial Create ingredient links convert brackets into an anchor.
+	 */
+	public function test_format_create_ingredient_partial_link() {
+		$output = $this->invoke_format_create_ingredient_text(
+			'1 cup [flour] sifted',
+			'https://example.com/flour',
+			true
+		);
+
+		$this->assertSame(
+			'1 cup <a href="https://example.com/flour" rel="nofollow" target="_blank">flour</a> sifted',
+			$output
+		);
+	}
+
+	/**
+	 * Orphan Create link brackets are stripped when no URL remains.
+	 */
+	public function test_format_create_ingredient_orphan_brackets() {
+		$output = $this->invoke_format_create_ingredient_text( '[flour]', '', false );
+
+		$this->assertSame( 'flour', $output );
+		$this->assertStringNotContainsString( '[', $output );
+		$this->assertStringNotContainsString( ']', $output );
+	}
+
+	/**
+	 * Whole-line Create ingredient links still wrap the full text.
+	 */
+	public function test_format_create_ingredient_whole_line_link() {
+		$output = $this->invoke_format_create_ingredient_text(
+			'kale pesto, magic green sauce, or any other yummy sauce',
+			'https://pinchofyum.com/5-minute-vegan-kale-pesto',
+			true
+		);
+
+		$this->assertSame(
+			'<a href="https://pinchofyum.com/5-minute-vegan-kale-pesto" rel="nofollow" target="_blank">kale pesto, magic green sauce, or any other yummy sauce</a>',
+			$output
+		);
+	}
+
+	/**
+	 * Multi-bracket lines use the first Create link marker only.
+	 */
+	public function test_format_create_ingredient_multi_bracket_uses_first_pair() {
+		$output = $this->invoke_format_create_ingredient_text(
+			'1 cup [all-purpose flour] (or [bread flour])',
+			'https://example.com/flour',
+			false
+		);
+
+		$this->assertSame(
+			'1 cup <a href="https://example.com/flour" target="_blank">all-purpose flour</a> (or [bread flour])',
+			$output
+		);
+	}
+
+	/**
 	 * Unused empty-title tasty_recipe posts are removed by cleanup.
 	 */
 	public function test_cleanup_empty_title_orphans() {
@@ -215,6 +274,22 @@ class Test_Mediavine_Create_Converter extends Tasty_Recipes_Converter_Testcase {
 				)
 			)
 		);
+	}
+
+	/**
+	 * Invoke the private Create ingredient formatter for unit assertions.
+	 *
+	 * @param string $original_text Ingredient text.
+	 * @param string $link          Link URL.
+	 * @param bool   $nofollow      Whether the link is nofollow.
+	 *
+	 * @return string
+	 */
+	private function invoke_format_create_ingredient_text( $original_text, $link = '', $nofollow = false ) {
+		$method = new ReflectionMethod( \Tasty_Recipes\Converters\Mediavine_Create::class, 'format_create_ingredient_text' );
+		$method->setAccessible( true );
+
+		return $method->invoke( null, $original_text, $link, $nofollow );
 	}
 
 	/**
