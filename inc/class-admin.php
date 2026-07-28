@@ -9,7 +9,6 @@ namespace Tasty_Recipes;
 
 use Tasty\Framework\Utils\Url;
 use Tasty_Recipes;
-use Tasty_Recipes\Converters\Mediavine_Create;
 use Tasty_Recipes\Settings;
 use Tasty_Recipes\Objects\Recipe;
 
@@ -463,11 +462,6 @@ class Admin {
 		}
 
 		$after_count = $class::get_count();
-
-		if ( 'create' === $get_type && 0 === (int) $after_count ) {
-			Mediavine_Create::cleanup_empty_title_orphans();
-		}
-
 		wp_send_json_success(
 			array(
 				'converted' => $converted,
