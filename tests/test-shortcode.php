@@ -300,6 +300,47 @@ EOT;
 	}
 
 	/**
+	 * Ensures Elementor layouts insert quick links after the title H1.
+	 *
+	 * @since x.x
+	 */
+	public function test_render_jump_to_recipe_after_elementor_title() {
+		global $post;
+
+		$this->prime_basic_test_post();
+		$recipe = $this->create_mock_recipe();
+		$post   = get_post( $this->post_id );
+		update_option( Tasty_Recipes::QUICK_LINKS_OPTION, array( 'jump', 'print' ) );
+
+		$elementor_content = '<div data-elementor-type="wp-post" data-elementor-id="' . $this->post_id . '" class="elementor elementor-' . $this->post_id . '">'
+			. '<div class="elementor-element elementor-widget elementor-widget-theme-post-title elementor-page-title">'
+			. '<h1 class="elementor-heading-title">Elementor Recipe Title</h1>'
+			. '</div>'
+			. '<div class="elementor-element elementor-widget elementor-widget-text-editor"><p>Intro copy</p></div>'
+			. Shortcodes::get_shortcode_for_recipe( $recipe )
+			. '</div>';
+
+		wp_update_post(
+			array(
+				'ID'           => $this->post_id,
+				'post_content' => $elementor_content,
+			)
+		);
+
+		$this->go_to( get_permalink( $this->post_id ) );
+		$actual = Quick_Links::filter_the_content_late( $elementor_content );
+
+		$this->assertMatchesRegularExpression(
+			'/<h1 class="elementor-heading-title">Elementor Recipe Title<\/h1>\s*<div class="tasty-recipes-quick-links">/',
+			$actual
+		);
+		$this->assertStringNotContainsString(
+			'<div class="tasty-recipes-quick-links"><a class="tasty-recipes-jump-link',
+			substr( $actual, 0, strpos( $actual, '<h1 class="elementor-heading-title">' ) )
+		);
+	}
+
+	/**
 	 * Ensures Jump to Recipe link is rendered.
 	 */
 	public function test_render_jump_to_recipe_shortcode() {
