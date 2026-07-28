@@ -25,9 +25,11 @@
 			$('.tasty-recipes-modal-close', container).on('click', $.proxy( function(){
 				this.close( false );
 			}, this ));
-			$( '.tasty-recipes-button-cancel', container ).on( 'click', () => {
-				this.close( false );
-			} );
+			container[ 0 ]
+				?.querySelector( '.tasty-recipes-button-cancel' )
+				?.addEventListener( 'click', () => {
+					this.close( false );
+				} );
 
 			// Listen for label updates from the React form.
 			document.addEventListener( 'tasty-recipes-editor-labels-update', function( event ) {
