@@ -16,6 +16,15 @@ describe( 'Recipe Creation', () => {
 		);
 	};
 
+	const typeInlineEditor = ( fieldId, text ) => {
+		cy.get( `#${ fieldId }.mce-content-body`, {
+			timeout: 10_000,
+		} )
+			.should( 'be.visible' )
+			.click()
+			.type( text, { delay: 0 } );
+	};
+
 	const fillRowList = ( mode, lines ) => {
 		const addLabel =
 			'ingredients' === mode ? 'Add Ingredient' : 'Add Step';
@@ -32,7 +41,6 @@ describe( 'Recipe Creation', () => {
 				`.tasty-recipes-row-list[data-mode="${ mode }"] .tasty-recipes-row-input[contenteditable="true"]`
 			)
 				.eq( index )
-				.scrollIntoView()
 				.should( 'be.visible' )
 				.click()
 				.type( line, { delay: 0 } );
@@ -65,9 +73,7 @@ describe( 'Recipe Creation', () => {
 			.should( 'be.visible' )
 			.and( 'have.value', '' );
 
-		// Author sits below the fold in the fixed modal scroll area.
 		cy.get( '.tasty-recipes-frame-content #author_name' )
-			.scrollIntoView()
 			.should( 'be.visible' )
 			.and( 'have.value', 'admin' );
 
@@ -97,10 +103,10 @@ describe( 'Recipe Creation', () => {
 			.type( 'Cypress Created Recipe' );
 
 		cy.get( '#author_name' )
-			.scrollIntoView()
-			.should( 'have.value', 'admin' );
+			.should( 'be.visible' )
+			.and( 'have.value', 'admin' );
 
-		cy.typeTastyInlineEditor(
+		typeInlineEditor(
 			'tasty-recipes-recipe-description',
 			'A delicious test recipe.'
 		);
@@ -129,7 +135,7 @@ describe( 'Recipe Creation', () => {
 			force: true,
 		} );
 
-		cy.typeTastyInlineEditor(
+		typeInlineEditor(
 			'tasty-recipes-recipe-notes',
 			'Let cool before serving.'
 		);
@@ -163,7 +169,7 @@ describe( 'Recipe Creation', () => {
 			recipeTitle
 		);
 
-		cy.typeTastyInlineEditor(
+		typeInlineEditor(
 			'tasty-recipes-recipe-description',
 			descriptionText
 		);

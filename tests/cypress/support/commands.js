@@ -263,12 +263,3 @@ Cypress.Commands.add( 'loginCached', () => {
 		cy.login();
 	} );
 } );
-
-Cypress.Commands.add( 'typeTastyInlineEditor', ( fieldId, text ) => {
-	cy.get( `#${ fieldId }.mce-content-body`, {
-		timeout: 10_000,
-	} )
-		.should( 'be.visible' )
-		.click()
-		.type( text, { delay: 0 } );
-} );
