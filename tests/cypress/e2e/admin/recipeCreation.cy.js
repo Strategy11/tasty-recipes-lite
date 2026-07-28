@@ -143,6 +143,73 @@ describe( 'Recipe Creation', () => {
 		);
 	} );
 
+	it( 'should preserve row-list section titles and reordered items', () => {
+		const recipeTitle = `Cypress Row List Recipe ${ Date.now() }`;
+
+		openCreateRecipeModal();
+		cy.get( '.tasty-recipes-frame-content input#title' ).type(
+			recipeTitle
+		);
+
+		const ingredients = '.tasty-recipes-row-list[data-mode="ingredients"]';
+
+		cy.get( `${ ingredients } .tasty-recipes-row-input` )
+			.first()
+			.click()
+			.type( 'First ingredient' );
+		cy.get( ingredients )
+			.closest( 'fieldset' )
+			.contains( 'button', 'Add Ingredient' )
+			.click();
+		cy.get( `${ ingredients } .tasty-recipes-row-input` )
+			.eq( 1 )
+			.click()
+			.type( 'Second ingredient' );
+		cy.get( `${ ingredients } .tasty-recipes-item-row` )
+			.first()
+			.find( 'button[aria-label="Move down"]' )
+			.click( { force: true } );
+		cy.get( `${ ingredients } .tasty-recipes-row-input` )
+			.eq( 1 )
+			.trigger( 'keydown', { altKey: true, key: 'ArrowUp' } );
+
+		cy.get( ingredients )
+			.closest( 'fieldset' )
+			.contains( 'button', 'Add Section Title' )
+			.click();
+		cy.get( `${ ingredients } .tasty-recipes-row-input[type="text"]` )
+			.last()
+			.type( 'For serving' );
+
+		cy.get( `${ ingredients }` )
+			.siblings( 'input[name="ingredients"]' )
+			.should(
+				'have.value',
+				'<ul><li>First ingredient</li><li>Second ingredient</li></ul><h4>For serving</h4>'
+			);
+
+		cy.get( '.tasty-recipes-button-insert' ).click();
+		cy.get( '.tasty-recipes-modal-select-skip-link', {
+			timeout: 10_000,
+		} ).click();
+
+		cy.wpDevEval( `
+			$recipes = get_posts( array(
+				'post_type'      => 'tasty_recipe',
+				'posts_per_page' => 1,
+				'post_status'    => 'any',
+				'title'          => '${ recipeTitle.replaceAll( '\'', String.raw`\'` ) }',
+			) );
+			echo empty( $recipes )
+				? 'missing'
+				: get_post_meta( $recipes[0]->ID, 'ingredients', true );
+		` ).then( result => {
+			expect( result.stdout.trim() ).to.equal(
+				'<ul><li>First ingredient</li><li>Second ingredient</li></ul><h4>For serving</h4>'
+			);
+		} );
+	} );
+
 	it( 'should verify saved recipe appears in Explorer list', () => {
 		cy.get( '.wp-list-table' ).should( 'exist' );
 		cy.contains( '.wp-list-table td', 'Cypress Created Recipe' ).should(

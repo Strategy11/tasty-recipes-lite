@@ -5,9 +5,10 @@ import {
 	useState,
 } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import { getRecipeEditorScrollContainer } from '../dom';
 import { PlusIcon, SectionTitleIcon } from '../icons';
+import { getMediaImage, openImageMediaLibrary } from '../media-library';
 import { REORDER_DURATION_MS, REORDER_EASING } from './constants';
-import { openImageMediaLibrary } from './media';
 import { parseClipboardParts } from './paste';
 import { RecipeRow } from './RecipeRow';
 import { SelectionToolbar } from './SelectionToolbar';
@@ -58,9 +59,9 @@ const RecipeRowList = ( {
 		pendingScrollRowIdRef.current = null;
 
 		if ( scrollRowId ) {
-			ensureRowVisible( scrollRowId );
+			ensureRowVisible( list, scrollRowId );
 			window.requestAnimationFrame( () => {
-				ensureRowVisible( scrollRowId );
+				ensureRowVisible( list, scrollRowId );
 			} );
 		}
 
@@ -102,7 +103,7 @@ const RecipeRowList = ( {
 
 		if ( scrollRowId ) {
 			window.setTimeout( () => {
-				ensureRowVisible( scrollRowId );
+				ensureRowVisible( list, scrollRowId );
 			}, REORDER_DURATION_MS + 20 );
 		}
 	}, [ rows ] );
@@ -303,7 +304,12 @@ const RecipeRowList = ( {
 		}
 
 		openImageMediaLibrary( {
-			onSelect: image => {
+			onSelect: attachment => {
+				const image = getMediaImage( attachment, [
+					'large',
+					'full',
+					'medium',
+				] );
 				if ( ! image?.url ) {
 					return;
 				}
@@ -447,9 +453,7 @@ const RecipeRowList = ( {
 				} );
 			}
 
-			const scrollBody = document.querySelector(
-				'.tasty-recipes-frame-content'
-			);
+			const scrollBody = getRecipeEditorScrollContainer();
 			if ( scrollBody ) {
 				const bounds = scrollBody.getBoundingClientRect();
 				if ( drag.lastY < bounds.top + 48 ) {

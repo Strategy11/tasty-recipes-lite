@@ -11,6 +11,32 @@ import {
 } from './recipe-row-list';
 import { RichTextarea } from './RichTextarea';
 import { ImageField } from './ImageField';
+import { postDismissAction } from './notice-utils';
+
+const FormatTipField = ( {
+	field,
+	isFormatTipDismissed,
+	isRevealed,
+	modifyNonce,
+	onDismiss,
+	onFocus,
+	onValueChange,
+} ) => (
+	<div className="tasty-recipes-format-tip-field">
+		<RichTextarea
+			{ ...field }
+			bubbleToolbar
+			onChange={ value => onValueChange( field.name, value ) }
+			onFocus={ onFocus }
+		/>
+		<DescriptionFormatTip
+			isRevealed={ isRevealed }
+			initialDismissed={ isFormatTipDismissed }
+			onDismiss={ onDismiss }
+			modifyNonce={ modifyNonce }
+		/>
+	</div>
+);
 
 export const RecipeForm = ( { initialRecipe, config } ) => {
 	const defaultRecipeType = config.defaultRecipeType || 'recipe';
@@ -33,18 +59,10 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 
 	const handleNoticeDismiss = () => {
 		setIsNoticeDismissed( true );
-
-		const formData = new FormData();
-		formData.append(
-			'action',
-			'tasty_recipes_dismiss_improved_keys_notice'
+		postDismissAction(
+			'tasty_recipes_dismiss_improved_keys_notice',
+			config.modifyNonce
 		);
-		formData.append( 'nonce', config.modifyNonce );
-
-		fetch( window.ajaxurl, {
-			method: 'POST',
-			body: formData,
-		} );
 	};
 
 	const recipeType = recipe.recipe_type || defaultRecipeType;
@@ -251,22 +269,15 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 				/>
 			</fieldset>
 			{ descriptionField && (
-				<div className="tasty-recipes-format-tip-field">
-					<RichTextarea
-						{ ...descriptionField }
-						bubbleToolbar
-						onChange={ ( value ) =>
-							handleRecipeChange( descriptionField.name, value )
-						}
-						onFocus={ () => setFormatTipAnchor( 'description' ) }
-					/>
-					<DescriptionFormatTip
-						isRevealed={ 'description' === formatTipAnchor }
-						initialDismissed={ isFormatTipDismissed }
-						onDismiss={ () => setIsFormatTipDismissed( true ) }
-						modifyNonce={ config.modifyNonce }
-					/>
-				</div>
+				<FormatTipField
+					field={ descriptionField }
+					isFormatTipDismissed={ isFormatTipDismissed }
+					isRevealed={ 'description' === formatTipAnchor }
+					modifyNonce={ config.modifyNonce }
+					onDismiss={ () => setIsFormatTipDismissed( true ) }
+					onFocus={ () => setFormatTipAnchor( 'description' ) }
+					onValueChange={ handleRecipeChange }
+				/>
 			) }
 			<ImageField
 				recipe={ recipe }
@@ -327,29 +338,16 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 
 				if ( isNotes ) {
 					return (
-						<div
+						<FormatTipField
 							key={ field.name }
-							className="tasty-recipes-format-tip-field"
-						>
-							<RichTextarea
-								{ ...field }
-								bubbleToolbar
-								onChange={ ( value ) =>
-									handleRecipeChange( field.name, value )
-								}
-								onFocus={ () =>
-									setFormatTipAnchor( 'notes' )
-								}
-							/>
-							<DescriptionFormatTip
-								isRevealed={ 'notes' === formatTipAnchor }
-								initialDismissed={ isFormatTipDismissed }
-								onDismiss={ () =>
-									setIsFormatTipDismissed( true )
-								}
-								modifyNonce={ config.modifyNonce }
-							/>
-						</div>
+							field={ field }
+							isFormatTipDismissed={ isFormatTipDismissed }
+							isRevealed={ 'notes' === formatTipAnchor }
+							modifyNonce={ config.modifyNonce }
+							onDismiss={ () => setIsFormatTipDismissed( true ) }
+							onFocus={ () => setFormatTipAnchor( 'notes' ) }
+							onValueChange={ handleRecipeChange }
+						/>
 					);
 				}
 

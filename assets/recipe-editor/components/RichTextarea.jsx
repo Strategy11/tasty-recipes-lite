@@ -3,8 +3,9 @@ import { __ } from '@wordpress/i18n';
 import {
 	hideKbdTooltip,
 	repositionKbdTooltip,
-	scheduleShowKbdTooltip,
+	scheduleKbdTooltipFromAnchor,
 } from './kbd-tooltip';
+import { getModifierKeySymbol } from './platform';
 
 const CUSTOM_PLUGINS = [ 'tr_heading', 'tr_image', 'tr_video' ];
 
@@ -23,18 +24,8 @@ const getVisibleFloatPanel = () => {
 	);
 };
 
-const getModifierKey = () => {
-	const platform = navigator.platform || '';
-	const userAgent = navigator.userAgent || '';
-	const isApple =
-		/Mac|iPhone|iPod|iPad/.test( platform ) ||
-		/Mac OS X/.test( userAgent );
-
-	return isApple ? '⌘' : 'Ctrl';
-};
-
 const getBubbleToolbarHelpers = () => {
-	const mod = getModifierKey();
+	const mod = getModifierKeySymbol();
 
 	return [
 		{
@@ -153,7 +144,6 @@ export const RichTextarea = ( {
 		},
 	};
 	const textareaRef = useRef( null );
-	const inlineEditorRef = useRef( null );
 	const hiddenInputRef = useRef( null );
 	const id = `tasty-recipes-recipe-${ name }`;
 	const showVideoSettings =
@@ -734,18 +724,7 @@ export const RichTextarea = ( {
 					return;
 				}
 
-				const label = btn.getAttribute( 'data-tasty-helper-label' );
-				const shortcut = (
-					btn.getAttribute( 'data-tasty-helper-keys' ) || ''
-				)
-					.split( '\u0001' )
-					.filter( Boolean );
-
-				scheduleShowKbdTooltip( {
-					label,
-					shortcut,
-					anchor: btn,
-				} );
+				scheduleKbdTooltipFromAnchor( btn );
 			};
 
 			const onBubbleTooltipMouseOut = event => {
@@ -902,7 +881,6 @@ export const RichTextarea = ( {
 			{ bubbleToolbar ? (
 				<>
 					<div
-						ref={ inlineEditorRef }
 						id={ id }
 						className="tasty-recipes-inline-editor"
 						data-placeholder={ placeholder }

@@ -1,5 +1,7 @@
 import { createInterpolateElement, useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import { CloseIcon } from './icons';
+import { postDismissAction } from './notice-utils';
 
 export const DescriptionFormatTip = ( {
 	isRevealed = false,
@@ -19,21 +21,10 @@ export const DescriptionFormatTip = ( {
 		setIsDismissed( true );
 		onDismiss();
 
-		if ( ! modifyNonce || ! window.ajaxurl ) {
-			return;
-		}
-
-		const formData = new FormData();
-		formData.append(
-			'action',
-			'tasty_recipes_dismiss_description_format_tip'
+		postDismissAction(
+			'tasty_recipes_dismiss_description_format_tip',
+			modifyNonce
 		);
-		formData.append( 'nonce', modifyNonce );
-
-		fetch( window.ajaxurl, {
-			method: 'POST',
-			body: formData,
-		} );
 	};
 
 	if ( isDismissed || ! isRevealed ) {
@@ -75,22 +66,7 @@ export const DescriptionFormatTip = ( {
 				onClick={ handleDismiss }
 				aria-label={ __( 'Dismiss tip', 'tasty-recipes-lite' ) }
 			>
-				<svg
-					width="10"
-					height="10"
-					viewBox="0 0 10 10"
-					fill="none"
-					xmlns="http://www.w3.org/2000/svg"
-					aria-hidden="true"
-				>
-					<path
-						d="M9 1L1 9M1 1L9 9"
-						stroke="currentColor"
-						strokeWidth="1.5"
-						strokeLinecap="round"
-						strokeLinejoin="round"
-					/>
-				</svg>
+				{ CloseIcon }
 			</button>
 		</div>
 	);

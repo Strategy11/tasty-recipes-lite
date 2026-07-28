@@ -7,7 +7,7 @@ import {
 	RowTrashIcon,
 	SectionTitleIcon,
 } from '../icons';
-import { getOptionKeySymbol } from './utils';
+import { getOptionKeySymbol } from '../platform';
 import { RowIconButton } from './RowIconButton';
 
 export const RowActions = ( {
@@ -64,7 +64,7 @@ export const RowActions = ( {
 				{ isGroup ? ParagraphIcon : SectionTitleIcon }
 			</RowIconButton>
 			<span
-				className="tasty-recipes-row-actions__sep"
+				className="tasty-recipes-toolbar-separator"
 				aria-hidden="true"
 			/>
 			<RowIconButton

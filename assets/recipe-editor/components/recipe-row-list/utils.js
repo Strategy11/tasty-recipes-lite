@@ -1,3 +1,4 @@
+import { getRecipeEditorScrollContainer } from '../dom';
 import { ROW_VISIBILITY_PADDING_PX } from './constants';
 
 let rowIdCounter = 0;
@@ -26,11 +27,11 @@ export const createGroupRow = ( { isNew = false, value = '' } = {} ) => ( {
 	isNew,
 } );
 
-export const ensureRowVisible = rowId => {
-	const rowEl = document.querySelector(
+export const ensureRowVisible = ( list, rowId ) => {
+	const rowEl = list?.querySelector(
 		`.tasty-recipes-item-row[data-row-id="${ rowId }"]`
 	);
-	const scrollBody = document.querySelector( '.tasty-recipes-frame-content' );
+	const scrollBody = getRecipeEditorScrollContainer();
 	if ( ! rowEl || ! scrollBody ) {
 		return;
 	}
@@ -53,21 +54,6 @@ export const ensureRowVisible = rowId => {
 		scrollBody.scrollTop += rowRect.bottom - bottomLimit;
 	}
 };
-
-const isApplePlatform = () => {
-	const platform = navigator.platform || '';
-	const userAgent = navigator.userAgent || '';
-
-	return (
-		/Mac|iPhone|iPod|iPad/.test( platform ) || /Mac OS X/.test( userAgent )
-	);
-};
-
-export const getOptionKeySymbol = () =>
-	isApplePlatform() ? '⌥' : 'Alt';
-
-export const getModifierKeySymbol = () =>
-	isApplePlatform() ? '⌘' : 'Ctrl';
 
 const ALLOWED_INLINE_TAGS = new Set( [
 	'b',

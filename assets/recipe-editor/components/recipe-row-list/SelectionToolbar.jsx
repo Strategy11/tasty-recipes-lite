@@ -7,8 +7,9 @@ import {
 } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import classNames from 'classnames';
+import { getRecipeEditorScrollContainer } from '../dom';
 import { KbdTooltip } from '../kbd-tooltip';
-import { getModifierKeySymbol } from './utils';
+import { getModifierKeySymbol } from '../platform';
 
 const LINK_ICON = (
 	<svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -167,9 +168,7 @@ export const SelectionToolbar = ( { containerRef } ) => {
 			return;
 		}
 
-		const scrollBody = document.querySelector(
-			'.tasty-recipes-frame-content'
-		);
+		const scrollBody = getRecipeEditorScrollContainer();
 		if ( scrollBody ) {
 			const bounds = scrollBody.getBoundingClientRect();
 			if ( rect.bottom < bounds.top || rect.top > bounds.bottom ) {
@@ -222,9 +221,7 @@ export const SelectionToolbar = ( { containerRef } ) => {
 		const onSelectionChange = () => syncFromSelection();
 		document.addEventListener( 'selectionchange', onSelectionChange );
 
-		const scrollBody = document.querySelector(
-			'.tasty-recipes-frame-content'
-		);
+		const scrollBody = getRecipeEditorScrollContainer();
 		scrollBody?.addEventListener( 'scroll', onSelectionChange, {
 			passive: true,
 		} );
@@ -457,7 +454,7 @@ export const SelectionToolbar = ( { containerRef } ) => {
 						</KbdTooltip>
 					) ) }
 					<span
-						className="tasty-recipes-selection-toolbar__sep"
+						className="tasty-recipes-toolbar-separator"
 						aria-hidden="true"
 					/>
 					<KbdTooltip

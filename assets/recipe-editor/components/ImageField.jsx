@@ -3,6 +3,7 @@ import { __ } from '@wordpress/i18n';
 import { Icon } from '@wordpress/icons';
 import classNames from 'classnames';
 import { UploadIcon, TrashIcon } from './icons';
+import { openImageMediaLibrary } from './media-library';
 
 const getFileName = ( url ) =>
 	url
@@ -30,41 +31,17 @@ export const ImageField = ( { recipe, handleRecipeChange, labels = {} } ) => {
 	const handleClickSelectImage = ( e ) => {
 		e.preventDefault();
 
-		const frame = wp.media( {
+		openImageMediaLibrary( {
 			title: mergedLabels.mediaTitle,
-			multiple: false,
-			library: {
-				type: 'image',
-			},
-			button: {
-				text: mergedLabels.mediaButton,
-			},
-		} );
-
-		frame.on( 'open', () => {
-			const selection = frame.state().get( 'selection' );
-			const selected = recipe.image_id;
-
-			if ( selected ) {
-				const attachment = wp.media.model.Attachment.get( selected );
-				attachment.fetch();
-				selection.add( attachment );
-			}
-		} );
-
-		frame.on( 'select', () => {
-			const attachments = frame.state().get( 'selection' ).toJSON();
-
-			if ( attachments.length ) {
-				handleRecipeChange( 'image_id', attachments[ 0 ].id );
+			buttonText: mergedLabels.mediaButton,
+			selectedId: recipe.image_id,
+			onSelect: attachment => {
+				handleRecipeChange( 'image_id', attachment.id );
 				setRecipeThumbnail(
-					attachments[ 0 ].sizes.thumbnail ??
-						attachments[ 0 ].sizes.full
+					attachment.sizes.thumbnail ?? attachment.sizes.full
 				);
-			}
+			},
 		} );
-
-		frame.open();
 	};
 
 	const handleClickRemoveImage = () => {

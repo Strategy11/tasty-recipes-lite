@@ -3,5 +3,6 @@ export { KbdTooltip } from './KbdTooltip';
 export {
 	hideKbdTooltip,
 	repositionKbdTooltip,
+	scheduleKbdTooltipFromAnchor,
 	scheduleShowKbdTooltip,
 } from './controller';

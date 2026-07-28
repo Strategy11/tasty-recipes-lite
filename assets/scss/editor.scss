@@ -1,4 +1,5 @@
 @use "components/core-modal";
+@use "components/editor-shared";
 @use "components/recipe-form";
 
 .tasty-recipes-modal-container {
@@ -31,11 +32,8 @@
 	position: fixed !important;
 	z-index: 10200 !important;
 	margin: 0 !important;
-	border: 1px solid #E1E4EA;
-	border-radius: 10px;
-	box-shadow: 0 12px 32px rgba( 14, 18, 27, 0.16 );
+	@include editor-shared.floating-panel;
 	overflow: hidden;
-	background: #fff;
 
 	&.mce-arrow::before,
 	&.mce-arrow::after {
@@ -127,10 +125,7 @@
 		max-width: 283px !important;
 		height: auto !important;
 		margin: 0 !important;
-		border: 1px solid #E1E4EA !important;
-		border-radius: 10px !important;
-		background: #fff !important;
-		box-shadow: 0 12px 32px rgba( 14, 18, 27, 0.16 ) !important;
+		@include editor-shared.floating-panel( true );
 		overflow: visible !important;
 
 		.mce-container-body,
@@ -178,11 +173,7 @@
 			height: 28px !important;
 			margin: 0 !important;
 			padding: 6px 8px !important;
-			border: 1px solid #ED4996 !important;
-			border-radius: 10px !important;
-			background: #fff !important;
-			box-shadow: 0 0 0 2px #FCEEF5 !important;
-			color: #181B25 !important;
+			@include editor-shared.link-input;
 			font-family: 'Inter', sans-serif !important;
 			font-size: 13px !important;
 			line-height: normal !important;
@@ -193,9 +184,7 @@
 			}
 
 			&:focus {
-				border-color: #ED4996 !important;
-				box-shadow: 0 0 0 2px #FCEEF5 !important;
-				outline: none !important;
+				@include editor-shared.link-input;
 			}
 		}
 
@@ -228,10 +217,7 @@
 			overflow: visible !important;
 
 			button {
-				background: #ED4996 !important;
-				border: 0 !important;
-				box-shadow: none !important;
-				color: #fff !important;
+				@include editor-shared.link-submit;
 				font-family: 'Inter', sans-serif !important;
 				font-size: 13px !important;
 				font-weight: 500 !important;
@@ -269,48 +255,6 @@
 		.mce-btn:has( .mce-i-unlink ) .mce-ico {
 			display: block !important;
 			color: #181B25;
-		}
-	}
-}
-
-// Row-list link popover — same pink focus ring as Description .mce-form .mce-textbox.
-.tasty-recipes-modal-open .tasty-recipes-selection-link-popover {
-	border-radius: 10px !important;
-
-	input {
-		box-sizing: border-box !important;
-		height: 28px !important;
-		min-height: 28px !important;
-		max-height: 28px !important;
-		margin: 0 !important;
-		padding: 0 8px !important;
-		border: 1px solid #ED4996 !important;
-		border-radius: 10px !important;
-		background: #fff !important;
-		box-shadow: 0 0 0 2px #FCEEF5 !important;
-		font-size: 13px !important;
-		line-height: 26px !important;
-		outline: none !important;
-
-		&:focus,
-		&:focus-visible {
-			border-color: #ED4996 !important;
-			box-shadow: 0 0 0 2px #FCEEF5 !important;
-			outline: none !important;
-		}
-	}
-
-	button:not( .tasty-recipes-selection-link-popover__remove ) {
-		background: #ED4996 !important;
-		border: 0 !important;
-		border-radius: 10px !important;
-		box-shadow: none !important;
-		color: #fff !important;
-
-		&:hover,
-		&:focus {
-			background: #d63e86 !important;
-			color: #fff !important;
 		}
 	}
 }

@@ -27,7 +27,7 @@ export const RecipeRow = ( {
 	const inputRef = useRef( null );
 	const isGroup = 'group' === row.type;
 	const hasImage = !! row.image?.url;
-	const isEmpty = ! stripHtml( row.value );
+	const isEmpty = ! stripHtml( row.value ) && ! hasImage;
 
 	const handleRowKeyDown = event => {
 		if ( ! event.altKey ) {
