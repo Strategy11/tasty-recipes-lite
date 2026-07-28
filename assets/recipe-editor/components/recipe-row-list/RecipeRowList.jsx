@@ -7,6 +7,7 @@ import {
 import { __ } from '@wordpress/i18n';
 import { PlusIcon, SectionTitleIcon } from '../icons';
 import { REORDER_DURATION_MS, REORDER_EASING } from './constants';
+import { openImageMediaLibrary } from './media';
 import { parseClipboardParts } from './paste';
 import { RecipeRow } from './RecipeRow';
 import { SelectionToolbar } from './SelectionToolbar';
@@ -73,7 +74,7 @@ const RecipeRowList = ( {
 			list.querySelectorAll( '.tasty-recipes-item-row' )
 		);
 
-		items.forEach( ( el ) => {
+		items.forEach( el => {
 			const prevTop = firstTops.get( el.dataset.rowId );
 			if ( undefined === prevTop ) {
 				return;
@@ -106,11 +107,11 @@ const RecipeRowList = ( {
 		}
 	}, [ rows ] );
 
-	const commitRows = ( nextRows ) => {
+	const commitRows = nextRows => {
 		setRows( nextRows );
 		onChange(
 			serializeRows(
-				nextRows.map( ( row ) => ( {
+				nextRows.map( row => ( {
 					...row,
 					isNew: false,
 				} ) ),
@@ -120,29 +121,30 @@ const RecipeRowList = ( {
 	};
 
 	const handleValueChange = ( id, value ) => {
-		commitRows(
-			rows.map( ( row ) =>
-				row.id === id
-					? {
-							...row,
-							value,
-							isNew: false,
-					  }
-					: { ...row, isNew: false }
-			)
-		);
+		const nextRows = rows.map( row => {
+			if ( row.id !== id ) {
+				return { ...row, isNew: false };
+			}
+
+			return {
+				...row,
+				value,
+				isNew: false,
+			};
+		} );
+		commitRows( nextRows );
 	};
 
 	const handleAddItem = () => {
 		commitRows( [
-			...rows.map( ( row ) => ( { ...row, isNew: false } ) ),
+			...rows.map( row => ( { ...row, isNew: false } ) ),
 			createItemRow( { isNew: true } ),
 		] );
 	};
 
 	const handleAddSectionTitle = () => {
 		commitRows( [
-			...rows.map( ( row ) => ( { ...row, isNew: false } ) ),
+			...rows.map( row => ( { ...row, isNew: false } ) ),
 			createGroupRow( { isNew: true } ),
 		] );
 	};
@@ -165,7 +167,7 @@ const RecipeRowList = ( {
 			return;
 		}
 
-		const fromIndex = rows.findIndex( ( row ) => row.id === rowId );
+		const fromIndex = rows.findIndex( row => row.id === rowId );
 		if ( fromIndex < 0 ) {
 			return;
 		}
@@ -229,12 +231,12 @@ const RecipeRowList = ( {
 		};
 
 		const nextRows = [
-			...rows.slice( 0, fromIndex ).map( ( row ) => ( {
+			...rows.slice( 0, fromIndex ).map( row => ( {
 				...row,
 				isNew: false,
 			} ) ),
 			...created,
-			...rows.slice( fromIndex + 1 ).map( ( row ) => ( {
+			...rows.slice( fromIndex + 1 ).map( row => ( {
 				...row,
 				isNew: false,
 			} ) ),
@@ -245,7 +247,7 @@ const RecipeRowList = ( {
 	};
 
 	const handleMoveRow = ( rowId, direction ) => {
-		const fromIndex = rows.findIndex( ( row ) => row.id === rowId );
+		const fromIndex = rows.findIndex( row => row.id === rowId );
 		if ( fromIndex < 0 ) {
 			return;
 		}
@@ -261,7 +263,7 @@ const RecipeRowList = ( {
 			pendingFlipRef.current = new Map(
 				Array.from(
 					list.querySelectorAll( '.tasty-recipes-item-row' )
-				).map( ( el ) => [
+				).map( el => [
 					el.dataset.rowId,
 					el.getBoundingClientRect().top,
 				] )
@@ -272,9 +274,9 @@ const RecipeRowList = ( {
 		commitRows( nextRows );
 	};
 
-	const handleConvertRow = ( rowId ) => {
+	const handleConvertRow = rowId => {
 		commitRows(
-			rows.map( ( row ) => {
+			rows.map( row => {
 				if ( row.id !== rowId ) {
 					return { ...row, isNew: false };
 				}
@@ -288,21 +290,64 @@ const RecipeRowList = ( {
 						'group' === nextType
 							? stripHtml( row.value )
 							: row.value,
+					image: 'group' === nextType ? null : row.image,
 					isNew: true,
 				};
 			} )
 		);
 	};
 
-	const handleDeleteRow = ( rowId ) => {
+	const handleAddImage = rowId => {
+		if ( ! isInstructions ) {
+			return;
+		}
+
+		openImageMediaLibrary( {
+			onSelect: image => {
+				if ( ! image?.url ) {
+					return;
+				}
+
+				const nextRows = rowsRef.current.map( row => {
+					if ( row.id !== rowId ) {
+						return { ...row, isNew: false };
+					}
+
+					return {
+						...row,
+						image,
+						isNew: false,
+					};
+				} );
+				commitRows( nextRows );
+			},
+		} );
+	};
+
+	const handleRemoveImage = rowId => {
+		const nextRows = rows.map( row => {
+			if ( row.id !== rowId ) {
+				return { ...row, isNew: false };
+			}
+
+			return {
+				...row,
+				image: null,
+				isNew: false,
+			};
+		} );
+		commitRows( nextRows );
+	};
+
+	const handleDeleteRow = rowId => {
 		let nextRows = rows
-			.filter( ( row ) => row.id !== rowId )
-			.map( ( row ) => ( {
+			.filter( row => row.id !== rowId )
+			.map( row => ( {
 				...row,
 				isNew: false,
 			} ) );
 
-		const hasItemRow = nextRows.some( ( row ) => 'item' === row.type );
+		const hasItemRow = nextRows.some( row => 'item' === row.type );
 		if ( ! hasItemRow ) {
 			nextRows = [ ...nextRows, createItemRow() ];
 		}
@@ -323,7 +368,7 @@ const RecipeRowList = ( {
 		event.preventDefault();
 
 		const startIndex = rowsRef.current.findIndex(
-			( row ) => row.id === rowId
+			row => row.id === rowId
 		);
 		if ( startIndex < 0 ) {
 			return;
@@ -345,7 +390,7 @@ const RecipeRowList = ( {
 			// Pointer capture is best-effort.
 		}
 
-		const getRowElement = ( id ) =>
+		const getRowElement = id =>
 			list.querySelector( `[data-row-id="${ id }"]` );
 
 		const tickDrag = () => {
@@ -365,7 +410,7 @@ const RecipeRowList = ( {
 
 			const others = Array.from(
 				list.querySelectorAll( '.tasty-recipes-item-row' )
-			).filter( ( el ) => el.dataset.rowId !== drag.rowId );
+			).filter( el => el.dataset.rowId !== drag.rowId );
 			const listTop = list.getBoundingClientRect().top;
 			let targetIndex = others.length;
 
@@ -415,7 +460,7 @@ const RecipeRowList = ( {
 			}
 		};
 
-		const onPointerMove = ( moveEvent ) => {
+		const onPointerMove = moveEvent => {
 			const drag = dragRef.current;
 			if ( ! drag ) {
 				return;
@@ -467,7 +512,7 @@ const RecipeRowList = ( {
 		};
 
 		const onPointerUp = () => endDrag();
-		const onKeyDown = ( keyEvent ) => {
+		const onKeyDown = keyEvent => {
 			if ( 'Escape' === keyEvent.key ) {
 				endDrag();
 			}
@@ -481,7 +526,7 @@ const RecipeRowList = ( {
 		window.addEventListener( 'keydown', onKeyDown );
 	};
 
-	const itemCount = rows.filter( ( entry ) => 'item' === entry.type ).length;
+	const itemCount = rows.filter( entry => 'item' === entry.type ).length;
 
 	return (
 		<>
@@ -508,6 +553,10 @@ const RecipeRowList = ( {
 							onMoveUp={ () => handleMoveRow( row.id, -1 ) }
 							onMoveDown={ () => handleMoveRow( row.id, 1 ) }
 							onConvert={ () => handleConvertRow( row.id ) }
+							onAddImage={
+								isInstructions ? handleAddImage : null
+							}
+							onRemoveImage={ handleRemoveImage }
 							onDelete={ () => handleDeleteRow( row.id ) }
 							onPaste={ handlePaste }
 							onGripPointerDown={ handleGripPointerDown }
@@ -548,10 +597,10 @@ const RecipeRowList = ( {
 	);
 };
 
-export const IngredientsList = ( props ) => (
+export const IngredientsList = props => (
 	<RecipeRowList mode="ingredients" { ...props } />
 );
 
-export const InstructionsList = ( props ) => (
+export const InstructionsList = props => (
 	<RecipeRowList mode="instructions" { ...props } />
 );

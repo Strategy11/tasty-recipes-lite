@@ -7,10 +7,15 @@ export const createRowId = () => {
 	return `tasty-recipe-row-${ rowIdCounter }`;
 };
 
-export const createItemRow = ( { isNew = false, value = '' } = {} ) => ( {
+export const createItemRow = ( {
+	isNew = false,
+	value = '',
+	image = null,
+} = {} ) => ( {
 	id: createRowId(),
 	type: 'item',
 	value,
+	image,
 	isNew,
 } );
 
@@ -74,15 +79,11 @@ const ALLOWED_INLINE_TAGS = new Set( [
 ] );
 
 const UNSUPPORTED_ROW_CONTENT_SELECTOR = [
-	'img',
 	'iframe',
 	'video',
 	'audio',
 	'object',
 	'embed',
-	'figure',
-	'picture',
-	'source',
 	'table',
 	'svg',
 	'canvas',
@@ -218,6 +219,88 @@ export const sanitizeInlineHtml = html => {
 
 const rowHasContent = html => !! stripHtml( html );
 
+const parseImageFromElement = img => {
+	if ( ! img ) {
+		return null;
+	}
+
+	const url = img.getAttribute( 'src' ) || '';
+	if ( ! url ) {
+		return null;
+	}
+
+	const className = img.getAttribute( 'class' ) || '';
+	const idMatch = className.match( /wp-image-(\d+)/ );
+	const widthAttr = img.getAttribute( 'width' );
+	const heightAttr = img.getAttribute( 'height' );
+
+	return {
+		id: idMatch ? Number( idMatch[ 1 ] ) : 0,
+		url,
+		alt: img.getAttribute( 'alt' ) || '',
+		width: widthAttr ? Number( widthAttr ) : undefined,
+		height: heightAttr ? Number( heightAttr ) : undefined,
+	};
+};
+
+export const extractItemContent = html => {
+	const root = document.createElement( 'div' );
+	root.innerHTML = String( html || '' );
+
+	const img =
+		root.querySelector( 'img' ) ||
+		root.querySelector( 'figure img' ) ||
+		null;
+	const image = parseImageFromElement( img );
+
+	if ( img ) {
+		const figure = img.closest( 'figure' );
+		( figure || img ).remove();
+	}
+
+	root.querySelectorAll( 'picture, source' ).forEach( node => node.remove() );
+
+	// Drop leftover empty wrappers and trailing breaks left by image removal.
+	Array.from( root.querySelectorAll( 'br' ) )
+		.reverse()
+		.forEach( br => {
+			if ( ! br.nextSibling ) {
+				br.remove();
+			}
+		} );
+
+	return {
+		value: sanitizeInlineHtml( root.innerHTML ),
+		image,
+	};
+};
+
+const serializeRowImage = image => {
+	if ( ! image?.url ) {
+		return '';
+	}
+
+	const attrs = [
+		`src="${ escapeHtml( image.url ) }"`,
+		`alt="${ escapeHtml( image.alt || '' ) }"`,
+	];
+
+	if ( image.width ) {
+		attrs.push( `width="${ Number( image.width ) }"` );
+	}
+	if ( image.height ) {
+		attrs.push( `height="${ Number( image.height ) }"` );
+	}
+
+	const classes = [ 'alignnone', 'size-full' ];
+	if ( image.id ) {
+		classes.push( `wp-image-${ Number( image.id ) }` );
+	}
+	attrs.push( `class="${ classes.join( ' ' ) }"` );
+
+	return `<img ${ attrs.join( ' ' ) } />`;
+};
+
 export const serializeRows = ( rows, mode = 'ingredients' ) => {
 	const listTag = 'instructions' === mode ? 'ol' : 'ul';
 	const parts = [];
@@ -248,11 +331,17 @@ export const serializeRows = ( rows, mode = 'ingredients' ) => {
 		}
 
 		const html = sanitizeInlineHtml( row.value );
-		if ( ! rowHasContent( html ) ) {
+		const imageHtml = serializeRowImage( row.image );
+		if ( ! rowHasContent( html ) && ! imageHtml ) {
 			return;
 		}
 
-		pendingItems.push( html );
+		if ( rowHasContent( html ) && imageHtml ) {
+			pendingItems.push( `${ html }<br />${ imageHtml }` );
+			return;
+		}
+
+		pendingItems.push( html || imageHtml );
 	} );
 
 	flushItems();
@@ -274,9 +363,9 @@ export const parseRowsFromHtml = html => {
 
 		const rows = [];
 		const pushItemHtml = valueHtml => {
-			const cleaned = sanitizeInlineHtml( valueHtml );
-			if ( rowHasContent( cleaned ) ) {
-				rows.push( createItemRow( { value: cleaned } ) );
+			const { value, image } = extractItemContent( valueHtml );
+			if ( rowHasContent( value ) || image ) {
+				rows.push( createItemRow( { value, image } ) );
 			}
 		};
 		const pushItemText = value => {

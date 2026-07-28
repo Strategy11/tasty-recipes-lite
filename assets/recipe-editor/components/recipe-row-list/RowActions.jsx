@@ -1,5 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import {
+	AddImageIcon,
 	MoveDownIcon,
 	MoveUpIcon,
 	ParagraphIcon,
@@ -17,10 +18,13 @@ export const RowActions = ( {
 	onMoveUp = () => {},
 	onMoveDown = () => {},
 	onConvert = () => {},
+	onAddImage = null,
 	onDelete = () => {},
 	mode = 'ingredients',
 } ) => {
 	const isGroup = 'group' === type;
+	const showAddImage =
+		'instructions' === mode && ! isGroup && 'function' === typeof onAddImage;
 	const optionKey = getOptionKeySymbol();
 	const itemNoun =
 		'instructions' === mode
@@ -48,6 +52,14 @@ export const RowActions = ( {
 			>
 				{ MoveDownIcon }
 			</RowIconButton>
+			{ showAddImage && (
+				<RowIconButton
+					label={ __( 'Add image', 'tasty-recipes-lite' ) }
+					onClick={ onAddImage }
+				>
+					{ AddImageIcon }
+				</RowIconButton>
+			) }
 			<RowIconButton label={ convertLabel } onClick={ onConvert }>
 				{ isGroup ? ParagraphIcon : SectionTitleIcon }
 			</RowIconButton>

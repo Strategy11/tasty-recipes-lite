@@ -17,6 +17,8 @@ export const RecipeRow = ( {
 	onMoveUp,
 	onMoveDown,
 	onConvert,
+	onAddImage = null,
+	onRemoveImage = null,
 	onDelete,
 	onPaste = () => {},
 	onGripPointerDown,
@@ -24,6 +26,7 @@ export const RecipeRow = ( {
 } ) => {
 	const inputRef = useRef( null );
 	const isGroup = 'group' === row.type;
+	const hasImage = !! row.image?.url;
 	const isEmpty = ! stripHtml( row.value );
 
 	const handleRowKeyDown = event => {
@@ -95,10 +98,55 @@ export const RecipeRow = ( {
 		}
 	}, [ row.isNew, row.id, isGroup ] );
 
+	const captionInput = isGroup ? (
+		<input
+			key={ `${ row.id }-group` }
+			ref={ inputRef }
+			type="text"
+			className="tasty-recipes-row-input"
+			placeholder={ groupPlaceholder }
+			value={ row.value }
+			onChange={ event =>
+				onValueChange( row.id, event.target.value )
+			}
+			onKeyDown={ handleRowKeyDown }
+		/>
+	) : (
+		<div
+			key={ `${ row.id }-item` }
+			ref={ inputRef }
+			className={ classNames( 'tasty-recipes-row-input', {
+				'is-empty': isEmpty,
+			} ) }
+			contentEditable
+			suppressContentEditableWarning
+			role="textbox"
+			tabIndex={ 0 }
+			aria-multiline="false"
+			data-placeholder={ placeholder }
+			onKeyDown={ handleRowKeyDown }
+			onPaste={ event => onPaste( event, row.id ) }
+			onInput={ event => {
+				const el = event.currentTarget;
+				if (
+					'<br>' === el.innerHTML ||
+					'<br/>' === el.innerHTML
+				) {
+					el.innerHTML = '';
+				}
+				onValueChange(
+					row.id,
+					sanitizeInlineHtml( el.innerHTML || '' )
+				);
+			} }
+		/>
+	);
+
 	return (
 		<div
 			className={ classNames( 'tasty-recipes-item-row', {
 				'tasty-recipes-item-row--group': isGroup,
+				'tasty-recipes-item-row--with-image': hasImage,
 				'tasty-recipes-item-row--new': row.isNew,
 				'is-dragging': isDragging,
 			} ) }
@@ -114,48 +162,31 @@ export const RecipeRow = ( {
 				{ DragGripIcon }
 			</button>
 
-			{ isGroup ? (
-				<input
-					key={ `${ row.id }-group` }
-					ref={ inputRef }
-					type="text"
-					className="tasty-recipes-row-input"
-					placeholder={ groupPlaceholder }
-					value={ row.value }
-					onChange={ event =>
-						onValueChange( row.id, event.target.value )
-					}
-					onKeyDown={ handleRowKeyDown }
-				/>
+			{ hasImage ? (
+				<div className="tasty-recipes-row-card">
+					{ captionInput }
+					<div className="tasty-recipes-row-image">
+						<img
+							src={ row.image.url }
+							alt={ row.image.alt || '' }
+							width={ row.image.width || undefined }
+							height={ row.image.height || undefined }
+						/>
+						<button
+							type="button"
+							className="tasty-recipes-row-image__remove"
+							aria-label={ __(
+								'Remove image',
+								'tasty-recipes-lite'
+							) }
+							onClick={ () => onRemoveImage?.( row.id ) }
+						>
+							<span aria-hidden="true">×</span>
+						</button>
+					</div>
+				</div>
 			) : (
-				<div
-					key={ `${ row.id }-item` }
-					ref={ inputRef }
-					className={ classNames( 'tasty-recipes-row-input', {
-						'is-empty': isEmpty,
-					} ) }
-					contentEditable
-					suppressContentEditableWarning
-					role="textbox"
-					tabIndex={ 0 }
-					aria-multiline="false"
-					data-placeholder={ placeholder }
-					onKeyDown={ handleRowKeyDown }
-					onPaste={ event => onPaste( event, row.id ) }
-					onInput={ event => {
-						const el = event.currentTarget;
-						if (
-							'<br>' === el.innerHTML ||
-							'<br/>' === el.innerHTML
-						) {
-							el.innerHTML = '';
-						}
-						onValueChange(
-							row.id,
-							sanitizeInlineHtml( el.innerHTML || '' )
-						);
-					} }
-				/>
+				captionInput
 			) }
 
 			<RowActions
@@ -167,6 +198,9 @@ export const RecipeRow = ( {
 				onMoveUp={ onMoveUp }
 				onMoveDown={ onMoveDown }
 				onConvert={ onConvert }
+				onAddImage={
+					onAddImage ? () => onAddImage( row.id ) : null
+				}
 				onDelete={ onDelete }
 			/>
 		</div>

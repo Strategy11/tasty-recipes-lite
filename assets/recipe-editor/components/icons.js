@@ -155,6 +155,25 @@ export const SectionTitleIcon = (
 	</svg>
 );
 
+export const AddImageIcon = (
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		width="18"
+		height="18"
+		fill="none"
+		viewBox="0 0 18 18"
+		aria-hidden="true"
+	>
+		<path
+			stroke="currentColor"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+			strokeWidth="1.35"
+			d="M8.438 14.438H5.062a1.5 1.5 0 0 1-1.5-1.5V12m0 0V5.063a1.5 1.5 0 0 1 1.5-1.5h7.876a1.5 1.5 0 0 1 1.5 1.5v4.124L12.439 7.08a1.5 1.5 0 0 0-2.313.045l-.008.01c-.07.09-1.146 1.483-1.924 2.472M3.562 12l2.06-2.62a1.5 1.5 0 0 1 2.317-.05l.255.277m0 0 .993 1.08m-.993-1.08-.008.01M12.75 11.063v3.374M14.438 12.75h-3.376"
+		/>
+	</svg>
+);
+
 export const ParagraphIcon = (
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
