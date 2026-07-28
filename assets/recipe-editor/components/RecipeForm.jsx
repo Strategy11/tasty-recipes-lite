@@ -4,7 +4,11 @@ import { applyFilters } from '@wordpress/hooks';
 import { FieldGroup } from './FieldGroup';
 import { DescriptionFormatTip } from './DescriptionFormatTip';
 import { ImprovedKeysNotice } from './ImprovedKeysNotice';
-import { IngredientsList, InstructionsList } from './recipe-row-list';
+import {
+	hasUnsupportedRowContent,
+	IngredientsList,
+	InstructionsList,
+} from './recipe-row-list';
 import { RichTextarea } from './RichTextarea';
 import { ImageField } from './ImageField';
 
@@ -98,7 +102,7 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 			name: 'description',
 			label: __( 'Description', 'tasty-recipes-lite' ),
 			placeholder: __(
-				'Tell us about this recipe...',
+				'Tell us about this recipe…',
 				'tasty-recipes-lite'
 			),
 			initialValue: recipe.description,
@@ -112,6 +116,7 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 				'tasty-recipes-lite'
 			),
 			initialValue: recipe.ingredients,
+			initialVideoSettingsValue: recipe.ingredients_video_settings,
 		},
 		{
 			name: 'instructions',
@@ -121,12 +126,13 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 				'tasty-recipes-lite'
 			),
 			initialValue: recipe.instructions,
+			initialVideoSettingsValue: recipe.instructions_video_settings,
 		},
 		{
 			name: 'notes',
 			label: __( 'Notes', 'tasty-recipes-lite' ),
 			placeholder: __(
-				'Add any tips, substitutions, or storage notes...',
+				'Add any tips, substitutions, or storage notes…',
 				'tasty-recipes-lite'
 			),
 			initialValue: recipe.notes,
@@ -271,6 +277,23 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 				const isNotes = 'notes' === field.name;
 				const isIngredients = 'ingredients' === field.name;
 				const isInstructions = 'instructions' === field.name;
+				const useClassicEditor =
+					( isIngredients || isInstructions ) &&
+					hasUnsupportedRowContent( field.initialValue );
+
+				// Legacy media/embeds cannot round-trip through the row list —
+				// keep the classic TinyMCE field (with video settings) intact.
+				if ( useClassicEditor ) {
+					return (
+						<RichTextarea
+							key={ field.name }
+							{ ...field }
+							onChange={ ( value ) =>
+								handleRecipeChange( field.name, value )
+							}
+						/>
+					);
+				}
 
 				if ( isIngredients ) {
 					return (
@@ -359,9 +382,7 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 								? {
 										[ detailsNoticeAfterField ]: () => (
 											<ImprovedKeysNotice
-												isDismissed={
-													isNoticeDismissed
-												}
+												isDismissed={ false }
 												onDismiss={
 													handleNoticeDismiss
 												}
@@ -378,7 +399,7 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 						video_url: {
 							label: __( 'Video URL', 'tasty-recipes-lite' ),
 							placeholder: __(
-								'youtube.com/watch?v=...',
+								'youtube.com/watch?v=…',
 								'tasty-recipes-lite'
 							),
 						},

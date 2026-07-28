@@ -16,6 +16,37 @@ describe( 'Recipe Creation', () => {
 		);
 	};
 
+	const typeInlineEditor = ( fieldId, text ) => {
+		cy.get( `#${ fieldId }.mce-content-body`, {
+			timeout: 10_000,
+		} )
+			.should( 'be.visible' )
+			.click()
+			.type( text, { delay: 0 } );
+	};
+
+	const fillRowList = ( mode, lines ) => {
+		const addLabel =
+			'ingredients' === mode ? 'Add Ingredient' : 'Add Step';
+
+		lines.forEach( ( line, index ) => {
+			if ( index > 0 ) {
+				cy.get( `.tasty-recipes-row-list[data-mode="${ mode }"]` )
+					.closest( 'fieldset' )
+					.contains( 'button', addLabel )
+					.click();
+			}
+
+			cy.get(
+				`.tasty-recipes-row-list[data-mode="${ mode }"] .tasty-recipes-row-input[contenteditable="true"]`
+			)
+				.eq( index )
+				.should( 'be.visible' )
+				.click()
+				.type( line, { delay: 0 } );
+		} );
+	};
+
 	before( () => {
 		cy.loginCached();
 		cy.deleteAllTastyRecipes();
@@ -75,33 +106,21 @@ describe( 'Recipe Creation', () => {
 			.should( 'be.visible' )
 			.and( 'have.value', 'admin' );
 
-		cy.get( 'iframe#tasty-recipes-recipe-description_ifr', {
-			timeout: 10_000,
-		} )
-			.its( '0.contentDocument.body' )
-			.should( 'not.be.empty' )
-			.then( cy.wrap )
-			.type( 'A delicious test recipe.', { delay: 0 } );
+		typeInlineEditor(
+			'tasty-recipes-recipe-description',
+			'A delicious test recipe.'
+		);
 
-		cy.get( 'iframe#tasty-recipes-recipe-ingredients_ifr', {
-			timeout: 10_000,
-		} )
-			.its( '0.contentDocument.body' )
-			.should( 'not.be.empty' )
-			.then( cy.wrap )
-			.type( '1 cup flour{enter}2 eggs{enter}1/2 cup sugar', {
-				delay: 0,
-			} );
+		fillRowList( 'ingredients', [
+			'1 cup flour',
+			'2 eggs',
+			'1/2 cup sugar',
+		] );
 
-		cy.get( 'iframe#tasty-recipes-recipe-instructions_ifr', {
-			timeout: 10_000,
-		} )
-			.its( '0.contentDocument.body' )
-			.should( 'not.be.empty' )
-			.then( cy.wrap )
-			.type( 'Mix ingredients.{enter}Bake at 350°F for 25 min.', {
-				delay: 0,
-			} );
+		fillRowList( 'instructions', [
+			'Mix ingredients.',
+			'Bake at 350°F for 25 min.',
+		] );
 
 		cy.get( '#tasty-recipes-recipe-prep_time' ).type( '10 minutes', {
 			force: true,
@@ -116,13 +135,10 @@ describe( 'Recipe Creation', () => {
 			force: true,
 		} );
 
-		cy.get( 'iframe#tasty-recipes-recipe-notes_ifr', {
-			timeout: 10_000,
-		} )
-			.its( '0.contentDocument.body' )
-			.should( 'not.be.empty' )
-			.then( cy.wrap )
-			.type( 'Let cool before serving.', { delay: 0 } );
+		typeInlineEditor(
+			'tasty-recipes-recipe-notes',
+			'Let cool before serving.'
+		);
 
 		cy.get( '.tasty-recipes-button-insert' ).should( 'be.visible' ).click();
 
@@ -153,13 +169,10 @@ describe( 'Recipe Creation', () => {
 			recipeTitle
 		);
 
-		cy.get( 'iframe#tasty-recipes-recipe-description_ifr', {
-			timeout: 10_000,
-		} )
-			.its( '0.contentDocument.body' )
-			.should( 'not.be.empty' )
-			.then( cy.wrap )
-			.type( descriptionText, { delay: 0 } );
+		typeInlineEditor(
+			'tasty-recipes-recipe-description',
+			descriptionText
+		);
 
 		cy.get( '.tasty-recipes-button-insert' ).click();
 

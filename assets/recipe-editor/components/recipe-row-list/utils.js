@@ -68,6 +68,42 @@ const ALLOWED_INLINE_TAGS = new Set( [
 	'a',
 ] );
 
+const UNSUPPORTED_ROW_CONTENT_SELECTOR = [
+	'img',
+	'iframe',
+	'video',
+	'audio',
+	'object',
+	'embed',
+	'figure',
+	'picture',
+	'source',
+	'table',
+	'svg',
+	'canvas',
+].join( ',' );
+
+export const hasUnsupportedRowContent = html => {
+	if ( ! html || ! String( html ).trim() ) {
+		return false;
+	}
+
+	const value = String( html );
+	const root = document.createElement( 'div' );
+	root.innerHTML = value;
+
+	if ( root.querySelector( UNSUPPORTED_ROW_CONTENT_SELECTOR ) ) {
+		return true;
+	}
+
+	// Shortcodes / embeds that are not plain list markup.
+	if ( /\[[^\]]*(video|embed|playlist|audio|caption)[^\]]*\]/i.test( value ) ) {
+		return true;
+	}
+
+	return false;
+};
+
 const escapeHtml = value =>
 	String( value )
 		.replaceAll( '&', '&amp;' )
