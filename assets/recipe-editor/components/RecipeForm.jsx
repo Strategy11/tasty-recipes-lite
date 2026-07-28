@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from '@wordpress/element';
+import { useState, useMemo, useEffect, useRef } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import { FieldGroup } from './FieldGroup';
@@ -56,6 +56,18 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 	const [ isFormatTipDismissed, setIsFormatTipDismissed ] = useState(
 		!! config.descriptionFormatTipDismissed
 	);
+	const classicEditorFieldsRef = useRef( {} );
+
+	const shouldUseClassicEditor = ( field ) => {
+		const decisions = classicEditorFieldsRef.current;
+		if ( ! ( field.name in decisions ) ) {
+			decisions[ field.name ] = hasUnsupportedRowContent(
+				field.initialValue
+			);
+		}
+
+		return decisions[ field.name ];
+	};
 
 	const handleNoticeDismiss = () => {
 		setIsNoticeDismissed( true );
@@ -290,7 +302,7 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 				const isInstructions = 'instructions' === field.name;
 				const useClassicEditor =
 					( isIngredients || isInstructions ) &&
-					hasUnsupportedRowContent( field.initialValue );
+					shouldUseClassicEditor( field );
 
 				// Legacy media/embeds cannot round-trip through the row list —
 				// keep the classic TinyMCE field (with video settings) intact.

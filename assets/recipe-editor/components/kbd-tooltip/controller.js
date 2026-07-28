@@ -76,6 +76,13 @@ export const hideKbdTooltip = () => {
 	}
 };
 
+// Used on unmount so a disappearing button cannot hide another button's tip.
+export const hideKbdTooltipForAnchor = anchor => {
+	if ( anchor && anchor === activeAnchor ) {
+		hideKbdTooltip();
+	}
+};
+
 export const scheduleShowKbdTooltip = ( {
 	label,
 	shortcut = [],

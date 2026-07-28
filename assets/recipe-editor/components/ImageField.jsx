@@ -3,7 +3,7 @@ import { __ } from '@wordpress/i18n';
 import { Icon } from '@wordpress/icons';
 import classNames from 'classnames';
 import { UploadIcon, TrashIcon } from './icons';
-import { openImageMediaLibrary } from './media-library';
+import { getMediaImage, openImageMediaLibrary } from './media-library';
 
 const getFileName = ( url ) =>
 	url
@@ -37,9 +37,11 @@ export const ImageField = ( { recipe, handleRecipeChange, labels = {} } ) => {
 			selectedId: recipe.image_id,
 			onSelect: attachment => {
 				handleRecipeChange( 'image_id', attachment.id );
-				setRecipeThumbnail(
-					attachment.sizes.thumbnail ?? attachment.sizes.full
-				);
+				const image = getMediaImage( attachment, [
+					'thumbnail',
+					'full',
+				] );
+				setRecipeThumbnail( image.url ? image : null );
 			},
 		} );
 	};

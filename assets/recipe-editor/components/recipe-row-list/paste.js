@@ -1,8 +1,11 @@
 const stripItemPrefix = value =>
 	String( value || '' )
 		.trim()
-		.replace( /^\d{1,3}\s*[.):\-–—]\s+/, '' )
-		.replace( /^[\-\*\+•›]\s+/, '' )
+		.replace( /^\d{1,3}[.)]\s+/, '' )
+		// Dash and colon markers only when no number follows, so quantity
+		// ranges such as "1 - 2 tsp chili flakes" keep their lower bound.
+		.replace( /^\d{1,3}\s*[:\-–—]\s+(?!\d)/, '' )
+		.replace( /^[-*+•›]\s+/, '' )
 		.replace( /^step\s*\d{1,3}\s*[.:\-–—]?\s*/i, '' )
 		.trim();
 

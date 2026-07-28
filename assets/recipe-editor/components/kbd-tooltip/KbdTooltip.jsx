@@ -2,6 +2,7 @@ import { cloneElement, useEffect, useRef } from '@wordpress/element';
 import { EMPTY_SHORTCUT } from './constants';
 import {
 	hideKbdTooltip,
+	hideKbdTooltipForAnchor,
 	scheduleShowKbdTooltip,
 } from './controller';
 
@@ -14,7 +15,7 @@ export const KbdTooltip = ( {
 	const buttonRef = useRef( null );
 
 	useEffect( () => {
-		return () => hideKbdTooltip();
+		return () => hideKbdTooltipForAnchor( buttonRef.current );
 	}, [] );
 
 	const showTooltip = () => {
@@ -32,7 +33,7 @@ export const KbdTooltip = ( {
 	const trigger = cloneElement( children, {
 		ref: node => {
 			buttonRef.current = node;
-			const { ref } = children;
+			const ref = children.props?.ref ?? children.ref;
 			if ( 'function' === typeof ref ) {
 				ref( node );
 			} else if ( ref ) {

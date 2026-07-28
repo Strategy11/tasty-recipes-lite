@@ -10,6 +10,10 @@ import classNames from 'classnames';
 import { getRecipeEditorScrollContainer } from '../dom';
 import { KbdTooltip } from '../kbd-tooltip';
 import { getModifierKeySymbol } from '../platform';
+import { isSafeUrl } from './utils';
+
+// Not translatable: a translated URL would render an invalid example.
+const LINK_PLACEHOLDER_URL = 'https://example.com';
 
 const LINK_ICON = (
 	<svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -80,17 +84,28 @@ const getAnchorFromSelection = container => {
 	return el?.closest( 'a' ) || null;
 };
 
+const isAbsoluteHttpUrl = value => /^https?:\/\//i.test( value );
+
 const normalizeUrl = raw => {
 	const value = String( raw || '' ).trim();
-	if ( ! value ) {
+	if ( ! value || ! isSafeUrl( value ) ) {
 		return '';
 	}
 
-	if ( /^https?:\/\//i.test( value ) ) {
+	// Keep explicit schemes (mailto:, tel:, https:), anchors, queries and
+	// site-relative paths exactly as typed.
+	if (
+		/^[a-z][a-z0-9+.-]*:/i.test( value ) ||
+		value.startsWith( '//' ) ||
+		value.startsWith( '/' ) ||
+		value.startsWith( '#' ) ||
+		value.startsWith( '?' )
+	) {
 		return value;
 	}
 
-	return `https://${ value.replace( /^\/\//, '' ) }`;
+	// A bare domain gets a scheme; anything else stays a relative path.
+	return /^[^\s/]+\.[^\s/]/.test( value ) ? `https://${ value }` : value;
 };
 
 const notifyEditable = range => {
@@ -202,13 +217,8 @@ export const SelectionToolbar = ( { containerRef } ) => {
 		const anchor = getAnchorFromSelection( container );
 		const rect = range.getBoundingClientRect();
 		setLinkHasAnchor( !! anchor );
-		setLinkUrl(
-			anchor
-				? anchor
-					.getAttribute( 'href' )
-					?.replace( /^https?:\/\//i, '' ) || ''
-				: ''
-		);
+		// Shown verbatim so editing an existing link cannot rewrite its scheme.
+		setLinkUrl( anchor ? anchor.getAttribute( 'href' ) || '' : '' );
 		setLinkPosition( {
 			top: rect.bottom + 12,
 			left: rect.left + ( rect.width / 2 ),
@@ -358,7 +368,7 @@ export const SelectionToolbar = ( { containerRef } ) => {
 
 		document.execCommand( 'createLink', false, url );
 		const anchor = getAnchorFromSelection( containerRef?.current );
-		if ( anchor ) {
+		if ( anchor && isAbsoluteHttpUrl( url ) ) {
 			anchor.setAttribute( 'target', '_blank' );
 			anchor.setAttribute( 'rel', 'noopener noreferrer' );
 		}
@@ -495,10 +505,7 @@ export const SelectionToolbar = ( { containerRef } ) => {
 						inputMode="url"
 						autoComplete="off"
 						value={ linkUrl }
-						placeholder={ __(
-							'https://example.com',
-							'tasty-recipes-lite'
-						) }
+						placeholder={ LINK_PLACEHOLDER_URL }
 						onChange={ event =>
 							setLinkUrl( event.target.value )
 						}

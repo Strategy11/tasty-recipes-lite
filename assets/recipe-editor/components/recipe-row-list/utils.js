@@ -1,5 +1,5 @@
 import { getRecipeEditorScrollContainer } from '../dom';
-import { ROW_VISIBILITY_PADDING_PX } from './constants';
+import { DEFAULT_GROUP_LEVEL, ROW_VISIBILITY_PADDING_PX } from './constants';
 
 let rowIdCounter = 0;
 
@@ -20,10 +20,15 @@ export const createItemRow = ( {
 	isNew,
 } );
 
-export const createGroupRow = ( { isNew = false, value = '' } = {} ) => ( {
+export const createGroupRow = ( {
+	isNew = false,
+	value = '',
+	level = DEFAULT_GROUP_LEVEL,
+} = {} ) => ( {
 	id: createRowId(),
 	type: 'group',
 	value,
+	level,
 	isNew,
 } );
 
@@ -56,13 +61,32 @@ export const ensureRowVisible = ( list, rowId ) => {
 };
 
 const ALLOWED_INLINE_TAGS = new Set( [
-	'b',
-	'strong',
-	'i',
-	'em',
-	'u',
 	'a',
+	'b',
+	'br',
+	'code',
+	'del',
+	'em',
+	'i',
+	's',
+	'strong',
+	'sub',
+	'sup',
+	'u',
 ] );
+
+const ALLOWED_LINK_ATTRIBUTES = new Set( [
+	'class',
+	'href',
+	'id',
+	'name',
+	'rel',
+	'rev',
+	'target',
+	'title',
+] );
+
+const DANGEROUS_URL_SCHEME = /^(?:javascript|data|vbscript):/i;
 
 const UNSUPPORTED_ROW_CONTENT_SELECTOR = [
 	'iframe',
@@ -75,14 +99,35 @@ const UNSUPPORTED_ROW_CONTENT_SELECTOR = [
 	'canvas',
 ].join( ',' );
 
+// Bare provider URLs are auto-embedded on the front end and carry video
+// settings the row list cannot expose, so they stay on the classic editor.
+const EMBEDDABLE_URL_PATTERN = /(?:youtube\.com|youtu\.be|vimeo\.com)/i;
+
+// DOMParser documents have no browsing context, so image and iframe sources
+// are never fetched and error handlers in stored markup cannot run.
+const parseFragment = html => {
+	const doc = new window.DOMParser().parseFromString(
+		String( html || '' ),
+		'text/html'
+	);
+	return doc.body;
+};
+
+export const isSafeUrl = value => {
+	const compact = String( value || '' ).replaceAll(
+		/[\s\u0000-\u001F\u007F]/g,
+		''
+	);
+	return ! DANGEROUS_URL_SCHEME.test( compact );
+};
+
 export const hasUnsupportedRowContent = html => {
 	if ( ! html || ! String( html ).trim() ) {
 		return false;
 	}
 
 	const value = String( html );
-	const root = document.createElement( 'div' );
-	root.innerHTML = value;
+	const root = parseFragment( value );
 
 	if ( root.querySelector( UNSUPPORTED_ROW_CONTENT_SELECTOR ) ) {
 		return true;
@@ -93,10 +138,10 @@ export const hasUnsupportedRowContent = html => {
 		return true;
 	}
 
-	return false;
+	return EMBEDDABLE_URL_PATTERN.test( value );
 };
 
-const escapeHtml = value =>
+export const escapeHtml = value =>
 	String( value )
 		.replaceAll( '&', '&amp;' )
 		.replaceAll( '<', '&lt;' )
@@ -110,19 +155,51 @@ export const normalizeRowText = value =>
 		.trim();
 
 export const stripHtml = value => {
-	const root = document.createElement( 'div' );
-	root.innerHTML = String( value || '' );
+	const root = parseFragment( value );
+	root.querySelectorAll( 'br' ).forEach( br =>
+		br.replaceWith( root.ownerDocument.createTextNode( ' ' ) )
+	);
 	return normalizeRowText( root.textContent );
 };
 
 export const sanitizeInlineHtml = html => {
-	const root = document.createElement( 'div' );
-	root.innerHTML = String( html || '' );
+	const root = parseFragment( html );
+	const doc = root.ownerDocument;
 
 	const wrapWith = ( tagName, content ) => {
-		const el = document.createElement( tagName );
+		const el = doc.createElement( tagName );
 		el.append( content );
 		return el;
+	};
+
+	const unwrap = child => {
+		const fragment = doc.createDocumentFragment();
+		while ( child.firstChild ) {
+			fragment.append( child.firstChild );
+		}
+		child.replaceWith( fragment );
+	};
+
+	// Links keep their original href (relative, anchor, mailto, tel) so legacy
+	// content survives a round trip; only dangerous schemes are unwrapped.
+	const sanitizeLink = child => {
+		const href = child.getAttribute( 'href' );
+
+		Array.from( child.attributes ).forEach( attribute => {
+			const name = attribute.name.toLowerCase();
+			const isAllowed =
+				ALLOWED_LINK_ATTRIBUTES.has( name ) ||
+				name.startsWith( 'data-' ) ||
+				name.startsWith( 'aria-' );
+
+			if ( ! isAllowed ) {
+				child.removeAttribute( attribute.name );
+			}
+		} );
+
+		if ( href && ! isSafeUrl( href ) ) {
+			unwrap( child );
+		}
 	};
 
 	const sanitize = parent => {
@@ -140,29 +217,9 @@ export const sanitizeInlineHtml = html => {
 
 			const tag = child.tagName.toLowerCase();
 
-			if ( 'br' === tag ) {
-				child.replaceWith( document.createTextNode( ' ' ) );
-				return;
-			}
-
 			if ( ALLOWED_INLINE_TAGS.has( tag ) ) {
 				if ( 'a' === tag ) {
-					const href = child.getAttribute( 'href' ) || '';
-					const safe = /^https?:\/\//i.test( href ) ? href : '';
-					while ( child.attributes.length ) {
-						child.removeAttribute( child.attributes[ 0 ].name );
-					}
-					if ( ! safe ) {
-						const fragment = document.createDocumentFragment();
-						while ( child.firstChild ) {
-							fragment.append( child.firstChild );
-						}
-						child.replaceWith( fragment );
-						return;
-					}
-					child.setAttribute( 'href', safe );
-					child.setAttribute( 'target', '_blank' );
-					child.setAttribute( 'rel', 'noopener noreferrer' );
+					sanitizeLink( child );
 					return;
 				}
 
@@ -179,7 +236,7 @@ export const sanitizeInlineHtml = html => {
 				style
 			);
 
-			const fragment = document.createDocumentFragment();
+			const fragment = doc.createDocumentFragment();
 			while ( child.firstChild ) {
 				fragment.append( child.firstChild );
 			}
@@ -219,6 +276,11 @@ const parseImageFromElement = img => {
 	const idMatch = className.match( /wp-image-(\d+)/ );
 	const widthAttr = img.getAttribute( 'width' );
 	const heightAttr = img.getAttribute( 'height' );
+	const figure = img.closest( 'figure' );
+	const captionEl =
+		figure && 1 === figure.querySelectorAll( 'img' ).length
+			? figure.querySelector( 'figcaption' )
+			: null;
 
 	return {
 		id: idMatch ? Number( idMatch[ 1 ] ) : 0,
@@ -226,23 +288,47 @@ const parseImageFromElement = img => {
 		alt: img.getAttribute( 'alt' ) || '',
 		width: widthAttr ? Number( widthAttr ) : undefined,
 		height: heightAttr ? Number( heightAttr ) : undefined,
+		caption: captionEl ? normalizeRowText( captionEl.textContent ) : '',
 	};
 };
 
 export const extractItemContent = html => {
-	const root = document.createElement( 'div' );
-	root.innerHTML = String( html || '' );
+	const root = parseFragment( html );
+	const extraRows = [];
 
-	const img =
-		root.querySelector( 'img' ) ||
-		root.querySelector( 'figure img' ) ||
-		null;
-	const image = parseImageFromElement( img );
+	// Sub-lists cannot be nested in the row list, so every nested item becomes
+	// its own row instead of being flattened into the parent row.
+	Array.from( root.querySelectorAll( 'ul, ol' ) )
+		.filter( list => ! list.parentElement?.closest( 'ul, ol' ) )
+		.forEach( list => {
+			Array.from( list.children ).forEach( child => {
+				if ( 'LI' !== child.tagName ) {
+					return;
+				}
 
-	if ( img ) {
+				const nested = extractItemContent( child.innerHTML );
+				if ( rowHasContent( nested.value ) || nested.image ) {
+					extraRows.push(
+						createItemRow( {
+							value: nested.value,
+							image: nested.image,
+						} )
+					);
+				}
+				extraRows.push( ...nested.extraRows );
+			} );
+
+			list.remove();
+		} );
+
+	const images = Array.from( root.querySelectorAll( 'img' ) )
+		.map( parseImageFromElement )
+		.filter( Boolean );
+
+	Array.from( root.querySelectorAll( 'img' ) ).forEach( img => {
 		const figure = img.closest( 'figure' );
 		( figure || img ).remove();
-	}
+	} );
 
 	root.querySelectorAll( 'picture, source' ).forEach( node => node.remove() );
 
@@ -255,9 +341,15 @@ export const extractItemContent = html => {
 			}
 		} );
 
+	// A row holds a single image, so the rest become image-only rows.
+	images.slice( 1 ).forEach( image => {
+		extraRows.push( createItemRow( { image } ) );
+	} );
+
 	return {
 		value: sanitizeInlineHtml( root.innerHTML ),
-		image,
+		image: images[ 0 ] || null,
+		extraRows,
 	};
 };
 
@@ -284,7 +376,24 @@ const serializeRowImage = image => {
 	}
 	attrs.push( `class="${ classes.join( ' ' ) }"` );
 
-	return `<img ${ attrs.join( ' ' ) } />`;
+	const tag = `<img ${ attrs.join( ' ' ) } />`;
+	const caption = normalizeRowText( image.caption || '' );
+	if ( ! caption ) {
+		return tag;
+	}
+
+	return `<figure>${ tag }<figcaption>${ escapeHtml(
+		caption
+	) }</figcaption></figure>`;
+};
+
+const getGroupLevel = level => {
+	const parsed = Number( level );
+	if ( ! parsed || parsed < 1 || parsed > 6 ) {
+		return DEFAULT_GROUP_LEVEL;
+	}
+
+	return Math.trunc( parsed );
 };
 
 export const serializeRows = ( rows, mode = 'ingredients' ) => {
@@ -307,12 +416,13 @@ export const serializeRows = ( rows, mode = 'ingredients' ) => {
 
 	rows.forEach( row => {
 		if ( 'group' === row.type ) {
-			const text = escapeHtml( stripHtml( row.value ) );
-			if ( ! text ) {
+			const heading = sanitizeInlineHtml( row.value );
+			if ( ! rowHasContent( heading ) ) {
 				return;
 			}
 			flushItems();
-			parts.push( `<h4>${ text }</h4>` );
+			const level = getGroupLevel( row.level );
+			parts.push( `<h${ level }>${ heading }</h${ level }>` );
 			return;
 		}
 
@@ -342,17 +452,15 @@ export const parseRowsFromHtml = html => {
 	}
 
 	try {
-		// Detached element is more reliable for HTML fragments than DOMParser
-		// with a wrapper (lists/paragraphs from wpautop / TinyMCE).
-		const root = document.createElement( 'div' );
-		root.innerHTML = String( html );
+		const root = parseFragment( html );
 
 		const rows = [];
 		const pushItemHtml = valueHtml => {
-			const { value, image } = extractItemContent( valueHtml );
+			const { value, image, extraRows } = extractItemContent( valueHtml );
 			if ( rowHasContent( value ) || image ) {
 				rows.push( createItemRow( { value, image } ) );
 			}
+			rows.push( ...extraRows );
 		};
 		const pushItemText = value => {
 			const text = normalizeRowText( value );
@@ -360,10 +468,10 @@ export const parseRowsFromHtml = html => {
 				rows.push( createItemRow( { value: escapeHtml( text ) } ) );
 			}
 		};
-		const pushGroup = value => {
-			const text = normalizeRowText( value );
-			if ( text ) {
-				rows.push( createGroupRow( { value: text } ) );
+		const pushGroup = ( valueHtml, level ) => {
+			const value = sanitizeInlineHtml( valueHtml );
+			if ( rowHasContent( value ) ) {
+				rows.push( createGroupRow( { value, level } ) );
 			}
 		};
 
@@ -384,12 +492,18 @@ export const parseRowsFromHtml = html => {
 			const tag = node.tagName.toLowerCase();
 
 			if ( /^h[1-6]$/.test( tag ) ) {
-				pushGroup( node.textContent );
+				pushGroup( node.innerHTML, Number( tag.slice( 1 ) ) );
 				return;
 			}
 
 			if ( 'li' === tag ) {
 				pushItemHtml( node.innerHTML );
+				return;
+			}
+
+			// Standalone media outside a list still deserves its own row.
+			if ( 'img' === tag || 'figure' === tag || 'picture' === tag ) {
+				pushItemHtml( node.outerHTML );
 				return;
 			}
 
@@ -439,6 +553,40 @@ export const parseRowsFromHtml = html => {
 	} catch ( error ) {
 		return empty();
 	}
+};
+
+// Splits the caret position of a contenteditable row into leading/trailing
+// HTML so Enter can start a new row without losing inline formatting.
+export const getCaretSplitHtml = el => {
+	const view = el?.ownerDocument?.defaultView;
+	const selection = view?.getSelection();
+	if ( ! el || ! selection?.rangeCount ) {
+		return null;
+	}
+
+	const range = selection.getRangeAt( 0 );
+	if ( ! el.contains( range.commonAncestorContainer ) ) {
+		return null;
+	}
+
+	const toHtml = fragmentRange => {
+		const holder = el.ownerDocument.createElement( 'div' );
+		holder.append( fragmentRange.cloneContents() );
+		return sanitizeInlineHtml( holder.innerHTML );
+	};
+
+	const before = range.cloneRange();
+	before.selectNodeContents( el );
+	before.setEnd( range.startContainer, range.startOffset );
+
+	const after = range.cloneRange();
+	after.selectNodeContents( el );
+	after.setStart( range.endContainer, range.endOffset );
+
+	return {
+		before: toHtml( before ),
+		after: toHtml( after ),
+	};
 };
 
 export const moveRow = ( rows, fromIndex, toIndex ) => {

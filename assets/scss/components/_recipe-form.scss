@@ -951,6 +951,14 @@
 		}
 	}
 
+	.tasty-recipes-row-image__caption {
+		margin: 0 4px;
+		color: #717784;
+		font-family: 'Inter', sans-serif;
+		font-size: 13px;
+		line-height: 18px;
+	}
+
 	.tasty-recipes-drag-grip {
 		position: absolute;
 		left: -16px;
@@ -985,12 +993,6 @@
 	.tasty-recipes-item-row:hover .tasty-recipes-drag-grip,
 	.tasty-recipes-item-row:focus-within .tasty-recipes-drag-grip {
 		opacity: 1;
-	}
-
-	body.tasty-recipes-is-dragging {
-		cursor: grabbing;
-		user-select: none;
-		-webkit-user-select: none;
 	}
 
 	.tasty-recipes-row-input {
@@ -1623,4 +1625,11 @@
 // Description/Notes bubble toolbar: suppress TinyMCE's native tooltip chrome.
 .tasty-recipes-modal-open .mce-tooltip {
 	display: none !important;
+}
+
+// Root scope: the class lands on <body>, which is never inside the modal.
+body.tasty-recipes-is-dragging {
+	cursor: grabbing;
+	user-select: none;
+	-webkit-user-select: none;
 }

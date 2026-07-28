@@ -1,4 +1,5 @@
 import {
+	useEffect,
 	useLayoutEffect,
 	useMemo,
 	useRef,
@@ -8,7 +9,11 @@ import { __ } from '@wordpress/i18n';
 import { getRecipeEditorScrollContainer } from '../dom';
 import { PlusIcon, SectionTitleIcon } from '../icons';
 import { getMediaImage, openImageMediaLibrary } from '../media-library';
-import { REORDER_DURATION_MS, REORDER_EASING } from './constants';
+import {
+	DEFAULT_GROUP_LEVEL,
+	REORDER_DURATION_MS,
+	REORDER_EASING,
+} from './constants';
 import { parseClipboardParts } from './paste';
 import { RecipeRow } from './RecipeRow';
 import { SelectionToolbar } from './SelectionToolbar';
@@ -16,11 +21,14 @@ import {
 	createGroupRow,
 	createItemRow,
 	ensureRowVisible,
+	escapeHtml,
 	moveRow,
 	parseRowsFromHtml,
+	sanitizeInlineHtml,
 	serializeRows,
-	stripHtml,
 } from './utils';
+
+const clearIsNew = row => ( { ...row, isNew: false } );
 
 const RecipeRowList = ( {
 	name,
@@ -37,6 +45,7 @@ const RecipeRowList = ( {
 	const listRef = useRef( null );
 	const rowsRef = useRef( rows );
 	const dragRef = useRef( null );
+	const endDragRef = useRef( null );
 	const pendingFlipRef = useRef( null );
 	const pendingScrollRowIdRef = useRef( null );
 	const groupPlaceholder = __( 'For the …', 'tasty-recipes-lite' );
@@ -108,23 +117,17 @@ const RecipeRowList = ( {
 		}
 	}, [ rows ] );
 
+	useEffect( () => () => endDragRef.current?.(), [] );
+
 	const commitRows = nextRows => {
 		setRows( nextRows );
-		onChange(
-			serializeRows(
-				nextRows.map( row => ( {
-					...row,
-					isNew: false,
-				} ) ),
-				mode
-			)
-		);
+		onChange( serializeRows( nextRows.map( clearIsNew ), mode ) );
 	};
 
 	const handleValueChange = ( id, value ) => {
 		const nextRows = rows.map( row => {
 			if ( row.id !== id ) {
-				return { ...row, isNew: false };
+				return clearIsNew( row );
 			}
 
 			return {
@@ -138,16 +141,43 @@ const RecipeRowList = ( {
 
 	const handleAddItem = () => {
 		commitRows( [
-			...rows.map( row => ( { ...row, isNew: false } ) ),
+			...rows.map( clearIsNew ),
 			createItemRow( { isNew: true } ),
 		] );
 	};
 
 	const handleAddSectionTitle = () => {
 		commitRows( [
-			...rows.map( row => ( { ...row, isNew: false } ) ),
+			...rows.map( clearIsNew ),
 			createGroupRow( { isNew: true } ),
 		] );
+	};
+
+	const handleSplitRow = ( rowId, split ) => {
+		const fromIndex = rows.findIndex( row => row.id === rowId );
+		if ( fromIndex < 0 ) {
+			return;
+		}
+
+		const current = rows[ fromIndex ];
+		const nextRow = createItemRow( {
+			value: split ? split.after : '',
+			isNew: true,
+		} );
+
+		const nextRows = [
+			...rows.slice( 0, fromIndex ).map( clearIsNew ),
+			{
+				...current,
+				value: split ? split.before : current.value,
+				isNew: false,
+			},
+			nextRow,
+			...rows.slice( fromIndex + 1 ).map( clearIsNew ),
+		];
+
+		pendingScrollRowIdRef.current = nextRow.id;
+		commitRows( nextRows );
 	};
 
 	const handlePaste = ( event, rowId ) => {
@@ -196,7 +226,10 @@ const RecipeRowList = ( {
 				range.collapse( false );
 				const el = event.currentTarget;
 				if ( el ) {
-					handleValueChange( rowId, el.textContent || '' );
+					handleValueChange(
+						rowId,
+						sanitizeInlineHtml( el.innerHTML || '' )
+					);
 				}
 			}
 			return;
@@ -204,43 +237,48 @@ const RecipeRowList = ( {
 
 		event.preventDefault();
 
-		const parts = [ ...parsed ];
+		const parts = parsed.map( part => ( {
+			type: part.type,
+			html: escapeHtml( part.text ),
+		} ) );
 		if ( existing ) {
-			parts.unshift( { text: existing, type: 'item' } );
+			parts.unshift( { type: 'item', html: existing } );
 		}
 
 		const created = parts.map( ( part, index ) => {
 			const isLast = index === parts.length - 1;
 			if ( 'heading' === part.type ) {
 				return createGroupRow( {
-					value: part.text,
+					value: part.html,
 					isNew: isLast,
 				} );
 			}
 
 			return createItemRow( {
-				value: part.text,
+				value: part.html,
 				isNew: isLast,
 			} );
 		} );
 
-		// Keep the original row id on the first replacement so React remounts less.
+		const [ first ] = created;
 		created[ 0 ] = {
-			...created[ 0 ],
+			...first,
 			id: current.id,
 			isNew: 1 === created.length,
 		};
 
+		if ( current.image ) {
+			if ( 'item' === first.type ) {
+				created[ 0 ].image = current.image;
+			} else {
+				created.unshift( createItemRow( { image: current.image } ) );
+			}
+		}
+
 		const nextRows = [
-			...rows.slice( 0, fromIndex ).map( row => ( {
-				...row,
-				isNew: false,
-			} ) ),
+			...rows.slice( 0, fromIndex ).map( clearIsNew ),
 			...created,
-			...rows.slice( fromIndex + 1 ).map( row => ( {
-				...row,
-				isNew: false,
-			} ) ),
+			...rows.slice( fromIndex + 1 ).map( clearIsNew ),
 		];
 
 		pendingScrollRowIdRef.current = created[ created.length - 1 ].id;
@@ -279,18 +317,14 @@ const RecipeRowList = ( {
 		commitRows(
 			rows.map( row => {
 				if ( row.id !== rowId ) {
-					return { ...row, isNew: false };
+					return clearIsNew( row );
 				}
 
 				const nextType = 'group' === row.type ? 'item' : 'group';
 				return {
 					...row,
 					type: nextType,
-					// Section titles are plain text; strip inline markup.
-					value:
-						'group' === nextType
-							? stripHtml( row.value )
-							: row.value,
+					level: row.level || DEFAULT_GROUP_LEVEL,
 					image: 'group' === nextType ? null : row.image,
 					isNew: true,
 				};
@@ -316,7 +350,7 @@ const RecipeRowList = ( {
 
 				const nextRows = rowsRef.current.map( row => {
 					if ( row.id !== rowId ) {
-						return { ...row, isNew: false };
+						return clearIsNew( row );
 					}
 
 					return {
@@ -333,7 +367,7 @@ const RecipeRowList = ( {
 	const handleRemoveImage = rowId => {
 		const nextRows = rows.map( row => {
 			if ( row.id !== rowId ) {
-				return { ...row, isNew: false };
+				return clearIsNew( row );
 			}
 
 			return {
@@ -348,10 +382,7 @@ const RecipeRowList = ( {
 	const handleDeleteRow = rowId => {
 		let nextRows = rows
 			.filter( row => row.id !== rowId )
-			.map( row => ( {
-				...row,
-				isNew: false,
-			} ) );
+			.map( clearIsNew );
 
 		const hasItemRow = nextRows.some( row => 'item' === row.type );
 		if ( ! hasItemRow ) {
@@ -507,6 +538,7 @@ const RecipeRowList = ( {
 			}
 
 			dragRef.current = null;
+			endDragRef.current = null;
 			setDraggingId( null );
 			document.body.classList.remove( 'tasty-recipes-is-dragging' );
 			window.removeEventListener( 'pointermove', onPointerMove );
@@ -514,6 +546,8 @@ const RecipeRowList = ( {
 			window.removeEventListener( 'pointercancel', onPointerUp );
 			window.removeEventListener( 'keydown', onKeyDown );
 		};
+
+		endDragRef.current = endDrag;
 
 		const onPointerUp = () => endDrag();
 		const onKeyDown = keyEvent => {
@@ -557,6 +591,7 @@ const RecipeRowList = ( {
 							onMoveUp={ () => handleMoveRow( row.id, -1 ) }
 							onMoveDown={ () => handleMoveRow( row.id, 1 ) }
 							onConvert={ () => handleConvertRow( row.id ) }
+							onSplit={ handleSplitRow }
 							onAddImage={
 								isInstructions ? handleAddImage : null
 							}

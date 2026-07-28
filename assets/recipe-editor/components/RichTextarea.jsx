@@ -9,18 +9,24 @@ import { getModifierKeySymbol } from './platform';
 
 const CUSTOM_PLUGINS = [ 'tr_heading', 'tr_image', 'tr_video' ];
 
+// Not translatable: a translated URL would render an invalid example.
+const LINK_PLACEHOLDER_URL = 'https://example.com';
+
 // Shared across Description/Notes so only one scroll handler moves the toolbar.
 let activeBubbleEditorId = null;
 
+// Panels this component parks are hidden with visibility, not display, so both
+// have to be checked or the other editor's toolbar counts as the visible one.
 const getVisibleFloatPanel = () => {
 	const panels = document.querySelectorAll(
 		'.tasty-recipes-modal-open .mce-tinymce-inline.mce-floatpanel'
 	);
 
 	return (
-		Array.from( panels ).find(
-			panel => getComputedStyle( panel ).display !== 'none'
-		) || null
+		Array.from( panels ).find( panel => {
+			const styles = getComputedStyle( panel );
+			return 'none' !== styles.display && 'hidden' !== styles.visibility;
+		} ) || null
 	);
 };
 
@@ -131,6 +137,8 @@ export const RichTextarea = ( {
 	onFocus = () => {},
 } ) => {
 	const [ value, setValue ] = useState( initialValue );
+	// Frozen at mount so React never rewrites the element TinyMCE owns.
+	const [ seedHtml ] = useState( initialValue || '' );
 	const [ videoSettingsValue, setVideoSettingsValue ] = useState(
 		initialVideoSettingsValue ? initialVideoSettingsValue.split( ' ' ) : []
 	);
@@ -426,7 +434,29 @@ export const RichTextarea = ( {
 			);
 
 			let quicklinkObserver = null;
+			let observedPanel = null;
 			let isStylingQuicklink = false;
+
+			const observePanel = panel => {
+				if ( ! panel || panel === observedPanel ) {
+					return;
+				}
+
+				quicklinkObserver?.disconnect();
+				observedPanel = panel;
+				quicklinkObserver = new window.MutationObserver( () => {
+					if ( isStylingQuicklink ) {
+						return;
+					}
+					window.requestAnimationFrame( styleQuicklinkForm );
+				} );
+				quicklinkObserver.observe( panel, {
+					attributes: true,
+					attributeFilter: [ 'style' ],
+					subtree: true,
+					childList: true,
+				} );
+			};
 
 			const styleQuicklinkForm = () => {
 				if ( isStylingQuicklink || ! ownsActiveBubble() ) {
@@ -436,6 +466,7 @@ export const RichTextarea = ( {
 				const panel = getVisibleFloatPanel();
 				const form = panel?.querySelector( '.mce-form' );
 				const input = form?.querySelector( '.mce-textbox' );
+				observePanel( panel );
 				if ( ! panel || ! form || ! input ) {
 					return;
 				}
@@ -468,12 +499,8 @@ export const RichTextarea = ( {
 				const selectionRect = getSelectionRectSnapshot();
 				const formWidth = 283;
 
-				const linkPlaceholder = __(
-					'https://example.com',
-					'tasty-recipes-lite'
-				);
-				input.setAttribute( 'placeholder', linkPlaceholder );
-				input.setAttribute( 'aria-label', linkPlaceholder );
+				input.setAttribute( 'placeholder', LINK_PLACEHOLDER_URL );
+				input.setAttribute( 'aria-label', LINK_PLACEHOLDER_URL );
 
 				panel.style.setProperty( 'width', 'auto', 'important' );
 				panel.style.setProperty( 'min-width', '0', 'important' );
@@ -655,30 +682,20 @@ export const RichTextarea = ( {
 				// Toolbar bubble stays above selection while form sits below.
 				pinBubbleAbove( selectionRect );
 
-				if ( ! quicklinkObserver ) {
-					quicklinkObserver = new window.MutationObserver( () => {
-						if ( isStylingQuicklink ) {
-							return;
-						}
-						window.requestAnimationFrame( styleQuicklinkForm );
-					} );
-					quicklinkObserver.observe( panel, {
-						attributes: true,
-						attributeFilter: [ 'style' ],
-						subtree: true,
-						childList: true,
-					} );
-				}
-
 				window.requestAnimationFrame( () => {
 					isStylingQuicklink = false;
 				} );
 			};
 
+			const quicklinkTimeouts = [];
+
 			const scheduleQuicklinkFormStyle = () => {
-				[ 0, 16, 50, 100, 200, 400, 600 ].forEach( delay => {
-					window.setTimeout( styleQuicklinkForm, delay );
-				} );
+				window.requestAnimationFrame( styleQuicklinkForm );
+				// One fallback pass covers the panel appearing a tick later;
+				// the panel observer handles everything after that.
+				quicklinkTimeouts.push(
+					window.setTimeout( styleQuicklinkForm, 100 )
+				);
 			};
 
 			const onLinkShortcutKeyDown = event => {
@@ -710,7 +727,7 @@ export const RichTextarea = ( {
 				scheduleQuicklinkFormStyle();
 			};
 
-			let tooltipObserver = null;
+			let floatPanelObserver = null;
 
 			const onBubbleTooltipMouseOver = event => {
 				if ( ! ownsActiveBubble() ) {
@@ -772,36 +789,29 @@ export const RichTextarea = ( {
 				window.addEventListener( 'scroll', onScrollOrResize, true );
 				window.addEventListener( 'resize', onScrollOrResize );
 
-				tooltipObserver = new window.MutationObserver( mutations => {
-					const formTouched = mutations.some( mutation => {
-						const nodes = [
-							...Array.from( mutation.addedNodes ),
-							mutation.target,
-						];
-						return nodes.some( node => {
-							if ( ! node || node.nodeType !== 1 ) {
-								return false;
-							}
-							return (
-								node.classList?.contains( 'mce-form' ) ||
-								node.classList?.contains(
-									'mce-tinymce-inline'
-								) ||
-								!! node.querySelector?.(
-									'.mce-form, .mce-tinymce-inline'
-								)
-							);
-						} );
-					} );
-					if ( formTouched && ownsActiveBubble() ) {
-						scheduleQuicklinkFormStyle();
+				floatPanelObserver = new window.MutationObserver(
+					mutations => {
+						if ( isStylingQuicklink || ! ownsActiveBubble() ) {
+							return;
+						}
+
+						const panelAdded = mutations.some( mutation =>
+							Array.from( mutation.addedNodes ).some(
+								node =>
+									1 === node.nodeType &&
+									node.classList?.contains(
+										'mce-tinymce-inline'
+									)
+							)
+						);
+
+						if ( panelAdded ) {
+							scheduleQuicklinkFormStyle();
+						}
 					}
-				} );
-				tooltipObserver.observe( document.body, {
+				);
+				floatPanelObserver.observe( document.body, {
 					childList: true,
-					subtree: true,
-					attributes: true,
-					attributeFilter: [ 'style', 'class' ],
 				} );
 
 				ed.on( 'remove', () => {
@@ -832,17 +842,18 @@ export const RichTextarea = ( {
 					window.removeEventListener( 'resize', onScrollOrResize );
 					window.cancelAnimationFrame( positionFrame );
 					window.cancelAnimationFrame( scrollFrame );
-					positionTimeouts.forEach( timeoutId =>
-						window.clearTimeout( timeoutId )
+					[ ...positionTimeouts, ...quicklinkTimeouts ].forEach(
+						timeoutId => window.clearTimeout( timeoutId )
 					);
 
 					if ( quicklinkObserver ) {
 						quicklinkObserver.disconnect();
 						quicklinkObserver = null;
+						observedPanel = null;
 					}
-					if ( tooltipObserver ) {
-						tooltipObserver.disconnect();
-						tooltipObserver = null;
+					if ( floatPanelObserver ) {
+						floatPanelObserver.disconnect();
+						floatPanelObserver = null;
 					}
 				} );
 			}
@@ -880,10 +891,13 @@ export const RichTextarea = ( {
 			<label htmlFor={ id }>{ label }</label>
 			{ bubbleToolbar ? (
 				<>
+					{ /* Seeded so the value stays readable if TinyMCE or its
+					inline theme fails to load. */ }
 					<div
 						id={ id }
 						className="tasty-recipes-inline-editor"
 						data-placeholder={ placeholder }
+						dangerouslySetInnerHTML={ { __html: seedHtml } }
 					/>
 					<input
 						ref={ hiddenInputRef }

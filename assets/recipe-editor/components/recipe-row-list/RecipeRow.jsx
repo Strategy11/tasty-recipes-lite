@@ -3,7 +3,11 @@ import { __ } from '@wordpress/i18n';
 import classNames from 'classnames';
 import { DragGripIcon } from '../icons';
 import { RowActions } from './RowActions';
-import { sanitizeInlineHtml, stripHtml } from './utils';
+import { getCaretSplitHtml, sanitizeInlineHtml, stripHtml } from './utils';
+
+const insertLineBreak = () => {
+	document.execCommand( 'insertHTML', false, '<br>' );
+};
 
 export const RecipeRow = ( {
 	row,
@@ -17,6 +21,7 @@ export const RecipeRow = ( {
 	onMoveUp,
 	onMoveDown,
 	onConvert,
+	onSplit = () => {},
 	onAddImage = null,
 	onRemoveImage = null,
 	onDelete,
@@ -30,6 +35,23 @@ export const RecipeRow = ( {
 	const isEmpty = ! stripHtml( row.value ) && ! hasImage;
 
 	const handleRowKeyDown = event => {
+		if (
+			'Enter' === event.key &&
+			! event.altKey &&
+			! event.metaKey &&
+			! event.ctrlKey
+		) {
+			event.preventDefault();
+
+			if ( event.shiftKey ) {
+				insertLineBreak();
+				return;
+			}
+
+			onSplit( row.id, getCaretSplitHtml( event.currentTarget ) );
+			return;
+		}
+
 		if ( ! event.altKey ) {
 			return;
 		}
@@ -56,7 +78,7 @@ export const RecipeRow = ( {
 	// onInput already keeps row.value in sync while editing.
 	useLayoutEffect( () => {
 		const el = inputRef.current;
-		if ( ! el || isGroup ) {
+		if ( ! el ) {
 			return;
 		}
 
@@ -82,38 +104,18 @@ export const RecipeRow = ( {
 		}
 
 		el.focus();
-		if ( isGroup && 'function' === typeof el.setSelectionRange ) {
-			const end = el.value.length;
-			el.setSelectionRange( end, end );
-			return;
-		}
 
-		if ( ! isGroup ) {
-			const selection = el.ownerDocument.defaultView.getSelection();
-			const range = document.createRange();
-			range.selectNodeContents( el );
-			range.collapse( false );
-			selection.removeAllRanges();
-			selection.addRange( range );
-		}
-	}, [ row.isNew, row.id, isGroup ] );
+		const selection = el.ownerDocument.defaultView.getSelection();
+		const range = el.ownerDocument.createRange();
+		range.selectNodeContents( el );
+		range.collapse( false );
+		selection.removeAllRanges();
+		selection.addRange( range );
+	}, [ row.isNew, row.id ] );
 
-	const captionInput = isGroup ? (
-		<input
-			key={ `${ row.id }-group` }
-			ref={ inputRef }
-			type="text"
-			className="tasty-recipes-row-input"
-			placeholder={ groupPlaceholder }
-			value={ row.value }
-			onChange={ event =>
-				onValueChange( row.id, event.target.value )
-			}
-			onKeyDown={ handleRowKeyDown }
-		/>
-	) : (
+	const rowInput = (
 		<div
-			key={ `${ row.id }-item` }
+			key={ `${ row.id }-input` }
 			ref={ inputRef }
 			className={ classNames( 'tasty-recipes-row-input', {
 				'is-empty': isEmpty,
@@ -122,16 +124,13 @@ export const RecipeRow = ( {
 			suppressContentEditableWarning
 			role="textbox"
 			tabIndex={ 0 }
-			aria-multiline="false"
-			data-placeholder={ placeholder }
+			aria-multiline={ ! isGroup }
+			data-placeholder={ isGroup ? groupPlaceholder : placeholder }
 			onKeyDown={ handleRowKeyDown }
 			onPaste={ event => onPaste( event, row.id ) }
 			onInput={ event => {
 				const el = event.currentTarget;
-				if (
-					'<br>' === el.innerHTML ||
-					'<br/>' === el.innerHTML
-				) {
+				if ( '<br>' === el.innerHTML || '<br/>' === el.innerHTML ) {
 					el.innerHTML = '';
 				}
 				onValueChange(
@@ -164,7 +163,7 @@ export const RecipeRow = ( {
 
 			{ hasImage ? (
 				<div className="tasty-recipes-row-card">
-					{ captionInput }
+					{ rowInput }
 					<div className="tasty-recipes-row-image">
 						<img
 							src={ row.image.url }
@@ -184,9 +183,14 @@ export const RecipeRow = ( {
 							<span aria-hidden="true">×</span>
 						</button>
 					</div>
+					{ !! row.image.caption && (
+						<p className="tasty-recipes-row-image__caption">
+							{ row.image.caption }
+						</p>
+					) }
 				</div>
 			) : (
-				captionInput
+				rowInput
 			) }
 
 			<RowActions

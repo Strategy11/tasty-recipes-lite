@@ -50,6 +50,12 @@ export const openImageMediaLibrary = ( {
 		}
 	} );
 
+	// A fresh frame is built per call, so it is torn down once closed instead
+	// of accumulating in the DOM for the rest of the session.
+	frame.on( 'close', () => {
+		window.setTimeout( () => frame.remove(), 0 );
+	} );
+
 	frame.open();
 	return true;
 };
