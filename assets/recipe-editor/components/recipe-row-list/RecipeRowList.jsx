@@ -1,9 +1,4 @@
-import {
-	useLayoutEffect,
-	useMemo,
-	useRef,
-	useState,
-} from '@wordpress/element';
+import { useLayoutEffect, useRef, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { REORDER_DURATION_MS, REORDER_EASING } from './constants';
 import { parseClipboardParts } from './paste';
@@ -43,11 +38,6 @@ const RecipeRowList = ( {
 		: __( 'Add Ingredient', 'tasty-recipes-lite' );
 
 	rowsRef.current = rows;
-
-	const serializedValue = useMemo(
-		() => serializeRows( rows, mode ),
-		[ rows, mode ]
-	);
 
 	useLayoutEffect( () => {
 		const firstTops = pendingFlipRef.current;
@@ -486,7 +476,11 @@ const RecipeRowList = ( {
 		<>
 			<fieldset className="tasty-recipes-row-list-field">
 				<label>{ label }</label>
-				<input type="hidden" name={ name } value={ serializedValue } />
+				<input
+					type="hidden"
+					name={ name }
+					value={ serializeRows( rows, mode ) }
+				/>
 				<div
 					className="tasty-recipes-row-list"
 					ref={ listRef }

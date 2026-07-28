@@ -672,17 +672,14 @@ class Editor {
 	 *
 	 * @param WP_Post $post Post object to extract recipes from.
 	 *
-	 * @return list<int>
+	 * @return array
 	 */
 	private static function get_recipe_ids_from_post( $post ) {
 		if ( ! self::post_has_recipes( $post ) ) {
 			return array();
 		}
 
-		$recipe_ids = Tasty_Recipes::get_recipe_ids_from_content( $post->post_content );
-		$recipe_ids = array_map( 'intval', $recipe_ids );
-
-		return array_values( array_unique( $recipe_ids ) );
+		return array_unique( Tasty_Recipes::get_recipe_ids_from_content( $post->post_content ) );
 	}
 
 	/**

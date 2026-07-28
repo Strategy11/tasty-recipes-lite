@@ -32,13 +32,13 @@ export const useTaxonomyOptions = ( { taxonomy, value, onChange } ) => {
 		[ selectedValues, overridesByValue ]
 	);
 
-	const handleEditClick = useCallback( option => {
+	const handleEditClick = useCallback( ( option ) => {
 		setDeleteCandidate( null );
 		setEditCandidate( option );
 		setEditValue( option.label );
 	}, [] );
 
-	const handleEditInputChange = useCallback( newValue => {
+	const handleEditInputChange = useCallback( ( newValue ) => {
 		setEditValue( newValue );
 	}, [] );
 
@@ -48,7 +48,7 @@ export const useTaxonomyOptions = ( { taxonomy, value, onChange } ) => {
 	}, [] );
 
 	const handleConfirmEdit = useCallback(
-		async option => {
+		async ( option ) => {
 			const trimmedValue = editValue.trim();
 			if ( ! option.id || ! trimmedValue ) {
 				return;
@@ -71,7 +71,7 @@ export const useTaxonomyOptions = ( { taxonomy, value, onChange } ) => {
 					},
 				} );
 
-				const nextSelectedValues = selectedValues.map( item =>
+				const nextSelectedValues = selectedValues.map( ( item ) =>
 					item === option.value ? updatedOption.value : item
 				);
 				const uniqueSelectedValues = Array.from(
@@ -79,18 +79,18 @@ export const useTaxonomyOptions = ( { taxonomy, value, onChange } ) => {
 				);
 				onChange( uniqueSelectedValues.join( ', ' ) );
 
-				setCreatedOptions( previous =>
-					previous.map( existingOption =>
+				setCreatedOptions( ( previous ) =>
+					previous.map( ( existingOption ) =>
 						existingOption.value === option.value
 							? updatedOption
 							: existingOption
 					)
 				);
-				setOptionOverridesById( previous => ( {
+				setOptionOverridesById( ( previous ) => ( {
 					...previous,
 					[ updatedOption.id ]: updatedOption,
 				} ) );
-				setOptionValueAliases( previous => ( {
+				setOptionValueAliases( ( previous ) => ( {
 					...previous,
 					[ option.value ]: updatedOption.id,
 				} ) );
@@ -105,7 +105,7 @@ export const useTaxonomyOptions = ( { taxonomy, value, onChange } ) => {
 		[ editValue, onChange, selectedValues, taxonomy ]
 	);
 
-	const handleDeleteClick = useCallback( option => {
+	const handleDeleteClick = useCallback( ( option ) => {
 		setDeleteCandidate( option );
 	}, [] );
 
@@ -114,7 +114,7 @@ export const useTaxonomyOptions = ( { taxonomy, value, onChange } ) => {
 	}, [] );
 
 	const handleConfirmDelete = useCallback(
-		async option => {
+		async ( option ) => {
 			if ( ! option.id ) {
 				return;
 			}
@@ -130,25 +130,25 @@ export const useTaxonomyOptions = ( { taxonomy, value, onChange } ) => {
 				} );
 
 				const newSelectedValues = selectedValues.filter(
-					item => item !== option.value
+					( item ) => item !== option.value
 				);
 				if ( newSelectedValues.length !== selectedValues.length ) {
 					onChange( newSelectedValues.join( ', ' ) );
 				}
 
-				setCreatedOptions( previous =>
+				setCreatedOptions( ( previous ) =>
 					previous.filter(
-						existingOption => existingOption.value !== option.value
+						( existingOption ) => existingOption.value !== option.value
 					)
 				);
-				setOptionOverridesById( previous => {
+				setOptionOverridesById( ( previous ) => {
 					const next = { ...previous };
 					delete next[ option.id ];
 					return next;
 				} );
-				setOptionValueAliases( previous => {
+				setOptionValueAliases( ( previous ) => {
 					const next = { ...previous };
-					Object.keys( next ).forEach( valueKey => {
+					Object.keys( next ).forEach( ( valueKey ) => {
 						if (
 							valueKey === option.value ||
 							next[ valueKey ] === option.id
@@ -160,7 +160,7 @@ export const useTaxonomyOptions = ( { taxonomy, value, onChange } ) => {
 				} );
 
 				setDeleteCandidate( null );
-				setSelectKey( previous => previous + 1 );
+				setSelectKey( ( previous ) => previous + 1 );
 			} catch ( error ) {
 				// eslint-disable-next-line no-console
 				console.error( error );
@@ -170,7 +170,7 @@ export const useTaxonomyOptions = ( { taxonomy, value, onChange } ) => {
 	);
 
 	const loadOptions = useCallback(
-		async inputValue => {
+		async ( inputValue ) => {
 			if ( ! taxonomy ) {
 				return [];
 			}
@@ -200,9 +200,9 @@ export const useTaxonomyOptions = ( { taxonomy, value, onChange } ) => {
 	);
 
 	const handleChange = useCallback(
-		selected => {
+		( selected ) => {
 			const newValue = selected
-				? selected.map( option => option.value ).join( ', ' )
+				? selected.map( ( option ) => option.value ).join( ', ' )
 				: '';
 			onChange( newValue );
 		},
@@ -210,7 +210,7 @@ export const useTaxonomyOptions = ( { taxonomy, value, onChange } ) => {
 	);
 
 	const handleCreate = useCallback(
-		async inputValue => {
+		async ( inputValue ) => {
 			if ( ! taxonomy ) {
 				return;
 			}
@@ -227,14 +227,14 @@ export const useTaxonomyOptions = ( { taxonomy, value, onChange } ) => {
 
 				newOption.isDefault = false;
 
-				setCreatedOptions( previous => [ ...previous, newOption ] );
+				setCreatedOptions( ( previous ) => [ ...previous, newOption ] );
 
 				const newValue = [ ...selectedValues, newOption.value ].join(
 					', '
 				);
 				onChange( newValue );
 
-				setSelectKey( previous => previous + 1 );
+				setSelectKey( ( previous ) => previous + 1 );
 			} catch {
 				// eslint-disable-next-line no-console
 				console.error( 'Failed to create taxonomy term' );
@@ -254,12 +254,12 @@ export const useTaxonomyOptions = ( { taxonomy, value, onChange } ) => {
 	}, [ deleteCandidate, editCandidate ] );
 
 	const getOptionLabel = useCallback(
-		option =>
+		( option ) =>
 			optionOverridesById[ option.id ]?.label ?? option.label,
 		[ optionOverridesById ]
 	);
 	const getOptionValue = useCallback(
-		option =>
+		( option ) =>
 			optionOverridesById[ option.id ]?.value ?? option.value,
 		[ optionOverridesById ]
 	);

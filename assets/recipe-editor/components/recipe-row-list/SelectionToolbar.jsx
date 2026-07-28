@@ -473,10 +473,7 @@ export const SelectionToolbar = ( { containerRef } ) => {
 						inputMode="url"
 						autoComplete="off"
 						value={ linkUrl }
-						placeholder={ __(
-							'https://example.com',
-							'tasty-recipes-lite'
-						) }
+						placeholder="https://example.com"
 						onChange={ event =>
 							setLinkUrl( event.target.value )
 						}

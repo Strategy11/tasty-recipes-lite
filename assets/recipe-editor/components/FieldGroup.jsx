@@ -96,11 +96,12 @@ export const FieldGroup = ( {
 	const fieldPlaceholders = {
 		prep_time: __( 'e.g. 15 min', 'tasty-recipes-lite' ),
 		cook_time: __( 'e.g. 30 min', 'tasty-recipes-lite' ),
+		total_time: __( 'Defaults to prep + cook', 'tasty-recipes-lite' ),
 		yield: __( 'e.g. 4 servings', 'tasty-recipes-lite' ),
-		category: __( 'Select category…', 'tasty-recipes-lite' ),
-		method: __( 'Select method…', 'tasty-recipes-lite' ),
-		cuisine: __( 'Select cuisine…', 'tasty-recipes-lite' ),
-		diet: __( 'Select diet…', 'tasty-recipes-lite' ),
+		category: __( 'Select category...', 'tasty-recipes-lite' ),
+		method: __( 'Select method...', 'tasty-recipes-lite' ),
+		cuisine: __( 'Select cuisine...', 'tasty-recipes-lite' ),
+		diet: __( 'Select diet...', 'tasty-recipes-lite' ),
 		keywords: __(
 			'e.g. easy, weeknight, kid-friendly',
 			'tasty-recipes-lite'
@@ -110,7 +111,7 @@ export const FieldGroup = ( {
 	};
 
 	const getFieldPlaceholder = ( name, field ) =>
-		field.placeholder || fieldPlaceholders[ name ] || '';
+		fieldPlaceholders[ name ] || field.placeholder || '';
 
 	const renderToggle = () => {
 		if ( ! heading ) {
@@ -137,27 +138,8 @@ export const FieldGroup = ( {
 		);
 	};
 
-	const collapsibleBodyRef = useRef( null );
-
-	useEffect( () => {
-		const body = collapsibleBodyRef.current;
-		if ( ! body ) {
-			return;
-		}
-
-		if ( isCollapsed ) {
-			body.setAttribute( 'inert', '' );
-		} else {
-			body.removeAttribute( 'inert' );
-		}
-	}, [ isCollapsed ] );
-
 	const renderCollapsibleBody = content => (
-		<div
-			ref={ collapsibleBodyRef }
-			className="tasty-recipes-field-group__body"
-			aria-hidden={ isCollapsed }
-		>
+		<div className="tasty-recipes-field-group__body">
 			<div className="tasty-recipes-field-group__body-inner">
 				{ content }
 			</div>
@@ -352,14 +334,14 @@ export const FieldGroup = ( {
 						return null;
 					}
 
-					const afterField = renderAfterField?.[ name ];
+					const AfterField = renderAfterField?.[ name ];
 
 					return (
 						<Fragment key={ name }>
 							{ renderField( name, field ) }
-							{ afterField ? (
+							{ AfterField ? (
 								<div className="tasty-recipes-fields-insert">
-									{ afterField( { fieldValues } ) }
+									<AfterField fieldValues={ fieldValues } />
 								</div>
 							) : null }
 						</Fragment>

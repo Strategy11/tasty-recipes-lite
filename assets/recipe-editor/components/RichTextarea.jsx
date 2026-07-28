@@ -32,26 +32,10 @@ const getBubbleToolbarHelpers = () => {
 	const mod = getModifierKey();
 
 	return [
-		{
-			icon: 'mce-i-bold',
-			label: __( 'Bold', 'tasty-recipes-lite' ),
-			keys: [ mod, 'B' ],
-		},
-		{
-			icon: 'mce-i-italic',
-			label: __( 'Italic', 'tasty-recipes-lite' ),
-			keys: [ mod, 'I' ],
-		},
-		{
-			icon: 'mce-i-underline',
-			label: __( 'Underline', 'tasty-recipes-lite' ),
-			keys: [ mod, 'U' ],
-		},
-		{
-			icon: 'mce-i-link',
-			label: __( 'Add link', 'tasty-recipes-lite' ),
-			keys: [ mod, 'K' ],
-		},
+		{ icon: 'mce-i-bold', label: 'Bold', keys: [ mod, 'B' ] },
+		{ icon: 'mce-i-italic', label: 'Italic', keys: [ mod, 'I' ] },
+		{ icon: 'mce-i-underline', label: 'Underline', keys: [ mod, 'U' ] },
+		{ icon: 'mce-i-link', label: 'Add link', keys: [ mod, 'K' ] },
 	];
 };
 
@@ -521,30 +505,35 @@ export const RichTextarea = ( {
 				} );
 			};
 
-			const syncPlaceholderAttr = () => {
-				const body = ed.getBody();
-				if ( ! body || ! placeholder ) {
-					return;
-				}
+			if ( bubbleToolbar ) {
+				const syncPlaceholderAttr = () => {
+					const body = ed.getBody();
+					if ( ! body || ! placeholder ) {
+						return;
+					}
 
-				if ( ed.dom.isEmpty( body ) ) {
-					body.setAttribute( 'data-mce-placeholder', placeholder );
-				} else {
-					body.removeAttribute( 'data-mce-placeholder' );
-				}
-			};
+					if ( ed.dom.isEmpty( body ) ) {
+						body.setAttribute(
+							'data-mce-placeholder',
+							placeholder
+						);
+					} else {
+						body.removeAttribute( 'data-mce-placeholder' );
+					}
+				};
 
-			ed.on( 'init', () => {
-				if ( bubbleToolbar && initialValue ) {
-					ed.setContent( initialValue );
-					syncContent();
-				}
-				syncPlaceholderAttr();
-			} );
-			ed.on(
-				'SetContent keyup change NodeChange blur',
-				syncPlaceholderAttr
-			);
+				ed.on( 'init', () => {
+					if ( initialValue ) {
+						ed.setContent( initialValue );
+						syncContent();
+					}
+					syncPlaceholderAttr();
+				} );
+				ed.on(
+					'SetContent keyup change NodeChange blur',
+					syncPlaceholderAttr
+				);
+			}
 
 			let quicklinkObserver = null;
 			let isStylingQuicklink = false;
@@ -589,12 +578,8 @@ export const RichTextarea = ( {
 				const selectionRect = getSelectionRectSnapshot();
 				const formWidth = 283;
 
-				const linkPlaceholder = __(
-					'https://example.com',
-					'tasty-recipes-lite'
-				);
-				input.setAttribute( 'placeholder', linkPlaceholder );
-				input.setAttribute( 'aria-label', linkPlaceholder );
+				input.setAttribute( 'placeholder', 'https://example.com' );
+				input.setAttribute( 'aria-label', 'https://example.com' );
 
 				panel.style.setProperty( 'width', 'auto', 'important' );
 				panel.style.setProperty( 'min-width', '0', 'important' );
@@ -744,12 +729,11 @@ export const RichTextarea = ( {
 				}
 
 				if ( primaryButton ) {
-					const addLabel = __( 'Add', 'tasty-recipes-lite' );
 					primaryButton
 						.querySelectorAll( '.mce-ico' )
 						.forEach( icon => icon.remove() );
-					primaryButton.textContent = addLabel;
-					primaryButton.setAttribute( 'aria-label', addLabel );
+					primaryButton.textContent = 'Add';
+					primaryButton.setAttribute( 'aria-label', 'Add' );
 					primaryButton.removeAttribute( 'title' );
 					primaryButton.style.setProperty(
 						'overflow',

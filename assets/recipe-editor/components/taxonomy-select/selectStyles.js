@@ -13,34 +13,34 @@ export const selectStyles = {
 			borderColor: state.isFocused ? '#ED4996' : '#a0a5ae',
 		},
 	} ),
-	valueContainer: base => ( {
+	valueContainer: ( base ) => ( {
 		...base,
 		padding: '2px 8px',
 		gap: '4px',
 		flexWrap: 'wrap',
 		alignItems: 'center',
 	} ),
-	placeholder: base => ( {
+	placeholder: ( base ) => ( {
 		...base,
 		margin: 0,
 		color: '#99A0AE',
 	} ),
-	indicatorsContainer: base => ( {
+	indicatorsContainer: ( base ) => ( {
 		...base,
 		height: '38px',
 	} ),
-	multiValue: base => ( {
+	multiValue: ( base ) => ( {
 		...base,
 		backgroundColor: '#F5F7FA',
 		borderRadius: '6px',
 	} ),
-	multiValueLabel: base => ( {
+	multiValueLabel: ( base ) => ( {
 		...base,
 		color: '#0E121B',
 		fontSize: '13px',
 		padding: '2px 4px 2px 8px',
 	} ),
-	multiValueRemove: base => ( {
+	multiValueRemove: ( base ) => ( {
 		...base,
 		color: '#525866',
 		borderRadius: '0 6px 6px 0',
@@ -49,7 +49,7 @@ export const selectStyles = {
 			color: '#0E121B',
 		},
 	} ),
-	menu: base => ( {
+	menu: ( base ) => ( {
 		...base,
 		borderRadius: '10px',
 		border: '1px solid #CACFD8',
@@ -57,7 +57,7 @@ export const selectStyles = {
 		overflow: 'hidden',
 		zIndex: 1000,
 	} ),
-	menuList: base => ( {
+	menuList: ( base ) => ( {
 		...base,
 		padding: '4px 0',
 	} ),
@@ -74,7 +74,7 @@ export const selectStyles = {
 			backgroundColor: '#F5F7FA',
 		},
 	} ),
-	input: base => ( {
+	input: ( base ) => ( {
 		...base,
 		margin: 0,
 		padding: 0,
@@ -83,7 +83,7 @@ export const selectStyles = {
 	indicatorSeparator: () => ( {
 		display: 'none',
 	} ),
-	dropdownIndicator: base => ( {
+	dropdownIndicator: ( base ) => ( {
 		...base,
 		padding: '8px',
 		color: '#6B7280',

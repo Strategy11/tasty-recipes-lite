@@ -1,4 +1,4 @@
-const stripItemPrefix = value =>
+const stripItemPrefix = ( value ) =>
 	String( value || '' )
 		.trim()
 		.replace( /^\d{1,3}\s*[.):\-–—]\s+/, '' )
@@ -6,7 +6,7 @@ const stripItemPrefix = value =>
 		.replace( /^step\s*\d{1,3}\s*[.:\-–—]?\s*/i, '' )
 		.trim();
 
-const parsePasteLines = text => {
+const parsePasteLines = ( text ) => {
 	if ( ! text ) {
 		return [];
 	}
@@ -17,7 +17,7 @@ const parsePasteLines = text => {
 		.filter( Boolean );
 };
 
-const parsePasteHtml = html => {
+const parsePasteHtml = ( html ) => {
 	if ( ! html ) {
 		return null;
 	}
@@ -29,15 +29,15 @@ const parsePasteHtml = html => {
 
 		// Keep leaf-most blocks so a wrapper div does not duplicate nested <p>s.
 		blocks = blocks.filter(
-			el =>
-				! blocks.some( other => other !== el && el.contains( other ) )
+			( el ) =>
+				! blocks.some( ( other ) => other !== el && el.contains( other ) )
 		);
 
 		if ( ! blocks.length ) {
 			return null;
 		}
 
-		const isBoldElement = el => {
+		const isBoldElement = ( el ) => {
 			if ( ! el ) {
 				return false;
 			}
@@ -53,8 +53,8 @@ const parsePasteHtml = html => {
 
 		const parts = [];
 
-		blocks.forEach( el => {
-			const text = el.textContent.replaceAll( /\s+/g, ' ' ).trim();
+		blocks.forEach( ( el ) => {
+			const text = el.textContent.replace( /\s+/g, ' ' ).trim();
 			if ( ! text ) {
 				return;
 			}
@@ -67,7 +67,7 @@ const parsePasteHtml = html => {
 
 				if (
 					bold &&
-					bold.textContent.replaceAll( /\s+/g, ' ' ).trim() === text
+					bold.textContent.replace( /\s+/g, ' ' ).trim() === text
 				) {
 					isHeading = true;
 				}
@@ -76,17 +76,17 @@ const parsePasteHtml = html => {
 			parts.push(
 				isHeading
 					? {
-						text: text.replace( /:\s*$/, '' ),
-						type: 'heading',
-					}
+							text: text.replace( /:\s*$/, '' ),
+							type: 'heading',
+					  }
 					: {
-						text: stripItemPrefix( text ),
-						type: 'item',
-					}
+							text: stripItemPrefix( text ),
+							type: 'item',
+					  }
 			);
 		} );
 
-		const filtered = parts.filter( part => part.text );
+		const filtered = parts.filter( ( part ) => part.text );
 		return filtered.length ? filtered : null;
 	} catch ( error ) {
 		return null;
@@ -94,7 +94,7 @@ const parsePasteHtml = html => {
 };
 
 export const parseClipboardParts = ( text, html ) => {
-	const textParts = parsePasteLines( text ).map( line => ( {
+	const textParts = parsePasteLines( text ).map( ( line ) => ( {
 		text: line,
 		type: 'item',
 	} ) );
