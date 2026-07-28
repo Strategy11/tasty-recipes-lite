@@ -268,7 +268,6 @@ Cypress.Commands.add( 'typeTastyInlineEditor', ( fieldId, text ) => {
 	cy.get( `#${ fieldId }.mce-content-body`, {
 		timeout: 10_000,
 	} )
-		.scrollIntoView()
 		.should( 'be.visible' )
 		.click()
 		.type( text, { delay: 0 } );

@@ -96,7 +96,9 @@ describe( 'Recipe Creation', () => {
 			.find( 'input#title' )
 			.type( 'Cypress Created Recipe' );
 
-		cy.get( '#author_name' ).should( 'have.value', 'admin' );
+		cy.get( '#author_name' )
+			.scrollIntoView()
+			.should( 'have.value', 'admin' );
 
 		cy.typeTastyInlineEditor(
 			'tasty-recipes-recipe-description',
