@@ -7,6 +7,8 @@ import {
 } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import classNames from 'classnames';
+import { KbdTooltip } from '../kbd-tooltip';
+import { getModifierKeySymbol } from './utils';
 
 const LINK_ICON = (
 	<svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -390,6 +392,38 @@ export const SelectionToolbar = ( { containerRef } ) => {
 		left: `${ linkPosition.left }px`,
 	};
 
+	const mod = getModifierKeySymbol();
+	const formatActions = [
+		{
+			id: 'bold',
+			label: __( 'Bold', 'tasty-recipes-lite' ),
+			shortcut: [ mod, 'B' ],
+			active: activeCommands.bold,
+			onClick: () => runCommand( 'bold' ),
+			content: <b>B</b>,
+		},
+		{
+			id: 'italic',
+			label: __( 'Italic', 'tasty-recipes-lite' ),
+			shortcut: [ mod, 'I' ],
+			active: activeCommands.italic,
+			onClick: () => runCommand( 'italic' ),
+			content: <i>I</i>,
+		},
+		{
+			id: 'underline',
+			label: __( 'Underline', 'tasty-recipes-lite' ),
+			shortcut: [ mod, 'U' ],
+			active: activeCommands.underline,
+			onClick: () => runCommand( 'underline' ),
+			content: (
+				<span className="tasty-recipes-selection-toolbar__underline">
+					U
+				</span>
+			),
+		},
+	];
+
 	return createPortal(
 		<>
 			{ isVisible && (
@@ -404,53 +438,44 @@ export const SelectionToolbar = ( { containerRef } ) => {
 					) }
 					onMouseDown={ event => event.preventDefault() }
 				>
-					<button
-						type="button"
-						className={ classNames( {
-							'is-active': activeCommands.bold,
-						} ) }
-						aria-label={ __( 'Bold', 'tasty-recipes-lite' ) }
-						onClick={ () => runCommand( 'bold' ) }
-					>
-						<b>B</b>
-					</button>
-					<button
-						type="button"
-						className={ classNames( {
-							'is-active': activeCommands.italic,
-						} ) }
-						aria-label={ __( 'Italic', 'tasty-recipes-lite' ) }
-						onClick={ () => runCommand( 'italic' ) }
-					>
-						<i>I</i>
-					</button>
-					<button
-						type="button"
-						className={ classNames( {
-							'is-active': activeCommands.underline,
-						} ) }
-						aria-label={ __( 'Underline', 'tasty-recipes-lite' ) }
-						onClick={ () => runCommand( 'underline' ) }
-					>
-						<span className="tasty-recipes-selection-toolbar__underline">
-							U
-						</span>
-					</button>
+					{ formatActions.map( action => (
+						<KbdTooltip
+							key={ action.id }
+							label={ action.label }
+							shortcut={ action.shortcut }
+						>
+							<button
+								type="button"
+								className={ classNames( {
+									'is-active': action.active,
+								} ) }
+								aria-label={ action.label }
+								onClick={ action.onClick }
+							>
+								{ action.content }
+							</button>
+						</KbdTooltip>
+					) ) }
 					<span
 						className="tasty-recipes-selection-toolbar__sep"
 						aria-hidden="true"
 					/>
-					<button
-						type="button"
-						className={ classNames( {
-							'is-active': activeCommands.link || linkOpen,
-						} ) }
-						aria-label={ __( 'Add link', 'tasty-recipes-lite' ) }
-						aria-expanded={ linkOpen }
-						onClick={ openLinkPopover }
+					<KbdTooltip
+						label={ __( 'Add link', 'tasty-recipes-lite' ) }
+						shortcut={ [ mod, 'K' ] }
 					>
-						{ LINK_ICON }
-					</button>
+						<button
+							type="button"
+							className={ classNames( {
+								'is-active': activeCommands.link || linkOpen,
+							} ) }
+							aria-label={ __( 'Add link', 'tasty-recipes-lite' ) }
+							aria-expanded={ linkOpen }
+							onClick={ openLinkPopover }
+						>
+							{ LINK_ICON }
+						</button>
+					</KbdTooltip>
 				</div>
 			) }
 			{ linkOpen && (

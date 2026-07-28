@@ -1,5 +1,10 @@
 import { useState, useEffect, useRef } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import {
+	hideKbdTooltip,
+	repositionKbdTooltip,
+	scheduleShowKbdTooltip,
+} from './kbd-tooltip';
 
 const CUSTOM_PLUGINS = [ 'tr_heading', 'tr_image', 'tr_video' ];
 
@@ -58,11 +63,6 @@ const getBubbleToolbarHelpers = () => {
 const getHelperAriaLabel = ( { label, keys } ) =>
 	`${ label } (${ keys.join( '+' ) })`;
 
-const getActiveBubbleTooltip = () =>
-	Array.from( document.querySelectorAll( '.mce-tooltip' ) ).find(
-		tip => getComputedStyle( tip ).display !== 'none'
-	) || null;
-
 const applyBubbleToolbarHelpers = panel => {
 	if ( ! panel ) {
 		return;
@@ -79,7 +79,7 @@ const applyBubbleToolbarHelpers = panel => {
 		const ariaLabel = getHelperAriaLabel( helper );
 		const keysValue = helper.keys.join( '\u0001' );
 
-		// Avoid native browser tooltips; TinyMCE uses settings.tooltip.
+		// Kill native browser + TinyMCE tooltips; we use the shared KbdTooltip.
 		button?.removeAttribute( 'title' );
 		btnWrap?.removeAttribute( 'title' );
 		button?.setAttribute( 'aria-label', ariaLabel );
@@ -92,121 +92,10 @@ const applyBubbleToolbarHelpers = panel => {
 		if ( btnWrap?.id && window.tinymce?.ui?.Control?.getById ) {
 			const control = window.tinymce.ui.Control.getById( btnWrap.id );
 			if ( control?.settings ) {
-				control.settings.tooltip = ariaLabel;
+				control.settings.tooltip = '';
 			}
 		}
 	} );
-};
-
-const renderBubbleTooltipContent = ( inner, label, keys ) => {
-	if ( ! inner || ! label ) {
-		return false;
-	}
-
-	const currentLabel = inner.querySelector(
-		'.tasty-mce-tooltip__label'
-	)?.textContent;
-	const currentKeys = Array.from(
-		inner.querySelectorAll( '.tasty-mce-tooltip__key' )
-	).map( keyEl => keyEl.textContent );
-
-	if (
-		currentLabel === label &&
-		currentKeys.join( '\u0001' ) === keys.join( '\u0001' )
-	) {
-		return false;
-	}
-
-	inner.replaceChildren();
-
-	const wrap = document.createElement( 'span' );
-	wrap.className = 'tasty-mce-tooltip';
-
-	const labelEl = document.createElement( 'span' );
-	labelEl.className = 'tasty-mce-tooltip__label';
-	labelEl.textContent = label;
-	wrap.appendChild( labelEl );
-
-	if ( keys.length ) {
-		const keysEl = document.createElement( 'span' );
-		keysEl.className = 'tasty-mce-tooltip__keys';
-		keys.forEach( key => {
-			const keyEl = document.createElement( 'kbd' );
-			keyEl.className = 'tasty-mce-tooltip__key';
-			keyEl.textContent = key;
-			keysEl.appendChild( keyEl );
-		} );
-		wrap.appendChild( keysEl );
-	}
-
-	inner.appendChild( wrap );
-	return true;
-};
-
-const positionBubbleTooltipAbove = ( tip, anchor ) => {
-	if ( ! tip || ! anchor ) {
-		return;
-	}
-
-	const anchorRect = anchor.getBoundingClientRect();
-	const tipRect = tip.getBoundingClientRect();
-	const gap = 6;
-	const top = anchorRect.top - tipRect.height - gap;
-	const left =
-		anchorRect.left + ( anchorRect.width - tipRect.width ) / 2;
-
-	// mce-tooltip-s = arrow on bottom = tooltip sits above the button.
-	tip.classList.remove(
-		'mce-tooltip-n',
-		'mce-tooltip-e',
-		'mce-tooltip-w',
-		'mce-tooltip-ne',
-		'mce-tooltip-nw',
-		'mce-tooltip-se',
-		'mce-tooltip-sw'
-	);
-	tip.classList.add( 'mce-tooltip-s' );
-	tip.style.setProperty( 'position', 'fixed', 'important' );
-	tip.style.setProperty( 'top', `${ Math.max( 8, top ) }px`, 'important' );
-	tip.style.setProperty( 'left', `${ Math.max( 8, left ) }px`, 'important' );
-};
-
-const syncBubbleTooltipHelper = () => {
-	const tip = getActiveBubbleTooltip();
-	if ( ! tip || getComputedStyle( tip ).display === 'none' ) {
-		return;
-	}
-
-	const anchor =
-		document.querySelector(
-			'.tasty-recipes-modal-open .mce-tinymce-inline.mce-floatpanel .mce-btn:hover'
-		) ||
-		document.querySelector(
-			'.tasty-recipes-modal-open .mce-tinymce-inline.mce-floatpanel [data-tasty-helper-label]:hover'
-		);
-
-	if ( ! anchor ) {
-		return;
-	}
-
-	const label =
-		anchor.getAttribute( 'data-tasty-helper-label' ) ||
-		anchor
-			.querySelector( '[data-tasty-helper-label]' )
-			?.getAttribute( 'data-tasty-helper-label' );
-	const keys = (
-		anchor.getAttribute( 'data-tasty-helper-keys' ) ||
-		anchor
-			.querySelector( '[data-tasty-helper-keys]' )
-			?.getAttribute( 'data-tasty-helper-keys' ) ||
-		''
-	)
-		.split( '\u0001' )
-		.filter( Boolean );
-
-	const inner = tip.querySelector( '.mce-tooltip-inner' );
-	renderBubbleTooltipContent( inner, label, keys );
-	positionBubbleTooltipAbove( tip, anchor );
 };
 
 const stripCustomPlugins = settings => {
@@ -477,7 +366,7 @@ export const RichTextarea = ( {
 				const selectionRect = getSelectionRectSnapshot();
 				pinBubbleAbove( selectionRect );
 				pinQuicklinkFormBelow( selectionRect );
-				syncBubbleTooltipHelper();
+				repositionKbdTooltip();
 			};
 
 			const positionBubbleAboveSelection = () => {
@@ -826,50 +715,57 @@ export const RichTextarea = ( {
 				) {
 					return;
 				}
+				hideKbdTooltip();
 				positionBubbleAboveSelection();
 				scheduleQuicklinkFormStyle();
 			};
 
-			let tooltipFrame = 0;
 			let tooltipObserver = null;
-			const tooltipTimeouts = [];
 
-			const scheduleBubbleTooltipSync = () => {
+			const onBubbleTooltipMouseOver = event => {
 				if ( ! ownsActiveBubble() ) {
 					return;
 				}
 
-				if ( tooltipFrame ) {
+				const btn = event.target.closest(
+					'.mce-tinymce-inline.mce-floatpanel .mce-btn[data-tasty-helper-label]'
+				);
+				if ( ! btn ) {
 					return;
 				}
 
-				tooltipFrame = window.requestAnimationFrame( () => {
-					tooltipFrame = 0;
-					syncBubbleTooltipHelper();
+				const label = btn.getAttribute( 'data-tasty-helper-label' );
+				const shortcut = (
+					btn.getAttribute( 'data-tasty-helper-keys' ) || ''
+				)
+					.split( '\u0001' )
+					.filter( Boolean );
+
+				scheduleShowKbdTooltip( {
+					label,
+					shortcut,
+					anchor: btn,
 				} );
 			};
 
-			const onBubbleTooltipMouseOver = event => {
-				if (
-					! ownsActiveBubble() ||
-					! event.target.closest(
-						'.mce-tinymce-inline.mce-floatpanel .mce-btn'
-					)
-				) {
+			const onBubbleTooltipMouseOut = event => {
+				if ( ! ownsActiveBubble() ) {
 					return;
 				}
 
-				scheduleBubbleTooltipSync();
-				tooltipTimeouts.forEach( timeoutId =>
-					window.clearTimeout( timeoutId )
+				const btn = event.target.closest(
+					'.mce-tinymce-inline.mce-floatpanel .mce-btn[data-tasty-helper-label]'
 				);
-				tooltipTimeouts.length = 0;
-				// TinyMCE shows/positions its tooltip after a short delay.
-				[ 50, 120, 250, 400 ].forEach( delay => {
-					tooltipTimeouts.push(
-						window.setTimeout( scheduleBubbleTooltipSync, delay )
-					);
-				} );
+				if ( ! btn ) {
+					return;
+				}
+
+				const next = event.relatedTarget;
+				if ( next && btn.contains( next ) ) {
+					return;
+				}
+
+				hideKbdTooltip();
 			};
 
 			if ( bubbleToolbar ) {
@@ -889,22 +785,15 @@ export const RichTextarea = ( {
 					onBubbleTooltipMouseOver,
 					true
 				);
+				document.addEventListener(
+					'mouseout',
+					onBubbleTooltipMouseOut,
+					true
+				);
 				window.addEventListener( 'scroll', onScrollOrResize, true );
 				window.addEventListener( 'resize', onScrollOrResize );
 
 				tooltipObserver = new window.MutationObserver( mutations => {
-					const tipAdded = mutations.some( mutation =>
-						Array.from( mutation.addedNodes ).some(
-							node =>
-								node.nodeType === 1 &&
-								( node.classList?.contains( 'mce-tooltip' ) ||
-									node.querySelector?.( '.mce-tooltip' ) )
-						)
-					);
-					if ( tipAdded ) {
-						scheduleBubbleTooltipSync();
-					}
-
 					const formTouched = mutations.some( mutation => {
 						const nodes = [
 							...Array.from( mutation.addedNodes ),
@@ -940,6 +829,7 @@ export const RichTextarea = ( {
 					if ( activeBubbleEditorId === ed.id ) {
 						activeBubbleEditorId = null;
 					}
+					hideKbdTooltip();
 					document.removeEventListener(
 						'mousedown',
 						onBubbleMouseDown,
@@ -950,6 +840,11 @@ export const RichTextarea = ( {
 						onBubbleTooltipMouseOver,
 						true
 					);
+					document.removeEventListener(
+						'mouseout',
+						onBubbleTooltipMouseOut,
+						true
+					);
 					window.removeEventListener(
 						'scroll',
 						onScrollOrResize,
@@ -958,11 +853,7 @@ export const RichTextarea = ( {
 					window.removeEventListener( 'resize', onScrollOrResize );
 					window.cancelAnimationFrame( positionFrame );
 					window.cancelAnimationFrame( scrollFrame );
-					window.cancelAnimationFrame( tooltipFrame );
 					positionTimeouts.forEach( timeoutId =>
-						window.clearTimeout( timeoutId )
-					);
-					tooltipTimeouts.forEach( timeoutId =>
 						window.clearTimeout( timeoutId )
 					);
 

@@ -315,65 +315,6 @@
 	}
 }
 
-.tasty-recipes-modal-open .mce-tooltip {
-	z-index: 10250 !important;
-	opacity: 1;
-	padding: 0;
-	margin-top: 0;
-
-	.mce-tooltip-arrow {
-		display: none;
-	}
-
-	.mce-tooltip-inner {
-		font-family: 'Inter', sans-serif;
-		padding: 6px 8px;
-		border-radius: 8px;
-		background-color: #181B25;
-		color: #fff;
-		white-space: nowrap;
-		box-shadow: 0 8px 24px rgba( 14, 18, 27, 0.18 );
-	}
-
-	.tasty-mce-tooltip {
-		display: inline-flex;
-		align-items: center;
-		gap: 8px;
-	}
-
-	.tasty-mce-tooltip__label {
-		font-size: 12px;
-		font-weight: 500;
-		line-height: 16px;
-		color: #fff;
-	}
-
-	.tasty-mce-tooltip__keys {
-		display: inline-flex;
-		align-items: center;
-		gap: 4px;
-	}
-
-	.tasty-mce-tooltip__key {
-		box-sizing: border-box;
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		min-width: 20px;
-		height: 20px;
-		margin: 0;
-		padding: 0 5px;
-		border: 1px solid #3B4251;
-		border-radius: 5px;
-		background: #2B303B;
-		color: #E1E4EA;
-		font-family: 'Inter', sans-serif;
-		font-size: 11px;
-		font-weight: 500;
-		line-height: 1;
-	}
-}
-
 #wp-link {
 	#link-options {
 		.link-nofollow {

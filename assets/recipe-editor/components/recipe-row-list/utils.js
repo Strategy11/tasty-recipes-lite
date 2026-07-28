@@ -49,15 +49,20 @@ export const ensureRowVisible = rowId => {
 	}
 };
 
-export const getOptionKeySymbol = () => {
+const isApplePlatform = () => {
 	const platform = navigator.platform || '';
 	const userAgent = navigator.userAgent || '';
-	const isApple =
-		/Mac|iPhone|iPod|iPad/.test( platform ) ||
-		/Mac OS X/.test( userAgent );
 
-	return isApple ? '⌥' : 'Alt';
+	return (
+		/Mac|iPhone|iPod|iPad/.test( platform ) || /Mac OS X/.test( userAgent )
+	);
 };
+
+export const getOptionKeySymbol = () =>
+	isApplePlatform() ? '⌥' : 'Alt';
+
+export const getModifierKeySymbol = () =>
+	isApplePlatform() ? '⌘' : 'Ctrl';
 
 const ALLOWED_INLINE_TAGS = new Set( [
 	'b',

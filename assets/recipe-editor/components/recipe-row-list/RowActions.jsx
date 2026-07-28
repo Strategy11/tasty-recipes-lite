@@ -51,6 +51,10 @@ export const RowActions = ( {
 			<RowIconButton label={ convertLabel } onClick={ onConvert }>
 				{ isGroup ? ParagraphIcon : SectionTitleIcon }
 			</RowIconButton>
+			<span
+				className="tasty-recipes-row-actions__sep"
+				aria-hidden="true"
+			/>
 			<RowIconButton
 				label={ __( 'Delete', 'tasty-recipes-lite' ) }
 				danger

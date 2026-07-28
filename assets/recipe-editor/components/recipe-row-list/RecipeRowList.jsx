@@ -5,6 +5,7 @@ import {
 	useState,
 } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import { PlusIcon, SectionTitleIcon } from '../icons';
 import { REORDER_DURATION_MS, REORDER_EASING } from './constants';
 import { parseClipboardParts } from './paste';
 import { RecipeRow } from './RecipeRow';
@@ -522,7 +523,9 @@ const RecipeRowList = ( {
 						<span
 							className="tasty-recipes-rich-textarea-action-icon"
 							aria-hidden="true"
-						></span>
+						>
+							{ PlusIcon }
+						</span>
 						{ addItemLabel }
 					</button>
 					<button
@@ -533,7 +536,9 @@ const RecipeRowList = ( {
 						<span
 							className="tasty-recipes-rich-textarea-action-icon"
 							aria-hidden="true"
-						></span>
+						>
+							{ SectionTitleIcon }
+						</span>
 						{ __( 'Add Section Title', 'tasty-recipes-lite' ) }
 					</button>
 				</div>

@@ -741,14 +741,14 @@
 	.tasty-recipes-rich-textarea-actions {
 		display: flex;
 		align-items: center;
-		gap: 8px;
-		margin-top: 10px;
+		gap: 20px;
+		margin-top: 12px;
 	}
 
 	.tasty-recipes-rich-textarea-action {
 		display: inline-flex;
 		align-items: center;
-		gap: 4px;
+		gap: 6px;
 		min-height: 20px;
 		margin: 0;
 		padding: 0;
@@ -772,49 +772,14 @@
 	}
 
 	.tasty-recipes-rich-textarea-action-icon {
-		position: relative;
-		display: inline-block;
-		width: 20px;
-		height: 20px;
-		flex: 0 0 20px;
-	}
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		flex: 0 0 auto;
+		color: inherit;
 
-	.tasty-recipes-rich-textarea-action--add .tasty-recipes-rich-textarea-action-icon {
-		&::before,
-		&::after {
-			content: "";
-			position: absolute;
-			top: 9px;
-			left: 5px;
-			width: 10px;
-			height: 1.5px;
-			border-radius: 1px;
-			background: currentColor;
-		}
-
-		&::after {
-			transform: rotate( 90deg );
-		}
-	}
-
-	.tasty-recipes-rich-textarea-action--section .tasty-recipes-rich-textarea-action-icon {
-		&::before,
-		&::after {
-			content: "";
-			position: absolute;
-			left: 5px;
-			width: 10px;
-			height: 4px;
-			border: 1.5px solid currentColor;
-			border-radius: 1px;
-		}
-
-		&::before {
-			top: 4px;
-		}
-
-		&::after {
-			bottom: 4px;
+		svg {
+			display: block;
 		}
 	}
 
@@ -1026,6 +991,14 @@
 		transition: opacity 0.14s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.14s cubic-bezier(0.2, 0.8, 0.2, 1);
 	}
 
+	.tasty-recipes-row-actions__sep {
+		width: 1px;
+		height: 16px;
+		margin: 0 2px;
+		background: #CACFD8;
+		flex: 0 0 auto;
+	}
+
 	.tasty-recipes-item-row:hover > .tasty-recipes-row-actions,
 	.tasty-recipes-item-row:focus-within > .tasty-recipes-row-actions {
 		opacity: 1;
@@ -1050,8 +1023,10 @@
 
 		svg {
 			display: block;
-			width: 18px;
-			height: 18px;
+			width: auto;
+			height: auto;
+			max-width: 18px;
+			max-height: 18px;
 		}
 
 		&:hover {
@@ -1588,19 +1563,21 @@
 	align-items: center;
 	gap: 8px;
 	padding: 6px 8px;
+	border: 0;
 	border-radius: 8px;
-	background-color: #181b25;
-	box-shadow: 0 8px 24px rgba( 14, 18, 27, 0.18 );
+	background-color: #181B25;
+	box-shadow: 0 4px 16px rgba( 14, 18, 27, 0.28 );
 	pointer-events: none;
 	font-family: 'Inter', sans-serif;
 	white-space: nowrap;
+	color: #FFFFFF;
 }
 
 .tasty-recipes-kbd-tooltip__label {
 	font-size: 12px;
 	font-weight: 500;
 	line-height: 16px;
-	color: #fff;
+	color: #FFFFFF;
 }
 
 .tasty-recipes-kbd-tooltip__keys {
@@ -1614,16 +1591,24 @@
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	min-width: 20px;
-	height: 20px;
+	min-width: 18px;
+	height: 18px;
 	margin: 0;
-	padding: 0 5px;
-	border: 1px solid #3b4251;
-	border-radius: 5px;
-	background: #2b303b;
-	color: #e1e4ea;
+	padding: 0 4px;
+	border: 1px solid #3B4251;
+	border-bottom-color: #CACFD8;
+	border-radius: 4px;
+	background: #2B303B;
+	box-shadow: inset 0 1px 0 rgba( 255, 255, 255, 0.08 );
+	color: #FFFFFF;
 	font-family: 'Inter', sans-serif;
 	font-size: 11px;
 	font-weight: 500;
 	line-height: 1;
+	letter-spacing: 0;
+}
+
+// Description/Notes bubble toolbar: suppress TinyMCE's native tooltip chrome.
+.tasty-recipes-modal-open .mce-tooltip {
+	display: none !important;
 }

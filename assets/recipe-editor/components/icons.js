@@ -118,21 +118,39 @@ export const MoveDownIcon = (
 	</svg>
 );
 
-export const SectionTitleIcon = (
+export const PlusIcon = (
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
-		width="18"
-		height="18"
-		viewBox="1 1 22 22"
+		width="12"
+		height="12"
+		viewBox="0 0 12 12"
 		fill="none"
 		aria-hidden="true"
 	>
 		<path
-			d="M5.75 5.75H7.25M7.25 5.75H8.25M7.25 5.75V11.75M7.25 11.75V18.25M7.25 11.75H16.75M7.25 18.25H5.75M7.25 18.25H8.25M16.75 11.75V5.75M16.75 11.75V18.25M16.75 5.75H18.25M16.75 5.75H15.75M16.75 18.25H18.25M16.75 18.25H15.75"
+			d="M6 1.5v9M1.5 6h9"
 			stroke="currentColor"
-			strokeWidth="1.65"
+			strokeWidth="1.5"
+			strokeLinecap="round"
+		/>
+	</svg>
+);
+
+export const SectionTitleIcon = (
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		width="10"
+		height="12"
+		fill="none"
+		viewBox="0 0 10 12"
+		aria-hidden="true"
+	>
+		<path
+			stroke="currentColor"
 			strokeLinecap="round"
 			strokeLinejoin="round"
+			strokeWidth="1.35"
+			d="M.675.676v4.909m0 0v5.318m0-5.318h7.773m0 0V.675m0 4.91v5.318"
 		/>
 	</svg>
 );
