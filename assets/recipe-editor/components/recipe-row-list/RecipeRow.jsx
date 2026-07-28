@@ -47,8 +47,10 @@ export const RecipeRow = ( {
 		}
 	};
 
-	// Re-sync after every render. React clears contentEditable DOM when
+	// Re-sync after every render. React can clear contentEditable DOM when
 	// parent re-renders (no React children), which wiped hydrated values.
+	// Skip while focused so sanitizer rewrites do not jump the caret mid-type;
+	// onInput already keeps row.value in sync while editing.
 	useLayoutEffect( () => {
 		const el = inputRef.current;
 		if ( ! el || isGroup ) {
@@ -56,6 +58,15 @@ export const RecipeRow = ( {
 		}
 
 		const next = sanitizeInlineHtml( row.value || '' );
+		const isFocused = el === el.ownerDocument.activeElement;
+
+		if ( isFocused ) {
+			if ( ! el.innerHTML && next ) {
+				el.innerHTML = next;
+			}
+			return;
+		}
+
 		if ( sanitizeInlineHtml( el.innerHTML ) !== next ) {
 			el.innerHTML = next;
 		}

@@ -1,6 +1,6 @@
 import { __ } from '@wordpress/i18n';
 
-export const formatCreateLabel = ( inputValue ) => (
+export const formatCreateLabel = inputValue => (
 	<span className="tasty-taxonomy-create-option">
 		<span className="tasty-taxonomy-create-option__plus">+</span>
 		<span className="tasty-taxonomy-create-option__label">
@@ -13,21 +13,21 @@ export const formatCreateLabel = ( inputValue ) => (
 	</span>
 );
 
-export const parseSelectedValues = ( value ) => {
+export const parseSelectedValues = value => {
 	if ( ! value ) {
 		return [];
 	}
 
 	return value
 		.split( ',' )
-		.map( ( item ) => item.trim() )
+		.map( item => item.trim() )
 		.filter( Boolean );
 };
 
 export const buildOverridesByValue = ( overridesById, valueAliases ) => {
 	const overrides = {};
 
-	Object.values( overridesById ).forEach( ( override ) => {
+	Object.values( overridesById ).forEach( override => {
 		if ( override?.value ) {
 			overrides[ override.value ] = override;
 		}
@@ -44,7 +44,7 @@ export const buildOverridesByValue = ( overridesById, valueAliases ) => {
 };
 
 export const buildSelectedOptions = ( selectedValues, overridesByValue ) =>
-	selectedValues.map( ( value ) => {
+	selectedValues.map( value => {
 		const override = overridesByValue[ value ];
 
 		return {
@@ -55,7 +55,7 @@ export const buildSelectedOptions = ( selectedValues, overridesByValue ) =>
 	} );
 
 export const mergeCreatedOptions = ( groups, createdOptions, inputValue ) => {
-	const filteredCreated = createdOptions.filter( ( option ) =>
+	const filteredCreated = createdOptions.filter( option =>
 		option.label.toLowerCase().includes( inputValue.toLowerCase() )
 	);
 
@@ -63,11 +63,11 @@ export const mergeCreatedOptions = ( groups, createdOptions, inputValue ) => {
 		return groups;
 	}
 
-	const nextGroups = groups.map( ( group ) => ( {
+	const nextGroups = groups.map( group => ( {
 		...group,
 		options: [ ...group.options ],
 	} ) );
-	let customGroup = nextGroups.find( ( group ) => group.label !== '' );
+	let customGroup = nextGroups.find( group => group.label !== '' );
 
 	if ( ! customGroup ) {
 		customGroup = {
@@ -77,10 +77,10 @@ export const mergeCreatedOptions = ( groups, createdOptions, inputValue ) => {
 		nextGroups.push( customGroup );
 	}
 
-	filteredCreated.forEach( ( option ) => {
+	filteredCreated.forEach( option => {
 		if (
 			! customGroup.options.some(
-				( existingOption ) => existingOption.value === option.value
+				existingOption => existingOption.value === option.value
 			)
 		) {
 			customGroup.options.push( option );
