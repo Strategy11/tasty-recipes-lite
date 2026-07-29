@@ -3,6 +3,8 @@ $tasty-recipes-modal-footer-height: 69px;
 
 .tasty-recipes-modal-container {
 	display: none;
+	// TinyMCE wp-content.css sets body to Georgia; keep modal chrome on Inter.
+	font-family: Inter, sans-serif !important;
 }
 .tasty-recipes-modal-backdrop {
 	position: fixed;
@@ -24,11 +26,38 @@ $tasty-recipes-modal-footer-height: 69px;
 	max-height: 1040px;
 	transform: translateX( -50% );
 	z-index: 10150;
+	font-family: Inter, sans-serif !important;
 
 	* {
 		-webkit-box-sizing: border-box;
 		-moz-box-sizing: border-box;
 		box-sizing: border-box;
+	}
+
+	*:not( .mce-ico ):not( .dashicons ):not( .dashicons-before ) {
+		font-family: Inter, sans-serif !important;
+	}
+
+	.mce-ico {
+		font-family: tinymce, Arial !important;
+	}
+
+	.dashicons,
+	.dashicons-before::before {
+		font-family: dashicons !important;
+	}
+}
+
+// Floatpanels append to body, outside the modal root.
+.tasty-recipes-modal-open .mce-tinymce-inline {
+	font-family: Inter, sans-serif !important;
+
+	*:not( .mce-ico ):not( .dashicons ):not( .dashicons-before ) {
+		font-family: Inter, sans-serif !important;
+	}
+
+	.mce-ico {
+		font-family: tinymce, Arial !important;
 	}
 }
 .tasty-recipes-modal-open {
@@ -175,7 +204,6 @@ $tasty-recipes-modal-footer-height: 69px;
 	font-size: 14px;
 	line-height: 20px;
 	font-weight: 500;
-	font-family: Inter, sans-serif;
 	color: #181B25;
 	margin: 0;
 }

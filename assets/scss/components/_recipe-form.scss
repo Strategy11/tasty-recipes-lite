@@ -299,29 +299,54 @@
 		}
 	}
 
-	.tasty-recipes-image {
+	// Editor-only class names — avoid `.tasty-recipes-image`, which Snap card
+	// styles use for the frontend hero (negative margin, full-width img).
+	.tasty-recipes-editor-image {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
+		gap: 12px;
 		border: 1px solid #CACFD8;
 		padding: 16px;
 		border-radius: 12px;
+		margin: 0;
+		max-height: none;
+		overflow: visible;
+		z-index: auto;
 
 		div.tasty-image-preview {
 			display: flex;
 			align-items: center;
 			gap: 15px;
+			flex: 1 1 auto;
+			min-width: 0;
+			overflow: hidden;
 
 			img {
+				flex-shrink: 0;
+				width: 40px;
+				height: 40px;
+				max-width: 40px;
 				border-radius: 8px;
+				object-fit: cover;
 			}
 
 			p {
+				margin: 0;
+				min-width: 0;
 				font-family: 'Inter', sans-serif;
 				font-size: 14px;
 				color: #000;
 				font-weight: 500;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
 			}
+		}
+
+		> .tasty-secondary-button {
+			flex-shrink: 0;
+			white-space: nowrap;
 		}
 
 		&-placeholder {

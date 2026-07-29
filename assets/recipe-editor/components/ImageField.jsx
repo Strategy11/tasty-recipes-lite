@@ -54,8 +54,8 @@ export const ImageField = ( { recipe, handleRecipeChange, labels = {} } ) => {
 	return (
 		<div
 			className={ classNames( {
-				'tasty-recipes-image-placeholder': ! recipeThumbnail,
-				'tasty-recipes-image': recipeThumbnail,
+				'tasty-recipes-editor-image-placeholder': ! recipeThumbnail,
+				'tasty-recipes-editor-image': recipeThumbnail,
 			} ) }
 		>
 			<input type="hidden" name="image_id" value={ recipe.image_id } />
@@ -108,11 +108,11 @@ const Placeholder = ( { handleClickSelectImage, labels } ) => {
 	return (
 		<>
 			<Icon icon={ UploadIcon } width={ 24 } height={ 24 } />
-			<div className="tasty-recipes-image-placeholder-text">
-				<p className="tasty-recipes-image-placeholder-title">
+			<div className="tasty-recipes-editor-image-placeholder-text">
+				<p className="tasty-recipes-editor-image-placeholder-title">
 					{ labels.placeholderTitle }
 				</p>
-				<p className="tasty-recipes-image-placeholder-subtitle">
+				<p className="tasty-recipes-editor-image-placeholder-subtitle">
 					{ labels.placeholderSubtitle }
 				</p>
 			</div>
