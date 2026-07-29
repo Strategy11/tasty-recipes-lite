@@ -39,7 +39,10 @@ const getRange = selection => {
 	return selection.getRangeAt( 0 );
 };
 
-const isInsideSurface = ( node, container ) => {
+const DEFAULT_SURFACE_SELECTOR =
+	'.tasty-recipes-row-input[contenteditable="true"]';
+
+const isInsideSurface = ( node, container, surfaceSelector ) => {
 	if ( ! node || ! container ) {
 		return false;
 	}
@@ -50,13 +53,11 @@ const isInsideSurface = ( node, container ) => {
 		return false;
 	}
 
-	const editable = el.closest(
-		'.tasty-recipes-row-input[contenteditable="true"]'
-	);
+	const editable = el.closest( surfaceSelector );
 	return !! editable && container.contains( editable );
 };
 
-const getEditableFromRange = range => {
+const getEditableFromRange = ( range, surfaceSelector ) => {
 	if ( ! range ) {
 		return null;
 	}
@@ -64,10 +65,15 @@ const getEditableFromRange = range => {
 	const node = range.commonAncestorContainer;
 	const el =
 		Node.ELEMENT_NODE === node.nodeType ? node : node.parentElement;
-	return (
-		el?.closest( '.tasty-recipes-row-input[contenteditable="true"]' ) ||
-		null
-	);
+	return el?.closest( surfaceSelector ) || null;
+};
+
+const getTinyMceEditor = editable => {
+	if ( ! editable?.id || ! window.tinymce?.get ) {
+		return null;
+	}
+
+	return window.tinymce.get( editable.id ) || null;
 };
 
 const getAnchorFromSelection = container => {
@@ -108,12 +114,21 @@ const normalizeUrl = raw => {
 	return /^[^\s/]+\.[^\s/]/.test( value ) ? `https://${ value }` : value;
 };
 
-const notifyEditable = range => {
-	const editable = getEditableFromRange( range );
+const notifyEditable = ( range, surfaceSelector ) => {
+	const editable = getEditableFromRange( range, surfaceSelector );
 	editable?.dispatchEvent( new Event( 'input', { bubbles: true } ) );
+
+	const editor = getTinyMceEditor( editable );
+	if ( editor ) {
+		editor.fire( 'change' );
+		editor.nodeChanged();
+	}
 };
 
-export const SelectionToolbar = ( { containerRef } ) => {
+export const SelectionToolbar = ( {
+	containerRef,
+	surfaceSelector = DEFAULT_SURFACE_SELECTOR,
+} ) => {
 	const toolbarRef = useRef( null );
 	const linkPopoverRef = useRef( null );
 	const linkInputRef = useRef( null );
@@ -134,6 +149,20 @@ export const SelectionToolbar = ( { containerRef } ) => {
 
 	const updateActiveState = () => {
 		const container = containerRef?.current;
+		const range = getRange( getSelection( container ) );
+		const editable = getEditableFromRange( range, surfaceSelector );
+		const editor = getTinyMceEditor( editable );
+
+		if ( editor ) {
+			setActiveCommands( {
+				bold: !! editor.queryCommandState( 'Bold' ),
+				italic: !! editor.queryCommandState( 'Italic' ),
+				underline: !! editor.queryCommandState( 'Underline' ),
+				link: !! editor.dom.getParent( editor.selection.getNode(), 'a' ),
+			} );
+			return;
+		}
+
 		setActiveCommands( {
 			bold: document.queryCommandState( 'bold' ),
 			italic: document.queryCommandState( 'italic' ),
@@ -172,7 +201,13 @@ export const SelectionToolbar = ( { containerRef } ) => {
 			return;
 		}
 
-		if ( ! isInsideSurface( range.commonAncestorContainer, container ) ) {
+		if (
+			! isInsideSurface(
+				range.commonAncestorContainer,
+				container,
+				surfaceSelector
+			)
+		) {
 			hide();
 			return;
 		}
@@ -209,12 +244,22 @@ export const SelectionToolbar = ( { containerRef } ) => {
 			return;
 		}
 
-		if ( ! isInsideSurface( range.commonAncestorContainer, container ) ) {
+		if (
+			! isInsideSurface(
+				range.commonAncestorContainer,
+				container,
+				surfaceSelector
+			)
+		) {
 			return;
 		}
 
 		savedRangeRef.current = range.cloneRange();
-		const anchor = getAnchorFromSelection( container );
+		const editable = getEditableFromRange( range, surfaceSelector );
+		const editor = getTinyMceEditor( editable );
+		const anchor = editor
+			? editor.dom.getParent( editor.selection.getNode(), 'a' )
+			: getAnchorFromSelection( container );
 		const rect = range.getBoundingClientRect();
 		setLinkHasAnchor( !! anchor );
 		// Shown verbatim so editing an existing link cannot rewrite its scheme.
@@ -249,7 +294,7 @@ export const SelectionToolbar = ( { containerRef } ) => {
 		};
 		// Intentional: listeners close over latest sync via render; ref guards link popover.
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [ containerRef ] );
+	}, [ containerRef, surfaceSelector ] );
 
 	useEffect( () => {
 		const onKeyDown = event => {
@@ -274,7 +319,11 @@ export const SelectionToolbar = ( { containerRef } ) => {
 			}
 
 			if (
-				! isInsideSurface( range.commonAncestorContainer, container )
+				! isInsideSurface(
+					range.commonAncestorContainer,
+					container,
+					surfaceSelector
+				)
 			) {
 				return;
 			}
@@ -286,7 +335,7 @@ export const SelectionToolbar = ( { containerRef } ) => {
 		document.addEventListener( 'keydown', onKeyDown );
 		return () => document.removeEventListener( 'keydown', onKeyDown );
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [ containerRef ] );
+	}, [ containerRef, surfaceSelector ] );
 
 	useLayoutEffect( () => {
 		if ( ! isVisible || ! toolbarRef.current ) {
@@ -350,12 +399,22 @@ export const SelectionToolbar = ( { containerRef } ) => {
 			return;
 		}
 
-		document.execCommand( command, false, null );
+		const editable = getEditableFromRange(
+			savedRangeRef.current,
+			surfaceSelector
+		);
+		const editor = getTinyMceEditor( editable );
+		if ( editor ) {
+			editor.execCommand( command );
+		} else {
+			document.execCommand( command, false, null );
+		}
+
 		const range = getRange( getSelection( containerRef?.current ) );
 		if ( range ) {
 			savedRangeRef.current = range.cloneRange();
 		}
-		notifyEditable( savedRangeRef.current );
+		notifyEditable( savedRangeRef.current, surfaceSelector );
 		updateActiveState();
 	};
 
@@ -366,13 +425,28 @@ export const SelectionToolbar = ( { containerRef } ) => {
 			return;
 		}
 
-		document.execCommand( 'createLink', false, url );
-		const anchor = getAnchorFromSelection( containerRef?.current );
-		if ( anchor && isAbsoluteHttpUrl( url ) ) {
-			anchor.setAttribute( 'target', '_blank' );
-			anchor.setAttribute( 'rel', 'noopener noreferrer' );
+		const editable = getEditableFromRange(
+			savedRangeRef.current,
+			surfaceSelector
+		);
+		const editor = getTinyMceEditor( editable );
+		if ( editor ) {
+			const linkAttrs = { href: url };
+			if ( isAbsoluteHttpUrl( url ) ) {
+				linkAttrs.target = '_blank';
+				linkAttrs.rel = 'noopener noreferrer';
+			}
+			editor.execCommand( 'mceInsertLink', false, linkAttrs );
+		} else {
+			document.execCommand( 'createLink', false, url );
+			const anchor = getAnchorFromSelection( containerRef?.current );
+			if ( anchor && isAbsoluteHttpUrl( url ) ) {
+				anchor.setAttribute( 'target', '_blank' );
+				anchor.setAttribute( 'rel', 'noopener noreferrer' );
+			}
 		}
-		notifyEditable( savedRangeRef.current );
+
+		notifyEditable( savedRangeRef.current, surfaceSelector );
 		setLinkOpen( false );
 		syncFromSelection();
 	};
@@ -383,8 +457,18 @@ export const SelectionToolbar = ( { containerRef } ) => {
 			return;
 		}
 
-		document.execCommand( 'unlink', false, null );
-		notifyEditable( savedRangeRef.current );
+		const editable = getEditableFromRange(
+			savedRangeRef.current,
+			surfaceSelector
+		);
+		const editor = getTinyMceEditor( editable );
+		if ( editor ) {
+			editor.execCommand( 'unlink' );
+		} else {
+			document.execCommand( 'unlink', false, null );
+		}
+
+		notifyEditable( savedRangeRef.current, surfaceSelector );
 		setLinkOpen( false );
 		syncFromSelection();
 	};
