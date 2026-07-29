@@ -708,29 +708,23 @@ class Assets {
 		if ( self::$editor_id !== $editor_id ) {
 			return $mce_init;
 		}
-		$mce_init['plugins'] .= ',tr_heading,tr_image,tr_video';
-		$external_plugins     = array();
-		if ( isset( $mce_init['external_plugins'] ) ) {
-			if ( is_string( $mce_init['external_plugins'] ) ) {
-				$decoded_plugins  = json_decode( $mce_init['external_plugins'], true );
-				$external_plugins = $decoded_plugins ? $decoded_plugins : array();
-			} elseif ( is_array( $mce_init['external_plugins'] ) ) {
-				$external_plugins = $mce_init['external_plugins'];
-			}
-		}
-		$external_plugins['tr_heading'] = plugins_url(
-			'assets/js/tinymce-tr-heading.js?v=' . TASTY_RECIPES_LITE_VERSION,
-			__DIR__
+		$mce_init['plugins']         .= ',tr_heading,tr_image,tr_video';
+		$mce_init['external_plugins'] = wp_json_encode(
+			array(
+				'tr_heading' => plugins_url(
+					'assets/js/tinymce-tr-heading.js?v=' . TASTY_RECIPES_LITE_VERSION,
+					__DIR__
+				),
+				'tr_image'   => plugins_url(
+					'assets/js/tinymce-tr-image.js?v=' . TASTY_RECIPES_LITE_VERSION,
+					__DIR__
+				),
+				'tr_video'   => plugins_url(
+					'assets/js/tinymce-tr-video.js?v=' . TASTY_RECIPES_LITE_VERSION,
+					__DIR__
+				),
+			)
 		);
-		$external_plugins['tr_image']   = plugins_url(
-			'assets/js/tinymce-tr-image.js?v=' . TASTY_RECIPES_LITE_VERSION,
-			__DIR__
-		);
-		$external_plugins['tr_video']   = plugins_url(
-			'assets/js/tinymce-tr-video.js?v=' . TASTY_RECIPES_LITE_VERSION,
-			__DIR__
-		);
-		$mce_init['external_plugins']   = wp_json_encode( $external_plugins );
 		return $mce_init;
 	}
 

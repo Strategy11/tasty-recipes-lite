@@ -15,6 +15,60 @@ const LINK_PLACEHOLDER_URL = 'https://example.com';
 // Shared across Description/Notes so only one scroll handler moves the toolbar.
 let activeBubbleEditorId = null;
 
+const cloneMceSettings = source => {
+	if ( ! source || 'object' !== typeof source ) {
+		return {};
+	}
+
+	try {
+		return structuredClone( source );
+	} catch ( error ) {
+		return { ...source };
+	}
+};
+
+const filterExternalPlugins = ( externalPlugins, allowlist ) => {
+	let parsed = externalPlugins;
+
+	if ( 'string' === typeof parsed ) {
+		try {
+			parsed = JSON.parse( parsed );
+		} catch ( error ) {
+			parsed = {};
+		}
+	}
+
+	if ( ! parsed || 'object' !== typeof parsed ) {
+		return {};
+	}
+
+	return allowlist.reduce( ( next, name ) => {
+		if ( parsed[ name ] ) {
+			next[ name ] = parsed[ name ];
+		}
+		return next;
+	}, {} );
+};
+
+const normalizeFormatClasses = formats => {
+	if ( ! formats || 'object' !== typeof formats ) {
+		return formats;
+	}
+
+	Object.keys( formats ).forEach( key => {
+		const format = formats[ key ];
+		const items = Array.isArray( format ) ? format : [ format ];
+
+		items.forEach( item => {
+			if ( item && Array.isArray( item.classes ) ) {
+				item.classes = item.classes.join( ' ' );
+			}
+		} );
+	} );
+
+	return formats;
+};
+
 // Panels this component parks are hidden with visibility, not display, so both
 // have to be checked or the other editor's toolbar counts as the visible one.
 const getVisibleFloatPanel = () => {
@@ -98,30 +152,9 @@ const applyBubbleToolbarHelpers = panel => {
 const stripCustomPlugins = settings => {
 	const next = { ...settings };
 
-	if ( typeof next.plugins === 'string' ) {
-		next.plugins = next.plugins
-			.split( ',' )
-			.map( plugin => plugin.trim() )
-			.filter( plugin => plugin && ! CUSTOM_PLUGINS.includes( plugin ) )
-			.join( ',' );
-	}
 
-	let externalPlugins = next.external_plugins;
-	if ( typeof externalPlugins === 'string' ) {
-		try {
-			externalPlugins = JSON.parse( externalPlugins );
-		} catch ( error ) {
-			externalPlugins = {};
-		}
-	}
-
-	if ( externalPlugins && typeof externalPlugins === 'object' ) {
-		const filtered = { ...externalPlugins };
-		CUSTOM_PLUGINS.forEach( plugin => {
-			delete filtered[ plugin ];
-		} );
-		next.external_plugins = filtered;
-	}
+	next.plugins = 'paste,lists';
+	next.external_plugins = {};
 
 	return next;
 };
@@ -162,14 +195,14 @@ export const RichTextarea = ( {
 			value.includes( 'youtu.be' ) );
 
 	useEffect( () => {
-		if ( typeof window.tinyMCE === 'undefined' ) {
+		if ( window.tinyMCE === undefined ) {
 			return;
 		}
 
-		let settings = Object.assign(
-			{},
-			window.tinyMCEPreInit.mceInit[ 'tasty-recipes-editor' ]
+		let settings = cloneMceSettings(
+			window.tinyMCEPreInit?.mceInit?.[ 'tasty-recipes-editor' ]
 		);
+		settings.formats = normalizeFormatClasses( settings.formats );
 		settings.selector = `#${ id }`;
 		settings.placeholder = placeholder;
 
@@ -187,6 +220,10 @@ export const RichTextarea = ( {
 			settings.toolbar3 = '';
 			settings.toolbar4 = '';
 		} else {
+			settings.external_plugins = filterExternalPlugins(
+				settings.external_plugins,
+				CUSTOM_PLUGINS
+			);
 			settings.statusbar = true;
 		}
 
