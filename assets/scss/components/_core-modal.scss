@@ -48,18 +48,6 @@ $tasty-recipes-modal-footer-height: 69px;
 	}
 }
 
-// Floatpanels append to body, outside the modal root.
-.tasty-recipes-modal-open .mce-tinymce-inline {
-	font-family: Inter, sans-serif !important;
-
-	*:not( .mce-ico ):not( .dashicons ):not( .dashicons-before ) {
-		font-family: Inter, sans-serif !important;
-	}
-
-	.mce-ico {
-		font-family: tinymce, Arial !important;
-	}
-}
 .tasty-recipes-modal-open {
 	overflow: hidden;
 }

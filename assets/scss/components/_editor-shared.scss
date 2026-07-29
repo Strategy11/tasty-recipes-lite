@@ -1,15 +1,8 @@
-@mixin floating-panel( $important: false ) {
-	@if $important {
-		background: #fff !important;
-		border: 1px solid #E1E4EA !important;
-		border-radius: 10px !important;
-		box-shadow: 0 12px 32px rgba( 14, 18, 27, 0.16 ) !important;
-	} @else {
-		background: #fff;
-		border: 1px solid #E1E4EA;
-		border-radius: 10px;
-		box-shadow: 0 12px 32px rgba( 14, 18, 27, 0.16 );
-	}
+@mixin floating-panel {
+	background: #fff;
+	border: 1px solid #E1E4EA;
+	border-radius: 10px;
+	box-shadow: 0 12px 32px rgba( 14, 18, 27, 0.16 );
 }
 
 @mixin icon-button {

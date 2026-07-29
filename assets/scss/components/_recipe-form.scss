@@ -224,21 +224,6 @@
 		margin: 0;
 		padding: 0;
 		border: none;
-
-		&.tasty-recipes-modal-form-row {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			gap: 20px;
-
-			div {
-				width: 50%;
-
-				input {
-					width: 100%;
-				}
-			}
-		}
 	}
 
 	h3 {
@@ -1644,11 +1629,6 @@
 	font-weight: 500;
 	line-height: 1;
 	letter-spacing: 0;
-}
-
-// Description/Notes bubble toolbar: suppress TinyMCE's native tooltip chrome.
-.tasty-recipes-modal-open .mce-tooltip {
-	display: none !important;
 }
 
 // Root scope: the class lands on <body>, which is never inside the modal.

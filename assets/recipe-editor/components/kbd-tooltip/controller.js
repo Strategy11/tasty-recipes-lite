@@ -105,23 +105,3 @@ export const scheduleShowKbdTooltip = ( {
 		positionTip( activeAnchor );
 	}, TOOLTIP_SHOW_DELAY_MS );
 };
-
-export const scheduleKbdTooltipFromAnchor = anchor => {
-	if ( ! anchor ) {
-		return;
-	}
-
-	scheduleShowKbdTooltip( {
-		label: anchor.dataset.tastyHelperLabel,
-		shortcut: ( anchor.dataset.tastyHelperKeys || '' )
-			.split( '\u0001' )
-			.filter( Boolean ),
-		anchor,
-	} );
-};
-
-export const repositionKbdTooltip = () => {
-	if ( tipEl && activeAnchor && document.body.contains( activeAnchor ) ) {
-		positionTip( activeAnchor );
-	}
-};
