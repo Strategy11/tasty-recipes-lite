@@ -54,6 +54,8 @@ if ( ! function_exists( 'tasty_recipes_lite_require_storage_keys' ) ) {
 		require_once dirname( TASTY_RECIPES_LITE_FILE ) . '/inc/class-meta-keys.php';
 		$loaded = true;
 	}
+
+	tasty_recipes_lite_require_storage_keys();
 }
 
 if ( ! function_exists( 'tasty_recipes_lite' ) ) {

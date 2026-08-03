@@ -18,5 +18,5 @@ const localized = window.tastyRecipesSettings?.optionNames;
 
 export const optionNames = {
 	...defaults,
-	...( localized || {} ),
+	...localized,
 };
