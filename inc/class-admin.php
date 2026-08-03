@@ -137,7 +137,7 @@ class Admin {
 	 *
 	 * @var string
 	 */
-	const DB_VERSION_OPTION = 'tasty_recipes_db_version';
+	const DB_VERSION_OPTION = Options::DB_VERSION;
 
 	/**
 	 * Current database version.

@@ -3,6 +3,7 @@ import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import { TextInput, ToggleInput } from '@library';
 import { isSettingDisabled } from '../utils/helpers';
+import { optionNames } from '../utils/optionNames.js';
 
 export const InstacartButton = ( {
 	formData,
@@ -32,8 +33,8 @@ export const InstacartButton = ( {
 				);
 			} }
 			label={ __( 'Instacart Button', 'tasty-recipes-lite' ) }
-			id="tasty_recipes_instacart"
-			name="tasty_recipes_instacart"
+			id={ optionNames.instacart }
+			name={ optionNames.instacart }
 			value={ String( formData.instacartButton ?? 0 ) }
 			onValue="1"
 			offValue="0"
@@ -76,7 +77,7 @@ export const InstacartButton = ( {
 					'tasty-recipes-lite'
 				) }
 				id="tasty-recipes-instacart-affiliate-id"
-				name="tasty_recipes_instacart_affiliate_id"
+				name={ optionNames.instacartAffiliateId }
 				value={ formData.instacartAffiliateId }
 				disabled={ isSettingDisabled( formData.instacartAffiliateId ) }
 				setValue={ ( value ) => {
