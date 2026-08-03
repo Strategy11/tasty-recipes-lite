@@ -2,6 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { TextInput, ToggleInput } from '@library';
 import classNames from 'classnames';
 import { isSettingDisabled } from '../utils/helpers';
+import { optionNames } from '../utils/optionNames.js';
 
 const isCookModeEnabled =
 	window.tastyRecipesSettings.settings.canEnableCookMode;
@@ -37,8 +38,8 @@ export const CookMode = ( {
 						triggerModal( isSettingDisabled( formData.cookMode ) );
 					} }
 					label={ __( 'Enable Cook Mode', 'tasty-recipes-lite' ) }
-					id="tasty_recipes_cook_mode"
-					name="tasty_recipes_cook_mode"
+					id={ optionNames.cookMode }
+					name={ optionNames.cookMode }
 					value={ String( formData.cookMode ?? 0 ) }
 					onValue="1"
 					offValue="0"
@@ -72,7 +73,7 @@ export const CookMode = ( {
 				} }
 				label={ __( 'Cook Mode description', 'tasty-recipes-lite' ) }
 				id="tasty-recipes-cook-mode-description"
-				name="tasty_recipes_cook_mode_helper"
+				name={ optionNames.cookModeHelper }
 				value={ formData.cookModeDescription }
 				disabled={ isSettingDisabled( formData.cookModeDescription ) }
 				setValue={ ( value ) => {

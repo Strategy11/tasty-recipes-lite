@@ -246,7 +246,7 @@ class Shortcodes {
 		);
 
 		$before_recipe = '';
-		$error         = get_post_meta( $recipe->get_id(), 'nutrifox_error', true );
+		$error         = get_post_meta( $recipe->get_id(), Meta_Keys::NUTRIFOX_ERROR, true );
 		if ( $error && self::is_error_message_showable() ) {
 			$before_recipe .= '<div style="border:4px solid #dc3232;padding:10px 12px;margin-top:10px;margin-bottom:10px;">' .
 				'<p>Nutrifox API integration failed.</p>';

@@ -9,6 +9,7 @@ namespace Tasty_Recipes\Converters;
 
 use Tasty_Recipes\Block_Editor;
 use Tasty_Recipes\Distribution_Metadata;
+use Tasty_Recipes\Meta_Keys;
 use Tasty_Recipes\Objects\Recipe;
 use Tasty_Recipes\Ratings;
 use Tasty_Recipes\Shortcodes;
@@ -25,7 +26,7 @@ class Mediavine_Create extends Converter {
 	 *
 	 * @var string
 	 */
-	const CREATE_KEY_META = '_tasty_recipes_create_key';
+	const CREATE_KEY_META = Meta_Keys::CREATE_KEY;
 
 	/**
 	 * Matching string for existing recipes.
