@@ -11,6 +11,7 @@ use Tasty_Recipes\Onboarding_Wizard;
 use Tasty_Recipes\Options;
 use Tasty_Recipes\Recipe_Explorer;
 use Tasty_Recipes\Shortcodes;
+use Tasty_Recipes\Telemetry;
 
 /**
  * Base controller class for the plugin.
@@ -403,6 +404,7 @@ class Tasty_Recipes {
 		add_filter( 'comment_text', array( 'Tasty_Recipes\Ratings', 'filter_comment_text' ), 10, 2 );
 
 		Tasty_Recipes\Settings::load_hooks();
+		Telemetry::load_hooks();
 		Tasty_Recipes\AI_Scraper_Prevention::maybe_load_hooks();
 
 		// Integrations.
