@@ -745,7 +745,7 @@
 	.tasty-recipes-rich-textarea-actions {
 		display: flex;
 		align-items: center;
-		gap: 20px;
+		gap: 16px;
 		margin-top: 12px;
 	}
 
@@ -755,9 +755,8 @@
 		gap: 6px;
 		min-height: 28px;
 		margin: 0;
-		padding: 4px 10px;
+		padding: 4px 0;
 		border: 0;
-		border-radius: 999px;
 		background: transparent;
 		box-shadow: none;
 		color: #ED4996;
@@ -766,19 +765,20 @@
 		font-weight: 500;
 		line-height: 20px;
 		cursor: pointer;
-		transition: background 0.1s ease, color 0.1s ease;
+		transition: color 0.1s ease;
 
 		&:hover,
 		&:focus {
-			background: #FFEDF5;
-			color: #ED4996;
+			background: transparent;
+			color: #F066A7;
 			box-shadow: none;
 			outline: none;
 		}
 
 		&:focus-visible {
-			background: #FFEDF5;
-			box-shadow: 0 0 0 2px #FCEEF5;
+			background: transparent;
+			color: #F066A7;
+			box-shadow: none;
 			outline: none;
 		}
 	}
