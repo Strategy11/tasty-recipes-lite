@@ -86,6 +86,92 @@ class Telemetry {
 	}
 
 	/**
+	 * Whether a usage snapshot may be sent for this site/request.
+	 *
+	 * @since x.x
+	 *
+	 * @return bool
+	 */
+	public static function can_send() {
+		return self::has_usage_consent() && ! self::is_excluded_environment();
+	}
+
+	/**
+	 * Whether the current environment should never send telemetry.
+	 *
+	 * Blocks Cypress sessions and local/development sites.
+	 *
+	 * @since x.x
+	 *
+	 * @return bool
+	 */
+	public static function is_excluded_environment() {
+		return self::is_cypress_request() || self::is_local_site();
+	}
+
+	/**
+	 * Whether the current request appears to come from Cypress.
+	 *
+	 * @since x.x
+	 *
+	 * @return bool
+	 */
+	private static function is_cypress_request() {
+		if ( defined( 'CYPRESS' ) && CYPRESS ) {
+			return true;
+		}
+
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___SERVER__HTTP_USER_AGENT__ -- Cypress UA check; not used for page cache variance.
+		$user_agent = isset( $_SERVER['HTTP_USER_AGENT'] ) ? wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) : '';
+
+		return is_string( $user_agent ) && false !== stripos( $user_agent, 'Cypress' );
+	}
+
+	/**
+	 * Whether the site looks like a local or development install.
+	 *
+	 * @since x.x
+	 *
+	 * @return bool
+	 */
+	private static function is_local_site() {
+		if ( in_array( wp_get_environment_type(), array( 'local', 'development' ), true ) ) {
+			return true;
+		}
+
+		$host = wp_parse_url( home_url(), PHP_URL_HOST );
+		if ( ! is_string( $host ) || '' === $host ) {
+			return false;
+		}
+
+		$host = strtolower( $host );
+
+		if ( in_array( $host, array( 'localhost', '127.0.0.1', '::1' ), true ) ) {
+			return true;
+		}
+
+		$local_suffixes = array(
+			'.local',
+			'.test',
+			'.localhost',
+			'.invalid',
+			'.example',
+			'.lndo.site',
+			'.docksal',
+			'.ddev.site',
+		);
+
+		foreach ( $local_suffixes as $suffix ) {
+			$suffix_length = strlen( $suffix );
+			if ( strlen( $host ) >= $suffix_length && substr( $host, -$suffix_length ) === $suffix ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
 	 * Schedule or clear the daily snapshot cron based on consent.
 	 *
 	 * @since x.x
@@ -95,7 +181,7 @@ class Telemetry {
 	public static function maybe_schedule_cron() {
 		$scheduled = wp_next_scheduled( self::CRON_HOOK );
 
-		if ( self::has_usage_consent() ) {
+		if ( self::can_send() ) {
 			if ( ! $scheduled ) {
 				wp_schedule_event( time() + HOUR_IN_SECONDS, 'daily', self::CRON_HOOK );
 			}
@@ -152,7 +238,7 @@ class Telemetry {
 	 * @return bool True when the request received a 2xx response.
 	 */
 	public static function send_usage_snapshot() {
-		if ( ! self::has_usage_consent() ) {
+		if ( ! self::can_send() ) {
 			return false;
 		}
 
@@ -185,7 +271,7 @@ class Telemetry {
 			 *
 			 * @param array $payload Payload that was sent.
 			 */
-			do_action( 'tasty_recipes_telemetry_snapshot', $payload );
+			do_action( 'tasty_recipes_telemetry_snapshot_sent', $payload );
 		}
 
 		return $success;
