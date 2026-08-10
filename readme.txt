@@ -293,7 +293,3 @@ With Tasty Recipes, there aren't any confusing settings to configure or customiz
 
 = 1.0.0 (June 4, 2025) =
 * New: The initial release!
-
-== Upgrade Notice ==
-= 1.2.6 =
-Adds a new developer action hook and an improved Quick Links layout.
