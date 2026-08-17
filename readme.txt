@@ -217,6 +217,7 @@ With Tasty Recipes, there aren't any confusing settings to configure or customiz
 
 == Changelog ==
 = 1.2.6 (June 16, 2026) =
+* New: Save Recipe/Newsletter setting to allow visitors to send a recipe via email
 * New: Action hook `tasty_recipes_before_ingredients_section` for developers to add content above the ingredients section
 * Enhancement: Improved quick links layout with wrapping support and rating link displayed first
 * Fix: Error messages now display properly in the converter tool
