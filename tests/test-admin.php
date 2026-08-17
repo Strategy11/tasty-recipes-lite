@@ -117,7 +117,7 @@ class Test_Admin extends Tasty_Recipes_Testcase {
 	}
 
 	/**
-	 * Editors can see the Tasty Recipes submenu.
+	 * Editors can access the recipes menu capability.
 	 *
 	 * @since x.x
 	 */
@@ -126,14 +126,16 @@ class Test_Admin extends Tasty_Recipes_Testcase {
 		$editor_id    = $this->factory->user->create( array( 'role' => 'editor' ) );
 		wp_set_current_user( $editor_id );
 
-		$submenu_list = $this->get_recipes_in_menu();
-		$this->assertContains( 'Tasty Recipes Lite', $submenu_list );
+		$items = $this->get_filtered_recipes_menu_item();
+		$this->assertSame( Admin::CONTENT_CAPABILITY, $items['tasty-recipes']['capability'] );
+		$this->assertTrue( current_user_can( $items['tasty-recipes']['capability'] ) );
+		$this->assertFalse( current_user_can( Admin::CAPABILITY ) );
 
 		wp_set_current_user( $current_user );
 	}
 
 	/**
-	 * Authors cannot see the Tasty Recipes submenu.
+	 * Authors cannot access the recipes menu capability.
 	 *
 	 * @since x.x
 	 */
@@ -141,16 +143,15 @@ class Test_Admin extends Tasty_Recipes_Testcase {
 		$current_user = get_current_user_id();
 		$author_id    = $this->factory->user->create( array( 'role' => 'author' ) );
 		wp_set_current_user( $author_id );
-		$this->assertFalse( current_user_can( 'edit_others_posts' ) );
 
-		$submenu_list = $this->get_recipes_in_menu();
-		$this->assertNotContains( 'Tasty Recipes Lite', $submenu_list );
+		$items = $this->get_filtered_recipes_menu_item();
+		$this->assertFalse( current_user_can( $items['tasty-recipes']['capability'] ) );
 
 		wp_set_current_user( $current_user );
 	}
 
 	/**
-	 * Administrators can see the Tasty Recipes submenu.
+	 * Administrators can access the recipes menu capability.
 	 *
 	 * @since x.x
 	 */
@@ -159,28 +160,29 @@ class Test_Admin extends Tasty_Recipes_Testcase {
 		$admin_id     = $this->factory->user->create( array( 'role' => 'administrator' ) );
 		wp_set_current_user( $admin_id );
 
-		$submenu_list = $this->get_recipes_in_menu();
-		$this->assertContains( 'Tasty Recipes Lite', $submenu_list );
+		$items = $this->get_filtered_recipes_menu_item();
+		$this->assertTrue( current_user_can( $items['tasty-recipes']['capability'] ) );
+		$this->assertTrue( current_user_can( Admin::CAPABILITY ) );
 
 		wp_set_current_user( $current_user );
 	}
 
 	/**
-	 * Get the list of tasty admin menu items.
+	 * Get the recipes menu item after the plugin filter.
 	 *
 	 * @since x.x
 	 *
-	 * @return array Menu titles.
+	 * @return array
 	 */
-	private function get_recipes_in_menu() {
-		global $submenu;
-		$main_menu_slug = 'tasty';
-
-		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
-		$submenu[ $main_menu_slug ] = array();
-
-		set_current_screen( 'dashboard' );
-		Tasty\Framework\Admin\Menu::instance()->add_default_admin_menu_items();
-		return $submenu ? wp_list_pluck( $submenu[ $main_menu_slug ], 0 ) : array();
+	private function get_filtered_recipes_menu_item() {
+		return Settings::add_menu_item(
+			array(
+				'tasty-recipes' => array(
+					'title'      => 'Tasty Recipes Lite',
+					'capability' => 'manage_options',
+					'callback'   => '',
+				),
+			)
+		);
 	}
 }

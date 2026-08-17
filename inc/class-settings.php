@@ -53,11 +53,12 @@ class Settings {
 	 * @return void
 	 */
 	public static function load_hooks() {
+		add_filter( 'tasty_framework_admin_menu_items', array( __CLASS__, 'add_menu_item' ) );
+
 		if ( ! is_admin() ) {
 			return;
 		}
 
-		add_filter( 'tasty_framework_admin_menu_items', array( __CLASS__, 'add_menu_item' ) );
 		add_action( 'admin_menu', array( __CLASS__, 'register_settings' ) );
 		add_action( 'update_option_' . Tasty_Recipes::TEMPLATE_OPTION, array( __CLASS__, 'maybe_remove_default_colors' ), 10, 2 );
 		add_action( 'tasty_after_remove_admin_notices', array( __CLASS__, 'register_tabs_hook' ) );
