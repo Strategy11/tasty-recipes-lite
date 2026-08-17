@@ -76,7 +76,11 @@ export const RecipePlaceholder = ( { handleModalClose, setAttributes } ) => {
 					) }
 					{ pageState === 'embed' && (
 						<div className="tasty-recipes-block-placeholder-embed">
+							<label className="tasty-recipes-block-placeholder-embed-label">
+								{ __( 'Embed recipe', 'tasty-recipes-lite' ) }
+							</label>
 							<Select
+								unstyled
 								className="tasty-recipes-block-placeholder-select"
 								classNamePrefix="tasty-recipes-select"
 								placeholder={ __(
@@ -92,71 +96,6 @@ export const RecipePlaceholder = ( { handleModalClose, setAttributes } ) => {
 											id: Number( selectedOption.value ),
 										} );
 									}
-								} }
-								styles={ {
-									control: ( provided, state ) => ( {
-										...provided,
-										border: '1px solid #ccc',
-										borderRadius: '4px',
-										minHeight: '40px',
-										boxShadow: 'none',
-										outline: 'none',
-										background: '#fff',
-										fontSize: '16px',
-										padding: '0',
-										width: '70%',
-										borderColor: state.isFocused
-											? '#888'
-											: '#ccc',
-									} ),
-									input: ( provided ) => ( {
-										...provided,
-										outline: 'none',
-										boxShadow: 'none',
-									} ),
-									valueContainer: ( provided ) => ( {
-										...provided,
-										padding: '2px 12px',
-									} ),
-									placeholder: ( provided ) => ( {
-										...provided,
-										color: '#666',
-										fontSize: '15px',
-									} ),
-									indicatorSeparator: () => ( {
-										display: 'none',
-									} ),
-									dropdownIndicator: ( provided ) => ( {
-										...provided,
-										color: '#333',
-										paddingRight: '10px',
-									} ),
-									menu: ( provided ) => ( {
-										...provided,
-										borderRadius: '4px',
-										boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-										fontSize: '15px',
-										border: '1px solid #ccc',
-										width: '70%',
-									} ),
-									option: ( provided, state ) => {
-										let backgroundColor = '#fff';
-
-										if ( state.isSelected ) {
-											backgroundColor = '#f0f0f0';
-										}
-
-										if ( state.isFocused ) {
-											backgroundColor = '#f8f8f8';
-										}
-										return {
-											...provided,
-											padding: '8px 12px',
-											cursor: 'pointer',
-											backgroundColor,
-											color: '#222',
-										};
-									},
 								} }
 							/>
 						</div>
