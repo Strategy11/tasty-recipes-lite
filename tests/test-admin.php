@@ -115,4 +115,72 @@ class Test_Admin extends Tasty_Recipes_Testcase {
 			$this->assertSame( $item['expected'], Settings::handle_quick_links_backward_compatibility( $item['input'] ) );
 		}
 	}
+
+	/**
+	 * Editors can see the Tasty Recipes submenu.
+	 *
+	 * @since x.x
+	 */
+	public function test_editor_can_access_recipes() {
+		$current_user = get_current_user_id();
+		$editor_id    = $this->factory->user->create( array( 'role' => 'editor' ) );
+		wp_set_current_user( $editor_id );
+
+		$submenu_list = $this->get_recipes_in_menu();
+		$this->assertContains( 'Tasty Recipes Lite', $submenu_list );
+
+		wp_set_current_user( $current_user );
+	}
+
+	/**
+	 * Authors cannot see the Tasty Recipes submenu.
+	 *
+	 * @since x.x
+	 */
+	public function test_author_cant_access_recipes() {
+		$current_user = get_current_user_id();
+		$author_id    = $this->factory->user->create( array( 'role' => 'author' ) );
+		wp_set_current_user( $author_id );
+		$this->assertFalse( current_user_can( 'edit_others_posts' ) );
+
+		$submenu_list = $this->get_recipes_in_menu();
+		$this->assertNotContains( 'Tasty Recipes Lite', $submenu_list );
+
+		wp_set_current_user( $current_user );
+	}
+
+	/**
+	 * Administrators can see the Tasty Recipes submenu.
+	 *
+	 * @since x.x
+	 */
+	public function test_admin_can_access_recipes() {
+		$current_user = get_current_user_id();
+		$admin_id     = $this->factory->user->create( array( 'role' => 'administrator' ) );
+		wp_set_current_user( $admin_id );
+
+		$submenu_list = $this->get_recipes_in_menu();
+		$this->assertContains( 'Tasty Recipes Lite', $submenu_list );
+
+		wp_set_current_user( $current_user );
+	}
+
+	/**
+	 * Get the list of tasty admin menu items.
+	 *
+	 * @since x.x
+	 *
+	 * @return array Menu titles.
+	 */
+	private function get_recipes_in_menu() {
+		global $submenu;
+		$main_menu_slug = 'tasty';
+
+		// phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+		$submenu[ $main_menu_slug ] = array();
+
+		set_current_screen( 'dashboard' );
+		Tasty\Framework\Admin\Menu::instance()->add_default_admin_menu_items();
+		return $submenu ? wp_list_pluck( $submenu[ $main_menu_slug ], 0 ) : array();
+	}
 }
