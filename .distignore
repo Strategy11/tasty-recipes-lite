@@ -14,7 +14,9 @@
 .DS_Store
 .wordpress-org
 Thumbs.db
-assets/block-editor
+assets/block-editor/*.js
+assets/block-editor/*.jsx
+assets/block-editor/recipeBlock
 assets/recipe-editor
 assets/scss
 assets/settings
