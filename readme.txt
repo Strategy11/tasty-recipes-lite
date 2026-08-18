@@ -4,7 +4,7 @@ Tags: recipe, recipe card, recipe maker, food blogging, schema
 Requires at least: 5.9
 Tested up to: 7.0
 Requires PHP: 7.2
-Stable tag: 1.2.6
+Stable tag: 1.2.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -216,6 +216,16 @@ The Tasty Recipes plugin installs much like any other WordPress plugin.
 With Tasty Recipes, there aren't any confusing settings to configure or customizations you need to worry about. Share your favorite recipes with the world!
 
 == Changelog ==
+= 1.2.7 (August 18, 2026) =
+* New: Editors can access the Tasty Recipes menu and recipe list, while settings remain admin-only
+* Enhancement: Recipe block now registers from block.json metadata
+* Fix: Quick links now appear after the post title on Elementor pages
+* Fix: Desktop quick links layout restored; mobile wrapping only applies on small screens
+* Fix: Recipe embed dropdown styling in the block editor
+* Fix: Mediavine Create converter now handles Elementor recipes and prevents empty orphan recipes
+* Fix: Mediavine Create converter now correctly imports ingredient links with brackets
+* Fix: Extra empty paragraph no longer appears in the ingredients section
+
 = 1.2.6 (June 16, 2026) =
 * New: Save Recipe/Newsletter setting to allow visitors to send a recipe via email
 * New: Action hook `tasty_recipes_before_ingredients_section` for developers to add content above the ingredients section

@@ -74,7 +74,7 @@ class Block_Editor {
 	/**
 	 * Apply the block attributes filter after metadata is parsed from block.json.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @param array $settings Block type settings derived from metadata.
 	 * @param array $metadata Block metadata from block.json.

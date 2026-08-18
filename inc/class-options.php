@@ -10,14 +10,14 @@ namespace Tasty_Recipes;
 /**
  * WordPress option name constants.
  *
- * @since x.x
+ * @since 1.2.7
  */
 final class Options {
 
 	/**
 	 * Customization settings option.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -26,7 +26,7 @@ final class Options {
 	/**
 	 * Default author link option.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -35,7 +35,7 @@ final class Options {
 	/**
 	 * Instacart enable option.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -44,7 +44,7 @@ final class Options {
 	/**
 	 * Instagram handle option.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 * @deprecated 1.0
 	 *
 	 * @var string
@@ -54,7 +54,7 @@ final class Options {
 	/**
 	 * Instagram hashtag option.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 * @deprecated 1.0
 	 *
 	 * @var string
@@ -64,7 +64,7 @@ final class Options {
 	/**
 	 * License key option.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -73,7 +73,7 @@ final class Options {
 	/**
 	 * ShareASale affiliate ID option.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -82,7 +82,7 @@ final class Options {
 	/**
 	 * Enable taxonomy links option.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -91,7 +91,7 @@ final class Options {
 	/**
 	 * Stored plugin version option.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -100,7 +100,7 @@ final class Options {
 	/**
 	 * Powered-by link option.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -109,7 +109,7 @@ final class Options {
 	/**
 	 * Template option.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -118,7 +118,7 @@ final class Options {
 	/**
 	 * Quick links option.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -127,7 +127,7 @@ final class Options {
 	/**
 	 * Quick links style option.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -136,7 +136,7 @@ final class Options {
 	/**
 	 * Card buttons option.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -145,7 +145,7 @@ final class Options {
 	/**
 	 * Unit conversion option.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -154,7 +154,7 @@ final class Options {
 	/**
 	 * Automatic unit conversion option.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -163,7 +163,7 @@ final class Options {
 	/**
 	 * Ingredient checkboxes option.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -172,7 +172,7 @@ final class Options {
 	/**
 	 * Cook mode option.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -181,7 +181,7 @@ final class Options {
 	/**
 	 * Disable scaling option.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -190,7 +190,7 @@ final class Options {
 	/**
 	 * Copy to clipboard option.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -199,7 +199,7 @@ final class Options {
 	/**
 	 * Template variation option.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -208,7 +208,7 @@ final class Options {
 	/**
 	 * AI scraper prevention option.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -217,7 +217,7 @@ final class Options {
 	/**
 	 * Improved keys notice dismissal option.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -226,7 +226,7 @@ final class Options {
 	/**
 	 * Onboarding welcome redirect option.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -235,7 +235,7 @@ final class Options {
 	/**
 	 * Onboarding skipped option.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -244,7 +244,7 @@ final class Options {
 	/**
 	 * Onboarding usage data consent option.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -253,7 +253,7 @@ final class Options {
 	/**
 	 * Database version option.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -262,7 +262,7 @@ final class Options {
 	/**
 	 * Ignored conversion types option.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -271,7 +271,7 @@ final class Options {
 	/**
 	 * Default taxonomy terms inserted flag option.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -280,7 +280,7 @@ final class Options {
 	/**
 	 * Option names keyed for settings JavaScript consumption.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @return array<string, string>
 	 */
@@ -293,7 +293,7 @@ final class Options {
 	 *
 	 * Shared helper so Pro (and other registries) can reuse the same conversion.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @param string $class_name Fully-qualified class name.
 	 *
@@ -316,7 +316,7 @@ final class Options {
 	/**
 	 * Convert a SCREAMING_SNAKE constant name to camelCase.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @param string $name Constant name.
 	 *

@@ -28,7 +28,7 @@ class Admin {
 	/**
 	 * Capability required to access the recipes list.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
