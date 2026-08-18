@@ -378,7 +378,7 @@ class Settings {
 	/**
 	 * Whether a tab is a global settings tab.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @param string $tab Tab slug.
 	 *

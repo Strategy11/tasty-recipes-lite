@@ -142,7 +142,7 @@ class Quick_Links {
 	/**
 	 * Place quick links in content.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @param string $content Post content.
 	 * @param string $html    Quick links markup.
@@ -163,7 +163,7 @@ class Quick_Links {
 	/**
 	 * Whether content looks like an Elementor layout that includes the title.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @param string $content Post content.
 	 *

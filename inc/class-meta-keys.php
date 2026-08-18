@@ -12,14 +12,14 @@ namespace Tasty_Recipes;
 /**
  * Non-recipe-field meta key constants.
  *
- * @since x.x
+ * @since 1.2.7
  */
 final class Meta_Keys {
 
 	/**
 	 * Post meta linking a recipe to parent posts.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -28,7 +28,7 @@ final class Meta_Keys {
 	/**
 	 * Cached Nutrifox API response meta.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -37,7 +37,7 @@ final class Meta_Keys {
 	/**
 	 * Nutrifox API error meta.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -46,7 +46,7 @@ final class Meta_Keys {
 	/**
 	 * Cached video URL provider response meta.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -55,7 +55,7 @@ final class Meta_Keys {
 	/**
 	 * Video URL provider error meta.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -64,7 +64,7 @@ final class Meta_Keys {
 	/**
 	 * Mediavine Create recipe link meta.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -73,7 +73,7 @@ final class Meta_Keys {
 	/**
 	 * Prefix for per-post ignore-convert meta keys.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -82,7 +82,7 @@ final class Meta_Keys {
 	/**
 	 * EasyRecipe-compatible comment rating meta.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -91,7 +91,7 @@ final class Meta_Keys {
 	/**
 	 * Cookbook comment rating meta.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -100,7 +100,7 @@ final class Meta_Keys {
 	/**
 	 * Simple Recipe Pro comment rating meta.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -109,7 +109,7 @@ final class Meta_Keys {
 	/**
 	 * WP Recipe Maker comment rating meta.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -118,7 +118,7 @@ final class Meta_Keys {
 	/**
 	 * ZipList comment rating meta.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -127,7 +127,7 @@ final class Meta_Keys {
 	/**
 	 * Card rating hash comment meta.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -136,7 +136,7 @@ final class Meta_Keys {
 	/**
 	 * Imported Create ratings post meta.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -145,7 +145,7 @@ final class Meta_Keys {
 	/**
 	 * Imported Simple Recipe Pro ratings post meta.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -154,7 +154,7 @@ final class Meta_Keys {
 	/**
 	 * Imported WP Recipe Maker ratings post meta.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -163,7 +163,7 @@ final class Meta_Keys {
 	/**
 	 * Imported ZipList ratings post meta.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
@@ -172,7 +172,7 @@ final class Meta_Keys {
 	/**
 	 * Build a per-converter ignore-convert meta key.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @param string $converter_type Converter type slug.
 	 *

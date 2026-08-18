@@ -9,7 +9,7 @@
  * License URI:     http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * Text Domain:     tasty-recipes-lite
  * Domain Path:     /languages
- * Version: 1.2.6
+ * Version: 1.2.7
  *
  * @package         Tasty_Recipes
  *
@@ -24,7 +24,7 @@
 defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 
 if ( ! defined( 'TASTY_RECIPES_LITE_VERSION' ) ) {
-	define( 'TASTY_RECIPES_LITE_VERSION', '1.2.6' );
+	define( 'TASTY_RECIPES_LITE_VERSION', '1.2.7' );
 	define( 'TASTY_RECIPES_LITE_FILE', __FILE__ );
 }
 
@@ -39,7 +39,7 @@ if ( ! function_exists( 'tasty_recipes_lite_require_storage_keys' ) ) {
 	/**
 	 * Load option and meta key registries before the main plugin class.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @return void
 	 */
