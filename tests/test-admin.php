@@ -115,4 +115,74 @@ class Test_Admin extends Tasty_Recipes_Testcase {
 			$this->assertSame( $item['expected'], Settings::handle_quick_links_backward_compatibility( $item['input'] ) );
 		}
 	}
+
+	/**
+	 * Editors can access the recipes menu capability.
+	 *
+	 * @since x.x
+	 */
+	public function test_editor_can_access_recipes() {
+		$current_user = get_current_user_id();
+		$editor_id    = $this->factory->user->create( array( 'role' => 'editor' ) );
+		wp_set_current_user( $editor_id );
+
+		$items = $this->get_filtered_recipes_menu_item();
+		$this->assertSame( Admin::CONTENT_CAPABILITY, $items['tasty-recipes']['capability'] );
+		$this->assertTrue( current_user_can( $items['tasty-recipes']['capability'] ) );
+		$this->assertFalse( current_user_can( Admin::CAPABILITY ) );
+
+		wp_set_current_user( $current_user );
+	}
+
+	/**
+	 * Authors cannot access the recipes menu capability.
+	 *
+	 * @since x.x
+	 */
+	public function test_author_cant_access_recipes() {
+		$current_user = get_current_user_id();
+		$author_id    = $this->factory->user->create( array( 'role' => 'author' ) );
+		wp_set_current_user( $author_id );
+
+		$items = $this->get_filtered_recipes_menu_item();
+		$this->assertFalse( current_user_can( $items['tasty-recipes']['capability'] ) );
+
+		wp_set_current_user( $current_user );
+	}
+
+	/**
+	 * Administrators can access the recipes menu capability.
+	 *
+	 * @since x.x
+	 */
+	public function test_admin_can_access_recipes() {
+		$current_user = get_current_user_id();
+		$admin_id     = $this->factory->user->create( array( 'role' => 'administrator' ) );
+		wp_set_current_user( $admin_id );
+
+		$items = $this->get_filtered_recipes_menu_item();
+		$this->assertTrue( current_user_can( $items['tasty-recipes']['capability'] ) );
+		$this->assertTrue( current_user_can( Admin::CAPABILITY ) );
+
+		wp_set_current_user( $current_user );
+	}
+
+	/**
+	 * Get the recipes menu item after the plugin filter.
+	 *
+	 * @since x.x
+	 *
+	 * @return array
+	 */
+	private function get_filtered_recipes_menu_item() {
+		return Settings::add_menu_item(
+			array(
+				'tasty-recipes' => array(
+					'title'      => 'Tasty Recipes Lite',
+					'capability' => 'manage_options',
+					'callback'   => '',
+				),
+			)
+		);
+	}
 }

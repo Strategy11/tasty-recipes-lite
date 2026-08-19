@@ -1,35 +1,14 @@
 import { registerBlockType } from '@wordpress/blocks';
 import { registerPlugin } from '@wordpress/plugins';
-import { __ } from '@wordpress/i18n';
 import generateNotices from './admin-notices';
 import TastyRecipesMetaBox from './metabox';
 import { RecipeIcon } from './icons';
 import { Edit } from './recipeBlock';
+import metadata from './block.json';
 import '../scss/block-editor.scss';
 
-registerBlockType( 'wp-tasty/tasty-recipe', {
-	apiVersion: 3,
-	title: window.tastyRecipesBlockEditor.recipeBlockTitle,
+registerBlockType( metadata.name, {
 	icon: RecipeIcon,
-	category: 'common',
-	html: false,
-	keywords: [ __( 'recipe', 'tasty-recipes-lite' ) ],
-	attributes: {
-		id: {
-			type: 'number',
-		},
-		lastUpdated: {
-			type: 'number',
-		},
-		author_link: {
-			type: 'string',
-			default: '',
-		},
-		override_author_link: {
-			type: 'boolean',
-			default: false,
-		},
-	},
 	edit: Edit,
 	save: () => null,
 	transforms: {

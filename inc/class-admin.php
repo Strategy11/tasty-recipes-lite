@@ -26,6 +26,15 @@ class Admin {
 	const CAPABILITY = 'manage_options';
 
 	/**
+	 * Capability required to access the recipes list.
+	 *
+	 * @since 1.2.7
+	 *
+	 * @var string
+	 */
+	const CONTENT_CAPABILITY = 'edit_others_posts';
+
+	/**
 	 * Plugin name for EDD registration.
 	 *
 	 * @var string

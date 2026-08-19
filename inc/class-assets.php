@@ -211,7 +211,7 @@ class Assets {
 			/**
 			 * Filters option name map passed to settings JavaScript.
 			 *
-			 * @since x.x
+			 * @since 1.2.7
 			 *
 			 * @param array $option_names Camel-cased option name map.
 			 */
