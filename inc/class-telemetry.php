@@ -405,7 +405,8 @@ class Telemetry {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$embed_count         = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT COUNT(DISTINCT post_id) FROM {$wpdb->postmeta} WHERE meta_key = %s",
+				'SELECT COUNT(DISTINCT post_id) FROM %i WHERE meta_key = %s',
+				$wpdb->postmeta,
 				Meta_Keys::RECIPE_PARENTS
 			)
 		);
@@ -414,7 +415,8 @@ class Telemetry {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$parent_ids = $wpdb->get_col(
 			$wpdb->prepare(
-				"SELECT DISTINCT meta_value FROM {$wpdb->postmeta} WHERE meta_key = %s LIMIT %d",
+				'SELECT DISTINCT meta_value FROM %i WHERE meta_key = %s LIMIT %d',
+				$wpdb->postmeta,
 				Meta_Keys::RECIPE_PARENTS,
 				self::EDITOR_ENGAGEMENT_PARENT_LIMIT * 2
 			)
