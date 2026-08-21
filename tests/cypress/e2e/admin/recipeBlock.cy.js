@@ -1,14 +1,57 @@
-describe( 'Recipe Block', () => {
-	let recipeId;
+const insertRecipeBlock = () => {
+	cy.insertBlock( 'wp-tasty/tasty-recipe', 'Tasty Recipe' );
 
+	cy.getBlockEditor()
+		.find( '.tasty-recipes-block-placeholder', {
+			timeout: 10000,
+		} )
+		.should( 'be.visible' );
+};
+
+const openEmbedSelect = () => {
+	insertRecipeBlock();
+
+	cy.getBlockEditor()
+		.find( '.tasty-recipes-block-placeholder-buttons' )
+		.contains( 'button', 'Embed existing recipe' )
+		.click();
+
+	cy.getBlockEditor()
+		.find( '.tasty-recipes-select__control', { timeout: 10000 } )
+		.should( 'be.visible' );
+};
+
+const embedFirstRecipe = () => {
+	openEmbedSelect();
+
+	cy.getBlockEditor()
+		.find( '.tasty-recipes-select__control' )
+		.click();
+
+	cy.getBlockEditor()
+		.find( '.tasty-recipes-select__option', { timeout: 5000 } )
+		.first()
+		.click();
+
+	cy.getBlockEditor()
+		.find( '.tasty-recipes', { timeout: 15000 } )
+		.should( 'exist' );
+};
+
+const openRecipeBlockSettings = () => {
+	embedFirstRecipe();
+	cy.openDocumentSettingsSidebar( 'Block' );
+
+	cy.contains( '.components-panel__body-title', 'Select Recipe', {
+		timeout: 10000,
+	} ).should( 'be.visible' );
+};
+
+describe( 'Recipe Block', () => {
 	before( () => {
 		cy.loginCached();
 		cy.deleteAllTastyRecipes();
-		cy.createTastyRecipe( { title: 'Block Test Recipe' } ).then(
-			( id ) => {
-				recipeId = id;
-			}
-		);
+		cy.createTastyRecipe( { title: 'Block Test Recipe' } );
 	} );
 
 	beforeEach( () => {
@@ -25,13 +68,7 @@ describe( 'Recipe Block', () => {
 			cy.visit( '/wp-admin/post-new.php' );
 			cy.closeWelcomeGuide();
 
-			cy.insertBlock( 'wp-tasty/tasty-recipe', 'Tasty Recipe' );
-
-			cy.getBlockEditor()
-				.find( '.tasty-recipes-block-placeholder', {
-					timeout: 10000,
-				} )
-				.should( 'be.visible' );
+			insertRecipeBlock();
 
 			cy.getBlockEditor()
 				.find( '.tasty-recipes-block-placeholder-heading h2' )
@@ -54,25 +91,10 @@ describe( 'Recipe Block', () => {
 			cy.visit( '/wp-admin/post-new.php' );
 			cy.closeWelcomeGuide();
 
-			cy.insertBlock( 'wp-tasty/tasty-recipe', 'Tasty Recipe' );
-
-			cy.getBlockEditor()
-				.find( '.tasty-recipes-block-placeholder', {
-					timeout: 10000,
-				} )
-				.should( 'be.visible' );
-
-			cy.getBlockEditor()
-				.find( '.tasty-recipes-block-placeholder-buttons' )
-				.contains( 'button', 'Embed existing recipe' )
-				.click();
+			openEmbedSelect();
 
 			cy.getBlockEditor()
 				.find( '.tasty-recipes-block-placeholder-embed' )
-				.should( 'be.visible' );
-
-			cy.getBlockEditor()
-				.find( '.tasty-recipes-select__control' )
 				.should( 'be.visible' );
 		} );
 
@@ -80,39 +102,11 @@ describe( 'Recipe Block', () => {
 			cy.visit( '/wp-admin/post-new.php' );
 			cy.closeWelcomeGuide();
 
-			cy.insertBlock( 'wp-tasty/tasty-recipe', 'Tasty Recipe' );
-
-			cy.getBlockEditor()
-				.find( '.tasty-recipes-block-placeholder', {
-					timeout: 10000,
-				} )
-				.should( 'be.visible' );
-
-			cy.getBlockEditor()
-				.find( '.tasty-recipes-block-placeholder-buttons' )
-				.contains( 'button', 'Embed existing recipe' )
-				.click();
-
-			cy.getBlockEditor()
-				.find( '.tasty-recipes-select__control' )
-				.click();
-
-			cy.getBlockEditor()
-				.find( '.tasty-recipes-select__menu', { timeout: 5000 } )
-				.should( 'be.visible' );
-
-			cy.getBlockEditor()
-				.find( '.tasty-recipes-select__option' )
-				.first()
-				.click();
+			embedFirstRecipe();
 
 			cy.getBlockEditor()
 				.find( '.tasty-recipes-block-placeholder' )
 				.should( 'not.exist' );
-
-			cy.getBlockEditor()
-				.find( '.tasty-recipes', { timeout: 15000 } )
-				.should( 'exist' );
 		} );
 	} );
 
@@ -121,33 +115,7 @@ describe( 'Recipe Block', () => {
 			cy.visit( '/wp-admin/post-new.php' );
 			cy.closeWelcomeGuide();
 
-			cy.insertBlock( 'wp-tasty/tasty-recipe', 'Tasty Recipe' );
-
-			cy.getBlockEditor()
-				.find( '.tasty-recipes-block-placeholder', {
-					timeout: 10000,
-				} )
-				.should( 'be.visible' );
-
-			cy.getBlockEditor()
-				.find( '.tasty-recipes-block-placeholder-buttons' )
-				.contains( 'button', 'Embed existing recipe' )
-				.click();
-
-			cy.getBlockEditor()
-				.find( '.tasty-recipes-select__control' )
-				.click();
-
-			cy.getBlockEditor()
-				.find( '.tasty-recipes-select__option' )
-				.first()
-				.click();
-
-			cy.openDocumentSettingsSidebar( 'Block' );
-
-			// InspectorControls render in the sidebar (outside the iframe).
-			cy.contains( '.components-panel__body-title', 'Select Recipe' )
-				.should( 'be.visible' );
+			openRecipeBlockSettings();
 
 			cy.contains( '.components-panel__body-title', 'Recipe options' )
 				.should( 'be.visible' );
@@ -161,36 +129,13 @@ describe( 'Recipe Block', () => {
 			cy.visit( '/wp-admin/post-new.php' );
 			cy.closeWelcomeGuide();
 
-			cy.insertBlock( 'wp-tasty/tasty-recipe', 'Tasty Recipe' );
-
-			cy.getBlockEditor()
-				.find( '.tasty-recipes-block-placeholder', {
-					timeout: 10000,
-				} )
-				.should( 'be.visible' );
-
-			cy.getBlockEditor()
-				.find( '.tasty-recipes-block-placeholder-buttons' )
-				.contains( 'button', 'Embed existing recipe' )
-				.click();
-
-			cy.getBlockEditor()
-				.find( '.tasty-recipes-select__control' )
-				.click();
-
-			cy.getBlockEditor()
-				.find( '.tasty-recipes-select__option' )
-				.first()
-				.click();
-
-			cy.openDocumentSettingsSidebar( 'Block' );
+			openRecipeBlockSettings();
 
 			cy.contains( 'label', 'Override author link' )
 				.closest( '.components-base-control' )
 				.find( 'input[type="checkbox"]' )
 				.check( { force: true } );
 
-			// After enabling, a text input should appear for the author link URL.
 			cy.contains( '.components-panel__body-title', 'Recipe options' )
 				.closest( '.components-panel__body' )
 				.find( 'input[type="text"]' )
@@ -218,29 +163,7 @@ describe( 'Recipe Block', () => {
 				.click()
 				.type( 'Author Link Override Test' );
 
-			cy.insertBlock( 'wp-tasty/tasty-recipe', 'Tasty Recipe' );
-
-			cy.getBlockEditor()
-				.find( '.tasty-recipes-block-placeholder', {
-					timeout: 10000,
-				} )
-				.should( 'be.visible' );
-
-			cy.getBlockEditor()
-				.find( '.tasty-recipes-block-placeholder-buttons' )
-				.contains( 'button', 'Embed existing recipe' )
-				.click();
-
-			cy.getBlockEditor()
-				.find( '.tasty-recipes-select__control' )
-				.click();
-
-			cy.getBlockEditor()
-				.find( '.tasty-recipes-select__option' )
-				.first()
-				.click();
-
-			cy.openDocumentSettingsSidebar( 'Block' );
+			openRecipeBlockSettings();
 
 			cy.contains( 'label', 'Override author link' )
 				.closest( '.components-base-control' )
