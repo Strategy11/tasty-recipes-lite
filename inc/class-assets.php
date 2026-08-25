@@ -572,7 +572,6 @@ class Assets {
 		);
 
 		// Add additional keys needed by the editor.
-		$editor_data['improvedKeysNoticeDismissed']   = get_option( \Tasty_Recipes::IMPROVED_KEYS_NOTICE_DISMISSED_OPTION, false );
 		$editor_data['descriptionFormatTipDismissed'] = (bool) get_user_meta(
 			get_current_user_id(),
 			\Tasty_Recipes::DESCRIPTION_FORMAT_TIP_DISMISSED_META,

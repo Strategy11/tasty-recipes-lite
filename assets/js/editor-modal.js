@@ -76,11 +76,18 @@
 				container.addClass('tasty-recipes-state-creating');
 			}
 			$('body').addClass('tasty-recipes-modal-open');
+			container.on('dragover.tastyRecipesDrop drop.tastyRecipesDrop', function( event ) {
+				event.preventDefault();
+			});
 			$(document).on('keydown.tasty-recipes-escape', $.proxy( function( event ){
-				if ( 27 === event.keyCode ) {
-					this.close( false );
-					event.stopImmediatePropagation();
+				if ( 27 !== event.keyCode ) {
+					return;
 				}
+				if ( $('.media-modal:visible').length ) {
+					return;
+				}
+				this.close( false );
+				event.stopImmediatePropagation();
 			}, this ));
 			$('form', container).on('submit', $.proxy(function( event ){
 				event.preventDefault();
@@ -106,6 +113,7 @@
 		close( save ) {
 			isOpen = false;
 			$('body').removeClass('tasty-recipes-modal-open');
+			container.off('dragover.tastyRecipesDrop drop.tastyRecipesDrop');
 			$(document).unbind('keydown.tasty-recipes-escape');
 			$('.tasty-recipes-toolbar-primary button', container).attr('disabled', 'disabled');
 			var hideContainer = function(){

@@ -832,12 +832,15 @@ class Editor {
 
 	/**
 	 * Handles an AJAX request to dismiss the improved keys notice.
-	 * 
+	 *
 	 * @since 1.2
+	 * @deprecated x.x The improved keys notice has been removed.
 	 *
 	 * @return void
 	 */
 	public static function handle_wp_ajax_dismiss_improved_keys_notice() {
+		_deprecated_function( __METHOD__, 'x.x' );
+
 		check_ajax_referer( 'tasty_recipes_modify_recipe', 'nonce' );
 
 		if ( ! current_user_can( 'edit_posts' ) ) {

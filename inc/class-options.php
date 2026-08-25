@@ -218,6 +218,7 @@ final class Options {
 	 * Improved keys notice dismissal option.
 	 *
 	 * @since 1.2.7
+	 * @deprecated x.x The improved keys notice has been removed.
 	 *
 	 * @var string
 	 */

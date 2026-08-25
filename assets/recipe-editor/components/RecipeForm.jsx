@@ -3,7 +3,6 @@ import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import { FieldGroup } from './FieldGroup';
 import { DescriptionFormatTip } from './DescriptionFormatTip';
-import { ImprovedKeysNotice } from './ImprovedKeysNotice';
 import {
 	hasUnsupportedRowContent,
 	IngredientsList,
@@ -11,7 +10,6 @@ import {
 } from './recipe-row-list';
 import { RichTextarea } from './RichTextarea';
 import { ImageField } from './ImageField';
-import { postDismissAction } from './notice-utils';
 
 const FormatTipField = ( {
 	field,
@@ -49,9 +47,6 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 		config
 	);
 	const [ recipe, setRecipe ] = useState( initialRecipeState );
-	const [ isNoticeDismissed, setIsNoticeDismissed ] = useState(
-		!! config.improvedKeysNoticeDismissed
-	);
 	const [ formatTipAnchor, setFormatTipAnchor ] = useState( null );
 	const [ isFormatTipDismissed, setIsFormatTipDismissed ] = useState(
 		!! config.descriptionFormatTipDismissed
@@ -69,14 +64,6 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 		return decisions[ field.name ];
 	};
 
-	const handleNoticeDismiss = () => {
-		setIsNoticeDismissed( true );
-		postDismissAction(
-			'tasty_recipes_dismiss_improved_keys_notice',
-			config.modifyNonce
-		);
-	};
-
 	const recipeType = recipe.recipe_type || defaultRecipeType;
 	const editorConfig = applyFilters(
 		'tasty_recipes_recipe_editor_config',
@@ -86,17 +73,6 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 	);
 	const typeSettings = editorConfig?.typeSettings?.[ recipeType ] || {};
 	const attributes = editorConfig.attributes;
-
-	// For ImprovedKeysNotice positioning - split cooking attributes around 'category'
-	const cookingAttributes = attributes.cooking;
-	const cookingKeys = Object.keys( cookingAttributes );
-	const splitIndex = cookingKeys.indexOf( 'category' );
-
-	const cookingAttributesBefore = Object.fromEntries(
-		cookingKeys
-			.slice( 0, splitIndex > -1 ? splitIndex : cookingKeys.length )
-			.map( ( key ) => [ key, cookingAttributes[ key ] ] )
-	);
 
 	const nutritionAttributes = useMemo( () => {
 		const nutritionAttrs = attributes.nutrition;
@@ -127,6 +103,12 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 		...( typeSettings.buttonLabels || {} ),
 	};
 	const imageLabels = typeSettings.imageLabels || {};
+	const titleLabel =
+		typeSettings.title?.label ||
+		__( 'Recipe Title', 'tasty-recipes-lite' );
+	const titlePlaceholder =
+		typeSettings.title?.placeholder ||
+		__( 'e.g. Lemon Ricotta Pancakes', 'tasty-recipes-lite' );
 	const richTextareas = [
 		{
 			name: 'description',
@@ -183,12 +165,6 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 	);
 	const detailsGroupSettings = typeSettings.groups?.details || {};
 	const nutritionGroupSettings = typeSettings.groups?.nutrition || {};
-
-	// Use split cooking attributes for recipe type to support ImprovedKeysNotice placement
-	const isRecipeType = recipeType === 'recipe';
-	const detailsNoticeAfterField = Object.keys(
-		cookingAttributesBefore
-	).slice( -1 )[ 0 ];
 
 	const detailsFields = applyFilters(
 		'tasty_recipes_recipe_editor_group_fields',
@@ -263,17 +239,14 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 			{ typeSelector }
 			<fieldset className="tasty-recipes-title-field">
 				<label htmlFor="title">
-					{ __( 'Recipe Title', 'tasty-recipes-lite' ) }
+					{ titleLabel }
 				</label>
 				<input
 					type="text"
 					name="title"
 					id="title"
 					className="regular-text"
-					placeholder={ __(
-						'e.g. Lemon Ricotta Pancakes',
-						'tasty-recipes-lite'
-					) }
+					placeholder={ titlePlaceholder }
 					value={ recipe.title || '' }
 					onChange={ ( e ) =>
 						handleRecipeChange( 'title', e.target.value )
@@ -326,6 +299,7 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 							label={ field.label }
 							placeholder={ field.placeholder }
 							initialValue={ field.initialValue }
+							addItemLabel={ field.addItemLabel }
 							onChange={ ( value ) =>
 								handleRecipeChange( field.name, value )
 							}
@@ -385,22 +359,6 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 						showAdditionalTime={ showAdditionalTime }
 						group="details"
 						recipe={ recipe }
-						renderAfterField={
-							isRecipeType &&
-							detailsNoticeAfterField &&
-							! isNoticeDismissed
-								? {
-										[ detailsNoticeAfterField ]: () => (
-											<ImprovedKeysNotice
-												isDismissed={ false }
-												onDismiss={
-													handleNoticeDismiss
-												}
-											/>
-										),
-								  }
-								: null
-						}
 					/>
 				) }
 				<FieldGroup

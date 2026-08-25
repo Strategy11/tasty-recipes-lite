@@ -37,6 +37,7 @@ const RecipeRowList = ( {
 	mode = 'ingredients',
 	initialValue = '',
 	onChange = () => {},
+	addItemLabel: addItemLabelProp,
 } ) => {
 	const [ rows, setRows ] = useState( () =>
 		parseRowsFromHtml( initialValue )
@@ -50,9 +51,11 @@ const RecipeRowList = ( {
 	const pendingScrollRowIdRef = useRef( null );
 	const groupPlaceholder = __( 'For the …', 'tasty-recipes-lite' );
 	const isInstructions = 'instructions' === mode;
-	const addItemLabel = isInstructions
-		? __( 'Add Step', 'tasty-recipes-lite' )
-		: __( 'Add Ingredient', 'tasty-recipes-lite' );
+	const addItemLabel =
+		addItemLabelProp ||
+		( isInstructions
+			? __( 'Add Step', 'tasty-recipes-lite' )
+			: __( 'Add Ingredient', 'tasty-recipes-lite' ) );
 
 	rowsRef.current = rows;
 

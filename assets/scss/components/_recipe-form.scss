@@ -125,61 +125,6 @@
 		}
 	}
 
-	.tasty-improved-keys-notice {
-		@include editor-shared.teal-callout;
-		padding: 16px;
-		margin: 0;
-		position: relative;
-		display: flex;
-		flex-direction: column;
-		gap: 8px;
-
-		&__badge {
-			@include editor-shared.teal-callout-badge;
-			padding: 2px 8px;
-			border-radius: 8px;
-			font-size: 14px !important;
-			font-weight: 500;
-			font-family: 'Inter', sans-serif;
-		}
-
-		&__header {
-			display: flex;
-			align-items: center;
-			gap: 8px;
-		}
-
-		&__title {
-			color: #181B25;
-			font-size: 14px !important;
-			font-weight: 500;
-			font-family: 'Inter', sans-serif;
-		}
-
-		&__close {
-			position: absolute;
-			top: 12px;
-			right: 12px;
-			background: none;
-			border: none;
-			cursor: pointer;
-			font-size: 10px;
-			line-height: 1;
-			color: #525866;
-			padding: 4px;
-		}
-
-
-		&__description {
-			margin: 0;
-			font-size: 14px !important;
-			color: #525866;
-			line-height: 22px;
-			font-family: 'Inter', sans-serif;
-			font-weight: 400;
-		}
-	}
-
 	.tasty-button {
 		background-color: #ED4996;
 		border: 1px solid #ED4996;
@@ -217,6 +162,15 @@
 		&:hover {
 			background-color: #ED4996;
 			color: #fff;
+		}
+
+		&:focus,
+		&:focus-visible,
+		&:active {
+			background-color: transparent;
+			color: #ED4996;
+			box-shadow: none;
+			outline: none;
 		}
 	}
 
@@ -348,7 +302,8 @@
 			cursor: pointer;
 			transition: border-color 0.12s ease-out, background 0.12s ease-out;
 
-			&:hover {
+			&:hover,
+			&.is-dragging {
 				border-color: #ED4996;
 				background: #FFEDF5;
 			}
@@ -384,6 +339,7 @@
 
 			.tasty-secondary-button {
 				background-color: #fff;
+				color: #ED4996;
 				transition: background 0.14s cubic-bezier(0.2, 0.8, 0.2, 1),
 					transform 0.08s cubic-bezier(0.2, 0.8, 0.2, 1);
 
@@ -392,8 +348,14 @@
 					color: #ED4996;
 				}
 
+				&:focus,
+				&:focus-visible,
 				&:active {
-					transform: scale(0.96);
+					background-color: #fff;
+					color: #ED4996;
+					box-shadow: none;
+					outline: none;
+					transform: none;
 				}
 			}
 		}
@@ -740,6 +702,25 @@
 			background: transparent !important;
 			width: auto !important;
 		}
+	}
+
+	.tasty-recipes-react-select__control {
+		input,
+		input:focus,
+		input:active {
+			border: none !important;
+			border-radius: 0 !important;
+			outline: none !important;
+			box-shadow: none !important;
+			min-height: auto !important;
+			background: transparent !important;
+			width: auto !important;
+			padding: 0 !important;
+		}
+	}
+
+	.tasty-recipes-react-select__input {
+		min-height: auto !important;
 	}
 
 	.tasty-recipes-rich-textarea-actions {

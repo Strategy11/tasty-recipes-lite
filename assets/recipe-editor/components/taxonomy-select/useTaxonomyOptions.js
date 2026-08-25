@@ -234,6 +234,7 @@ export const useTaxonomyOptions = ( { taxonomy, value, onChange } ) => {
 				);
 				onChange( newValue );
 
+				setMenuIsOpen( false );
 				setSelectKey( previous => previous + 1 );
 			} catch {
 				// eslint-disable-next-line no-console
