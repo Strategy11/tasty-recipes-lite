@@ -1,6 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import { CheckInput, ToggleInput } from '@library';
 import { isSettingDisabled } from '../utils/helpers';
+import { optionNames } from '../utils/optionNames.js';
 
 export const UnitConversion = ( {
 	formData,
@@ -30,8 +31,8 @@ export const UnitConversion = ( {
 					);
 				} }
 				label={ __( 'Unit Conversion', 'tasty-recipes-lite' ) }
-				id="tasty_recipes_unit_conversion"
-				name="tasty_recipes_unit_conversion"
+				id={ optionNames.unitConversion }
+				name={ optionNames.unitConversion }
 				value={ String( formData.unitConversion ?? 0 ) }
 				onValue="1"
 				offValue="0"
@@ -50,8 +51,8 @@ export const UnitConversion = ( {
 						isSettingDisabled( formData.automaticUnitConversion )
 					);
 				} }
-				id="tasty_recipes_automatic_unit_conversion"
-				name="tasty_recipes_automatic_unit_conversion"
+				id={ optionNames.automaticUnitConversion }
+				name={ optionNames.automaticUnitConversion }
 				disabled={ isSettingDisabled( formData.unitConversion ) }
 				label={ __(
 					'Automatically apply unit conversion to existing recipes.',

@@ -21,6 +21,7 @@ require_once $_tests_dir . '/includes/functions.php';
 function _manually_load_plugin() {
 	// Plugin being tested.
 	require dirname( __DIR__ ) . '/tasty-recipes.php';
+	tasty_recipes_lite_require_storage_keys();
 	require_once dirname( __DIR__ ) . '/inc/class-tasty-recipes.php';
 
 	// Important plugin we want to test alongside.

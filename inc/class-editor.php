@@ -89,7 +89,7 @@ class Editor {
 	 * @return array
 	 */
 	private static function get_ignored_conversion_types() {
-		return (array) get_option( 'tasty_recipes_ignore_convert_types', array() );
+		return (array) get_option( Options::IGNORE_CONVERT_TYPES, array() );
 	}
 
 	/**
@@ -110,7 +110,7 @@ class Editor {
 				isset( $option[ $converter_type ] )
 			)
 			||
-			get_post_meta( $post_id, 'tasty_recipes_ignore_convert_' . $converter_type, true );
+			get_post_meta( $post_id, Meta_Keys::ignore_convert( $converter_type ), true );
 	}
 
 	/**
@@ -400,7 +400,7 @@ class Editor {
 	public static function handle_wp_ajax_ignore_convert() {
 		$post = self::get_current_post_for_conversion_ajax();
 
-		update_post_meta( $post->ID, 'tasty_recipes_ignore_convert_' . Utils::get_param( 'type', 'sanitize_key' ), true );
+		update_post_meta( $post->ID, Meta_Keys::ignore_convert( Utils::get_param( 'type', 'sanitize_key' ) ), true );
 		status_header( 200 );
 		echo 'Done';
 		exit;
@@ -440,7 +440,7 @@ class Editor {
 
 		$option                    = self::get_ignored_conversion_types();
 		$option[ $converter_type ] = true;
-		update_option( 'tasty_recipes_ignore_convert_types', $option, false );
+		update_option( Options::IGNORE_CONVERT_TYPES, $option, false );
 		wp_send_json_success();
 	}
 
@@ -462,12 +462,12 @@ class Editor {
 		$option = self::get_ignored_conversion_types();
 
 		unset( $option[ $converter_type ] );
-		update_option( 'tasty_recipes_ignore_convert_types', $option, false );
+		update_option( Options::IGNORE_CONVERT_TYPES, $option, false );
 
 		$post_id = Utils::get_param( 'post_id', 'intval' );
 
 		if ( ! empty( $post_id ) ) {
-			delete_post_meta( $post_id, 'tasty_recipes_ignore_convert_' . $converter_type );
+			delete_post_meta( $post_id, Meta_Keys::ignore_convert( $converter_type ) );
 		}
 
 		wp_safe_redirect( wp_get_referer() );

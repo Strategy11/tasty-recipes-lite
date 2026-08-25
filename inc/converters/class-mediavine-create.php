@@ -9,6 +9,7 @@ namespace Tasty_Recipes\Converters;
 
 use Tasty_Recipes\Block_Editor;
 use Tasty_Recipes\Distribution_Metadata;
+use Tasty_Recipes\Meta_Keys;
 use Tasty_Recipes\Objects\Recipe;
 use Tasty_Recipes\Ratings;
 use Tasty_Recipes\Shortcodes;
@@ -21,11 +22,11 @@ class Mediavine_Create extends Converter {
 	/**
 	 * Meta key linking a Tasty recipe back to a Create recipe ID.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @var string
 	 */
-	const CREATE_KEY_META = '_tasty_recipes_create_key';
+	const CREATE_KEY_META = Meta_Keys::CREATE_KEY;
 
 	/**
 	 * Matching string for existing recipes.
@@ -54,7 +55,7 @@ class Mediavine_Create extends Converter {
 	/**
 	 * Get the total number of posts with Create recipes in content or Elementor data.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @return int
 	 */
@@ -103,7 +104,7 @@ class Mediavine_Create extends Converter {
 	/**
 	 * Get post ids for posts with Create recipes in content or Elementor data.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @param int $per_page Number of posts to fetch. Defaults to 10.
 	 *
@@ -159,7 +160,7 @@ class Mediavine_Create extends Converter {
 	/**
 	 * Whether a post has a Create recipe shortcode stored in Elementor data.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @param int $post_id Post ID.
 	 *
@@ -178,7 +179,7 @@ class Mediavine_Create extends Converter {
 	/**
 	 * Convert the recipe content within a given post, including Elementor data.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @param int    $post_id ID for the post with the recipe.
 	 * @param string $type    Whether to create a shortcode or a block.
@@ -272,7 +273,7 @@ class Mediavine_Create extends Converter {
 	/**
 	 * Delete unused empty-title Tasty recipes left by prior incomplete converts.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @return int Number of recipes deleted.
 	 */
@@ -558,7 +559,7 @@ class Mediavine_Create extends Converter {
 	 * Create marks a partial link target with brackets in original_text and stores
 	 * the URL in the link column. Orphan brackets (link removed) are stripped.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @param string $original_text Ingredient text, possibly with [linked span].
 	 * @param string $link          Ingredient link URL, if any.
@@ -606,7 +607,7 @@ class Mediavine_Create extends Converter {
 	/**
 	 * Resolve a Create key to a Recipe, reusing an existing Tasty recipe when possible.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @param int    $create_key     Create recipe key.
 	 * @param string $existing_match Existing block or shortcode match.
@@ -632,7 +633,7 @@ class Mediavine_Create extends Converter {
 	 *
 	 * Prefer Create-key meta, then a unique title match that is not mapped to another Create key.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @param int $create_key Create recipe key.
 	 *
@@ -702,7 +703,7 @@ class Mediavine_Create extends Converter {
 	/**
 	 * Extract Create recipe ID from parsed shortcode/block attributes.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @param array $data Parsed attributes.
 	 *
@@ -721,7 +722,7 @@ class Mediavine_Create extends Converter {
 	/**
 	 * LIKE patterns used when discovering Create recipe posts.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @return array{block: string, mv_create: string, type_recipe: string, type_recipe_escaped: string}
 	 */
@@ -739,7 +740,7 @@ class Mediavine_Create extends Converter {
 	/**
 	 * Get the first Create recipe block/shortcode match from post content.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @param string $content Post content.
 	 *
@@ -760,7 +761,7 @@ class Mediavine_Create extends Converter {
 	/**
 	 * Get the first Create recipe shortcode from nested Elementor data.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @param mixed $value Nested value.
 	 *
@@ -802,7 +803,7 @@ class Mediavine_Create extends Converter {
 	/**
 	 * Replace Create recipe shortcodes in nested content/Elementor data.
 	 *
-	 * @since x.x
+	 * @since 1.2.7
 	 *
 	 * @param mixed $value             Nested value.
 	 * @param int[] $recipe_map        Create key to Tasty Recipe ID map.

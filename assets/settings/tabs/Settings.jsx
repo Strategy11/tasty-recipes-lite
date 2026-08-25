@@ -19,6 +19,7 @@ import { CookMode } from '../partials/CookMode';
 import { InstacartButton } from '../partials/InstacartButton';
 import { UnitConversion } from '../partials/UnitConversion';
 import { isSettingDisabled } from '../utils/helpers';
+import { optionNames } from '../utils/optionNames.js';
 
 const globalSettings = window.tastyRecipesSettings;
 const { settings } = globalSettings;
@@ -85,8 +86,8 @@ export const Settings = () => {
 				}
 			} }
 			label={ __( 'Scaling', 'tasty-recipes-lite' ) }
-			id="tasty_recipes_disable_scaling"
-			name="tasty_recipes_disable_scaling"
+			id={ optionNames.disableScaling }
+			name={ optionNames.disableScaling }
 			value={ String( formData.scaling ?? 1 ) }
 			onValue="0"
 			offValue="1"
@@ -123,8 +124,8 @@ export const Settings = () => {
 			} }
 			label={ __( 'Enable How-Tos', 'tasty-recipes-lite' ) }
 			isNew
-			id="tasty_recipes_enable_how_tos"
-			name="tasty_recipes_enable_how_tos"
+			id={ optionNames.enableHowTos }
+			name={ optionNames.enableHowTos }
 			value={ String( formData.enableHowTos ?? 0 ) }
 			onValue="1"
 			offValue="0"
@@ -147,7 +148,7 @@ export const Settings = () => {
 			<SettingsGroup label={ __( 'Quick Links', 'tasty-recipes-lite' ) }>
 				<CheckInput
 					id="tasty-recipes-quick-links-jump"
-					name="tasty_recipes_quick_links[]"
+					name={ optionNames.quickLinks + '[]' }
 					label={ __(
 						"'Jump to Recipe' link",
 						'tasty-recipes-lite'
@@ -163,7 +164,7 @@ export const Settings = () => {
 				/>
 				<CheckInput
 					id="tasty-recipes-quick-links-print"
-					name="tasty_recipes_quick_links[]"
+					name={ optionNames.quickLinks + '[]' }
 					label={ __( "'Print Recipe' link", 'tasty-recipes-lite' ) }
 					value="print"
 					isChecked={
@@ -176,7 +177,7 @@ export const Settings = () => {
 				/>
 				<CheckInput
 					id="tasty-recipes-quick-links-rating"
-					name="tasty_recipes_quick_links[]"
+					name={ optionNames.quickLinks + '[]' }
 					className="tasty-form-field-no-helper-margin"
 					label={ __(
 						"'Leave a Review' link",
@@ -194,7 +195,7 @@ export const Settings = () => {
 				/>
 				<CheckInput
 					id="tasty-recipes-quick-links-trusted-source"
-					name="tasty_recipes_quick_links[]"
+					name={ optionNames.quickLinks + '[]' }
 					label={ __(
 						"'Trust With Google' link",
 						'tasty-recipes-lite'
@@ -217,8 +218,8 @@ export const Settings = () => {
 				groupLabel={ __( 'Recipe Card Buttons', 'tasty-recipes-lite' ) }
 				selects={ [
 					{
-						id: 'tasty_recipes_card_buttons[first]',
-						name: 'tasty_recipes_card_buttons[first]',
+						id: optionNames.cardButtons + '[first]',
+						name: optionNames.cardButtons + '[first]',
 						value: recipeCardButtons.first,
 						handleChange: ( value ) => {
 							setRecipeCardButtons( ( prev ) => {
@@ -231,8 +232,8 @@ export const Settings = () => {
 						options: recipeCardOptions( recipeCardButtons.first ),
 					},
 					{
-						id: 'tasty_recipes_card_buttons[second]',
-						name: 'tasty_recipes_card_buttons[second]',
+						id: optionNames.cardButtons + '[second]',
+						name: optionNames.cardButtons + '[second]',
 						value: recipeCardButtons.second,
 						handleChange: ( value ) => {
 							setRecipeCardButtons( ( prev ) => {
@@ -258,7 +259,7 @@ export const Settings = () => {
 			<TextInput
 				label={ __( 'Default Author Link', 'tasty-recipes-lite' ) }
 				id="tasty-recipes-default-author-link"
-				name="tasty_recipes_default_author_link"
+				name={ optionNames.defaultAuthorLink }
 				value={ formData.defaultAuthorLink }
 				setValue={ ( value ) => {
 					handleChange( 'defaultAuthorLink', value );
@@ -266,7 +267,7 @@ export const Settings = () => {
 			/>
 			<ShareASaleInput
 				id="tasty-recipes-shareasale-affiliate-id"
-				name="tasty_recipes_shareasale"
+				name={ optionNames.shareasale }
 				value={ formData.shareasaleId }
 				setValue={ ( value ) => {
 					handleChange( 'shareasaleId', value );
@@ -274,8 +275,8 @@ export const Settings = () => {
 			/>
 			<ToggleInput
 				label={ __( 'Taxonomy Key Links', 'tasty-recipes-lite' ) }
-				id="tasty_recipes_enable_taxonomy_links"
-				name="tasty_recipes_enable_taxonomy_links"
+				id={ optionNames.enableTaxonomyLinks }
+				name={ optionNames.enableTaxonomyLinks }
 				value={ String( formData.enableTaxonomyLinks ?? 0 ) }
 				onValue="1"
 				offValue="0"
@@ -289,8 +290,8 @@ export const Settings = () => {
 			/>
 			<ToggleInput
 				label={ __( 'AI Scraper Prevention', 'tasty-recipes-lite' ) }
-				id="tasty_recipes_ai_scraper_prevention"
-				name="tasty_recipes_ai_scraper_prevention"
+				id={ optionNames.aiScraperPrevention }
+				name={ optionNames.aiScraperPrevention }
 				value={ String( formData.enableAiScraperPrevention ?? 0 ) }
 				onValue="1"
 				offValue="0"
@@ -324,8 +325,8 @@ export const Settings = () => {
 					}
 				} }
 				label={ __( 'Quick Links Style', 'tasty-recipes-lite' ) }
-				id="tasty_recipes_quick_links_style"
-				name="tasty_recipes_quick_links_style"
+				id={ optionNames.quickLinksStyle }
+				name={ optionNames.quickLinksStyle }
 				value={ formData.quickLinksStyle }
 				disabled={ isSettingDisabled( formData.quickLinksStyle ) }
 				handleChange={ ( value ) => {
@@ -371,8 +372,8 @@ export const Settings = () => {
 					}
 				} }
 				label={ __( 'Ingredient Checkboxes', 'tasty-recipes-lite' ) }
-				id="tasty_recipes_ingredient_checkboxes"
-				name="tasty_recipes_ingredient_checkboxes"
+				id={ optionNames.ingredientCheckboxes }
+				name={ optionNames.ingredientCheckboxes }
 				value={ String( formData.ingredientCheckboxes ?? 0 ) }
 				onValue="1"
 				offValue="0"
@@ -409,8 +410,8 @@ export const Settings = () => {
 					}
 				} }
 				label={ __( 'Copy to Clipboard', 'tasty-recipes-lite' ) }
-				id="tasty_recipes_copy_to_clipboard"
-				name="tasty_recipes_copy_to_clipboard"
+				id={ optionNames.copyToClipboard }
+				name={ optionNames.copyToClipboard }
 				value={ String( formData.copyToClipboard ?? 0 ) }
 				onValue="1"
 				offValue="0"
@@ -450,8 +451,8 @@ export const Settings = () => {
 						'tasty-recipes-lite'
 					) }
 					isNew
-					id="tasty_recipes_save_recipe_newsletter"
-					name="tasty_recipes_save_recipe_newsletter"
+					id={ optionNames.saveRecipeNewsletter }
+					name={ optionNames.saveRecipeNewsletter }
 					value={ String(
 						formData.saveRecipeNewsletter ?? 0
 					) }

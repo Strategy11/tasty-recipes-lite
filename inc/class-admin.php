@@ -26,6 +26,15 @@ class Admin {
 	const CAPABILITY = 'manage_options';
 
 	/**
+	 * Capability required to access the recipes list.
+	 *
+	 * @since 1.2.7
+	 *
+	 * @var string
+	 */
+	const CONTENT_CAPABILITY = 'edit_others_posts';
+
+	/**
 	 * Plugin name for EDD registration.
 	 *
 	 * @var string
@@ -137,7 +146,7 @@ class Admin {
 	 *
 	 * @var string
 	 */
-	const DB_VERSION_OPTION = 'tasty_recipes_db_version';
+	const DB_VERSION_OPTION = Options::DB_VERSION;
 
 	/**
 	 * Current database version.

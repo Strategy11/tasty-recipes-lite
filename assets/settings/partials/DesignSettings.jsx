@@ -8,6 +8,7 @@ import {
 } from '@library';
 import { templateFields, fieldLabels } from '../utils/templateFields.js';
 import { getDefaultColors } from '../utils/defaultColors.js';
+import { optionNames } from '../utils/optionNames.js';
 
 const imagesUrl = window.tastyRecipesSettings.pluginUrl + '/assets/images/';
 
@@ -58,12 +59,12 @@ export const DesignSettings = ( {
 		<div className="tasty-recipes-card-customization-container">
 			<input
 				type="hidden"
-				name="tasty_recipes_template"
+				name={ optionNames.template }
 				value={ selectedTemplate.slug }
 			/>
 			<input
 				type="hidden"
-				name="tasty_recipes_template_variation"
+				name={ optionNames.templateVariation }
 				value={ safeVariation }
 			/>
 			<h2>{ __( 'Template Colors', 'tasty-recipes-lite' ) }</h2>
@@ -71,8 +72,8 @@ export const DesignSettings = ( {
 				{ templateFields[ templateName ].map( ( field ) => (
 					<ColorInput
 						label={ fieldLabels[ field ] }
-						id={ 'tasty_recipes_customization-' + field }
-						name={ 'tasty_recipes_customization[' + field + ']' }
+						id={ optionNames.customization + '-' + field }
+						name={ optionNames.customization + '[' + field + ']' }
 						color={ formData[ field ] }
 						defaultColor={ defaultColors[ field ] }
 						setColor={ ( color ) => {
@@ -86,8 +87,8 @@ export const DesignSettings = ( {
 			<div className="tasty-two-columns-field-group">
 				<ColorInput
 					label=""
-					id="tasty_recipes_customization[h2_color]"
-					name="tasty_recipes_customization[h2_color]"
+					id={ optionNames.customization + "[h2_color]" }
+					name={ optionNames.customization + "[h2_color]" }
 					color={ formData.h2_color }
 					defaultColor={ defaultColors.h2_color }
 					setColor={ ( color ) => {
@@ -96,8 +97,8 @@ export const DesignSettings = ( {
 				/>
 				<SelectInput
 					label=""
-					id="tasty_recipes_customization[h2_transform]"
-					name="tasty_recipes_customization[h2_transform]"
+					id={ optionNames.customization + "[h2_transform]" }
+					name={ optionNames.customization + "[h2_transform]" }
 					value={ formData.h2_transform }
 					handleChange={ ( value ) => {
 						handleChange( 'h2_transform', value );
@@ -142,8 +143,8 @@ export const DesignSettings = ( {
 			<div className="tasty-two-columns-field-group">
 				<ColorInput
 					label=""
-					id="tasty_recipes_customization[h3_color]"
-					name="tasty_recipes_customization[h3_color]"
+					id={ optionNames.customization + "[h3_color]" }
+					name={ optionNames.customization + "[h3_color]" }
 					color={ formData.h3_color }
 					defaultColor={ defaultColors.h3_color }
 					setColor={ ( color ) => {
@@ -152,8 +153,8 @@ export const DesignSettings = ( {
 				/>
 				<SelectInput
 					label=""
-					id="tasty_recipes_customization[h3_transform]"
-					name="tasty_recipes_customization[h3_transform]"
+					id={ optionNames.customization + "[h3_transform]" }
+					name={ optionNames.customization + "[h3_transform]" }
 					value={ formData.h3_transform }
 					handleChange={ ( value ) => {
 						handleChange( 'h3_transform', value );
@@ -198,8 +199,8 @@ export const DesignSettings = ( {
 			<div className="tasty-two-columns-field-group">
 				<ColorInput
 					label=""
-					id="tasty_recipes_customization[body_color]"
-					name="tasty_recipes_customization[body_color]"
+					id={ optionNames.customization + "[body_color]" }
+					name={ optionNames.customization + "[body_color]" }
 					color={ formData.body_color }
 					defaultColor={ defaultColors.body_color }
 					setColor={ ( color ) => {
@@ -212,8 +213,8 @@ export const DesignSettings = ( {
 				<div className="tasty-two-columns-field-group tasty-no-bottom-border">
 					<ColorInput
 						label=""
-						id="tasty_recipes_customization[star_color]"
-						name="tasty_recipes_customization[star_color]"
+						id={ optionNames.customization + "[star_color]" }
+						name={ optionNames.customization + "[star_color]" }
 						color={ formData.star_color }
 						defaultColor={ defaultColors.star_color }
 						setColor={ ( color ) => {
@@ -222,8 +223,8 @@ export const DesignSettings = ( {
 					/>
 					<SelectInput
 						label=""
-						id="tasty_recipes_customization[star_ratings_style]"
-						name="tasty_recipes_customization[star_ratings_style]"
+						id={ optionNames.customization + "[star_ratings_style]" }
+						name={ optionNames.customization + "[star_ratings_style]" }
 						value={ formData.star_ratings_style }
 						handleChange={ ( value ) => {
 							handleChange( 'star_ratings_style', value );
@@ -251,11 +252,11 @@ export const DesignSettings = ( {
 							{ __( 'Nutrition Display', 'tasty-recipes-lite' ) }
 						</h3>
 						<div>
-							<label htmlFor="tasty_recipes_customization-nutrifox-label">
+							<label htmlFor={ optionNames.customization + "-nutrifox-label" }>
 								<input
 									type="radio"
-									id="tasty_recipes_customization-nutrifox-label"
-									name="tasty_recipes_customization[nutrifox_display_style]"
+									id={ optionNames.customization + "-nutrifox-label" }
+									name={ optionNames.customization + "[nutrifox_display_style]" }
 									value="label"
 									checked={
 										formData.nutrifox_display_style ===
@@ -275,11 +276,11 @@ export const DesignSettings = ( {
 							</label>
 						</div>
 						<div>
-							<label htmlFor="tasty_recipes_customization-nutrifox-card">
+							<label htmlFor={ optionNames.customization + "-nutrifox-card" }>
 								<input
 									type="radio"
-									id="tasty_recipes_customization-nutrifox-card"
-									name="tasty_recipes_customization[nutrifox_display_style]"
+									id={ optionNames.customization + "-nutrifox-card" }
+									name={ optionNames.customization + "[nutrifox_display_style]" }
 									value="card"
 									checked={
 										formData.nutrifox_display_style ===
