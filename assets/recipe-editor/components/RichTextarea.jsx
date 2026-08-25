@@ -119,7 +119,7 @@ export const RichTextarea = ( {
 			settings = stripCustomPlugins( settings );
 			settings.theme = 'inlite';
 			settings.inline = true;
-			// Shared React SelectionToolbar owns formatting UI for bubble fields.
+			settings.content_css = false;
 			settings.selection_toolbar = '';
 			settings.insert_toolbar = '';
 			settings.menubar = false;
