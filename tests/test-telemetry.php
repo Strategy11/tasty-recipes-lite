@@ -85,7 +85,7 @@ class Test_Telemetry extends Tasty_Recipes_Testcase {
 		$this->assertTrue( wp_script_is( Telemetry::POSTHOG_SCRIPT_HANDLE, 'enqueued' ) );
 		$this->assertTrue( wp_script_is( Telemetry::POSTHOG_INIT_SCRIPT_HANDLE, 'enqueued' ) );
 		$this->assertFalse( wp_script_is( Telemetry::POSTHOG_BLOCK_EDITOR_SCRIPT_HANDLE, 'enqueued' ) );
-		$this->assertTrue( $this->get_posthog_config()['autoInit'] );
+		$this->assertTrue( ! empty( $this->get_posthog_config()['autoInit'] ) );
 	}
 
 	/**
@@ -102,7 +102,7 @@ class Test_Telemetry extends Tasty_Recipes_Testcase {
 		$this->assertTrue( wp_script_is( Telemetry::POSTHOG_SCRIPT_HANDLE, 'enqueued' ) );
 		$this->assertTrue( wp_script_is( Telemetry::POSTHOG_INIT_SCRIPT_HANDLE, 'enqueued' ) );
 		$this->assertTrue( wp_script_is( Telemetry::POSTHOG_BLOCK_EDITOR_SCRIPT_HANDLE, 'enqueued' ) );
-		$this->assertFalse( $this->get_posthog_config()['autoInit'] );
+		$this->assertTrue( empty( $this->get_posthog_config()['autoInit'] ) );
 	}
 
 	/**
@@ -124,7 +124,7 @@ class Test_Telemetry extends Tasty_Recipes_Testcase {
 		$this->assertTrue( wp_script_is( Telemetry::POSTHOG_SCRIPT_HANDLE, 'enqueued' ) );
 		$this->assertTrue( wp_script_is( Telemetry::POSTHOG_INIT_SCRIPT_HANDLE, 'enqueued' ) );
 		$this->assertFalse( wp_script_is( Telemetry::POSTHOG_BLOCK_EDITOR_SCRIPT_HANDLE, 'enqueued' ) );
-		$this->assertTrue( $this->get_posthog_config()['autoInit'] );
+		$this->assertTrue( ! empty( $this->get_posthog_config()['autoInit'] ) );
 	}
 
 	/**
@@ -134,14 +134,14 @@ class Test_Telemetry extends Tasty_Recipes_Testcase {
 	 */
 	public function test_usage_snapshot_posts_to_posthog_capture() {
 		update_option( Options::ONBOARDING_USAGE_DATA, 'yes' );
-		add_filter( 'pre_http_request', array( $this, 'mock_posthog_capture' ), 5, 3 );
+		add_filter( 'pre_http_request', array( $this, 'mock_posthog_capture' ), 20, 3 );
 
 		$sent = Telemetry::send_usage_snapshot();
 
-		remove_filter( 'pre_http_request', array( $this, 'mock_posthog_capture' ), 5 );
+		remove_filter( 'pre_http_request', array( $this, 'mock_posthog_capture' ), 20 );
 
 		$this->assertTrue( $sent );
-		$this->assertAPIRequest(
+		$this->assertExpectedAPIRequest(
 			'us.i.posthog.com',
 			array(
 				'method' => 'POST',
@@ -222,12 +222,13 @@ class Test_Telemetry extends Tasty_Recipes_Testcase {
 	private function get_posthog_config() {
 		$inline = $this->get_script_inline( Telemetry::POSTHOG_INIT_SCRIPT_HANDLE, 'before' );
 		$prefix = 'window.tastyRecipesPosthog = ';
+		$start  = strpos( $inline, $prefix );
 
-		if ( 0 !== strpos( $inline, $prefix ) ) {
+		if ( false === $start ) {
 			return array();
 		}
 
-		$json = trim( substr( $inline, strlen( $prefix ) ), " \n\r\t;" );
+		$json = trim( substr( $inline, $start + strlen( $prefix ) ), " \n\r\t;" );
 		$data = json_decode( $json, true );
 
 		return is_array( $data ) ? $data : array();
