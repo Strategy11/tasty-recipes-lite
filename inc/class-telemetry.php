@@ -35,10 +35,13 @@ class Telemetry {
 	/**
 	 * PostHog project API key.
 	 *
+	 * Public project key from the PostHog snippet, not a secret.
+	 *
 	 * @since x.x
 	 *
 	 * @var string
 	 */
+	// @mago-expect lint:no-literal-password
 	const POSTHOG_API_KEY = 'phc_B22bzZor2zBV3yExxE9BAPL5b6wPkz3y3ZB2mrWSS9g9';
 
 	/**
