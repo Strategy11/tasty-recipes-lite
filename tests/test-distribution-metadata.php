@@ -92,7 +92,7 @@ class Test_Distribution_Metadata extends Tasty_Recipes_Testcase {
 			),
 			'recipeCategory'     => 'Main',
 			'recipeCuisine'      => 'Caribbean',
-			'suitableForDiet'    => 'LowFatDiet',
+			'suitableForDiet'    => 'https://schema.org/LowFatDiet',
 			'cookingMethod'      => 'Cooking',
 			'url'                => get_permalink( $this->post_id ),
 			'prepTime'           => 'PT15M',
