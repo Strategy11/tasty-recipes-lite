@@ -1,14 +1,14 @@
 <?php
 /**
- * Collects and sends usage snapshots when consent is granted.
- * 
+ * Collects usage snapshots and loads PostHog on recipe-related admin screens.
+ *
  * @package Tasty_Recipes
  */
 
 namespace Tasty_Recipes;
 
 /**
- * Collects and sends usage snapshots when consent is granted.
+ * Collects usage snapshots and loads PostHog on recipe-related admin screens.
  *
  * @since x.x
  */
@@ -24,15 +24,6 @@ class Telemetry {
 	const CRON_HOOK = 'tasty_recipes_telemetry_snapshot';
 
 	/**
-	 * Telemetry endpoint.
-	 *
-	 * @since x.x
-	 *
-	 * @var string
-	 */
-	const DEFAULT_ENDPOINT = 'https://telemetry.wptasty.com/e';
-
-	/**
 	 * Max parent posts to inspect for editor engagement.
 	 *
 	 * @since x.x
@@ -40,6 +31,60 @@ class Telemetry {
 	 * @var int
 	 */
 	const EDITOR_ENGAGEMENT_PARENT_LIMIT = 200;
+
+	/**
+	 * PostHog project API key.
+	 *
+	 * @since x.x
+	 *
+	 * @var string
+	 */
+	const POSTHOG_API_KEY = 'phc_B22bzZor2zBV3yExxE9BAPL5b6wPkz3y3ZB2mrWSS9g9';
+
+	/**
+	 * PostHog API host.
+	 *
+	 * @since x.x
+	 *
+	 * @var string
+	 */
+	const POSTHOG_API_HOST = 'https://us.i.posthog.com';
+
+	/**
+	 * PostHog defaults snapshot date.
+	 *
+	 * @since x.x
+	 *
+	 * @var string
+	 */
+	const POSTHOG_DEFAULTS = '2026-05-30';
+
+	/**
+	 * Script handle for the PostHog loader.
+	 *
+	 * @since x.x
+	 *
+	 * @var string
+	 */
+	const POSTHOG_SCRIPT_HANDLE = 'tasty-recipes-posthog';
+
+	/**
+	 * Script handle for the PostHog init helper.
+	 *
+	 * @since x.x
+	 *
+	 * @var string
+	 */
+	const POSTHOG_INIT_SCRIPT_HANDLE = 'tasty-recipes-posthog-init';
+
+	/**
+	 * Script handle for the block editor PostHog watcher.
+	 *
+	 * @since x.x
+	 *
+	 * @var string
+	 */
+	const POSTHOG_BLOCK_EDITOR_SCRIPT_HANDLE = 'tasty-recipes-posthog-block-editor';
 
 	/**
 	 * Register telemetry hooks.
@@ -53,6 +98,7 @@ class Telemetry {
 		add_action( self::CRON_HOOK, array( __CLASS__, 'send_usage_snapshot' ) );
 		add_action( 'update_option_' . Options::ONBOARDING_USAGE_DATA, array( __CLASS__, 'handle_consent_option_change' ), 10, 2 );
 		add_action( 'add_option_' . Options::ONBOARDING_USAGE_DATA, array( __CLASS__, 'handle_consent_option_add' ), 10, 2 );
+		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'maybe_enqueue_posthog' ) );
 	}
 
 	/**
@@ -94,6 +140,156 @@ class Telemetry {
 	 */
 	public static function can_send() {
 		return self::has_usage_consent() && ! self::is_excluded_environment();
+	}
+
+	/**
+	 * Whether the PostHog snippet may load in wp-admin.
+	 *
+	 * @since x.x
+	 *
+	 * @return bool
+	 */
+	public static function should_load_posthog() {
+		$should_load = self::has_usage_consent() && ! self::is_cypress_request();
+
+		/**
+		 * Filters whether PostHog may load on recipe-related admin screens.
+		 *
+		 * @since x.x
+		 *
+		 * @param bool $should_load Whether PostHog should load.
+		 */
+		return (bool) apply_filters( 'tasty_recipes_load_posthog', $should_load );
+	}
+
+	/**
+	 * Enqueue PostHog on recipe admin screens, or in the block editor when a Tasty block is present.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
+	 */
+	public static function maybe_enqueue_posthog() {
+		if ( ! self::should_load_posthog() ) {
+			return;
+		}
+
+		$screen = get_current_screen();
+		if ( ! $screen ) {
+			return;
+		}
+
+		if ( Settings::is_recipes_admin() ) {
+			self::enqueue_posthog();
+			return;
+		}
+
+		if ( $screen->is_block_editor() ) {
+			self::enqueue_posthog_for_block_editor();
+		}
+	}
+
+	/**
+	 * Enqueue PostHog immediately, including the init call.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
+	 */
+	public static function enqueue_posthog() {
+		self::enqueue_posthog_loader( true );
+	}
+
+	/**
+	 * Enqueue PostHog for the block editor, initializing only when a Tasty block is present.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
+	 */
+	public static function enqueue_posthog_for_block_editor() {
+		if ( self::editor_post_has_tasty_block() ) {
+			self::enqueue_posthog();
+			return;
+		}
+
+		self::enqueue_posthog_loader();
+
+		wp_enqueue_script(
+			self::POSTHOG_BLOCK_EDITOR_SCRIPT_HANDLE,
+			plugins_url( 'assets/js/posthog/block-editor.js', TASTY_RECIPES_LITE_FILE ),
+			array( self::POSTHOG_INIT_SCRIPT_HANDLE, 'wp-data' ),
+			TASTY_RECIPES_LITE_VERSION,
+			true
+		);
+	}
+
+	/**
+	 * Register the PostHog loader and init helper without capturing yet.
+	 *
+	 * @since x.x
+	 *
+	 * @param bool $auto_init Whether to initialize PostHog immediately on load.
+	 *
+	 * @return void
+	 */
+	private static function enqueue_posthog_loader( $auto_init = false ) {
+		if ( wp_script_is( self::POSTHOG_INIT_SCRIPT_HANDLE, 'enqueued' ) ) {
+			return;
+		}
+
+		wp_enqueue_script(
+			self::POSTHOG_SCRIPT_HANDLE,
+			plugins_url( 'assets/js/posthog/snippet.js', TASTY_RECIPES_LITE_FILE ),
+			array(),
+			TASTY_RECIPES_LITE_VERSION,
+			false
+		);
+
+		wp_enqueue_script(
+			self::POSTHOG_INIT_SCRIPT_HANDLE,
+			plugins_url( 'assets/js/posthog/init.js', TASTY_RECIPES_LITE_FILE ),
+			array( self::POSTHOG_SCRIPT_HANDLE ),
+			TASTY_RECIPES_LITE_VERSION,
+			false
+		);
+
+		$config = wp_json_encode(
+			array(
+				'apiKey'   => self::POSTHOG_API_KEY,
+				'apiHost'  => self::POSTHOG_API_HOST,
+				'defaults' => self::POSTHOG_DEFAULTS,
+				'siteId'   => self::get_site_id(),
+				'autoInit' => (bool) $auto_init,
+			)
+		);
+
+		if ( ! is_string( $config ) ) {
+			return;
+		}
+
+		wp_add_inline_script( self::POSTHOG_INIT_SCRIPT_HANDLE, 'window.tastyRecipesPosthog = ' . $config . ';', 'before' );
+	}
+
+	/**
+	 * Whether the post currently being edited already contains a Tasty Recipes block.
+	 *
+	 * @since x.x
+	 *
+	 * @return bool
+	 */
+	private static function editor_post_has_tasty_block() {
+		$post = get_post();
+		if ( ! $post instanceof \WP_Post ) {
+			$post_id = Utils::get_param( 'post', 'intval', 0 );
+			$post    = $post_id ? get_post( $post_id ) : null;
+		}
+
+		if ( ! $post instanceof \WP_Post || ! is_string( $post->post_content ) ) {
+			return false;
+		}
+
+		return false !== strpos( $post->post_content, '<!-- wp:wp-tasty/' );
 	}
 
 	/**
@@ -245,7 +441,7 @@ class Telemetry {
 		$payload = self::build_payload();
 
 		$response = wp_remote_post(
-			self::DEFAULT_ENDPOINT,
+			self::get_capture_url(),
 			array(
 				'timeout'  => 5,
 				'blocking' => true,
@@ -315,10 +511,22 @@ class Telemetry {
 		$properties = apply_filters( 'tasty_recipes_telemetry_properties', $properties );
 
 		return array(
+			'api_key'     => self::POSTHOG_API_KEY,
 			'event'       => 'tasty_recipes_usage_snapshot',
 			'distinct_id' => $site_id,
 			'properties'  => $properties,
 		);
+	}
+
+	/**
+	 * PostHog capture URL for server-side events.
+	 *
+	 * @since x.x
+	 *
+	 * @return string
+	 */
+	public static function get_capture_url() {
+		return self::POSTHOG_API_HOST . '/i/v0/e/';
 	}
 
 	/**
