@@ -67,6 +67,63 @@ const stripCustomPlugins = settings => {
 	return next;
 };
 
+const getTinyMceMajorVersion = () => {
+	const raw = window.tinyMCE?.majorVersion;
+	const parsed = Number.parseInt( raw, 10 );
+
+	return Number.isNaN( parsed ) ? 0 : parsed;
+};
+
+const stripEmptyEdgeBlocks = ed => {
+	const body = ed.getBody();
+	if ( ! body ) {
+		return;
+	}
+
+	const removeEmptyEdge = side => {
+		const node =
+			'start' === side ? body.firstChild : body.lastChild;
+		if (
+			! node ||
+			1 === body.childNodes.length ||
+			! ed.dom.isEmpty( node )
+		) {
+			return false;
+		}
+
+		body.removeChild( node );
+		return true;
+	};
+
+	while ( removeEmptyEdge( 'start' ) ) {
+		// Strip leading empty paragraphs left by placeholder/paste.
+	}
+	while ( removeEmptyEdge( 'end' ) ) {
+		// Strip trailing empty paragraphs left by paste.
+	}
+};
+
+const sanitizePastedNode = node => {
+	if ( ! node?.querySelectorAll ) {
+		return;
+	}
+
+	node.querySelectorAll( 'h1,h2,h3,h4,h5,h6' ).forEach( heading => {
+		const paragraph = node.ownerDocument.createElement( 'p' );
+		paragraph.innerHTML = heading.innerHTML;
+		heading.replaceWith( paragraph );
+	} );
+
+	node.querySelectorAll( '[style]' ).forEach( element => {
+		element.style.fontSize = '';
+		element.style.fontFamily = '';
+		element.style.lineHeight = '';
+		if ( ! element.getAttribute( 'style' )?.trim() ) {
+			element.removeAttribute( 'style' );
+		}
+	} );
+};
+
 export const RichTextarea = ( {
 	initialValue,
 	name,
@@ -117,7 +174,12 @@ export const RichTextarea = ( {
 
 		if ( bubbleToolbar ) {
 			settings = stripCustomPlugins( settings );
-			settings.theme = 'inlite';
+			// inlite was removed in TinyMCE 5. Keep it only for WP < 6.3.
+			if ( getTinyMceMajorVersion() < 5 ) {
+				settings.theme = 'inlite';
+			} else {
+				delete settings.theme;
+			}
 			settings.inline = true;
 			settings.content_css = false;
 			settings.selection_toolbar = '';
@@ -129,6 +191,8 @@ export const RichTextarea = ( {
 			settings.toolbar2 = '';
 			settings.toolbar3 = '';
 			settings.toolbar4 = '';
+			settings.paste_webkit_styles = 'none';
+			settings.paste_remove_styles_if_webkit = true;
 		} else {
 			settings.external_plugins = filterExternalPlugins(
 				settings.external_plugins,
@@ -164,9 +228,19 @@ export const RichTextarea = ( {
 				}
 			};
 
+			ed.on( 'PastePostProcess', event => {
+				sanitizePastedNode( event.node );
+				window.setTimeout( () => {
+					stripEmptyEdgeBlocks( ed );
+					syncPlaceholderAttr();
+					syncContent();
+				}, 0 );
+			} );
+
 			ed.on( 'init', () => {
 				if ( bubbleToolbar && initialValue ) {
 					ed.setContent( initialValue );
+					stripEmptyEdgeBlocks( ed );
 					syncContent();
 				}
 				syncPlaceholderAttr();

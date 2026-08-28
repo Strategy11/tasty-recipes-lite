@@ -209,22 +209,19 @@
 		}
 	}
 
-	input,
+	input[type='text'],
+	input[type='url'],
+	input[type='search'],
+	input.regular-text,
+	input.inline-field,
 	textarea,
 	select {
-		border: 1px solid #CACFD8;
-		border-radius: 10px;
-		box-shadow: 0px 1px 2px 0px rgba(10, 13, 20, 0.03);
-		background-color: #fff;
-		color: #0E121B;
+		@include editor-shared.editor-field;
 		outline: none;
 		transition: 0.05s border-color ease-in-out;
 		max-width: 100%;
 		min-height: 40px;
 		padding: 8px 12px;
-		line-height: 20px;
-		font-size: 14px;
-		font-family: 'Inter', sans-serif;
 		width: 100%;
 
 		&::placeholder {
@@ -233,8 +230,8 @@
 		}
 
 		&:focus {
-			border-color: #ED4996;
-			box-shadow: 0 0 0 1px #ED4996;
+			border-color: #ED4996 !important;
+			box-shadow: 0 0 0 1px #ED4996 !important;
 		}
 	}
 
@@ -417,14 +414,7 @@
 		min-height: 80px;
 		margin: 0;
 		padding: 8px 12px;
-		border: 1px solid #CACFD8;
-		border-radius: 8px;
-		background: #fff;
-		box-shadow: 0 1px 2px rgba( 10, 13, 20, 0.03 );
-		color: #0E121B;
-		font-family: 'Inter', sans-serif;
-		font-size: 14px;
-		line-height: 20px;
+		@include editor-shared.editor-field;
 		outline: none;
 		resize: vertical;
 		overflow: auto;
@@ -432,22 +422,27 @@
 
 		&:focus,
 		&.mce-edit-focus {
-			border-color: #ED4996;
-			box-shadow: 0 0 0 1px #ED4996;
+			border-color: #ED4996 !important;
+			box-shadow: 0 0 0 1px #ED4996 !important;
 		}
 
-		// TinyMCE stores the placeholder string on data-mce-placeholder when empty.
-		&.mce-content-body[data-mce-placeholder]:not(.mce-visual-caret)::before {
+		// Overlay so the caret sits on the first line, not below the placeholder.
+		&.mce-content-body[data-mce-placeholder]:not(.mce-visual-caret)::before,
+		&:empty:not(.mce-content-body)::before {
 			content: attr( data-mce-placeholder );
+			position: absolute;
+			top: 8px;
+			right: 12px;
+			left: 12px;
+			margin: 0;
 			color: #99A0AE;
+			font-size: 14px;
+			line-height: 20px;
 			pointer-events: none;
 		}
 
-		// Pre-init fallback (React sets data-placeholder before TinyMCE boots).
 		&:empty:not(.mce-content-body)::before {
 			content: attr( data-placeholder );
-			color: #99A0AE;
-			pointer-events: none;
 		}
 
 		p {
@@ -659,6 +654,16 @@
 
 	.tasty-taxonomy-select-container {
 		width: 100%;
+
+		.tasty-taxonomy-select__control,
+		.tasty-taxonomy-select__placeholder,
+		.tasty-taxonomy-select__single-value,
+		.tasty-taxonomy-select__input,
+		.tasty-taxonomy-select__option {
+			font-family: 'Inter', sans-serif !important;
+			font-size: 14px !important;
+			line-height: 20px;
+		}
 
 		.tasty-taxonomy-select__control {
 			align-items: center;
@@ -992,12 +997,7 @@
 		min-height: 40px;
 		margin: 0;
 		padding: 10px 12px;
-		background: #fff;
-		border: 1px solid #CACFD8;
-		border-radius: 10px;
-		font-family: 'Inter', sans-serif;
-		font-size: 14px;
-		line-height: 20px;
+		@include editor-shared.editor-field;
 		color: #181B25;
 		outline: none;
 		white-space: pre-wrap;
@@ -1010,12 +1010,12 @@
 		}
 
 		&:hover {
-			border-color: #99A0AE;
+			border-color: #99A0AE !important;
 		}
 
 		&:focus {
-			border-color: #ED4996;
-			box-shadow: 0 0 0 3px #FFEDF5;
+			border-color: #ED4996 !important;
+			box-shadow: 0 0 0 3px #FFEDF5 !important;
 		}
 
 		&[contenteditable='true'].is-empty::before {

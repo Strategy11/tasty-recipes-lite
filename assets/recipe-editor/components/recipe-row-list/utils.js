@@ -475,13 +475,56 @@ export const parseRowsFromHtml = html => {
 			}
 		};
 
+		const splitBlockIntoRows = node => {
+			const holder = node.ownerDocument.createElement( 'div' );
+			const flushHolder = () => {
+				if ( rowHasContent( holder.innerHTML ) ) {
+					pushItemHtml( holder.innerHTML );
+				}
+				holder.replaceChildren();
+			};
+
+			Array.from( node.childNodes ).forEach( child => {
+				if (
+					Node.ELEMENT_NODE === child.nodeType &&
+					'BR' === child.tagName
+				) {
+					flushHolder();
+					return;
+				}
+
+				if ( Node.TEXT_NODE === child.nodeType ) {
+					const lines = String( child.textContent || '' ).split(
+						/\r?\n/
+					);
+					lines.forEach( ( line, index ) => {
+						if ( index > 0 ) {
+							flushHolder();
+						}
+						if ( line ) {
+							holder.append(
+								node.ownerDocument.createTextNode( line )
+							);
+						}
+					} );
+					return;
+				}
+
+				holder.append( child.cloneNode( true ) );
+			} );
+
+			flushHolder();
+		};
+
 		const walk = node => {
 			if ( ! node ) {
 				return;
 			}
 
 			if ( Node.TEXT_NODE === node.nodeType ) {
-				pushItemText( node.textContent );
+				String( node.textContent || '' )
+					.split( /\r?\n/ )
+					.forEach( line => pushItemText( line ) );
 				return;
 			}
 
@@ -508,11 +551,11 @@ export const parseRowsFromHtml = html => {
 			}
 
 			if ( 'p' === tag || 'div' === tag ) {
-				// Standalone blocks (legacy TinyMCE). Skip empty wrappers.
+				// Standalone blocks (legacy TinyMCE). Split visual lines.
 				if (
 					! node.querySelector( 'ul,ol,li,h1,h2,h3,h4,h5,h6,p' )
 				) {
-					pushItemHtml( node.innerHTML );
+					splitBlockIntoRows( node );
 					return;
 				}
 			}

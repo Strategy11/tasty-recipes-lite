@@ -14,6 +14,10 @@ import {
 	REORDER_DURATION_MS,
 	REORDER_EASING,
 } from './constants';
+import {
+	markRowListUndoActive,
+	registerRowListUndo,
+} from './history';
 import { parseClipboardParts } from './paste';
 import { RecipeRow } from './RecipeRow';
 import { SelectionToolbar } from './SelectionToolbar';
@@ -49,6 +53,10 @@ const RecipeRowList = ( {
 	const endDragRef = useRef( null );
 	const pendingFlipRef = useRef( null );
 	const pendingScrollRowIdRef = useRef( null );
+	const pastRef = useRef( [] );
+	const futureRef = useRef( [] );
+	const lastChangeRef = useRef( 'text' );
+	const undoApiRef = useRef( null );
 	const groupPlaceholder = __( 'For the …', 'tasty-recipes-lite' );
 	const isInstructions = 'instructions' === mode;
 	const addItemLabel =
@@ -122,12 +130,88 @@ const RecipeRowList = ( {
 
 	useEffect( () => () => endDragRef.current?.(), [] );
 
+	const cloneRows = source =>
+		source.map( row => ( {
+			...row,
+			image: row.image ? { ...row.image } : null,
+			isNew: false,
+		} ) );
+
+	const captureFlip = () => {
+		const list = listRef.current;
+		if ( ! list ) {
+			return;
+		}
+
+		pendingFlipRef.current = new Map(
+			Array.from(
+				list.querySelectorAll( '.tasty-recipes-item-row' )
+			).map( el => [
+				el.dataset.rowId,
+				el.getBoundingClientRect().top,
+			] )
+		);
+	};
+
+	const pushHistory = () => {
+		pastRef.current = [
+			...pastRef.current.slice( -49 ),
+			cloneRows( rowsRef.current ),
+		];
+		futureRef.current = [];
+		lastChangeRef.current = 'structure';
+		markRowListUndoActive( undoApiRef.current );
+	};
+
+	if ( ! undoApiRef.current ) {
+		undoApiRef.current = {
+			canUndo: () => pastRef.current.length > 0,
+			canRedo: () => futureRef.current.length > 0,
+			shouldHandleUndo: () => 'structure' === lastChangeRef.current,
+			undo: () => {
+				if ( ! pastRef.current.length ) {
+					return;
+				}
+
+				futureRef.current = [
+					...futureRef.current,
+					cloneRows( rowsRef.current ),
+				];
+				const prev = pastRef.current[ pastRef.current.length - 1 ];
+				pastRef.current = pastRef.current.slice( 0, -1 );
+				lastChangeRef.current = pastRef.current.length
+					? 'structure'
+					: 'text';
+				captureFlip();
+				commitRows( prev );
+			},
+			redo: () => {
+				if ( ! futureRef.current.length ) {
+					return;
+				}
+
+				pastRef.current = [
+					...pastRef.current,
+					cloneRows( rowsRef.current ),
+				];
+				const next = futureRef.current[ futureRef.current.length - 1 ];
+				futureRef.current = futureRef.current.slice( 0, -1 );
+				lastChangeRef.current = 'structure';
+				captureFlip();
+				commitRows( next );
+			},
+		};
+	}
+
+	useEffect( () => registerRowListUndo( undoApiRef.current ), [] );
+
 	const commitRows = nextRows => {
 		setRows( nextRows );
 		onChange( serializeRows( nextRows.map( clearIsNew ), mode ) );
 	};
 
 	const handleValueChange = ( id, value ) => {
+		lastChangeRef.current = 'text';
 		const nextRows = rows.map( row => {
 			if ( row.id !== id ) {
 				return clearIsNew( row );
@@ -143,6 +227,7 @@ const RecipeRowList = ( {
 	};
 
 	const handleAddItem = () => {
+		pushHistory();
 		commitRows( [
 			...rows.map( clearIsNew ),
 			createItemRow( { isNew: true } ),
@@ -150,6 +235,7 @@ const RecipeRowList = ( {
 	};
 
 	const handleAddSectionTitle = () => {
+		pushHistory();
 		commitRows( [
 			...rows.map( clearIsNew ),
 			createGroupRow( { isNew: true } ),
@@ -180,6 +266,7 @@ const RecipeRowList = ( {
 		];
 
 		pendingScrollRowIdRef.current = nextRow.id;
+		pushHistory();
 		commitRows( nextRows );
 	};
 
@@ -285,6 +372,7 @@ const RecipeRowList = ( {
 		];
 
 		pendingScrollRowIdRef.current = created[ created.length - 1 ].id;
+		pushHistory();
 		commitRows( nextRows );
 	};
 
@@ -313,10 +401,12 @@ const RecipeRowList = ( {
 		}
 
 		pendingScrollRowIdRef.current = rowId;
+		pushHistory();
 		commitRows( nextRows );
 	};
 
 	const handleConvertRow = rowId => {
+		pushHistory();
 		commitRows(
 			rows.map( row => {
 				if ( row.id !== rowId ) {
@@ -362,12 +452,14 @@ const RecipeRowList = ( {
 						isNew: false,
 					};
 				} );
+				pushHistory();
 				commitRows( nextRows );
 			},
 		} );
 	};
 
 	const handleRemoveImage = rowId => {
+		pushHistory();
 		const nextRows = rows.map( row => {
 			if ( row.id !== rowId ) {
 				return clearIsNew( row );
@@ -383,6 +475,7 @@ const RecipeRowList = ( {
 	};
 
 	const handleDeleteRow = rowId => {
+		pushHistory();
 		let nextRows = rows
 			.filter( row => row.id !== rowId )
 			.map( clearIsNew );
@@ -466,6 +559,11 @@ const RecipeRowList = ( {
 			}
 
 			if ( targetIndex !== drag.index ) {
+				if ( ! drag.didMove ) {
+					pushHistory();
+					drag.didMove = true;
+				}
+
 				const before = rowEl.offsetTop;
 				const nextRows = moveRow(
 					rowsRef.current,

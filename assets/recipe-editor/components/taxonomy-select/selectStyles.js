@@ -1,6 +1,12 @@
+const EDITOR_FONT = {
+	fontSize: '14px',
+	fontFamily: 'Inter, sans-serif',
+};
+
 export const selectStyles = {
 	control: ( base, state ) => ( {
 		...base,
+		...EDITOR_FONT,
 		minHeight: '40px',
 		alignItems: 'center',
 		backgroundColor: '#fff',
@@ -22,8 +28,14 @@ export const selectStyles = {
 	} ),
 	placeholder: base => ( {
 		...base,
+		...EDITOR_FONT,
 		margin: 0,
 		color: '#99A0AE',
+	} ),
+	singleValue: base => ( {
+		...base,
+		...EDITOR_FONT,
+		color: '#0E121B',
 	} ),
 	indicatorsContainer: base => ( {
 		...base,
@@ -63,6 +75,7 @@ export const selectStyles = {
 	} ),
 	option: ( base, state ) => ( {
 		...base,
+		...EDITOR_FONT,
 		display: 'flex',
 		alignItems: 'center',
 		gap: '10px',
@@ -76,6 +89,7 @@ export const selectStyles = {
 	} ),
 	input: base => ( {
 		...base,
+		...EDITOR_FONT,
 		margin: 0,
 		padding: 0,
 		overflow: 'hidden',
