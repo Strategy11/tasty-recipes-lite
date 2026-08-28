@@ -31,6 +31,7 @@ export const undoRowListHistory = isRedo => {
 		return false;
 	}
 
+	// eslint-disable-next-line no-unused-expressions
 	isRedo ? api.redo() : api.undo();
 	lastActive = api;
 	return true;
