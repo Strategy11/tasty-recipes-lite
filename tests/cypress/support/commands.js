@@ -264,6 +264,16 @@ Cypress.Commands.add( 'loginCached', () => {
 	} );
 } );
 
+/**
+ * Types into a Tasty Recipes inline TinyMCE field.
+ *
+ * @since x.x
+ *
+ * @param {string} fieldId Field element id.
+ * @param {string} text    Text to type.
+ *
+ * @returns {void}
+ */
 Cypress.Commands.add( 'typeTastyInlineEditor', ( fieldId, text ) => {
 	cy.get( `#${ fieldId }.mce-content-body`, {
 		timeout: 10_000,
@@ -272,4 +282,65 @@ Cypress.Commands.add( 'typeTastyInlineEditor', ( fieldId, text ) => {
 		.should( 'be.visible' )
 		.click()
 		.type( text, { delay: 0 } );
+} );
+
+/**
+ * Yield the block editor canvas body, including the iframed editor.
+ *
+ * Replaces the 10up helper so Cypress retries iframe document access
+ * instead of wrapping a jQuery body with an undefined selector.
+ *
+ * @since x.x
+ *
+ * @returns {Cypress.Chainable<JQuery<HTMLElement>>}
+ */
+Cypress.Commands.overwrite( 'getBlockEditor', ( originalFn ) => {
+	void originalFn;
+
+	cy.get( '.editor-visual-editor, .edit-post-visual-editor', {
+		timeout: 15000,
+	} ).should( 'exist' );
+
+	return cy.get( 'body' ).then( ( $body ) => {
+		if ( ! $body.find( 'iframe[name="editor-canvas"]' ).length ) {
+			return cy.wrap( $body );
+		}
+
+		return cy
+			.get( 'iframe[name="editor-canvas"]' )
+			.its( '0.contentDocument.body' )
+			.should( 'not.be.empty' )
+			.then( ( body ) => cy.wrap( body ) );
+	} );
+} );
+
+/**
+ * Open the editor settings sidebar and select a tab.
+ *
+ * Avoids 10up's jQuery `:contains()` selectors, which Cypress 15 no
+ * longer supports in `cy.get()`.
+ *
+ * @since x.x
+ *
+ * @param {string} tab Sidebar tab label. Defaults to "Post".
+ *
+ * @returns {void}
+ */
+Cypress.Commands.overwrite( 'openDocumentSettingsSidebar', ( originalFn, tab = 'Post' ) => {
+	void originalFn;
+
+	cy.get( 'body' ).then( ( $body ) => {
+		const settingsButton = $body.find(
+			'button[aria-expanded="false"][aria-label="Settings"], button[aria-expanded="false"][aria-label="Editor settings"]'
+		);
+
+		if ( settingsButton.length ) {
+			cy.wrap( settingsButton.first() ).click();
+		}
+	} );
+
+	cy.contains(
+		'[role="tablist"] button, .editor-sidebar__panel-tab, .edit-post-sidebar__panel-tabs button',
+		tab
+	).click();
 } );

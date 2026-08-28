@@ -252,6 +252,15 @@ final class Options {
 	public const ONBOARDING_USAGE_DATA = 'tasty_recipes_onboarding_usage_data';
 
 	/**
+	 * Stable telemetry site identifier option.
+	 *
+	 * @since x.x
+	 *
+	 * @var string
+	 */
+	public const TELEMETRY_SITE_ID = 'tasty_recipes_telemetry_site_id';
+
+	/**
 	 * Database version option.
 	 *
 	 * @since 1.2.7

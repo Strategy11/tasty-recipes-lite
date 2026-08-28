@@ -126,6 +126,7 @@ ignore = [
     "redundant-condition",
     "redundant-docblock-type",
     "redundant-logical-operation",
+    "redundant-type-comparison",
     "reference-constraint-violation",
     "reference-to-undefined-variable",
     "string-member-selector",
