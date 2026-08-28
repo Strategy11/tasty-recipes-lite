@@ -1,7 +1,7 @@
 === Tasty Recipes Lite – WordPress Recipe Card Plugin with Built-In Recipe Schema ===
 Contributors: strategy11team, sswells, srwells, danielbachhuber
 Tags: recipe, recipe card, recipe maker, food blogging, schema
-Requires at least: 5.9
+Requires at least: 6.3
 Tested up to: 7.0
 Requires PHP: 7.2
 Stable tag: 1.2.8
