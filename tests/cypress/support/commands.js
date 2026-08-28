@@ -285,6 +285,68 @@ Cypress.Commands.add( 'typeTastyInlineEditor', ( fieldId, text ) => {
 } );
 
 /**
+ * Close the Gutenberg welcome guide without chaining `.find()` on the
+ * iframed editor body, which detaches when the canvas remounts.
+ *
+ * @since x.x
+ *
+ * @returns {void}
+ */
+Cypress.Commands.overwrite( 'closeWelcomeGuide', ( originalFn ) => {
+	void originalFn;
+
+	cy.get( '.editor-visual-editor, .edit-post-visual-editor', {
+		timeout: 15000,
+	} ).should( 'exist' );
+
+	cy.window().then( ( win ) => {
+		const data = win.wp?.data;
+		if ( ! data ) {
+			return;
+		}
+
+		if (
+			data.select( 'core/edit-post' )?.isFeatureActive?.( 'welcomeGuide' )
+		) {
+			data.dispatch( 'core/edit-post' ).toggleFeature( 'welcomeGuide' );
+		}
+
+		if (
+			data.select( 'core/preferences' )?.get?.(
+				'core/edit-post',
+				'welcomeGuide'
+			)
+		) {
+			data.dispatch( 'core/preferences' ).set(
+				'core/edit-post',
+				'welcomeGuide',
+				false
+			);
+		}
+
+		if (
+			data.select( 'core/preferences' )?.get?.( 'core', 'welcomeGuide' )
+		) {
+			data.dispatch( 'core/preferences' ).set(
+				'core',
+				'welcomeGuide',
+				false
+			);
+		}
+	} );
+
+	cy.get( 'body' ).then( ( $body ) => {
+		const closeButton = $body.find(
+			'.edit-post-welcome-guide .components-modal__header button, .editor-welcome-guide .components-modal__header button'
+		);
+
+		if ( closeButton.length ) {
+			cy.wrap( closeButton.first() ).click();
+		}
+	} );
+} );
+
+/**
  * Yield the block editor canvas body, including the iframed editor.
  *
  * Replaces the 10up helper so Cypress retries iframe document access
