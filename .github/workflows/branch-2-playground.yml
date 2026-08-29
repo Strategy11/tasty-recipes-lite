@@ -1,0 +1,104 @@
+name: Branch 2 Playground
+
+# Manual only. Pick the branch to build in the "Run workflow" dropdown.
+on:
+  workflow_dispatch:
+
+env:
+  PLUGIN_SLUG: tasty-recipes-lite
+  ZIP_NAME: tasty-recipes-lite.zip
+
+# One upload at a time, since the object key is fixed and later runs overwrite
+# earlier ones.
+concurrency:
+  group: branch-2-playground
+  cancel-in-progress: false
+
+jobs:
+  build-and-upload:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      # --- Build ---
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          tools: composer
+
+      # Pulls strategy11/tasty-framework into inc/libs/ (private repo, so the
+      # token is required) and runs the replace-textdomain post-install script.
+      - name: Install Composer dependencies
+        env:
+          COMPOSER_AUTH: '{"github-oauth":{"github.com":"${{ secrets.GH_TOKEN }}"}}'
+        run: composer install --no-dev --no-interaction --prefer-dist
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.5.3
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      # Builds assets/dist/ via wp-scripts.
+      - name: Build assets
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm run build
+
+      # --- Package ---
+
+      - name: Stage plugin folder
+        run: |
+          mkdir -p /tmp/build
+          rsync -a ./ "/tmp/build/${PLUGIN_SLUG}/" \
+            --exclude-from=.distignore \
+            --exclude 'auth.json' \
+            --exclude '.git'
+
+      - name: Create zip
+        run: |
+          cd /tmp/build
+          zip -qr "/tmp/${ZIP_NAME}" "${PLUGIN_SLUG}"
+          ls -lh "/tmp/${ZIP_NAME}"
+
+      # --- Upload ---
+
+      - name: Upload to Cloudflare R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+          # R2 rejects the newer AWS CLI default of always sending integrity
+          # checksums, so only send them when the API requires it.
+          AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+          AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+        run: |
+          aws s3 cp "/tmp/${ZIP_NAME}" "s3://${R2_BUCKET}/${ZIP_NAME}" \
+            --endpoint-url "https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com" \
+            --content-type application/zip \
+            --cache-control "no-cache, max-age=0"
+
+      - name: Summary
+        run: |
+          {
+            echo "### Uploaded to R2"
+            echo ""
+            echo "- **Branch:** \`${{ github.ref_name }}\`"
+            echo "- **Commit:** \`${{ github.sha }}\`"
+            echo "- **Object:** \`${ZIP_NAME}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
