@@ -72,3 +72,5 @@ cypress.config.js
 .nvmrc
 mago.toml
 pnpm-workspace.yaml
+.pnpm-store
+.claude
