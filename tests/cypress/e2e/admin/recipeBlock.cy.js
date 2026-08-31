@@ -47,6 +47,19 @@ const openRecipeBlockSettings = () => {
 	} ).should( 'be.visible' );
 };
 
+const enableAuthorLinkOverride = ( url ) => {
+	cy.contains( 'label', 'Override author link' ).click();
+
+	cy.get(
+		'.interface-complementary-area input[type="text"], .editor-sidebar input[type="text"], .edit-post-sidebar input[type="text"]'
+	)
+		.filter( ':visible' )
+		.first()
+		.should( 'be.visible' )
+		.clear()
+		.type( url );
+};
+
 describe( 'Recipe Block', () => {
 	before( () => {
 		cy.loginCached();
@@ -131,16 +144,7 @@ describe( 'Recipe Block', () => {
 
 			openRecipeBlockSettings();
 
-			cy.contains( 'label', 'Override author link' )
-				.closest( '.components-base-control' )
-				.find( 'input[type="checkbox"]' )
-				.check( { force: true } );
-
-			cy.contains( '.components-panel__body-title', 'Recipe options' )
-				.closest( '.components-panel__body' )
-				.find( 'input[type="text"]' )
-				.should( 'be.visible' )
-				.type( 'https://example.com/author-override' );
+			enableAuthorLinkOverride( 'https://example.com/author-override' );
 		} );
 	} );
 
@@ -165,16 +169,7 @@ describe( 'Recipe Block', () => {
 
 			openRecipeBlockSettings();
 
-			cy.contains( 'label', 'Override author link' )
-				.closest( '.components-base-control' )
-				.find( 'input[type="checkbox"]' )
-				.check( { force: true } );
-
-			cy.contains( '.components-panel__body-title', 'Recipe options' )
-				.closest( '.components-panel__body' )
-				.find( 'input[type="text"]' )
-				.clear()
-				.type( 'https://override.example.com' );
+			enableAuthorLinkOverride( 'https://override.example.com' );
 
 			// Publish the post.
 			cy.get( '.editor-post-publish-panel__toggle' ).should(

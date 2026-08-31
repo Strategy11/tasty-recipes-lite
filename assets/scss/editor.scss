@@ -27,6 +27,12 @@
 	display: none !important;
 }
 
+// Bubble Description/Notes use the shared React SelectionToolbar. Hide any
+// leftover TinyMCE inlite floatpanels so they cannot compete for selection UI.
+.tasty-recipes-modal-open .mce-tinymce-inline.mce-floatpanel {
+	display: none !important;
+}
+
 #wp-link {
 	#link-options {
 		.link-nofollow {

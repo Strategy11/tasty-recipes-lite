@@ -3,6 +3,11 @@ import { __ } from '@wordpress/i18n';
 import { Icon } from '@wordpress/icons';
 import classNames from 'classnames';
 import { UploadIcon, TrashIcon } from './icons';
+import {
+	getMediaImage,
+	openImageMediaLibrary,
+	uploadImageFile,
+} from './media-library';
 
 const getFileName = ( url ) =>
 	url
@@ -16,55 +21,38 @@ export const ImageField = ( { recipe, handleRecipeChange, labels = {} } ) => {
 		mediaButton: __( 'Select Image', 'tasty-recipes-lite' ),
 		placeholderTitle: __( 'Recipe Image', 'tasty-recipes-lite' ),
 		placeholderSubtitle: __(
-			'Select an image file from your library.',
+			'Drag images or select from your library',
 			'tasty-recipes-lite'
 		),
-		placeholderButton: __( 'Select Image', 'tasty-recipes-lite' ),
+		placeholderButton: __( 'Media Library', 'tasty-recipes-lite' ),
 		removeButton: __( 'Remove Image', 'tasty-recipes-lite' ),
 		...labels,
 	};
 	const [ recipeThumbnail, setRecipeThumbnail ] = useState(
 		recipe?.image_sizes?.thumbnail
 	);
+	const [ isDragging, setIsDragging ] = useState( false );
 
-	const handleClickSelectImage = ( e ) => {
+	const applyAttachment = attachment => {
+		handleRecipeChange( 'image_id', attachment.id );
+		const image = getMediaImage( attachment, [ 'thumbnail', 'full' ] );
+		setRecipeThumbnail( image.url ? image : null );
+	};
+
+	const handleClickSelectImage = e => {
 		e.preventDefault();
 
-		const frame = wp.media( {
+		openImageMediaLibrary( {
 			title: mergedLabels.mediaTitle,
-			multiple: false,
-			library: {
-				type: 'image',
-			},
-			button: {
-				text: mergedLabels.mediaButton,
-			},
+			buttonText: mergedLabels.mediaButton,
+			selectedId: recipe.image_id,
+			onSelect: applyAttachment,
 		} );
+	};
 
-		frame.on( 'open', () => {
-			const selection = frame.state().get( 'selection' );
-			const selected = recipe.image_id;
-
-			if ( selected ) {
-				const attachment = wp.media.model.Attachment.get( selected );
-				attachment.fetch();
-				selection.add( attachment );
-			}
-		} );
-
-		frame.on( 'select', () => {
-			const attachments = frame.state().get( 'selection' ).toJSON();
-
-			if ( attachments.length ) {
-				handleRecipeChange( 'image_id', attachments[ 0 ].id );
-				setRecipeThumbnail(
-					attachments[ 0 ].sizes.thumbnail ??
-						attachments[ 0 ].sizes.full
-				);
-			}
-		} );
-
-		frame.open();
+	const handleButtonClick = e => {
+		e.stopPropagation();
+		handleClickSelectImage( e );
 	};
 
 	const handleClickRemoveImage = () => {
@@ -72,12 +60,50 @@ export const ImageField = ( { recipe, handleRecipeChange, labels = {} } ) => {
 		setRecipeThumbnail( null );
 	};
 
+	const handleDragOver = e => {
+		e.preventDefault();
+		e.stopPropagation();
+		setIsDragging( true );
+	};
+
+	const handleDragLeave = e => {
+		e.preventDefault();
+		if ( e.currentTarget.contains( e.relatedTarget ) ) {
+			return;
+		}
+		setIsDragging( false );
+	};
+
+	const handleDrop = async e => {
+		e.preventDefault();
+		e.stopPropagation();
+		setIsDragging( false );
+
+		const file = [ ...( e.dataTransfer?.files || [] ) ].find( dropped =>
+			dropped.type.startsWith( 'image/' )
+		);
+		if ( ! file ) {
+			return;
+		}
+
+		const attachment = await uploadImageFile( file );
+		if ( attachment ) {
+			applyAttachment( attachment );
+		}
+	};
+
 	return (
 		<div
 			className={ classNames( {
-				'tasty-recipes-image-placeholder': ! recipeThumbnail,
-				'tasty-recipes-image': recipeThumbnail,
+				'tasty-recipes-editor-image-placeholder': ! recipeThumbnail,
+				'tasty-recipes-editor-image': recipeThumbnail,
+				'is-dragging': isDragging && ! recipeThumbnail,
 			} ) }
+			onClick={ ! recipeThumbnail ? handleClickSelectImage : undefined }
+			onDragOver={ ! recipeThumbnail ? handleDragOver : undefined }
+			onDragEnter={ ! recipeThumbnail ? handleDragOver : undefined }
+			onDragLeave={ ! recipeThumbnail ? handleDragLeave : undefined }
+			onDrop={ ! recipeThumbnail ? handleDrop : undefined }
 		>
 			<input type="hidden" name="image_id" value={ recipe.image_id } />
 			{ recipeThumbnail ? (
@@ -88,7 +114,7 @@ export const ImageField = ( { recipe, handleRecipeChange, labels = {} } ) => {
 				/>
 			) : (
 				<Placeholder
-					handleClickSelectImage={ handleClickSelectImage }
+					handleClickSelectImage={ handleButtonClick }
 					labels={ mergedLabels }
 				/>
 			) }
@@ -114,6 +140,7 @@ const ImagePreview = ( {
 				<p> { getFileName( recipeThumbnail.url ) } </p>
 			</div>
 			<button
+				type="button"
 				className="tasty-secondary-button"
 				onClick={ handleClickRemoveImage }
 			>
@@ -127,18 +154,21 @@ const ImagePreview = ( {
 const Placeholder = ( { handleClickSelectImage, labels } ) => {
 	return (
 		<>
-			<Icon icon={ UploadIcon } width={ 20 } height={ 18 } />
-			<p className="tasty-recipes-image-placeholder-title">
-				{ labels.placeholderTitle }
-			</p>
-			<p className="tasty-recipes-image-placeholder-subtitle">
-				{ labels.placeholderSubtitle }
-			</p>
+			<Icon icon={ UploadIcon } width={ 24 } height={ 24 } />
+			<div className="tasty-recipes-editor-image-placeholder-text">
+				<p className="tasty-recipes-editor-image-placeholder-title">
+					{ labels.placeholderTitle }
+				</p>
+				<p className="tasty-recipes-editor-image-placeholder-subtitle">
+					{ labels.placeholderSubtitle }
+				</p>
+			</div>
 			<button
+				type="button"
 				className="tasty-secondary-button"
 				onClick={ handleClickSelectImage }
 			>
-				{ labels.placeholderButton }
+				<span>{ labels.placeholderButton }</span>
 			</button>
 		</>
 	);

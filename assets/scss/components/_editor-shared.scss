@@ -1,0 +1,68 @@
+@mixin floating-panel {
+	background: #fff;
+	border: 1px solid #E1E4EA;
+	border-radius: 10px;
+	box-shadow: 0 12px 32px rgba( 14, 18, 27, 0.16 );
+}
+
+@mixin icon-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	border-radius: 6px;
+	background: transparent;
+	cursor: pointer;
+	transition: background 0.1s ease, color 0.1s ease;
+}
+
+@mixin toolbar-separator {
+	flex: 0 0 auto;
+	width: 1px;
+	height: 16px;
+	margin: 0 2px;
+	background: #CACFD8;
+}
+
+@mixin teal-callout {
+	background-color: #E9FBFA;
+	border: 1px solid #6EE7E1;
+	border-radius: 8px;
+}
+
+@mixin teal-callout-badge {
+	background-color: #6EE7E1;
+	color: #0E5350;
+}
+
+@mixin link-input {
+	border: 1px solid #ED4996 !important;
+	border-radius: 10px !important;
+	background: #fff !important;
+	box-shadow: 0 0 0 2px #FCEEF5 !important;
+	color: #181B25 !important;
+	outline: none !important;
+}
+
+@mixin link-submit {
+	border: 0 !important;
+	border-radius: 10px !important;
+	background: #ED4996 !important;
+	box-shadow: none !important;
+	color: #fff !important;
+}
+
+@mixin editor-field {
+	border: 1px solid #CACFD8 !important;
+	border-radius: 10px !important;
+	box-shadow: 0 1px 2px 0 rgba( 10, 13, 20, 0.03 ) !important;
+	background-color: #fff !important;
+	color: #0E121B;
+	font-family: 'Inter', sans-serif !important;
+	font-size: 14px !important;
+	line-height: 20px;
+}

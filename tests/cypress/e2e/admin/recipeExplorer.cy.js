@@ -82,14 +82,10 @@ describe( 'Recipe Explorer', () => {
 				.find( 'input#title' )
 				.type( 'Explorer Created Recipe' );
 
-			cy.get(
-				'iframe#tasty-recipes-recipe-description_ifr',
-				{ timeout: 10000 }
-			)
-				.its( '0.contentDocument.body' )
-				.should( 'not.be.empty' )
-				.then( cy.wrap )
-				.type( 'Created from Explorer.', { delay: 0 } );
+			cy.typeTastyInlineEditor(
+				'tasty-recipes-recipe-description',
+				'Created from Explorer.'
+			);
 
 			cy.get( '.tasty-recipes-button-insert' ).click();
 
@@ -228,14 +224,10 @@ describe( 'Recipe Explorer', () => {
 				.find( 'input#title' )
 				.type( 'Recipe to Embed' );
 
-			cy.get(
-				'iframe#tasty-recipes-recipe-description_ifr',
-				{ timeout: 10000 }
-			)
-				.its( '0.contentDocument.body' )
-				.should( 'not.be.empty' )
-				.then( cy.wrap )
-				.type( 'Will be embedded.', { delay: 0 } );
+			cy.typeTastyInlineEditor(
+				'tasty-recipes-recipe-description',
+				'Will be embedded.'
+			);
 
 			cy.get( '.tasty-recipes-button-insert' ).click();
 
@@ -290,14 +282,10 @@ describe( 'Recipe Explorer', () => {
 				.find( 'input#title' )
 				.type( 'Recipe for New Post' );
 
-			cy.get(
-				'iframe#tasty-recipes-recipe-description_ifr',
-				{ timeout: 10000 }
-			)
-				.its( '0.contentDocument.body' )
-				.should( 'not.be.empty' )
-				.then( cy.wrap )
-				.type( 'Embedded in new post.', { delay: 0 } );
+			cy.typeTastyInlineEditor(
+				'tasty-recipes-recipe-description',
+				'Embedded in new post.'
+			);
 
 			cy.get( '.tasty-recipes-button-insert' ).click();
 

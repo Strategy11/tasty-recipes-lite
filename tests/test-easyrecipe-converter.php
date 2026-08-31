@@ -361,7 +361,7 @@ EOT;
 				'easy-recipe-1.txt',
 				array(
 					'title'                       => 'Miracle No Knead Bread',
-					'author_name'                 => 'Pinch of Yum, with inspiration from my friends Angela and <a href="http://www.girlversusdough.com/2015/08/13/no-knead-dutch-oven-bread/" target="_blank">Stephanie</a>',
+					'author_name'                 => 'Pinch of Yum, with inspiration from my friends Angela and Stephanie',
 					'description'                 => '',
 					'ingredients'                 => $recipe_1_ingredients,
 					'instructions'                => trim( $recipe_1_instructions ),
@@ -637,7 +637,7 @@ EOT;
 				'easy-recipe-7.txt',
 				array(
 					'title'                       => 'Zucchini Fritters & Goat Cheese Sauce',
-					'author_name'                 => 'inspired by <a href="http://whatsheshaving.com/2010/08/07/zucchini-fritters/" target="_blank" title="I\'ll Have What She\'s Having">I\'ll Have What She\'s Having</a>',
+					'author_name'                 => 'inspired by I\'ll Have What She\'s Having',
 					'description'                 => '',
 					'ingredients'                 => $recipe_7_ingredients,
 					'instructions'                => trim( $recipe_7_instructions ),

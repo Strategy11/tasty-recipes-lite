@@ -5,7 +5,13 @@ import { selectStyles } from './selectStyles';
 import { useTaxonomyOptions } from './useTaxonomyOptions';
 import { formatCreateLabel } from './utils';
 
-export const TaxonomySelect = ( { name, taxonomy, value = '', onChange } ) => {
+export const TaxonomySelect = ( {
+	name,
+	taxonomy,
+	placeholder = '',
+	value = '',
+	onChange,
+} ) => {
 	const {
 		selectKey,
 		selectedOptions,
@@ -49,7 +55,7 @@ export const TaxonomySelect = ( { name, taxonomy, value = '', onChange } ) => {
 				closeMenuOnSelect={ false }
 				isSearchable
 				isClearable={ false }
-				placeholder=""
+				placeholder={ placeholder }
 				cacheOptions={ false }
 				menuIsOpen={ menuIsOpen }
 				onMenuOpen={ handleMenuOpen }

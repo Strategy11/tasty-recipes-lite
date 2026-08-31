@@ -1,7 +1,9 @@
-import { useState, useEffect, useRef } from '@wordpress/element';
+import { useState, useEffect, useRef, Fragment } from '@wordpress/element';
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
+import classNames from 'classnames';
 import { TaxonomySelect } from './taxonomy-select';
+import { ChevronIcon } from './icons';
 
 export const FieldGroup = ( {
 	heading,
@@ -12,12 +14,30 @@ export const FieldGroup = ( {
 	showAdditionalTime = true,
 	onFieldChange = () => {},
 	renderBeforeFields,
+	renderAfterField = null,
 	className = '',
 	recipe,
+	defaultCollapsed = false,
+	collapsed: collapsedProp,
+	onCollapseChange,
 } ) => {
 	const [ fieldValues, setFieldValues ] = useState( initialFieldValues );
 	const [ isAdditionalTimeOpen, setIsAdditionalTimeOpen ] = useState( false );
+	const [ internalCollapsed, setInternalCollapsed ] = useState(
+		defaultCollapsed
+	);
 	const isInitialMount = useRef( true );
+	const isCollapseControlled = typeof collapsedProp === 'boolean';
+	const isCollapsed = isCollapseControlled
+		? collapsedProp
+		: internalCollapsed;
+
+	const setCollapsed = nextCollapsed => {
+		if ( ! isCollapseControlled ) {
+			setInternalCollapsed( nextCollapsed );
+		}
+		onCollapseChange?.( nextCollapsed );
+	};
 
 	useEffect( () => {
 		if (
@@ -37,7 +57,7 @@ export const FieldGroup = ( {
 			return;
 		}
 		if ( ! isAdditionalTimeOpen ) {
-			setFieldValues( ( prev ) => ( {
+			setFieldValues( prev => ( {
 				...prev,
 				additional_time_label: '',
 				additional_time_value: '',
@@ -46,7 +66,7 @@ export const FieldGroup = ( {
 	}, [ isAdditionalTimeOpen ] );
 
 	const handleFieldChange = ( field, value ) => {
-		setFieldValues( ( prev ) => ( { ...prev, [ field ]: value } ) );
+		setFieldValues( prev => ( { ...prev, [ field ]: value } ) );
 		onFieldChange( field, value );
 	};
 
@@ -68,11 +88,81 @@ export const FieldGroup = ( {
 		fieldValues
 	);
 
-	const showField = ( field ) =>
+	const showField = field =>
 		! ( field.is_pro || ( group === 'nutrition' && field.nutrifox_id ) );
 	const title = ! isAdditionalTimeOpen
 		? __( '+ Time', 'tasty-recipes-lite' )
 		: __( '- Time', 'tasty-recipes-lite' );
+	const fieldPlaceholders = {
+		prep_time: __( 'e.g. 15 min', 'tasty-recipes-lite' ),
+		cook_time: __( 'e.g. 30 min', 'tasty-recipes-lite' ),
+		yield: __( 'e.g. 4 servings', 'tasty-recipes-lite' ),
+		category: __( 'Select category…', 'tasty-recipes-lite' ),
+		method: __( 'Select method…', 'tasty-recipes-lite' ),
+		cuisine: __( 'Select cuisine…', 'tasty-recipes-lite' ),
+		diet: __( 'Select diet…', 'tasty-recipes-lite' ),
+		keywords: __(
+			'e.g. easy, weeknight, kid-friendly',
+			'tasty-recipes-lite'
+		),
+		serving_size: __( 'e.g. 1 pancake', 'tasty-recipes-lite' ),
+		calories: __( 'kcal', 'tasty-recipes-lite' ),
+	};
+
+	const getFieldPlaceholder = ( name, field ) =>
+		field.placeholder || fieldPlaceholders[ name ] || '';
+
+	const renderToggle = () => {
+		if ( ! heading ) {
+			return null;
+		}
+
+		return (
+			<button
+				type="button"
+				className="tasty-recipes-field-group__head"
+				aria-expanded={ ! isCollapsed }
+				onClick={ () => setCollapsed( ! isCollapsed ) }
+			>
+				<span className="tasty-recipes-field-group__title">
+					{ heading }
+				</span>
+				<span
+					className="tasty-recipes-field-group__chev"
+					aria-hidden="true"
+				>
+					{ ChevronIcon }
+				</span>
+			</button>
+		);
+	};
+
+	const collapsibleBodyRef = useRef( null );
+
+	useEffect( () => {
+		const body = collapsibleBodyRef.current;
+		if ( ! body ) {
+			return;
+		}
+
+		if ( isCollapsed ) {
+			body.setAttribute( 'inert', '' );
+		} else {
+			body.removeAttribute( 'inert' );
+		}
+	}, [ isCollapsed ] );
+
+	const renderCollapsibleBody = content => (
+		<div
+			ref={ collapsibleBodyRef }
+			className="tasty-recipes-field-group__body"
+			aria-hidden={ isCollapsed }
+		>
+			<div className="tasty-recipes-field-group__body-inner">
+				{ content }
+			</div>
+		</div>
+	);
 
 	if (
 		group === 'nutrition' &&
@@ -81,10 +171,20 @@ export const FieldGroup = ( {
 		return (
 			<>
 				{ beforeSettingHook }
-				<div className={ className }>
-					{ heading && <h3>{ heading }</h3> }
-					{ renderBeforeFields &&
-						renderBeforeFields( { fieldValues } ) }
+				<div
+					className={ classNames(
+						className,
+						'tasty-recipes-field-group',
+						{
+							'is-collapsed': isCollapsed,
+						}
+					) }
+				>
+					{ renderToggle() }
+					{ renderCollapsibleBody(
+						renderBeforeFields &&
+							renderBeforeFields( { fieldValues } )
+					) }
 				</div>
 				{ afterSettingHook }
 			</>
@@ -92,13 +192,16 @@ export const FieldGroup = ( {
 	}
 
 	const renderFieldInput = ( name, field ) => {
+		const placeholder = getFieldPlaceholder( name, field );
+
 		if ( field.taxonomy ) {
 			return (
 				<TaxonomySelect
 					name={ name }
 					taxonomy={ field.taxonomy }
+					placeholder={ placeholder }
 					value={ fieldValues[ field.object_key || name ] || '' }
-					onChange={ ( newValue ) =>
+					onChange={ newValue =>
 						handleFieldChange( field.object_key || name, newValue )
 					}
 				/>
@@ -112,7 +215,8 @@ export const FieldGroup = ( {
 					name={ name }
 					value={ fieldValues[ field.object_key || name ] || '' }
 					className="inline-field"
-					onChange={ ( e ) =>
+					placeholder={ placeholder }
+					onChange={ e =>
 						handleFieldChange(
 							field.object_key || name,
 							e.target.value
@@ -134,11 +238,11 @@ export const FieldGroup = ( {
 			<input
 				id={ `tasty-recipes-recipe-${ name }` }
 				type="text"
-				placeholder={ field.placeholder }
+				placeholder={ placeholder }
 				name={ name }
 				className="inline-field"
 				value={ fieldValues[ field.object_key || name ] || '' }
-				onChange={ ( e ) =>
+				onChange={ e =>
 					handleFieldChange(
 						field.object_key || name,
 						e.target.value
@@ -167,7 +271,7 @@ export const FieldGroup = ( {
 							<button
 								className="tasty-recipes-add-additional-time"
 								type="button"
-								onClick={ ( e ) => {
+								onClick={ e => {
 									e.preventDefault();
 									setIsAdditionalTimeOpen(
 										! isAdditionalTimeOpen
@@ -211,7 +315,7 @@ export const FieldGroup = ( {
 								'tasty-recipes-lite'
 							) }
 							value={ fieldValues.additional_time_label || '' }
-							onChange={ ( e ) =>
+							onChange={ e =>
 								handleFieldChange(
 									'additional_time_label',
 									e.target.value
@@ -227,7 +331,7 @@ export const FieldGroup = ( {
 								'tasty-recipes-lite'
 							) }
 							value={ fieldValues.additional_time_value || '' }
-							onChange={ ( e ) =>
+							onChange={ e =>
 								handleFieldChange(
 									'additional_time_value',
 									e.target.value
@@ -239,18 +343,56 @@ export const FieldGroup = ( {
 		</>
 	);
 
+	const fieldsContent = (
+		<>
+			{ renderBeforeFields && renderBeforeFields( { fieldValues } ) }
+			<div className="tasty-recipes-fields-container">
+				{ Object.entries( fields ).map( ( [ name, field ] ) => {
+					if ( ! showField( field ) ) {
+						return null;
+					}
+
+					const afterField = renderAfterField?.[ name ];
+
+					return (
+						<Fragment key={ name }>
+							{ renderField( name, field ) }
+							{ afterField ? (
+								<div className="tasty-recipes-fields-insert">
+									{ afterField( { fieldValues } ) }
+								</div>
+							) : null }
+						</Fragment>
+					);
+				} ) }
+			</div>
+		</>
+	);
+
+	if ( ! heading ) {
+		return (
+			<>
+				{ beforeSettingHook }
+				<div className={ className }>{ fieldsContent }</div>
+				{ afterSettingHook }
+			</>
+		);
+	}
+
 	return (
 		<>
 			{ beforeSettingHook }
-			<div className={ className }>
-				{ heading && <h3>{ heading }</h3> }
-				{ renderBeforeFields && renderBeforeFields( { fieldValues } ) }
-				<div className="tasty-recipes-fields-container">
-					{ Object.entries( fields ).map(
-						( [ name, field ] ) =>
-							showField( field ) && renderField( name, field )
-					) }
-				</div>
+			<div
+				className={ classNames(
+					className,
+					'tasty-recipes-field-group',
+					{
+						'is-collapsed': isCollapsed,
+					}
+				) }
+			>
+				{ renderToggle() }
+				{ renderCollapsibleBody( fieldsContent ) }
 			</div>
 			{ afterSettingHook }
 		</>
