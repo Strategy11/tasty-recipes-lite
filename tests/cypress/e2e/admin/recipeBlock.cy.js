@@ -17,7 +17,7 @@ const openEmbedSelect = () => {
 		.click();
 
 	cy.getBlockEditor()
-		.find( '.tasty-recipes-select__control', { timeout: 10000 } )
+		.find( '.tasty-recipes-block-placeholder-select', { timeout: 10000 } )
 		.should( 'be.visible' );
 };
 
@@ -25,11 +25,14 @@ const embedFirstRecipe = () => {
 	openEmbedSelect();
 
 	cy.getBlockEditor()
-		.find( '.tasty-recipes-select__control' )
-		.click();
+		.find( '.tasty-recipes-block-placeholder-select input' )
+		.click()
+		.type( 'Block Test Recipe' );
 
-	cy.getBlockEditor()
-		.find( '.tasty-recipes-select__option', { timeout: 5000 } )
+	cy.get(
+		'.components-form-token-field__suggestion, [role="option"]',
+		{ timeout: 5000 }
+	)
 		.first()
 		.click();
 
