@@ -40,23 +40,7 @@
 		&-select {
 			position: relative;
 			width: 70%;
-
-			input[type='text']:focus {
-				box-shadow: none;
-			}
-
-			> span,
-			> .tasty-recipes-select__live-region {
-				position: absolute !important;
-				width: 1px !important;
-				height: 1px !important;
-				padding: 0 !important;
-				margin: -1px !important;
-				overflow: hidden !important;
-				clip: rect(1px, 1px, 1px, 1px) !important;
-				white-space: nowrap !important;
-				border: 0 !important;
-			}
+			max-width: 420px;
 		}
 
 		&-embed {
@@ -70,96 +54,4 @@
 			}
 		}
 	}
-}
-
-.tasty-recipes-select__control {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	border: 1px solid #ccc;
-	border-radius: 4px;
-	min-height: 40px;
-	box-shadow: none;
-	background: #fff;
-	font-size: 16px;
-	width: 100%;
-	cursor: pointer;
-}
-
-.tasty-recipes-select__control--is-focused {
-	border-color: #888;
-}
-
-.tasty-recipes-select__value-container {
-	display: flex;
-	align-items: center;
-	flex: 1;
-	padding: 2px 12px;
-	overflow: hidden;
-}
-
-.tasty-recipes-select__placeholder {
-	color: #666;
-	font-size: 15px;
-	margin: 0;
-}
-
-.tasty-recipes-select__input-container {
-	margin: 0;
-	padding: 0;
-}
-
-.tasty-recipes-select__input input {
-	box-shadow: none;
-}
-
-.tasty-recipes-select__indicators {
-	display: flex;
-	align-items: center;
-}
-
-.tasty-recipes-select__indicator-separator {
-	display: none;
-}
-
-.tasty-recipes-select__dropdown-indicator {
-	display: flex;
-	color: #333;
-	padding: 8px 10px 8px 0;
-}
-
-.tasty-recipes-select__menu {
-	position: absolute;
-	top: 100%;
-	left: 0;
-	z-index: 100;
-	margin-top: 4px;
-	border-radius: 4px;
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-	font-size: 15px;
-	border: 1px solid #ccc;
-	background: #fff;
-	width: 100%;
-}
-
-.tasty-recipes-select__menu-list {
-	padding: 0;
-	max-height: 240px;
-	overflow-y: auto;
-}
-
-.tasty-recipes-select__option {
-	padding: 8px 12px;
-	cursor: pointer;
-	background-color: #fff;
-	color: #222;
-}
-
-.tasty-recipes-select__option--is-focused {
-	background-color: #fff;
-	box-shadow: inset 0 0 0 1px #2271b1;
-}
-
-.tasty-recipes-select__option--is-selected {
-	background-color: #f0f0f0;
 }

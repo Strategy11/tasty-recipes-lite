@@ -179,11 +179,31 @@
 
 					#search-submit {
 						position: absolute;
-						left: 5px;
-						top: 13px;
+						left: 8px;
+						top: 50%;
+						transform: translateY(-50%);
+						display: inline-flex;
+						align-items: center;
+						justify-content: center;
+						width: 20px;
+						height: 20px;
+						min-width: 0;
+						min-height: 0;
+						padding: 0;
+						margin: 0;
 						background: transparent;
 						border: 0;
+						box-shadow: none;
 						font-size: 16px;
+						line-height: 1;
+						cursor: pointer;
+
+						&::before {
+							width: 16px;
+							height: 16px;
+							font-size: 16px;
+							line-height: 1;
+						}
 					}
 				}
 			}

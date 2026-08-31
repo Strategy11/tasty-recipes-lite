@@ -3,6 +3,7 @@ import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 import classNames from 'classnames';
 import { TaxonomySelect } from './taxonomy-select';
+import { UrlField } from './UrlField';
 import { ChevronIcon } from './icons';
 
 export const FieldGroup = ( {
@@ -203,6 +204,23 @@ export const FieldGroup = ( {
 					value={ fieldValues[ field.object_key || name ] || '' }
 					onChange={ newValue =>
 						handleFieldChange( field.object_key || name, newValue )
+					}
+				/>
+			);
+		}
+
+		if ( 'url' === field.type || name.endsWith( '_url' ) ) {
+			return (
+				<UrlField
+					id={ `tasty-recipes-recipe-${ name }` }
+					name={ name }
+					placeholder={ placeholder }
+					value={ fieldValues[ field.object_key || name ] || '' }
+					onChange={ newValue =>
+						handleFieldChange(
+							field.object_key || name,
+							newValue
+						)
 					}
 				/>
 			);

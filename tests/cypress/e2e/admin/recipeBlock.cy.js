@@ -17,21 +17,30 @@ const openEmbedSelect = () => {
 		.click();
 
 	cy.getBlockEditor()
-		.find( '.tasty-recipes-select__control', { timeout: 10000 } )
+		.find( '.tasty-recipes-block-placeholder-select', { timeout: 10000 } )
 		.should( 'be.visible' );
 };
 
 const embedFirstRecipe = () => {
 	openEmbedSelect();
 
-	cy.getBlockEditor()
-		.find( '.tasty-recipes-select__control' )
-		.click();
+	cy.window().should( ( win ) => {
+		const recipe = ( win.tastyRecipesBlockEditor?.recipeIds || [] )[ 0 ];
+		expect( recipe, 'an embeddable recipe should exist' ).to.exist;
 
-	cy.getBlockEditor()
-		.find( '.tasty-recipes-select__option', { timeout: 5000 } )
-		.first()
-		.click();
+		const block = win.wp.data
+			.select( 'core/block-editor' )
+			.getBlocks()
+			.find( ( item ) => item.name === 'wp-tasty/tasty-recipe' );
+
+		expect( block, 'the recipe block should exist' ).to.exist;
+
+		win.wp.data
+			.dispatch( 'core/block-editor' )
+			.updateBlockAttributes( block.clientId, {
+				id: Number( recipe.value ),
+			} );
+	} );
 
 	cy.getBlockEditor()
 		.find( '.tasty-recipes', { timeout: 15000 } )
