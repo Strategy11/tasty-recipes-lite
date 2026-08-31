@@ -365,6 +365,7 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 					className="tasty-recipes-video-url"
 					fields={ {
 						video_url: {
+							type: 'url',
 							label: __( 'Video URL', 'tasty-recipes-lite' ),
 							placeholder: __(
 								'youtube.com/watch?v=…',

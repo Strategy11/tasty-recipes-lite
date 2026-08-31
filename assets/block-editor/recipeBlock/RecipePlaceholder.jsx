@@ -1,11 +1,21 @@
 import { BlockControls, useBlockProps } from '@wordpress/block-editor';
-import { ToolbarGroup, ToolbarButton, Button } from '@wordpress/components';
+import {
+	ToolbarGroup,
+	ToolbarButton,
+	Button,
+	ComboboxControl,
+} from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { Icon } from '@wordpress/icons';
 import { useState } from '@wordpress/element';
 import { select } from '@wordpress/data';
 import { RecipeIcon } from '../icons';
-import Select from 'react-select';
+
+const getRecipeOptions = () =>
+	( window.tastyRecipesBlockEditor?.recipeIds || [] ).map( item => ( {
+		label: item.label,
+		value: String( item.value ),
+	} ) );
 
 export const RecipePlaceholder = ( { handleModalClose, setAttributes } ) => {
 	const [ pageState, setPageState ] = useState( 'placeholder' );
@@ -76,24 +86,21 @@ export const RecipePlaceholder = ( { handleModalClose, setAttributes } ) => {
 					) }
 					{ pageState === 'embed' && (
 						<div className="tasty-recipes-block-placeholder-embed">
-							<label className="tasty-recipes-block-placeholder-embed-label">
-								{ __( 'Embed recipe', 'tasty-recipes-lite' ) }
-							</label>
-							<Select
-								unstyled
+							<ComboboxControl
 								className="tasty-recipes-block-placeholder-select"
-								classNamePrefix="tasty-recipes-select"
+								label={ __(
+									'Embed recipe',
+									'tasty-recipes-lite'
+								) }
 								placeholder={ __(
 									'Select existing recipe',
 									'tasty-recipes-lite'
 								) }
-								options={
-									window.tastyRecipesBlockEditor.recipeIds
-								}
-								onChange={ ( selectedOption ) => {
-									if ( selectedOption ) {
+								options={ getRecipeOptions() }
+								onChange={ recipeId => {
+									if ( recipeId ) {
 										setAttributes( {
-											id: Number( selectedOption.value ),
+											id: Number( recipeId ),
 										} );
 									}
 								} }

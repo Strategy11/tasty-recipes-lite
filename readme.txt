@@ -3,7 +3,7 @@ Contributors: strategy11team, sswells, srwells, danielbachhuber
 Tags: recipe, recipe card, recipe maker, food blogging, schema
 Requires at least: 6.3
 Tested up to: 7.0
-Requires PHP: 7.2
+Requires PHP: 7.4
 Stable tag: 1.2.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html

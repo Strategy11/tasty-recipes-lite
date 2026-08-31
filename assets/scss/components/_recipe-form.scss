@@ -573,6 +573,91 @@
 		}
 	}
 
+	.tasty-recipes-url-field {
+		display: flex;
+		align-items: stretch;
+		box-sizing: border-box;
+		width: 100%;
+		min-height: 40px;
+		overflow: hidden;
+		border: 1px solid #CACFD8;
+		border-radius: 10px;
+		background: #fff;
+		box-shadow: 0 1px 2px 0 rgba(10, 13, 20, 0.03);
+		transition: 0.05s border-color ease-in-out, 0.05s box-shadow ease-in-out;
+
+		&:hover {
+			border-color: #99A0AE;
+		}
+
+		&:focus-within {
+			border-color: #ED4996;
+			box-shadow: 0 0 0 1px #ED4996;
+		}
+
+		&.is-raw,
+		&.is-raw:hover,
+		&.is-raw:focus-within {
+			border: 0;
+			border-radius: 0;
+			box-shadow: none;
+			background: transparent;
+			overflow: visible;
+		}
+
+		&__prefix {
+			display: flex;
+			align-items: center;
+			flex: 0 0 auto;
+			margin: 0;
+			padding: 0 12px;
+			border-right: 1px solid #E1E4EA;
+			background: #F5F7FA;
+			color: #717784;
+			font-family: 'Inter', sans-serif;
+			font-size: 14px;
+			font-weight: 400;
+			line-height: 20px;
+			white-space: nowrap;
+			user-select: none;
+			cursor: text;
+		}
+
+		input[type='text'] {
+			flex: 1 1 auto;
+			min-width: 0;
+			width: auto !important;
+			min-height: 40px !important;
+			margin: 0 !important;
+			padding: 8px 12px !important;
+			border: 0 !important;
+			border-color: transparent !important;
+			border-radius: 0 !important;
+			box-shadow: none !important;
+			background: #fff !important;
+			color: #181B25;
+			font-family: 'Inter', sans-serif !important;
+			font-size: 14px !important;
+			line-height: 20px;
+			outline: none !important;
+
+			&::placeholder {
+				color: #99A0AE;
+				opacity: 1;
+			}
+
+			&:hover,
+			&:focus,
+			&:focus-visible {
+				border: 0 !important;
+				border-color: transparent !important;
+				box-shadow: none !important;
+				outline: none !important;
+				background: #fff !important;
+			}
+		}
+	}
+
 	.tasty-recipes-video-url fieldset {
 		display: block;
 		margin: 0;
@@ -812,6 +897,11 @@
 				background: #fff;
 			}
 
+			&.tasty-recipes-item-row--group .tasty-recipes-row-input {
+				border-color: transparent;
+				background: #F5F7FA;
+			}
+
 			.tasty-recipes-drag-grip {
 				opacity: 1;
 				cursor: grabbing;
@@ -833,20 +923,16 @@
 
 			.tasty-recipes-row-input {
 				font-weight: 700;
-				background: transparent;
+				background: #F5F7FA;
 				border: none;
 				box-shadow: none;
-				padding-left: 4px;
+				border-radius: 10px;
 
-				&:hover {
-					border-color: transparent;
-				}
-
+				&:hover,
 				&:focus {
 					background: #F5F7FA;
-					border-color: transparent;
+					border: none;
 					box-shadow: none;
-					padding-left: 12px;
 				}
 			}
 
@@ -997,25 +1083,18 @@
 		min-height: 40px;
 		margin: 0;
 		padding: 10px 12px;
-		@include editor-shared.editor-field;
 		color: #181B25;
 		outline: none;
 		white-space: pre-wrap;
 		word-break: break-word;
+		font-family: 'Inter', sans-serif;
+		font-size: 14px;
+		line-height: 20px;
 		transition: border-color 0.14s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.14s cubic-bezier(0.2, 0.8, 0.2, 1);
 
 		&::placeholder {
 			color: #99A0AE;
 			opacity: 1;
-		}
-
-		&:hover {
-			border-color: #99A0AE !important;
-		}
-
-		&:focus {
-			border-color: #ED4996 !important;
-			box-shadow: 0 0 0 3px #FFEDF5 !important;
 		}
 
 		&[contenteditable='true'].is-empty::before {
@@ -1041,6 +1120,19 @@
 		a {
 			color: #ED4996;
 			text-decoration: underline;
+		}
+	}
+
+	.tasty-recipes-item-row:not( .tasty-recipes-item-row--group ):not( .tasty-recipes-item-row--with-image ) .tasty-recipes-row-input {
+		@include editor-shared.editor-field;
+
+		&:hover {
+			border-color: #99A0AE !important;
+		}
+
+		&:focus {
+			border-color: #ED4996 !important;
+			box-shadow: 0 0 0 3px #FFEDF5 !important;
 		}
 	}
 
