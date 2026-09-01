@@ -834,7 +834,7 @@ class Editor {
 	 * Handles an AJAX request to dismiss the improved keys notice.
 	 *
 	 * @since 1.2
-	 * @deprecated x.x The improved keys notice has been removed.
+	 * @deprecated 1.2.9 The improved keys notice has been removed.
 	 *
 	 * @return void
 	 */
@@ -854,7 +854,7 @@ class Editor {
 	/**
 	 * Handles an AJAX request to permanently dismiss the description format tip.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @return void
 	 */
@@ -1193,7 +1193,7 @@ class Editor {
 	/**
 	 * Format a taxonomy term for the editor select.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @param \WP_Term $term     Term object.
 	 * @param string   $taxonomy Taxonomy name.

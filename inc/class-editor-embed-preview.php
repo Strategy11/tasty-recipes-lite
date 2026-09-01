@@ -10,7 +10,7 @@ namespace Tasty_Recipes;
 /**
  * Hosts YouTube/Vimeo iframes on a real site URL in the block editor.
  *
- * @since x.x
+ * @since 1.2.9
  */
 class Editor_Embed_Preview {
 
@@ -24,7 +24,7 @@ class Editor_Embed_Preview {
 	/**
 	 * Register hooks.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @return void
 	 */
@@ -36,7 +36,7 @@ class Editor_Embed_Preview {
 	/**
 	 * Drop X-Frame-Options so the blob editor canvas can frame the preview.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @return void
 	 */
@@ -51,7 +51,7 @@ class Editor_Embed_Preview {
 	/**
 	 * Render a same-origin page that hosts the provider iframe.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @return void
 	 */
@@ -98,7 +98,7 @@ class Editor_Embed_Preview {
 	/**
 	 * Wrap a cached oEmbed iframe in a same-origin editor preview iframe.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @param object $embed_data Cached oEmbed response.
 	 *
@@ -136,7 +136,7 @@ class Editor_Embed_Preview {
 	/**
 	 * Whether a provider embed URL may be loaded in the editor preview page.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @param string $src Embed iframe src.
 	 *
