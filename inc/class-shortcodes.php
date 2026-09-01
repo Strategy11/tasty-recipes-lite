@@ -1162,7 +1162,7 @@ class Shortcodes {
 	/**
 	 * Whether the recipe card is rendering in an editor preview context.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @return bool
 	 */
@@ -1173,7 +1173,7 @@ class Shortcodes {
 	/**
 	 * Get a static thumbnail for video embeds in the editor preview.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @param false|object $embed_data Cached oEmbed response.
 	 *

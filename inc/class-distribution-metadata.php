@@ -442,7 +442,7 @@ class Distribution_Metadata {
 	/**
 	 * Convert stored diet term names into schema.org RestrictedDiet values.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @param string $value Comma-separated diet term names.
 	 *
@@ -479,7 +479,7 @@ class Distribution_Metadata {
 	/**
 	 * Normalize a diet term for RestrictedDiet lookup.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @param string $term Diet term name.
 	 *
@@ -499,7 +499,7 @@ class Distribution_Metadata {
 	/**
 	 * Get the map of normalized diet labels to RestrictedDiet members.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @return array<string, string>
 	 */
@@ -523,7 +523,7 @@ class Distribution_Metadata {
 		/**
 		 * Filters the map of normalized diet labels to schema.org RestrictedDiet members.
 		 *
-		 * @since x.x
+		 * @since 1.2.9
 		 *
 		 * @param array $map Normalized diet label => RestrictedDiet member.
 		 */

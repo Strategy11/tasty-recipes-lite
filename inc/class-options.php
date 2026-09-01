@@ -218,7 +218,7 @@ final class Options {
 	 * Improved keys notice dismissal option.
 	 *
 	 * @since 1.2.7
-	 * @deprecated x.x The improved keys notice has been removed.
+	 * @deprecated 1.2.9 The improved keys notice has been removed.
 	 *
 	 * @var string
 	 */
@@ -254,7 +254,7 @@ final class Options {
 	/**
 	 * Stable telemetry site identifier option.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @var string
 	 */

@@ -201,7 +201,7 @@ class Tasty_Recipes {
 	/**
 	 * Option name for the improved keys notice dismissal.
 	 *
-	 * @deprecated x.x The improved keys notice has been removed.
+	 * @deprecated 1.2.9 The improved keys notice has been removed.
 	 *
 	 * @var string
 	 */

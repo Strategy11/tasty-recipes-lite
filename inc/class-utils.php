@@ -626,7 +626,7 @@ class Utils {
 	 *
 	 * Does not change how terms are sanitized on save.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @param string $name Term name.
 	 *

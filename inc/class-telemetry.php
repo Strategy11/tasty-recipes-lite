@@ -10,14 +10,14 @@ namespace Tasty_Recipes;
 /**
  * Collects usage snapshots and loads PostHog on recipe-related admin screens.
  *
- * @since x.x
+ * @since 1.2.9
  */
 class Telemetry {
 
 	/**
 	 * Cron hook name for the daily usage snapshot.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @var string
 	 */
@@ -26,7 +26,7 @@ class Telemetry {
 	/**
 	 * Max parent posts to inspect for editor engagement.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @var int
 	 */
@@ -37,7 +37,7 @@ class Telemetry {
 	 *
 	 * Public project key from the PostHog snippet, not a secret.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @var string
 	 */
@@ -47,7 +47,7 @@ class Telemetry {
 	/**
 	 * PostHog API host.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @var string
 	 */
@@ -56,7 +56,7 @@ class Telemetry {
 	/**
 	 * PostHog defaults snapshot date.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @var string
 	 */
@@ -65,7 +65,7 @@ class Telemetry {
 	/**
 	 * Script handle for the PostHog loader.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @var string
 	 */
@@ -74,7 +74,7 @@ class Telemetry {
 	/**
 	 * Script handle for the PostHog init helper.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @var string
 	 */
@@ -83,7 +83,7 @@ class Telemetry {
 	/**
 	 * Script handle for the block editor PostHog watcher.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @var string
 	 */
@@ -92,7 +92,7 @@ class Telemetry {
 	/**
 	 * Register telemetry hooks.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @return void
 	 */
@@ -107,7 +107,7 @@ class Telemetry {
 	/**
 	 * Whether usage tracking consent is effectively granted.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @return bool
 	 */
@@ -127,7 +127,7 @@ class Telemetry {
 		 *
 		 * Lite defaults to opt-in (false). Extensions may return true.
 		 *
-		 * @since x.x
+		 * @since 1.2.9
 		 *
 		 * @param bool $default Default consent when unset.
 		 */
@@ -137,7 +137,7 @@ class Telemetry {
 	/**
 	 * Whether a usage snapshot may be sent for this site/request.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @return bool
 	 */
@@ -148,7 +148,7 @@ class Telemetry {
 	/**
 	 * Whether the PostHog snippet may load in wp-admin.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @return bool
 	 */
@@ -158,7 +158,7 @@ class Telemetry {
 		/**
 		 * Filters whether PostHog may load on recipe-related admin screens.
 		 *
-		 * @since x.x
+		 * @since 1.2.9
 		 *
 		 * @param bool $should_load Whether PostHog should load.
 		 */
@@ -168,7 +168,7 @@ class Telemetry {
 	/**
 	 * Enqueue PostHog on recipe admin screens, or in the block editor when a Tasty block is present.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @return void
 	 */
@@ -195,7 +195,7 @@ class Telemetry {
 	/**
 	 * Enqueue PostHog immediately, including the init call.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @return void
 	 */
@@ -206,7 +206,7 @@ class Telemetry {
 	/**
 	 * Enqueue PostHog for the block editor, initializing only when a Tasty block is present.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @return void
 	 */
@@ -230,7 +230,7 @@ class Telemetry {
 	/**
 	 * Register the PostHog loader and init helper without capturing yet.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @param bool $auto_init Whether to initialize PostHog immediately on load.
 	 *
@@ -277,7 +277,7 @@ class Telemetry {
 	/**
 	 * Whether the post currently being edited already contains a Tasty Recipes block.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @return bool
 	 */
@@ -300,7 +300,7 @@ class Telemetry {
 	 *
 	 * Blocks Cypress sessions and local/development sites.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @return bool
 	 */
@@ -311,7 +311,7 @@ class Telemetry {
 	/**
 	 * Whether the current request appears to come from Cypress.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @return bool
 	 */
@@ -329,7 +329,7 @@ class Telemetry {
 	/**
 	 * Whether the site looks like a local or development install.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @return bool
 	 */
@@ -373,7 +373,7 @@ class Telemetry {
 	/**
 	 * Schedule or clear the daily snapshot cron based on consent.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @return void
 	 */
@@ -395,7 +395,7 @@ class Telemetry {
 	/**
 	 * Handle consent option updates.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @param mixed $old_value Previous option value.
 	 * @param mixed $value     New option value.
@@ -413,7 +413,7 @@ class Telemetry {
 	/**
 	 * Handle first-time consent option creation.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @param string $option Option name.
 	 * @param mixed  $value  Option value.
@@ -432,7 +432,7 @@ class Telemetry {
 	/**
 	 * Build and send a usage snapshot.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @return bool True when the request received a 2xx response.
 	 */
@@ -466,7 +466,7 @@ class Telemetry {
 			/**
 			 * Fires after a usage snapshot is sent successfully.
 			 *
-			 * @since x.x
+			 * @since 1.2.9
 			 *
 			 * @param array $payload Payload that was sent.
 			 */
@@ -479,7 +479,7 @@ class Telemetry {
 	/**
 	 * Build the usage snapshot payload.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @return array
 	 */
@@ -507,7 +507,7 @@ class Telemetry {
 		/**
 		 * Filters telemetry properties before send.
 		 *
-		 * @since x.x
+		 * @since 1.2.9
 		 *
 		 * @param array $properties Snapshot properties.
 		 */
@@ -524,7 +524,7 @@ class Telemetry {
 	/**
 	 * PostHog capture URL for server-side events.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @return string
 	 */
@@ -535,7 +535,7 @@ class Telemetry {
 	/**
 	 * Get or create the stable site UUID used as distinct_id.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @return string
 	 */
@@ -555,7 +555,7 @@ class Telemetry {
 	/**
 	 * Collect Lite-owned feature toggle state.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @return array
 	 */
@@ -573,7 +573,7 @@ class Telemetry {
 		/**
 		 * Filters the feature toggle snapshot.
 		 *
-		 * @since x.x
+		 * @since 1.2.9
 		 *
 		 * @param array $features Feature toggles currently in use.
 		 */
@@ -583,7 +583,7 @@ class Telemetry {
 	/**
 	 * Count published tasty_recipe posts.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @return int
 	 */
@@ -600,7 +600,7 @@ class Telemetry {
 	/**
 	 * Infer editor engagement from parent posts that embed recipes.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @return array
 	 */
@@ -668,7 +668,7 @@ class Telemetry {
 	/**
 	 * Whether a stored option value represents an enabled toggle.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @param string $option_name    Option name.
 	 * @param mixed  $default_value  Default when unset.
@@ -698,7 +698,7 @@ class Telemetry {
 	/**
 	 * Current WordPress version string.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @return string
 	 */
@@ -711,7 +711,7 @@ class Telemetry {
 	/**
 	 * Active theme stylesheet slug.
 	 *
-	 * @since x.x
+	 * @since 1.2.9
 	 *
 	 * @return string
 	 */
