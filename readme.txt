@@ -217,15 +217,10 @@ With Tasty Recipes, there aren't any confusing settings to configure or customiz
 
 == Changelog ==
 = 1.2.9 (September 1, 2026) =
-* New: PostHog admin usage tracking when consent is granted
-* New: Image support for instruction steps
-* Enhancement: Minimum WordPress version raised to 6.3; minimum PHP raised to 7.4
+* New: New Ingredients and Instructions fieldw UI
 * Enhancement: Recipe editor improvements including modal behavior refinements, URL field styling, keyboard shortcuts, and checkbox styling
 * Enhancement: Diet taxonomy now maps to Google's RestrictedDiet schema
-* Fix: Search icon
 * Fix: YouTube Error 153 in recipe card editor preview
-* Fix: TinyMCE inline styles conflicting with admin interface
-* Fix: Image drop zone, media library focus, equipment select, and typography in recipe editor
 * Fix: WPRM plugin compatibility
 * Fix: Toolbar conflicts
 
