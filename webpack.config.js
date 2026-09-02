@@ -13,6 +13,7 @@ const cssOnlyEntries = [
 	'common',
 	'edit-page',
 	'index-page',
+	'admin-notice',
 ];
 
 module.exports = {
@@ -75,6 +76,10 @@ module.exports = {
 			'assets/recipe-editor/index.js'
 		),
 		'usage-modal': resolve( __dirname, 'assets/js/usage-modal/index.js' ),
+		'admin-notice': resolve(
+			__dirname,
+			'assets/scss/admin-notice/index.scss'
+		),
 		'database-migration': resolve(
 			__dirname,
 			'assets/js/database-migration/index.js'
