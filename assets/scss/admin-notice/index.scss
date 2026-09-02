@@ -1,42 +1,42 @@
-$migration-notice-accent: #ed4996;
-$migration-notice-success: #00a32a;
-$migration-notice-text: #1d2327;
+$admin-notice-accent: #ed4996;
+$admin-notice-success: #00a32a;
+$admin-notice-text: #1d2327;
 
-.tasty-recipes-db-migration-notice {
+.tasty-recipes-admin-notice {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	padding: 10px 15px;
 	background: #fff;
-	border-left: 4px solid $migration-notice-accent;
+	border-left: 4px solid $admin-notice-accent;
 	box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
 
 	p {
 		margin: 0;
 		font-size: 14px;
-		color: $migration-notice-text;
+		color: $admin-notice-text;
 	}
 
 	&.is-success {
-		border-left-color: $migration-notice-success;
+		border-left-color: $admin-notice-success;
 
-		.tasty-recipes-migration-button {
+		.tasty-recipes-admin-notice-button {
 			display: none;
 		}
 	}
 }
 
-.tasty-recipes-migration-button {
+.tasty-recipes-admin-notice-button {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 	gap: 8px;
 	min-width: 200px;
 	padding: 10px 14px;
-	border: 1px solid $migration-notice-accent;
+	border: 1px solid $admin-notice-accent;
 	border-radius: 8px;
 	background: transparent;
-	color: $migration-notice-accent;
+	color: $admin-notice-accent;
 	font-size: 14px;
 	font-weight: 500;
 	text-decoration: none;
@@ -44,7 +44,7 @@ $migration-notice-text: #1d2327;
 	transition: all 0.1s ease-in-out;
 
 	&:hover {
-		background: $migration-notice-accent;
+		background: $admin-notice-accent;
 		color: #fff;
 	}
 
@@ -54,7 +54,7 @@ $migration-notice-text: #1d2327;
 
 		&:hover {
 			background: transparent;
-			color: $migration-notice-accent;
+			color: $admin-notice-accent;
 		}
 
 		.tasty-recipes-spinner {
