@@ -478,7 +478,12 @@ export const parseRowsFromHtml = html => {
 		const splitBlockIntoRows = node => {
 			const holder = node.ownerDocument.createElement( 'div' );
 			const flushHolder = () => {
-				if ( rowHasContent( holder.innerHTML ) ) {
+				// Image-only paragraphs have no text. Still parse them so
+				// legacy process photos between steps survive a round trip.
+				if (
+					rowHasContent( holder.innerHTML ) ||
+					holder.querySelector( 'img, figure, picture' )
+				) {
 					pushItemHtml( holder.innerHTML );
 				}
 				holder.replaceChildren();
