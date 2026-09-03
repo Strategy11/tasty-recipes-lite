@@ -347,6 +347,69 @@ describe( 'Recipe Creation', () => {
 			);
 		};
 
+		it( 'should keep image-only paragraphs outside numbered instruction steps', () => {
+			const recipeTitle = `Cypress Process Photo ${ Date.now() }`;
+			const legacyInstructions =
+				'<p>Whip the cream until soft peaks form.</p>' +
+				'<p><img src="/wp-content/uploads/process-one.jpg" alt="Process one" class="aligncenter size-full wp-image-11" /></p>' +
+				'<p>Sift in the matcha.</p>' +
+				'<p><img src="/wp-content/uploads/process-two.jpg" alt="Process two" class="aligncenter size-full wp-image-12" /></p>' +
+				'<ol>' +
+				'<li>Serve immediately.</li>' +
+				'<li>Store leftovers.' +
+				'<img src="/wp-content/uploads/in-step.jpg" alt="In step" class="wp-image-13" />' +
+				'</li>' +
+				'</ol>';
+
+			cy.createTastyRecipe( {
+				title: recipeTitle,
+				instructions: legacyInstructions,
+			} );
+
+			cy.visit( '/wp-admin/edit.php?post_type=tasty_recipe' );
+			openEditRecipeModal( recipeTitle );
+
+			cy.get( `${ instructions } .tasty-recipes-item-row` ).should(
+				'have.length',
+				6
+			);
+			cy.get( `${ instructions } .tasty-recipes-row-image img` ).should(
+				'have.length',
+				3
+			);
+			cy.get(
+				`${ instructions } .tasty-recipes-row-image img[src*="process-one.jpg"]`
+			).should( 'exist' );
+			cy.get(
+				`${ instructions } .tasty-recipes-row-image img[src*="process-two.jpg"]`
+			).should( 'exist' );
+			cy.get(
+				`${ instructions } .tasty-recipes-row-image img[src*="in-step.jpg"]`
+			).should( 'exist' );
+
+			cy.get( '.tasty-recipes-button-update' ).click();
+			cy.get( '.tasty-recipes-modal', { timeout: 10_000 } ).should(
+				'not.be.visible'
+			);
+
+			getRecipeMeta( recipeTitle, [ 'instructions' ] ).then(
+				( [ savedInstructions ] ) => {
+					expect( savedInstructions ).to.include( 'process-one.jpg' );
+					expect( savedInstructions ).to.include( 'process-two.jpg' );
+					expect( savedInstructions ).to.include( 'in-step.jpg' );
+					expect( savedInstructions ).to.include(
+						'Whip the cream until soft peaks form.'
+					);
+					expect( savedInstructions ).to.include(
+						'Sift in the matcha.'
+					);
+					expect( savedInstructions ).to.include(
+						'Serve immediately.'
+					);
+				}
+			);
+		} );
+
 		it( 'should keep legacy markup when saving an untouched recipe', () => {
 			const recipeTitle = `Cypress Legacy Recipe ${ Date.now() }`;
 			const legacyIngredients =
