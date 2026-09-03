@@ -371,7 +371,7 @@ describe( 'Recipe Creation', () => {
 
 			cy.get( `${ instructions } .tasty-recipes-item-row` ).should(
 				'have.length',
-				5
+				6
 			);
 			cy.get( `${ instructions } .tasty-recipes-row-image img` ).should(
 				'have.length',
