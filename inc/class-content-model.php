@@ -554,10 +554,6 @@ class Content_Model {
 	 * @return object
 	 */
 	private static function normalize_mediavine_oembed_response( $response_data ) {
-		if ( ! is_object( $response_data ) ) {
-			return $response_data;
-		}
-
 		$html = isset( $response_data->html ) && is_string( $response_data->html ) ? trim( $response_data->html ) : '';
 		if ( '' !== $html ) {
 			return $response_data;
