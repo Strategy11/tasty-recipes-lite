@@ -26,4 +26,13 @@ Cypress.on( 'uncaught:exception', ( err ) => {
 	if ( err.message.includes( 'removeClass' ) ) {
 		return false;
 	}
+
+	// TinyMCE fromDom throws when the editor iframe body is gone during
+	// recipe modal open. Unrelated to the row-list assertions under test.
+	if (
+		err.message.includes( 'Node cannot be null or undefined' ) &&
+		String( err.stack || '' ).includes( 'tinymce' )
+	) {
+		return false;
+	}
 } );
