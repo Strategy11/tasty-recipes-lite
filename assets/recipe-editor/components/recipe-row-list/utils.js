@@ -308,6 +308,38 @@ export const sanitizeInlineHtml = html => {
 
 const rowHasContent = html => !! stripHtml( html );
 
+const getImageWrappingLink = img => {
+	const link = img?.closest( 'a' );
+	if ( ! link ) {
+		return null;
+	}
+
+	// Keep the href only when the link is an image wrapper, not mixed copy.
+	if ( normalizeRowText( link.textContent ) ) {
+		return null;
+	}
+
+	const href = link.getAttribute( 'href' ) || '';
+	if ( ! href || ! isSafeUrl( href ) ) {
+		return null;
+	}
+
+	const attrs = {};
+	Array.from( link.attributes ).forEach( attribute => {
+		const name = attribute.name.toLowerCase();
+		const isAllowed =
+			ALLOWED_LINK_ATTRIBUTES.has( name ) ||
+			name.startsWith( 'data-' ) ||
+			name.startsWith( 'aria-' );
+
+		if ( isAllowed && attribute.value ) {
+			attrs[ name ] = attribute.value;
+		}
+	} );
+
+	return attrs.href ? attrs : null;
+};
+
 const parseImageFromElement = img => {
 	if ( ! img ) {
 		return null;
@@ -327,6 +359,7 @@ const parseImageFromElement = img => {
 		figure && 1 === figure.querySelectorAll( 'img' ).length
 			? figure.querySelector( 'figcaption' )
 			: null;
+	const link = getImageWrappingLink( img );
 
 	return {
 		id: idMatch ? Number( idMatch[ 1 ] ) : 0,
@@ -335,6 +368,7 @@ const parseImageFromElement = img => {
 		width: widthAttr ? Number( widthAttr ) : undefined,
 		height: heightAttr ? Number( heightAttr ) : undefined,
 		caption: captionEl ? normalizeRowText( captionEl.textContent ) : '',
+		...( link ? { link } : {} ),
 	};
 };
 
@@ -379,6 +413,20 @@ export const extractItemContent = html => {
 	root.querySelectorAll( 'picture, source' ).forEach( node => node.remove() );
 
 	// Drop leftover empty wrappers and trailing breaks left by image removal.
+	Array.from( root.querySelectorAll( 'a' ) )
+		.reverse()
+		.forEach( link => {
+			if (
+				normalizeRowText( link.textContent ) ||
+				link.querySelector( 'img, figure, picture, br' ) ||
+				! link.getAttribute( 'href' )
+			) {
+				return;
+			}
+
+			link.remove();
+		} );
+
 	Array.from( root.querySelectorAll( 'br' ) )
 		.reverse()
 		.forEach( br => {
@@ -424,13 +472,43 @@ const serializeRowImage = image => {
 
 	const tag = `<img ${ attrs.join( ' ' ) } />`;
 	const caption = normalizeRowText( image.caption || '' );
-	if ( ! caption ) {
-		return tag;
+	const captionHtml = caption
+		? `<figcaption>${ escapeHtml( caption ) }</figcaption>`
+		: '';
+	const innerHtml = caption
+		? `<figure>${ tag }${ captionHtml }</figure>`
+		: tag;
+
+	return serializeImageLink( image, innerHtml );
+};
+
+const serializeImageLink = ( image, innerHtml ) => {
+	const href = image.link?.href;
+	if ( ! href || ! isSafeUrl( href ) ) {
+		return innerHtml;
 	}
 
-	return `<figure>${ tag }<figcaption>${ escapeHtml(
-		caption
-	) }</figcaption></figure>`;
+	const attrs = [];
+	Object.entries( image.link ).forEach( ( [ name, value ] ) => {
+		if ( ! value ) {
+			return;
+		}
+
+		const isAllowed =
+			ALLOWED_LINK_ATTRIBUTES.has( name ) ||
+			name.startsWith( 'data-' ) ||
+			name.startsWith( 'aria-' );
+
+		if ( isAllowed ) {
+			attrs.push( `${ name }="${ escapeHtml( value ) }"` );
+		}
+	} );
+
+	if ( ! attrs.length ) {
+		return innerHtml;
+	}
+
+	return `<a ${ attrs.join( ' ' ) }>${ innerHtml }</a>`;
 };
 
 const getGroupLevel = level => {
@@ -474,16 +552,17 @@ export const serializeRows = ( rows, mode = 'ingredients' ) => {
 
 		const html = sanitizeInlineHtml( row.value );
 		const imageHtml = serializeRowImage( row.image );
-		if ( ! rowHasContent( html ) && ! imageHtml ) {
+		const hasText = rowHasContent( html );
+		if ( ! hasText && ! imageHtml ) {
 			return;
 		}
 
-		if ( rowHasContent( html ) && imageHtml ) {
+		if ( hasText && imageHtml ) {
 			pendingItems.push( `${ html }<br />${ imageHtml }` );
 			return;
 		}
 
-		pendingItems.push( html || imageHtml );
+		pendingItems.push( hasText ? html : imageHtml );
 	} );
 
 	flushItems();
@@ -597,6 +676,15 @@ export const parseRowsFromHtml = html => {
 
 			// Standalone media outside a list still deserves its own row.
 			if ( 'img' === tag || 'figure' === tag || 'picture' === tag ) {
+				pushItemHtml( node.outerHTML );
+				return;
+			}
+
+			if (
+				'a' === tag &&
+				node.querySelector( 'img, figure, picture' ) &&
+				! rowHasContent( node.innerHTML )
+			) {
 				pushItemHtml( node.outerHTML );
 				return;
 			}

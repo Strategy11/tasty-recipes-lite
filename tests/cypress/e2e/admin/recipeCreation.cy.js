@@ -410,6 +410,64 @@ describe( 'Recipe Creation', () => {
 			);
 		} );
 
+		it( 'should keep linked process photos outside numbered instruction steps', () => {
+			const recipeTitle = `Cypress Linked Process Photo ${ Date.now() }`;
+			const imageUrl = '/wp-content/uploads/process-linked.jpg';
+			const legacyInstructions =
+				'<p>Whip the cream until soft peaks form.</p>' +
+				`<p><a href="${ imageUrl }"><img src="${ imageUrl }" alt="Process photo" /></a></p>` +
+				'<ol><li>Serve immediately.</li></ol>';
+
+			cy.createTastyRecipe( {
+				title: recipeTitle,
+				instructions: legacyInstructions,
+			} );
+
+			cy.visit( '/wp-admin/edit.php?post_type=tasty_recipe' );
+			openEditRecipeModal( recipeTitle );
+
+			cy.get( `${ instructions } .tasty-recipes-item-row` ).should(
+				'have.length',
+				3
+			);
+			cy.get(
+				`${ instructions } .tasty-recipes-row-image img[src*="process-linked.jpg"]`
+			).should( 'exist' );
+
+			cy.get( '#tasty-recipes-recipe-yield' )
+				.scrollIntoView()
+				.clear()
+				.type( '6 servings', { delay: 0 } );
+
+			cy.get( '.tasty-recipes-button-update' ).click();
+			cy.get( '.tasty-recipes-modal', { timeout: 10_000 } ).should(
+				'not.be.visible'
+			);
+
+			getRecipeMeta( recipeTitle, [ 'instructions' ] ).then(
+				( [ savedInstructions ] ) => {
+					expect( savedInstructions ).to.include(
+						'process-linked.jpg'
+					);
+					expect( savedInstructions ).to.match(
+						/<img[^>]+src="[^"]*process-linked\.jpg"/
+					);
+					expect( savedInstructions ).to.match(
+						/<a href="[^"]*process-linked\.jpg"[^>]*>[\s\S]*<img[^>]+src="[^"]*process-linked\.jpg"/
+					);
+					expect( savedInstructions ).to.not.match(
+						/<a href="[^"]*process-linked\.jpg"><\/a>/
+					);
+					expect( savedInstructions ).to.include(
+						'Whip the cream until soft peaks form.'
+					);
+					expect( savedInstructions ).to.include(
+						'Serve immediately.'
+					);
+				}
+			);
+		} );
+
 		it( 'should keep legacy markup when saving an untouched recipe', () => {
 			const recipeTitle = `Cypress Legacy Recipe ${ Date.now() }`;
 			const legacyIngredients =
