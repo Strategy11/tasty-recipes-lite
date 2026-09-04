@@ -86,6 +86,25 @@ const ALLOWED_LINK_ATTRIBUTES = new Set( [
 	'title',
 ] );
 
+const ALLOWED_TASTY_LINK_ATTRIBUTES = new Set( [ 'class', 'id' ] );
+
+const isTastyLinksIgnoreComment = node => {
+	const value = String( node.nodeValue || '' ).trim();
+	return (
+		'tasty-links-ignore' === value || '/tasty-links-ignore' === value
+	);
+};
+
+const isTastyLinkSpan = node => {
+	if ( ! node || 'SPAN' !== node.tagName ) {
+		return false;
+	}
+
+	return String( node.getAttribute( 'class' ) || '' )
+		.split( /\s+/ )
+		.includes( 'tasty-link' );
+};
+
 const DANGEROUS_URL_SCHEME = /^(?:javascript|data|vbscript):/i;
 
 const UNSUPPORTED_ROW_CONTENT_SELECTOR = [
@@ -180,6 +199,20 @@ export const sanitizeInlineHtml = html => {
 		child.replaceWith( fragment );
 	};
 
+	const sanitizeTastyLinkSpan = child => {
+		Array.from( child.attributes ).forEach( attribute => {
+			const name = attribute.name.toLowerCase();
+			const isAllowed =
+				ALLOWED_TASTY_LINK_ATTRIBUTES.has( name ) ||
+				name.startsWith( 'data-' ) ||
+				name.startsWith( 'aria-' );
+
+			if ( ! isAllowed ) {
+				child.removeAttribute( attribute.name );
+			}
+		} );
+	};
+
 	// Links keep their original href (relative, anchor, mailto, tel) so legacy
 	// content survives a round trip; only dangerous schemes are unwrapped.
 	const sanitizeLink = child => {
@@ -208,12 +241,25 @@ export const sanitizeInlineHtml = html => {
 				return;
 			}
 
+			// Tasty Links persists unlinked keywords as ignore comments.
+			if ( Node.COMMENT_NODE === child.nodeType ) {
+				if ( ! isTastyLinksIgnoreComment( child ) ) {
+					child.remove();
+				}
+				return;
+			}
+
 			if ( Node.ELEMENT_NODE !== child.nodeType ) {
 				child.remove();
 				return;
 			}
 
 			sanitize( child );
+
+			if ( isTastyLinkSpan( child ) ) {
+				sanitizeTastyLinkSpan( child );
+				return;
+			}
 
 			const tag = child.tagName.toLowerCase();
 

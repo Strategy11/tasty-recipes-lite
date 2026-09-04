@@ -1117,9 +1117,15 @@
 			text-decoration: underline;
 		}
 
-		a {
+		a,
+		.tasty-link {
 			color: #ED4996;
 			text-decoration: underline;
+		}
+
+		.tasty-link[data-tasty-link-remove="1"] {
+			color: inherit;
+			text-decoration: inherit;
 		}
 	}
 
