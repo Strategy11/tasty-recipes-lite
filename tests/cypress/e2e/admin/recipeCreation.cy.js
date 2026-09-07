@@ -677,5 +677,117 @@ describe( 'Recipe Creation', () => {
 
 			cy.get( '.tasty-recipes-modal-close' ).click( { force: true } );
 		} );
+
+		it( 'should show instruction row actions only on the focused unselected row', () => {
+			const selectNodeContents = el => {
+				const doc = el.ownerDocument;
+				const range = doc.createRange();
+				range.selectNodeContents( el );
+				const selection = doc.defaultView.getSelection();
+				selection.removeAllRanges();
+				selection.addRange( range );
+			};
+
+			openCreateRecipeModal();
+			cy.get( '.tasty-recipes-frame-content input#title' ).type(
+				`Cypress Instruction Toolbar ${ Date.now() }`
+			);
+
+			fillRowList( 'instructions', [
+				'Mix the batter well.',
+				'Bake until golden.',
+			] );
+
+			cy.get( `${ instructions } .tasty-recipes-item-row` )
+				.eq( 0 )
+				.scrollIntoView()
+				.find( '.tasty-recipes-row-actions' )
+				.should( 'not.be.visible' );
+			cy.get( `${ instructions } .tasty-recipes-item-row` )
+				.eq( 1 )
+				.find( '.tasty-recipes-row-actions' )
+				.should( 'be.visible' );
+
+			cy.get( `${ instructions } .tasty-recipes-row-input` )
+				.first()
+				.click();
+
+			cy.get( `${ instructions } .tasty-recipes-item-row` )
+				.eq( 0 )
+				.find( '.tasty-recipes-row-actions' )
+				.should( 'be.visible' );
+			cy.get( `${ instructions } .tasty-recipes-item-row` )
+				.eq( 1 )
+				.find( '.tasty-recipes-row-actions' )
+				.should( 'not.be.visible' );
+
+			cy.get( `${ instructions } .tasty-recipes-row-input` )
+				.first()
+				.then( $el => selectNodeContents( $el[ 0 ] ) );
+
+			cy.get( instructions ).should(
+				'have.class',
+				'tasty-recipes-row-list--has-selection'
+			);
+			cy.get( `${ instructions } .tasty-recipes-item-row` )
+				.eq( 0 )
+				.find( '.tasty-recipes-row-actions' )
+				.should( 'not.be.visible' );
+			cy.get( '.tasty-recipes-selection-toolbar' ).should( 'be.visible' );
+
+			cy.get( `${ instructions } .tasty-recipes-row-input` )
+				.first()
+				.then( $el => {
+					$el[ 0 ].ownerDocument.defaultView
+						.getSelection()
+						.collapseToEnd();
+				} );
+
+			cy.get( instructions ).should(
+				'not.have.class',
+				'tasty-recipes-row-list--has-selection'
+			);
+			cy.get( `${ instructions } .tasty-recipes-item-row` )
+				.eq( 0 )
+				.find( '.tasty-recipes-row-actions' )
+				.should( 'be.visible' );
+			cy.get( '.tasty-recipes-selection-toolbar' ).should( 'not.exist' );
+
+			cy.get( '.tasty-recipes-modal-close' ).click( { force: true } );
+		} );
+
+		it( 'should apply bulk edit lines and section titles', () => {
+			openCreateRecipeModal();
+			cy.get( '.tasty-recipes-frame-content input#title' ).type(
+				`Cypress Bulk Edit ${ Date.now() }`
+			);
+
+			cy.get( ingredients )
+				.closest( 'fieldset' )
+				.contains( 'button', 'Bulk Edit' )
+				.click();
+
+			cy.get( `${ ingredients }` ).should( 'not.exist' );
+			cy.get( '.tasty-recipes-row-list-bulk' )
+				.first()
+				.clear()
+				.type(
+					'## For the dressing{enter}2 anchovy fillets{enter}1 tsp Dijon mustard'
+				);
+
+			cy.contains( 'button', 'Done' ).click();
+
+			cy.get( `${ ingredients } .tasty-recipes-item-row--group` )
+				.first()
+				.should( 'contain', 'For the dressing' );
+			cy.get( ingredients )
+				.siblings( 'input[name="ingredients"]' )
+				.should(
+					'have.value',
+					'<h4>For the dressing</h4><ul><li>2 anchovy fillets</li><li>1 tsp Dijon mustard</li></ul>'
+				);
+
+			cy.get( '.tasty-recipes-modal-close' ).click( { force: true } );
+		} );
 	} );
 } );

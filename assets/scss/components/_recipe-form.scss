@@ -816,7 +816,65 @@
 	.tasty-recipes-rich-textarea-actions {
 		display: flex;
 		align-items: center;
+		justify-content: space-between;
 		gap: 16px;
+		margin-top: 12px;
+	}
+
+	.tasty-recipes-rich-textarea-actions-start {
+		display: flex;
+		align-items: center;
+		gap: 16px;
+	}
+
+	.tasty-recipes-row-list-bulk {
+		@include editor-shared.editor-field;
+		box-sizing: border-box;
+		width: 100%;
+		min-height: 180px;
+		margin: 0;
+		padding: 10px 12px;
+		resize: vertical;
+		font-family: 'Inter', sans-serif;
+		font-size: 14px;
+		line-height: 22px;
+		white-space: pre-wrap;
+
+		&:focus {
+			border-color: #ED4996 !important;
+			box-shadow: 0 0 0 3px #FFEDF5 !important;
+			outline: none;
+		}
+	}
+
+	.tasty-recipes-row-list-bulk-hint {
+		margin: 8px 0 0;
+		color: #717784;
+		font-family: 'Inter', sans-serif;
+		font-size: 13px;
+		font-weight: 400;
+		line-height: 20px;
+
+		kbd {
+			display: inline-flex;
+			align-items: center;
+			margin: 0 2px;
+			padding: 0 5px;
+			border: 0;
+			border-radius: 4px;
+			background: #F2F5F8;
+			color: #525866;
+			font-family: 'Inter', sans-serif;
+			font-size: 12px;
+			font-weight: 600;
+			line-height: 18px;
+		}
+	}
+
+	.tasty-recipes-row-list-bulk-actions {
+		display: flex;
+		align-items: center;
+		gap: 8px;
 		margin-top: 12px;
 	}
 
@@ -1161,11 +1219,23 @@
 		transition: opacity 0.14s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.14s cubic-bezier(0.2, 0.8, 0.2, 1);
 	}
 
-	.tasty-recipes-item-row:hover > .tasty-recipes-row-actions,
-	.tasty-recipes-item-row:focus-within > .tasty-recipes-row-actions {
-		opacity: 1;
-		pointer-events: auto;
-		transform: translateX(0);
+	.tasty-recipes-row-list:not([data-mode='instructions']) {
+		.tasty-recipes-item-row:hover > .tasty-recipes-row-actions,
+		.tasty-recipes-item-row:focus-within > .tasty-recipes-row-actions {
+			opacity: 1;
+			pointer-events: auto;
+			transform: translateX(0);
+		}
+	}
+
+	.tasty-recipes-row-list[data-mode='instructions']:not(
+			.tasty-recipes-row-list--has-selection
+		) {
+		.tasty-recipes-item-row:focus-within > .tasty-recipes-row-actions {
+			opacity: 1;
+			pointer-events: auto;
+			transform: translateX(0);
+		}
 	}
 
 	.tasty-recipes-row-icon {

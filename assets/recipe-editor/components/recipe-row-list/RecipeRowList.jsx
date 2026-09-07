@@ -7,7 +7,7 @@ import {
 } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { getRecipeEditorScrollContainer } from '../dom';
-import { PlusIcon, SectionTitleIcon } from '../icons';
+import { BulkEditIcon, PlusIcon, SectionTitleIcon } from '../icons';
 import { getMediaImage, openImageMediaLibrary } from '../media-library';
 import {
 	DEFAULT_GROUP_LEVEL,
@@ -22,6 +22,7 @@ import { parseClipboardParts } from './paste';
 import { RecipeRow } from './RecipeRow';
 import { SelectionToolbar } from './SelectionToolbar';
 import {
+	applyBulkText,
 	createGroupRow,
 	createItemRow,
 	ensureRowVisible,
@@ -29,6 +30,7 @@ import {
 	moveRow,
 	parseRowsFromHtml,
 	sanitizeInlineHtml,
+	serializeBulkText,
 	serializeRows,
 } from './utils';
 
@@ -47,7 +49,11 @@ const RecipeRowList = ( {
 		parseRowsFromHtml( initialValue )
 	);
 	const [ draggingId, setDraggingId ] = useState( null );
+	const [ hasTextSelection, setHasTextSelection ] = useState( false );
+	const [ isBulkEditing, setIsBulkEditing ] = useState( false );
+	const [ bulkText, setBulkText ] = useState( '' );
 	const listRef = useRef( null );
+	const bulkRef = useRef( null );
 	const rowsRef = useRef( rows );
 	const dragRef = useRef( null );
 	const endDragRef = useRef( null );
@@ -71,6 +77,9 @@ const RecipeRowList = ( {
 		() => serializeRows( rows, mode ),
 		[ rows, mode ]
 	);
+	const formValue = isBulkEditing
+		? serializeRows( applyBulkText( bulkText, rows ), mode )
+		: serializedValue;
 
 	useLayoutEffect( () => {
 		const firstTops = pendingFlipRef.current;
@@ -129,6 +138,12 @@ const RecipeRowList = ( {
 	}, [ rows ] );
 
 	useEffect( () => () => endDragRef.current?.(), [] );
+
+	useLayoutEffect( () => {
+		if ( isBulkEditing ) {
+			bulkRef.current?.focus();
+		}
+	}, [ isBulkEditing ] );
 
 	const cloneRows = source =>
 		source.map( row => ( {
@@ -665,74 +680,181 @@ const RecipeRowList = ( {
 		window.addEventListener( 'keydown', onKeyDown );
 	};
 
+	const handleOpenBulkEdit = () => {
+		setBulkText( serializeBulkText( rows ) );
+		setIsBulkEditing( true );
+	};
+
+	const handleApplyBulkEdit = () => {
+		const nextRows = applyBulkText( bulkText, rows );
+		if ( serializeRows( nextRows, mode ) !== serializedValue ) {
+			pushHistory();
+			commitRows( nextRows );
+		}
+		setIsBulkEditing( false );
+	};
+
+	const handleCancelBulkEdit = () => {
+		setIsBulkEditing( false );
+		setBulkText( '' );
+	};
+
 	const itemCount = rows.filter( entry => 'item' === entry.type ).length;
+	const bulkHint = isInstructions
+		? __( 'One step per line. Start a line with', 'tasty-recipes-lite' )
+		: __(
+			'One ingredient per line. Start a line with',
+			'tasty-recipes-lite'
+		);
 
 	return (
 		<>
 			<fieldset className="tasty-recipes-row-list-field">
 				<label>{ label }</label>
-				<input type="hidden" name={ name } value={ serializedValue } />
-				<div
-					className="tasty-recipes-row-list"
-					ref={ listRef }
-					data-mode={ mode }
-				>
-					{ rows.map( ( row, index ) => (
-						<RecipeRow
-							key={ row.id }
-							row={ row }
-							mode={ mode }
-							placeholder={ placeholder }
-							groupPlaceholder={ groupPlaceholder }
-							canMoveUp={ index > 0 }
-							canMoveDown={ index < rows.length - 1 }
-							canDelete={ 'group' === row.type || itemCount > 1 }
-							isDragging={ draggingId === row.id }
-							onValueChange={ handleValueChange }
-							onMoveUp={ () => handleMoveRow( row.id, -1 ) }
-							onMoveDown={ () => handleMoveRow( row.id, 1 ) }
-							onConvert={ () => handleConvertRow( row.id ) }
-							onSplit={ handleSplitRow }
-							onAddImage={
-								isInstructions ? handleAddImage : null
+				<input type="hidden" name={ name } value={ formValue } />
+				{ isBulkEditing ? (
+					<>
+						<textarea
+							ref={ bulkRef }
+							className="tasty-recipes-row-list-bulk"
+							value={ bulkText }
+							onChange={ event =>
+								setBulkText( event.target.value )
 							}
-							onRemoveImage={ handleRemoveImage }
-							onDelete={ () => handleDeleteRow( row.id ) }
-							onPaste={ handlePaste }
-							onGripPointerDown={ handleGripPointerDown }
 						/>
-					) ) }
-				</div>
-				<div className="tasty-recipes-rich-textarea-actions">
-					<button
-						type="button"
-						className="tasty-recipes-rich-textarea-action tasty-recipes-rich-textarea-action--add"
-						onClick={ handleAddItem }
-					>
-						<span
-							className="tasty-recipes-rich-textarea-action-icon"
-							aria-hidden="true"
+						<p className="tasty-recipes-row-list-bulk-hint">
+							{ bulkHint }{ ' ' }
+							<kbd>##</kbd>{ ' ' }
+							{ __(
+								'to make it a section title.',
+								'tasty-recipes-lite'
+							) }
+						</p>
+						<div className="tasty-recipes-row-list-bulk-actions">
+							<button
+								type="button"
+								className="tasty-button"
+								onClick={ handleApplyBulkEdit }
+							>
+								{ __( 'Done', 'tasty-recipes-lite' ) }
+							</button>
+							<button
+								type="button"
+								className="tasty-secondary-button"
+								onClick={ handleCancelBulkEdit }
+							>
+								{ __( 'Cancel', 'tasty-recipes-lite' ) }
+							</button>
+						</div>
+					</>
+				) : (
+					<>
+						<div
+							className={
+								isInstructions && hasTextSelection
+									? 'tasty-recipes-row-list tasty-recipes-row-list--has-selection'
+									: 'tasty-recipes-row-list'
+							}
+							ref={ listRef }
+							data-mode={ mode }
 						>
-							{ PlusIcon }
-						</span>
-						{ addItemLabel }
-					</button>
-					<button
-						type="button"
-						className="tasty-recipes-rich-textarea-action tasty-recipes-rich-textarea-action--section"
-						onClick={ handleAddSectionTitle }
-					>
-						<span
-							className="tasty-recipes-rich-textarea-action-icon"
-							aria-hidden="true"
-						>
-							{ SectionTitleIcon }
-						</span>
-						{ __( 'Add Section Title', 'tasty-recipes-lite' ) }
-					</button>
-				</div>
+							{ rows.map( ( row, index ) => (
+								<RecipeRow
+									key={ row.id }
+									row={ row }
+									mode={ mode }
+									placeholder={ placeholder }
+									groupPlaceholder={ groupPlaceholder }
+									canMoveUp={ index > 0 }
+									canMoveDown={ index < rows.length - 1 }
+									canDelete={
+										'group' === row.type || itemCount > 1
+									}
+									isDragging={ draggingId === row.id }
+									onValueChange={ handleValueChange }
+									onMoveUp={ () =>
+										handleMoveRow( row.id, -1 )
+									}
+									onMoveDown={ () =>
+										handleMoveRow( row.id, 1 )
+									}
+									onConvert={ () =>
+										handleConvertRow( row.id )
+									}
+									onSplit={ handleSplitRow }
+									onAddImage={
+										isInstructions
+											? handleAddImage
+											: null
+									}
+									onRemoveImage={ handleRemoveImage }
+									onDelete={ () =>
+										handleDeleteRow( row.id )
+									}
+									onPaste={ handlePaste }
+									onGripPointerDown={
+										handleGripPointerDown
+									}
+								/>
+							) ) }
+						</div>
+						<div className="tasty-recipes-rich-textarea-actions">
+							<div className="tasty-recipes-rich-textarea-actions-start">
+								<button
+									type="button"
+									className="tasty-recipes-rich-textarea-action tasty-recipes-rich-textarea-action--add"
+									onClick={ handleAddItem }
+								>
+									<span
+										className="tasty-recipes-rich-textarea-action-icon"
+										aria-hidden="true"
+									>
+										{ PlusIcon }
+									</span>
+									{ addItemLabel }
+								</button>
+								<button
+									type="button"
+									className="tasty-recipes-rich-textarea-action tasty-recipes-rich-textarea-action--section"
+									onClick={ handleAddSectionTitle }
+								>
+									<span
+										className="tasty-recipes-rich-textarea-action-icon"
+										aria-hidden="true"
+									>
+										{ SectionTitleIcon }
+									</span>
+									{ __(
+										'Add Section Title',
+										'tasty-recipes-lite'
+									) }
+								</button>
+							</div>
+							<button
+								type="button"
+								className="tasty-recipes-rich-textarea-action tasty-recipes-rich-textarea-action--bulk"
+								onClick={ handleOpenBulkEdit }
+							>
+								<span
+									className="tasty-recipes-rich-textarea-action-icon"
+									aria-hidden="true"
+								>
+									{ BulkEditIcon }
+								</span>
+								{ __( 'Bulk Edit', 'tasty-recipes-lite' ) }
+							</button>
+						</div>
+					</>
+				) }
 			</fieldset>
-			<SelectionToolbar containerRef={ listRef } />
+			{ ! isBulkEditing && (
+				<SelectionToolbar
+					containerRef={ listRef }
+					onHasSelectionChange={
+						isInstructions ? setHasTextSelection : null
+					}
+				/>
+			) }
 		</>
 	);
 };

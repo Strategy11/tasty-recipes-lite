@@ -569,6 +569,83 @@ export const serializeRows = ( rows, mode = 'ingredients' ) => {
 	return parts.join( '' );
 };
 
+export const serializeBulkText = rows =>
+	rows
+		.map( row => {
+			const text = stripHtml( row.value );
+			if ( ! text ) {
+				return '';
+			}
+
+			return 'group' === row.type ? `## ${ text }` : text;
+		} )
+		.filter( Boolean )
+		.join( '\n' );
+
+export const applyBulkText = ( text, previousRows = [] ) => {
+	const htmlByText = new Map();
+	const imagesByText = new Map();
+	const leftoverImages = [];
+
+	previousRows.forEach( row => {
+		const textKey = stripHtml( row.value );
+		if ( textKey && ! htmlByText.has( textKey ) ) {
+			htmlByText.set( textKey, row.value );
+		}
+
+		if ( 'item' !== row.type || ! row.image ) {
+			return;
+		}
+
+		if ( textKey && ! imagesByText.has( textKey ) ) {
+			imagesByText.set( textKey, row.image );
+			return;
+		}
+
+		if ( ! textKey ) {
+			leftoverImages.push( row.image );
+		}
+	} );
+
+	const nextRows = [];
+	String( text || '' )
+		.split( /\r?\n/ )
+		.forEach( line => {
+			const raw = line.trim();
+			if ( ! raw ) {
+				return;
+			}
+
+			const isGroup = raw.startsWith( '##' );
+			const textKey = isGroup
+				? raw.replace( /^##\s*/, '' ).trim()
+				: raw;
+			if ( ! textKey ) {
+				return;
+			}
+
+			const value = htmlByText.get( textKey ) || escapeHtml( textKey );
+			if ( isGroup ) {
+				nextRows.push( createGroupRow( { value } ) );
+				return;
+			}
+
+			const image = imagesByText.get( textKey ) || null;
+			if ( image ) {
+				imagesByText.delete( textKey );
+			}
+
+			nextRows.push( createItemRow( { value, image } ) );
+		} );
+
+	leftoverImages.forEach( image => {
+		nextRows.push( createItemRow( { image } ) );
+	} );
+
+	const hasItem = nextRows.some( row => 'item' === row.type );
+	return hasItem ? nextRows : [ ...nextRows, createItemRow() ];
+};
+
 export const parseRowsFromHtml = html => {
 	const empty = () => [ createItemRow() ];
 

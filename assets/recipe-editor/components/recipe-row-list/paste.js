@@ -14,10 +14,34 @@ const parsePasteLines = text => {
 		return [];
 	}
 
-	return text
-		.split( /\r?\n/ )
-		.map( stripItemPrefix )
-		.filter( Boolean );
+	const parts = [];
+	text.split( /\r?\n/ ).forEach( line => {
+		const trimmed = String( line || '' ).trim();
+		if ( ! trimmed ) {
+			return;
+		}
+
+		if ( trimmed.startsWith( '##' ) ) {
+			const heading = trimmed.replace( /^##\s*/, '' ).trim();
+			if ( heading ) {
+				parts.push( {
+					text: heading,
+					type: 'heading',
+				} );
+			}
+			return;
+		}
+
+		const item = stripItemPrefix( trimmed );
+		if ( item ) {
+			parts.push( {
+				text: item,
+				type: 'item',
+			} );
+		}
+	} );
+
+	return parts;
 };
 
 const parsePasteHtml = html => {
@@ -97,10 +121,7 @@ const parsePasteHtml = html => {
 };
 
 export const parseClipboardParts = ( text, html ) => {
-	const textParts = parsePasteLines( text ).map( line => ( {
-		text: line,
-		type: 'item',
-	} ) );
+	const textParts = parsePasteLines( text );
 	const htmlParts = parsePasteHtml( html );
 
 	// Prefer HTML when it found real structure; otherwise use newline split.

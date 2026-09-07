@@ -128,12 +128,14 @@ const notifyEditable = ( range, surfaceSelector ) => {
 export const SelectionToolbar = ( {
 	containerRef,
 	surfaceSelector = DEFAULT_SURFACE_SELECTOR,
+	onHasSelectionChange = null,
 } ) => {
 	const toolbarRef = useRef( null );
 	const linkPopoverRef = useRef( null );
 	const linkInputRef = useRef( null );
 	const savedRangeRef = useRef( null );
 	const linkOpenRef = useRef( false );
+	const onHasSelectionChangeRef = useRef( onHasSelectionChange );
 	const [ isVisible, setIsVisible ] = useState( false );
 	const [ position, setPosition ] = useState( { top: 0, left: 0 } );
 	const [ activeCommands, setActiveCommands ] = useState( {} );
@@ -146,6 +148,11 @@ export const SelectionToolbar = ( {
 	} );
 
 	linkOpenRef.current = linkOpen;
+	onHasSelectionChangeRef.current = onHasSelectionChange;
+
+	const reportHasSelection = hasSelection => {
+		onHasSelectionChangeRef.current?.( hasSelection );
+	};
 
 	const updateActiveState = () => {
 		const container = containerRef?.current;
@@ -174,6 +181,7 @@ export const SelectionToolbar = ( {
 	const hide = () => {
 		setIsVisible( false );
 		setLinkOpen( false );
+		reportHasSelection( false );
 	};
 
 	const restoreSelection = () => {
@@ -217,6 +225,8 @@ export const SelectionToolbar = ( {
 			hide();
 			return;
 		}
+
+		reportHasSelection( true );
 
 		const scrollBody = getRecipeEditorScrollContainer();
 		if ( scrollBody ) {
