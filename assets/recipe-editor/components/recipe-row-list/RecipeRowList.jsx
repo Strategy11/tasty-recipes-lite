@@ -1,4 +1,5 @@
 import {
+	Fragment,
 	useEffect,
 	useLayoutEffect,
 	useMemo,
@@ -781,7 +782,7 @@ const RecipeRowList = ( {
 				</label>
 				<input type="hidden" name={ name } value={ formValue } />
 				{ isBulkEditing ? (
-					<>
+					<Fragment key="bulk-edit">
 						<div
 							id={ `${ name }-bulk` }
 							ref={ bulkRef }
@@ -820,9 +821,9 @@ const RecipeRowList = ( {
 								{ __( 'Cancel', 'tasty-recipes-lite' ) }
 							</button>
 						</div>
-					</>
+					</Fragment>
 				) : (
-					<>
+					<Fragment key="row-list">
 						<div
 							className={
 								isInstructions && hasTextSelection
@@ -918,7 +919,7 @@ const RecipeRowList = ( {
 								{ __( 'Bulk Edit', 'tasty-recipes-lite' ) }
 							</button>
 						</div>
-					</>
+					</Fragment>
 				) }
 			</fieldset>
 			{ ! isBulkEditing && (
