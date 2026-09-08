@@ -140,10 +140,24 @@ const RecipeRowList = ( {
 	useEffect( () => () => endDragRef.current?.(), [] );
 
 	useLayoutEffect( () => {
-		if ( isBulkEditing ) {
-			bulkRef.current?.focus();
+		if ( ! isBulkEditing ) {
+			return;
 		}
-	}, [ isBulkEditing ] );
+
+		const el = bulkRef.current;
+		if ( ! el ) {
+			return;
+		}
+
+		const isFocused = el === el.ownerDocument.activeElement;
+		if ( ! isFocused && el.innerHTML !== bulkText ) {
+			el.innerHTML = bulkText;
+		}
+
+		if ( ! isFocused ) {
+			el.focus();
+		}
+	}, [ isBulkEditing, bulkText ] );
 
 	const cloneRows = source =>
 		source.map( row => ( {
@@ -699,6 +713,58 @@ const RecipeRowList = ( {
 		setBulkText( '' );
 	};
 
+	const handleBulkInput = event => {
+		const el = event.currentTarget;
+		if ( '<br>' === el.innerHTML || '<br/>' === el.innerHTML ) {
+			el.innerHTML = '';
+		}
+		setBulkText( el.innerHTML || '' );
+	};
+
+	const handleBulkKeyDown = event => {
+		if (
+			'Enter' !== event.key ||
+			event.altKey ||
+			event.metaKey ||
+			event.ctrlKey
+		) {
+			return;
+		}
+
+		event.preventDefault();
+		if (
+			'function' === typeof document.queryCommandSupported &&
+			document.queryCommandSupported( 'insertText' )
+		) {
+			document.execCommand( 'insertText', false, '\n' );
+		} else {
+			document.execCommand( 'insertHTML', false, '<br>' );
+		}
+		setBulkText( event.currentTarget.innerHTML || '' );
+	};
+
+	const handleBulkPaste = event => {
+		const text = event.clipboardData?.getData( 'text' ) || '';
+		if ( ! text ) {
+			return;
+		}
+
+		event.preventDefault();
+		if (
+			'function' === typeof document.queryCommandSupported &&
+			document.queryCommandSupported( 'insertText' )
+		) {
+			document.execCommand( 'insertText', false, text );
+		} else {
+			document.execCommand(
+				'insertHTML',
+				false,
+				escapeHtml( text ).replaceAll( /\r?\n/g, '<br>' )
+			);
+		}
+		setBulkText( event.currentTarget.innerHTML || '' );
+	};
+
 	const itemCount = rows.filter( entry => 'item' === entry.type ).length;
 	const bulkHint = isInstructions
 		? __( 'One step per line. Start a line with', 'tasty-recipes-lite' )
@@ -710,17 +776,25 @@ const RecipeRowList = ( {
 	return (
 		<>
 			<fieldset className="tasty-recipes-row-list-field">
-				<label>{ label }</label>
+				<label htmlFor={ isBulkEditing ? `${ name }-bulk` : undefined }>
+					{ label }
+				</label>
 				<input type="hidden" name={ name } value={ formValue } />
 				{ isBulkEditing ? (
 					<>
-						<textarea
+						<div
+							id={ `${ name }-bulk` }
 							ref={ bulkRef }
 							className="tasty-recipes-row-list-bulk"
-							value={ bulkText }
-							onChange={ event =>
-								setBulkText( event.target.value )
-							}
+							data-tasty-recipes-autolink=""
+							contentEditable
+							suppressContentEditableWarning
+							role="textbox"
+							tabIndex={ 0 }
+							aria-multiline="true"
+							onInput={ handleBulkInput }
+							onKeyDown={ handleBulkKeyDown }
+							onPaste={ handleBulkPaste }
 						/>
 						<p className="tasty-recipes-row-list-bulk-hint">
 							{ bulkHint }{ ' ' }

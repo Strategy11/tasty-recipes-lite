@@ -770,9 +770,10 @@ describe( 'Recipe Creation', () => {
 			cy.get( `${ ingredients }` ).should( 'not.exist' );
 			cy.get( '.tasty-recipes-row-list-bulk' )
 				.first()
-				.clear()
+				.should( 'have.attr', 'contenteditable', 'true' )
+				.click()
 				.type(
-					'## For the dressing{enter}2 anchovy fillets{enter}1 tsp Dijon mustard'
+					'{selectall}{backspace}## For the dressing{enter}2 anchovy fillets{enter}1 tsp Dijon mustard'
 				);
 
 			cy.contains( 'button', 'Done' ).click();

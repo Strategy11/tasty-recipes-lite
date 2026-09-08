@@ -1,3 +1,4 @@
+import { applyFilters } from '@wordpress/hooks';
 import { getRecipeEditorScrollContainer } from '../dom';
 import { DEFAULT_GROUP_LEVEL, ROW_VISIBILITY_PADDING_PX } from './constants';
 
@@ -86,25 +87,6 @@ const ALLOWED_LINK_ATTRIBUTES = new Set( [
 	'title',
 ] );
 
-const ALLOWED_TASTY_LINK_ATTRIBUTES = new Set( [ 'class', 'id' ] );
-
-const isTastyLinksIgnoreComment = node => {
-	const value = String( node.nodeValue || '' ).trim();
-	return (
-		'tasty-links-ignore' === value || '/tasty-links-ignore' === value
-	);
-};
-
-const isTastyLinkSpan = node => {
-	if ( ! node || 'SPAN' !== node.tagName ) {
-		return false;
-	}
-
-	return String( node.getAttribute( 'class' ) || '' )
-		.split( /\s+/ )
-		.includes( 'tasty-link' );
-};
-
 const DANGEROUS_URL_SCHEME = /^(?:javascript|data|vbscript):/i;
 
 const UNSUPPORTED_ROW_CONTENT_SELECTOR = [
@@ -181,9 +163,71 @@ export const stripHtml = value => {
 	return normalizeRowText( root.textContent );
 };
 
+const getInlineHtmlAllowlist = () => {
+	/**
+	 * Filters custom inline nodes kept by the recipe editor sanitizer.
+	 *
+	 * @since x.x
+	 *
+	 * @param {Object}   allowlist          Default allowlist.
+	 * @param {Object[]} allowlist.elements Custom elements to keep.
+	 * @param {string[]} allowlist.comments Comment node values to keep.
+	 */
+	const allowlist = applyFilters( 'tasty_recipes_inline_html_allowlist', {
+		elements: [],
+		comments: [],
+	} );
+
+	return {
+		elements: Array.isArray( allowlist?.elements )
+			? allowlist.elements
+			: [],
+		comments: Array.isArray( allowlist?.comments )
+			? allowlist.comments
+			: [],
+	};
+};
+
+const getCustomElementRule = ( node, elements ) => {
+	const classes = String( node.getAttribute( 'class' ) || '' ).split(
+		/\s+/
+	);
+
+	return elements.find( rule => {
+		const ruleTag = String( rule?.tag || '' ).toUpperCase();
+		if ( ruleTag && ruleTag !== node.tagName ) {
+			return false;
+		}
+
+		return (
+			! rule?.className || classes.includes( rule.className )
+		);
+	} );
+};
+
+const sanitizeCustomElement = ( child, rule ) => {
+	const allowed = new Set(
+		( rule.attributes || [] ).map( name => String( name ).toLowerCase() )
+	);
+
+	Array.from( child.attributes ).forEach( attribute => {
+		const name = attribute.name.toLowerCase();
+		const isAllowed =
+			allowed.has( name ) ||
+			( true === rule.allowData && name.startsWith( 'data-' ) ) ||
+			( true === rule.allowAria && name.startsWith( 'aria-' ) );
+
+		if ( ! isAllowed ) {
+			child.removeAttribute( attribute.name );
+		}
+	} );
+};
+
 export const sanitizeInlineHtml = html => {
 	const root = parseFragment( html );
 	const doc = root.ownerDocument;
+	const allowlist = getInlineHtmlAllowlist();
+	const allowedComments = new Set( allowlist.comments );
 
 	const wrapWith = ( tagName, content ) => {
 		const el = doc.createElement( tagName );
@@ -197,20 +241,6 @@ export const sanitizeInlineHtml = html => {
 			fragment.append( child.firstChild );
 		}
 		child.replaceWith( fragment );
-	};
-
-	const sanitizeTastyLinkSpan = child => {
-		Array.from( child.attributes ).forEach( attribute => {
-			const name = attribute.name.toLowerCase();
-			const isAllowed =
-				ALLOWED_TASTY_LINK_ATTRIBUTES.has( name ) ||
-				name.startsWith( 'data-' ) ||
-				name.startsWith( 'aria-' );
-
-			if ( ! isAllowed ) {
-				child.removeAttribute( attribute.name );
-			}
-		} );
 	};
 
 	// Links keep their original href (relative, anchor, mailto, tel) so legacy
@@ -241,9 +271,9 @@ export const sanitizeInlineHtml = html => {
 				return;
 			}
 
-			// Tasty Links persists unlinked keywords as ignore comments.
 			if ( Node.COMMENT_NODE === child.nodeType ) {
-				if ( ! isTastyLinksIgnoreComment( child ) ) {
+				const value = String( child.nodeValue || '' ).trim();
+				if ( ! allowedComments.has( value ) ) {
 					child.remove();
 				}
 				return;
@@ -256,8 +286,12 @@ export const sanitizeInlineHtml = html => {
 
 			sanitize( child );
 
-			if ( isTastyLinkSpan( child ) ) {
-				sanitizeTastyLinkSpan( child );
+			const customRule = getCustomElementRule(
+				child,
+				allowlist.elements
+			);
+			if ( customRule ) {
+				sanitizeCustomElement( child, customRule );
 				return;
 			}
 
@@ -569,34 +603,117 @@ export const serializeRows = ( rows, mode = 'ingredients' ) => {
 	return parts.join( '' );
 };
 
+const GROUP_MARKER = /^##[\s\u00A0]*/;
+
+const isBlockLineElement = node => {
+	if ( ! node || Node.ELEMENT_NODE !== node.nodeType ) {
+		return false;
+	}
+
+	return [ 'DIV', 'P', 'LI' ].includes( node.tagName );
+};
+
+const stripGroupMarkerFromHtml = html => {
+	const root = parseFragment( html );
+	const first = root.firstChild;
+	if ( first && Node.TEXT_NODE === first.nodeType ) {
+		first.textContent = String( first.textContent || '' ).replace(
+			GROUP_MARKER,
+			''
+		);
+		if ( ! first.textContent ) {
+			first.remove();
+		}
+	}
+
+	return sanitizeInlineHtml( root.innerHTML );
+};
+
+const splitBulkLines = value => {
+	const root = parseFragment( value );
+	const lines = [];
+	const doc = root.ownerDocument;
+	let current = doc.createElement( 'div' );
+
+	const flush = () => {
+		const html = current.innerHTML;
+		if ( rowHasContent( html ) ) {
+			lines.push( html );
+		}
+		current = doc.createElement( 'div' );
+	};
+
+	const appendNode = node => {
+		if ( Node.TEXT_NODE === node.nodeType ) {
+			const parts = String( node.textContent || '' ).split( /\r?\n/ );
+			parts.forEach( ( part, index ) => {
+				if ( index > 0 ) {
+					flush();
+				}
+				if ( part ) {
+					current.append( doc.createTextNode( part ) );
+				}
+			} );
+			return;
+		}
+
+		current.append( node.cloneNode( true ) );
+	};
+
+	const walk = parent => {
+		Array.from( parent.childNodes ).forEach( child => {
+			if (
+				Node.ELEMENT_NODE === child.nodeType &&
+				'BR' === child.tagName
+			) {
+				flush();
+				return;
+			}
+
+			if ( isBlockLineElement( child ) ) {
+				if ( current.childNodes.length ) {
+					flush();
+				}
+				walk( child );
+				flush();
+				return;
+			}
+
+			appendNode( child );
+		} );
+	};
+
+	walk( root );
+	if ( current.childNodes.length ) {
+		flush();
+	}
+
+	return lines;
+};
+
 export const serializeBulkText = rows =>
 	rows
 		.map( row => {
-			const text = stripHtml( row.value );
-			if ( ! text ) {
+			const html = sanitizeInlineHtml( row.value );
+			if ( ! rowHasContent( html ) ) {
 				return '';
 			}
 
-			return 'group' === row.type ? `## ${ text }` : text;
+			return 'group' === row.type ? `## ${ html }` : html;
 		} )
 		.filter( Boolean )
-		.join( '\n' );
+		.join( '<br>' );
 
 export const applyBulkText = ( text, previousRows = [] ) => {
-	const htmlByText = new Map();
 	const imagesByText = new Map();
 	const leftoverImages = [];
 
 	previousRows.forEach( row => {
-		const textKey = stripHtml( row.value );
-		if ( textKey && ! htmlByText.has( textKey ) ) {
-			htmlByText.set( textKey, row.value );
-		}
-
 		if ( 'item' !== row.type || ! row.image ) {
 			return;
 		}
 
+		const textKey = stripHtml( row.value );
 		if ( textKey && ! imagesByText.has( textKey ) ) {
 			imagesByText.set( textKey, row.image );
 			return;
@@ -608,35 +725,33 @@ export const applyBulkText = ( text, previousRows = [] ) => {
 	} );
 
 	const nextRows = [];
-	String( text || '' )
-		.split( /\r?\n/ )
-		.forEach( line => {
-			const raw = line.trim();
-			if ( ! raw ) {
-				return;
-			}
+	splitBulkLines( text ).forEach( line => {
+		const rawText = stripHtml( line );
+		if ( ! rawText ) {
+			return;
+		}
 
-			const isGroup = raw.startsWith( '##' );
-			const textKey = isGroup
-				? raw.replace( /^##\s*/, '' ).trim()
-				: raw;
-			if ( ! textKey ) {
-				return;
-			}
+		const isGroup = rawText.startsWith( '##' );
+		const value = isGroup
+			? stripGroupMarkerFromHtml( line )
+			: sanitizeInlineHtml( line );
+		const textKey = stripHtml( value );
+		if ( ! textKey ) {
+			return;
+		}
 
-			const value = htmlByText.get( textKey ) || escapeHtml( textKey );
-			if ( isGroup ) {
-				nextRows.push( createGroupRow( { value } ) );
-				return;
-			}
+		if ( isGroup ) {
+			nextRows.push( createGroupRow( { value } ) );
+			return;
+		}
 
-			const image = imagesByText.get( textKey ) || null;
-			if ( image ) {
-				imagesByText.delete( textKey );
-			}
+		const image = imagesByText.get( textKey ) || null;
+		if ( image ) {
+			imagesByText.delete( textKey );
+		}
 
-			nextRows.push( createItemRow( { value, image } ) );
-		} );
+		nextRows.push( createItemRow( { value, image } ) );
+	} );
 
 	leftoverImages.forEach( image => {
 		nextRows.push( createItemRow( { image } ) );

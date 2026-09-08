@@ -120,6 +120,7 @@ export const RecipeRow = ( {
 			className={ classNames( 'tasty-recipes-row-input', {
 				'is-empty': isEmpty,
 			} ) }
+			data-tasty-recipes-autolink=""
 			contentEditable
 			suppressContentEditableWarning
 			role="textbox"

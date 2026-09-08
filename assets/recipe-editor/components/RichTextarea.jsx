@@ -289,6 +289,7 @@ export const RichTextarea = ( {
 						<div
 							id={ id }
 							className="tasty-recipes-inline-editor"
+							data-tasty-recipes-autolink=""
 							data-placeholder={ placeholder }
 							dangerouslySetInnerHTML={ { __html: seedHtml } }
 						/>

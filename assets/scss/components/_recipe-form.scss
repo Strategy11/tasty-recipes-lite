@@ -834,16 +834,22 @@
 		min-height: 180px;
 		margin: 0;
 		padding: 10px 12px;
-		resize: vertical;
+		overflow-y: auto;
 		font-family: 'Inter', sans-serif;
 		font-size: 14px;
 		line-height: 22px;
 		white-space: pre-wrap;
+		word-break: break-word;
 
 		&:focus {
 			border-color: #ED4996 !important;
 			box-shadow: 0 0 0 3px #FFEDF5 !important;
 			outline: none;
+		}
+
+		a {
+			color: #ED4996;
+			text-decoration: underline;
 		}
 	}
 
@@ -1175,15 +1181,9 @@
 			text-decoration: underline;
 		}
 
-		a,
-		.tasty-link {
+		a {
 			color: #ED4996;
 			text-decoration: underline;
-		}
-
-		.tasty-link[data-tasty-link-remove="1"] {
-			color: inherit;
-			text-decoration: inherit;
 		}
 	}
 
