@@ -578,6 +578,71 @@ describe( 'Recipe Creation', () => {
 				} );
 		} );
 
+		it( 'should insert a line break in the same row on Shift+Enter', () => {
+			openCreateRecipeModal();
+			cy.get( '.tasty-recipes-frame-content input#title' ).type(
+				`Cypress Shift Enter Recipe ${ Date.now() }`
+			);
+
+			cy.get( `${ ingredients } .tasty-recipes-row-input` )
+				.first()
+				.click()
+				.type( 'First line' );
+			cy.get( `${ ingredients } .tasty-recipes-row-input` )
+				.first()
+				.trigger( 'keydown', { key: 'Enter', shiftKey: true } );
+			cy.get( `${ ingredients } .tasty-recipes-row-input` )
+				.first()
+				.type( 'Same row' );
+
+			cy.get( `${ ingredients } .tasty-recipes-item-row` ).should(
+				'have.length',
+				1
+			);
+			cy.get( ingredients )
+				.siblings( 'input[name="ingredients"]' )
+				.invoke( 'val' )
+				.then( value => {
+					expect( value ).to.include( 'tasty-recipes-soft-break' );
+					expect( value ).to.include( 'First line' );
+					expect( value ).to.include( 'Same row' );
+				} );
+
+			cy.get( '.tasty-recipes-modal-close' ).click( { force: true } );
+		} );
+
+		it( 'should keep empty soft breaks after reopening a recipe', () => {
+			const recipeTitle = `Cypress Soft Breaks ${ Date.now() }`;
+
+			cy.createTastyRecipe( {
+				title: recipeTitle,
+				ingredients:
+					'<ul><li>First line<br><br>After blanks</li></ul>',
+				instructions:
+					'<ol><li>Mix well<br><br></li></ol>',
+			} );
+
+			cy.visit( '/wp-admin/edit.php?post_type=tasty_recipe' );
+			openEditRecipeModal( recipeTitle );
+
+			cy.get( ingredients )
+				.siblings( 'input[name="ingredients"]' )
+				.invoke( 'val' )
+				.then( value => {
+					expect( value ).to.match(
+						/First line.*tasty-recipes-soft-break.*tasty-recipes-soft-break.*After blanks/s
+					);
+				} );
+			cy.get( instructions )
+				.siblings( 'input[name="instructions"]' )
+				.invoke( 'val' )
+				.then( value => {
+					expect( value ).to.match(
+						/Mix well.*tasty-recipes-soft-break/s
+					);
+				} );
+		} );
+
 		it( 'should start a new row when pressing Enter', () => {
 			openCreateRecipeModal();
 			cy.get( '.tasty-recipes-frame-content input#title' ).type(
@@ -875,6 +940,42 @@ describe( 'Recipe Creation', () => {
 				.invoke( 'html' )
 				.then( html => {
 					expect( html ).to.not.match( /<\/h[1-6]>\s*<br\s*\/?>/i );
+				} );
+
+			cy.get( '.tasty-recipes-modal-close' ).click( { force: true } );
+		} );
+
+		it( 'should keep Shift+Enter as a line break in bulk edit', () => {
+			openCreateRecipeModal();
+			cy.get( '.tasty-recipes-frame-content input#title' ).type(
+				`Cypress Bulk Shift Enter ${ Date.now() }`
+			);
+
+			cy.get( ingredients )
+				.closest( 'fieldset' )
+				.contains( 'button', 'Bulk Edit' )
+				.click();
+
+			cy.get( '.tasty-recipes-row-list-bulk' )
+				.first()
+				.click()
+				.type( '{selectall}{backspace}First line' )
+				.trigger( 'keydown', { key: 'Enter', shiftKey: true } )
+				.type( 'Same item' );
+
+			cy.contains( 'button', 'Done' ).click();
+
+			cy.get( `${ ingredients } .tasty-recipes-item-row` ).should(
+				'have.length',
+				1
+			);
+			cy.get( ingredients )
+				.siblings( 'input[name="ingredients"]' )
+				.invoke( 'val' )
+				.then( value => {
+					expect( value ).to.include( 'tasty-recipes-soft-break' );
+					expect( value ).to.include( 'First line' );
+					expect( value ).to.include( 'Same item' );
 				} );
 
 			cy.get( '.tasty-recipes-modal-close' ).click( { force: true } );

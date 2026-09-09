@@ -918,6 +918,11 @@
 			text-decoration: underline;
 		}
 
+		.tasty-recipes-soft-break::before {
+			content: '\A';
+			white-space: pre;
+		}
+
 		h1,
 		h2,
 		h3,
@@ -1317,6 +1322,11 @@
 		a {
 			color: #ED4996;
 			text-decoration: underline;
+		}
+
+		.tasty-recipes-soft-break::before {
+			content: '\A';
+			white-space: pre;
 		}
 	}
 

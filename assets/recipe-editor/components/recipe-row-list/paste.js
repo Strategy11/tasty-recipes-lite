@@ -15,13 +15,16 @@ const parsePasteLines = text => {
 	}
 
 	const parts = [];
+
 	text.split( /\r?\n/ ).forEach( line => {
 		const trimmed = String( line || '' ).trim();
+
 		if ( ! trimmed ) {
 			return;
 		}
 
 		const item = stripItemPrefix( trimmed );
+
 		if ( item ) {
 			parts.push( {
 				text: item,
@@ -41,6 +44,7 @@ const parsePasteHtml = html => {
 	try {
 		const doc = new window.DOMParser().parseFromString( html, 'text/html' );
 		const selector = 'h1,h2,h3,h4,h5,h6,p,li,div,td,th';
+
 		let blocks = Array.from( doc.body.querySelectorAll( selector ) );
 
 		// Keep leaf-most blocks so a wrapper div does not duplicate nested <p>s.
@@ -71,11 +75,13 @@ const parsePasteHtml = html => {
 
 		blocks.forEach( el => {
 			const text = el.textContent.replaceAll( /\s+/g, ' ' ).trim();
+
 			if ( ! text ) {
 				return;
 			}
 
 			let isHeading = /^H[1-6]$/.test( el.tagName );
+
 			if ( ! isHeading && text.length <= 60 ) {
 				const bold = Array.from(
 					el.querySelectorAll( 'b,strong,[style*="font-weight"]' )
@@ -103,6 +109,7 @@ const parsePasteHtml = html => {
 		} );
 
 		const filtered = parts.filter( part => part.text );
+
 		return filtered.length ? filtered : null;
 	} catch ( error ) {
 		return null;

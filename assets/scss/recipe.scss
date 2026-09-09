@@ -204,6 +204,11 @@ body.tasty-recipes-print-view{
 	}
 }
 
+.tasty-recipes .tasty-recipes-soft-break::before {
+	content: '\A';
+	white-space: pre;
+}
+
 .tasty-recipes-ingredients-header {
 	margin: 1em 0;
 	@media only screen and (min-width: 520px) {

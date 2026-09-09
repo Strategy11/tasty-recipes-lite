@@ -28,8 +28,10 @@ import {
 	createGroupRow,
 	createItemRow,
 	decorateBulkImages,
+	deleteSoftBreakBeforeCaret,
 	ensureRowVisible,
 	escapeHtml,
+	insertSoftBreak,
 	moveRow,
 	parseRowsFromHtml,
 	sanitizeInlineHtml,
@@ -758,6 +760,17 @@ const RecipeRowList = ( {
 
 	const handleBulkKeyDown = event => {
 		if (
+			'Backspace' === event.key &&
+			! event.altKey &&
+			! event.metaKey &&
+			! event.ctrlKey &&
+			deleteSoftBreakBeforeCaret( event.currentTarget )
+		) {
+			event.preventDefault();
+			return;
+		}
+
+		if (
 			'Enter' !== event.key ||
 			event.altKey ||
 			event.metaKey ||
@@ -767,6 +780,11 @@ const RecipeRowList = ( {
 		}
 
 		event.preventDefault();
+
+		if ( event.shiftKey ) {
+			insertSoftBreak( event.currentTarget, { marked: true } );
+			return;
+		}
 
 		const selection = window.getSelection();
 		const range = selection?.rangeCount ? selection.getRangeAt( 0 ) : null;
