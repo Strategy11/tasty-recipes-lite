@@ -603,7 +603,10 @@ export const serializeRows = ( rows, mode = 'ingredients' ) => {
 	return parts.join( '' );
 };
 
-const GROUP_MARKER = /^##[\s\u00A0]*/;
+const isHeadingElement = node =>
+	!! node &&
+	Node.ELEMENT_NODE === node.nodeType &&
+	/^H[1-6]$/.test( node.tagName );
 
 const isBlockLineElement = node => {
 	if ( ! node || Node.ELEMENT_NODE !== node.nodeType ) {
@@ -613,20 +616,9 @@ const isBlockLineElement = node => {
 	return [ 'DIV', 'P', 'LI' ].includes( node.tagName );
 };
 
-const stripGroupMarkerFromHtml = html => {
+const lineHasMedia = html => {
 	const root = parseFragment( html );
-	const first = root.firstChild;
-	if ( first && Node.TEXT_NODE === first.nodeType ) {
-		first.textContent = String( first.textContent || '' ).replace(
-			GROUP_MARKER,
-			''
-		);
-		if ( ! first.textContent ) {
-			first.remove();
-		}
-	}
-
-	return sanitizeInlineHtml( root.innerHTML );
+	return !! root.querySelector( 'img, figure, picture' );
 };
 
 const splitBulkLines = value => {
@@ -637,10 +629,23 @@ const splitBulkLines = value => {
 
 	const flush = () => {
 		const html = current.innerHTML;
-		if ( rowHasContent( html ) ) {
-			lines.push( html );
+		if ( rowHasContent( html ) || lineHasMedia( html ) ) {
+			lines.push( { type: 'item', html } );
 		}
 		current = doc.createElement( 'div' );
+	};
+
+	const pushHeading = node => {
+		const html = node.innerHTML;
+		if ( ! rowHasContent( html ) ) {
+			return;
+		}
+
+		lines.push( {
+			type: 'heading',
+			html,
+			level: Number( node.tagName.slice( 1 ) ),
+		} );
 	};
 
 	const appendNode = node => {
@@ -670,6 +675,14 @@ const splitBulkLines = value => {
 				return;
 			}
 
+			if ( isHeadingElement( child ) ) {
+				if ( current.childNodes.length ) {
+					flush();
+				}
+				pushHeading( child );
+				return;
+			}
+
 			if ( isBlockLineElement( child ) ) {
 				if ( current.childNodes.length ) {
 					flush();
@@ -691,75 +704,156 @@ const splitBulkLines = value => {
 	return lines;
 };
 
-export const serializeBulkText = rows =>
-	rows
-		.map( row => {
+export const serializeBulkText = rows => {
+	const parts = [];
+
+	rows.forEach( row => {
+		if ( 'group' === row.type ) {
 			const html = sanitizeInlineHtml( row.value );
 			if ( ! rowHasContent( html ) ) {
-				return '';
+				return;
 			}
 
-			return 'group' === row.type ? `## ${ html }` : html;
-		} )
-		.filter( Boolean )
-		.join( '<br>' );
-
-export const applyBulkText = ( text, previousRows = [] ) => {
-	const imagesByText = new Map();
-	const leftoverImages = [];
-
-	previousRows.forEach( row => {
-		if ( 'item' !== row.type || ! row.image ) {
+			const level = getGroupLevel( row.level );
+			parts.push( {
+				html: `<h${ level }>${ html }</h${ level }>`,
+				isHeading: true,
+			} );
 			return;
 		}
 
-		const textKey = stripHtml( row.value );
-		if ( textKey && ! imagesByText.has( textKey ) ) {
-			imagesByText.set( textKey, row.image );
+		const html = sanitizeInlineHtml( row.value );
+		const imageHtml = serializeRowImage( row.image );
+		if ( ! rowHasContent( html ) && ! imageHtml ) {
 			return;
 		}
 
-		if ( ! textKey ) {
-			leftoverImages.push( row.image );
+		let itemHtml = html;
+		if ( rowHasContent( html ) && imageHtml ) {
+			itemHtml = `${ html }${ imageHtml }`;
+		} else if ( ! rowHasContent( html ) ) {
+			itemHtml = imageHtml;
 		}
+
+		parts.push( {
+			html: itemHtml,
+			isHeading: false,
+		} );
 	} );
 
+	return parts.reduce( ( output, part, index ) => {
+		if ( ! index ) {
+			return part.html;
+		}
+
+		const previous = parts[ index - 1 ];
+		if ( part.isHeading || previous.isHeading ) {
+			return `${ output }${ part.html }`;
+		}
+
+		return `${ output }<br>${ part.html }`;
+	}, '' );
+};
+
+const BULK_IMAGE_CLASS = 'tasty-recipes-bulk-image';
+const BULK_IMAGE_REMOVE_CLASS = 'tasty-recipes-row-image__remove';
+
+const unwrapElement = node => {
+	const fragment = node.ownerDocument.createDocumentFragment();
+	while ( node.firstChild ) {
+		fragment.append( node.firstChild );
+	}
+	node.replaceWith( fragment );
+};
+
+export const stripBulkImageChrome = html => {
+	const root = parseFragment( html );
+	root.querySelectorAll( `.${ BULK_IMAGE_REMOVE_CLASS }` ).forEach( button =>
+		button.remove()
+	);
+	root.querySelectorAll( `.${ BULK_IMAGE_CLASS }` ).forEach( wrap => {
+		if ( 'FIGURE' === wrap.tagName ) {
+			wrap.removeAttribute( 'contenteditable' );
+			wrap.classList.remove( BULK_IMAGE_CLASS );
+			if ( ! wrap.getAttribute( 'class' ) ) {
+				wrap.removeAttribute( 'class' );
+			}
+			return;
+		}
+
+		unwrapElement( wrap );
+	} );
+
+	return root.innerHTML;
+};
+
+export const decorateBulkImages = ( root, removeLabel ) => {
+	if ( ! root ) {
+		return;
+	}
+
+	Array.from( root.querySelectorAll( 'img' ) ).forEach( img => {
+		let wrap = img.closest( `.${ BULK_IMAGE_CLASS }` );
+		if ( ! wrap ) {
+			wrap = img.closest( 'figure' );
+			if ( wrap && root.contains( wrap ) ) {
+				wrap.classList.add( BULK_IMAGE_CLASS );
+			} else {
+				wrap = root.ownerDocument.createElement( 'span' );
+				wrap.className = BULK_IMAGE_CLASS;
+				img.replaceWith( wrap );
+				wrap.append( img );
+			}
+		}
+
+		wrap.setAttribute( 'contenteditable', 'false' );
+
+		if ( wrap.querySelector( `.${ BULK_IMAGE_REMOVE_CLASS }` ) ) {
+			return;
+		}
+
+		const button = root.ownerDocument.createElement( 'button' );
+		button.type = 'button';
+		button.className = BULK_IMAGE_REMOVE_CLASS;
+		button.setAttribute( 'aria-label', removeLabel );
+		button.tabIndex = 0;
+		button.innerHTML =
+			'<svg viewBox="0 0 10 10" width="10" height="10" fill="none" aria-hidden="true"><path d="M9 1L1 9M1 1L9 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
+		wrap.append( button );
+	} );
+};
+
+export const applyBulkText = text => {
 	const nextRows = [];
-	splitBulkLines( text ).forEach( line => {
-		const rawText = stripHtml( line );
-		if ( ! rawText ) {
+
+	splitBulkLines( stripBulkImageChrome( text ) ).forEach( line => {
+		if ( 'heading' === line.type ) {
+			const value = sanitizeInlineHtml( line.html );
+			if ( ! rowHasContent( value ) ) {
+				return;
+			}
+
+			nextRows.push(
+				createGroupRow( {
+					value,
+					level: line.level,
+				} )
+			);
 			return;
 		}
 
-		const isGroup = rawText.startsWith( '##' );
-		const value = isGroup
-			? stripGroupMarkerFromHtml( line )
-			: sanitizeInlineHtml( line );
-		const textKey = stripHtml( value );
-		if ( ! textKey ) {
-			return;
+		const { value, image, extraRows } = extractItemContent( line.html );
+		if ( rowHasContent( value ) || image ) {
+			nextRows.push( createItemRow( { value, image } ) );
 		}
-
-		if ( isGroup ) {
-			nextRows.push( createGroupRow( { value } ) );
-			return;
-		}
-
-		const image = imagesByText.get( textKey ) || null;
-		if ( image ) {
-			imagesByText.delete( textKey );
-		}
-
-		nextRows.push( createItemRow( { value, image } ) );
-	} );
-
-	leftoverImages.forEach( image => {
-		nextRows.push( createItemRow( { image } ) );
+		nextRows.push( ...extraRows );
 	} );
 
 	const hasItem = nextRows.some( row => 'item' === row.type );
 	return hasItem ? nextRows : [ ...nextRows, createItemRow() ];
 };
+
+export const createEditorImageHtml = image => serializeRowImage( image );
 
 export const parseRowsFromHtml = html => {
 	const empty = () => [ createItemRow() ];

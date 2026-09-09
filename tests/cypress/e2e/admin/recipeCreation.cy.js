@@ -756,7 +756,25 @@ describe( 'Recipe Creation', () => {
 			cy.get( '.tasty-recipes-modal-close' ).click( { force: true } );
 		} );
 
-		it( 'should apply bulk edit lines and section titles', () => {
+		it( 'should apply bulk edit headings from the toolbar', () => {
+			const selectFirstText = el => {
+				const doc = el.ownerDocument;
+				const walker = doc.createTreeWalker(
+					el,
+					doc.defaultView.NodeFilter.SHOW_TEXT
+				);
+				const text = walker.nextNode();
+				if ( ! text ) {
+					return;
+				}
+
+				const range = doc.createRange();
+				range.selectNodeContents( text );
+				const selection = doc.defaultView.getSelection();
+				selection.removeAllRanges();
+				selection.addRange( range );
+			};
+
 			openCreateRecipeModal();
 			cy.get( '.tasty-recipes-frame-content input#title' ).type(
 				`Cypress Bulk Edit ${ Date.now() }`
@@ -768,13 +786,32 @@ describe( 'Recipe Creation', () => {
 				.click();
 
 			cy.get( `${ ingredients }` ).should( 'not.exist' );
+			cy.get( '.tasty-recipes-bulk-toolbar' ).should( 'be.visible' );
+			cy.get( '.tasty-recipes-bulk-toolbar [aria-label="Bold"]' ).should(
+				'be.visible'
+			);
+			cy.get(
+				'.tasty-recipes-bulk-toolbar [aria-label="Heading"]'
+			).should( 'be.visible' );
+			cy.get(
+				'.tasty-recipes-bulk-toolbar [aria-label="Add image"]'
+			).should( 'not.exist' );
+
 			cy.get( '.tasty-recipes-row-list-bulk' )
 				.first()
 				.should( 'have.attr', 'contenteditable', 'true' )
 				.click()
 				.type(
-					'{selectall}{backspace}## For the dressing{enter}2 anchovy fillets{enter}1 tsp Dijon mustard'
+					'{selectall}{backspace}For the dressing{enter}2 anchovy fillets{enter}1 tsp Dijon mustard'
 				);
+
+			cy.get( '.tasty-recipes-row-list-bulk' )
+				.first()
+				.then( $el => selectFirstText( $el[ 0 ] ) );
+
+			cy.get(
+				'.tasty-recipes-bulk-toolbar [aria-label="Heading"]'
+			).click();
 
 			cy.contains( 'button', 'Done' ).click();
 
@@ -787,6 +824,289 @@ describe( 'Recipe Creation', () => {
 					'have.value',
 					'<h4>For the dressing</h4><ul><li>2 anchovy fillets</li><li>1 tsp Dijon mustard</li></ul>'
 				);
+
+			cy.get( '.tasty-recipes-modal-close' ).click( { force: true } );
+		} );
+
+		it( 'should not insert a blank line after a bulk heading', () => {
+			openCreateRecipeModal();
+			cy.get( '.tasty-recipes-frame-content input#title' ).type(
+				`Cypress Bulk Heading Gap ${ Date.now() }`
+			);
+
+			fillRowList( 'ingredients', [ 'test', 'test 2', 'test 3' ] );
+
+			cy.get( ingredients )
+				.closest( 'fieldset' )
+				.contains( 'button', 'Add Section Title' )
+				.click();
+			cy.get(
+				`${ ingredients } .tasty-recipes-item-row--group .tasty-recipes-row-input`
+			)
+				.last()
+				.type( 'For serving' );
+
+			cy.get( `${ ingredients } .tasty-recipes-item-row` )
+				.eq( 0 )
+				.find( 'button[aria-label="Convert to section title"]' )
+				.click( { force: true } );
+
+			cy.get( ingredients )
+				.closest( 'fieldset' )
+				.contains( 'button', 'Bulk Edit' )
+				.click();
+
+			cy.get( '.tasty-recipes-row-list-bulk' )
+				.first()
+				.should( 'have.attr', 'contenteditable', 'true' )
+				.invoke( 'html' )
+				.then( html => {
+					expect( html ).to.not.match( /<\/h[1-6]>\s*<br\s*\/?>/i );
+				} );
+
+			cy.contains( 'button', 'Done' ).click();
+			cy.get( ingredients )
+				.closest( 'fieldset' )
+				.contains( 'button', 'Bulk Edit' )
+				.click();
+
+			cy.get( '.tasty-recipes-row-list-bulk' )
+				.first()
+				.invoke( 'html' )
+				.then( html => {
+					expect( html ).to.not.match( /<\/h[1-6]>\s*<br\s*\/?>/i );
+				} );
+
+			cy.get( '.tasty-recipes-modal-close' ).click( { force: true } );
+		} );
+
+		it( 'should keep typed hashes as item text in bulk edit', () => {
+			openCreateRecipeModal();
+			cy.get( '.tasty-recipes-frame-content input#title' ).type(
+				`Cypress Bulk Hash ${ Date.now() }`
+			);
+
+			cy.get( ingredients )
+				.closest( 'fieldset' )
+				.contains( 'button', 'Bulk Edit' )
+				.click();
+
+			cy.get( '.tasty-recipes-row-list-bulk' )
+				.first()
+				.click()
+				.type(
+					'{selectall}{backspace}## Not a heading{enter}Salt'
+				);
+
+			cy.contains( 'button', 'Done' ).click();
+
+			cy.get( `${ ingredients } .tasty-recipes-item-row--group` ).should(
+				'not.exist'
+			);
+			cy.get( ingredients )
+				.siblings( 'input[name="ingredients"]' )
+				.should(
+					'have.value',
+					'<ul><li>## Not a heading</li><li>Salt</li></ul>'
+				);
+
+			cy.get( '.tasty-recipes-modal-close' ).click( { force: true } );
+		} );
+
+		it( 'should format bulk edit text and show the image control for instructions', () => {
+			const selectFirstText = el => {
+				const doc = el.ownerDocument;
+				const walker = doc.createTreeWalker(
+					el,
+					doc.defaultView.NodeFilter.SHOW_TEXT
+				);
+				const text = walker.nextNode();
+				if ( ! text ) {
+					return;
+				}
+
+				const range = doc.createRange();
+				range.selectNodeContents( text );
+				const selection = doc.defaultView.getSelection();
+				selection.removeAllRanges();
+				selection.addRange( range );
+			};
+
+			openCreateRecipeModal();
+			cy.get( '.tasty-recipes-frame-content input#title' ).type(
+				`Cypress Bulk Format ${ Date.now() }`
+			);
+
+			cy.get( instructions )
+				.closest( 'fieldset' )
+				.contains( 'button', 'Bulk Edit' )
+				.click();
+
+			cy.get(
+				'.tasty-recipes-bulk-toolbar [aria-label="Add image"]'
+			).should( 'be.visible' );
+
+			cy.get( '.tasty-recipes-row-list-bulk' )
+				.first()
+				.click()
+				.type( '{selectall}{backspace}Whisk the eggs' );
+
+			cy.get( '.tasty-recipes-row-list-bulk' )
+				.first()
+				.then( $el => selectFirstText( $el[ 0 ] ) );
+
+			cy.get( '.tasty-recipes-bulk-toolbar [aria-label="Bold"]' ).click();
+			cy.get(
+				'.tasty-recipes-bulk-toolbar [aria-label="Add link"]'
+			).click();
+			cy.get( '.tasty-recipes-bulk-toolbar-link input' )
+				.clear()
+				.type( 'https://example.com' );
+			cy.get( '.tasty-recipes-bulk-toolbar-link' )
+				.contains( 'button', 'Add' )
+				.click();
+
+			cy.contains( 'button', 'Done' ).click();
+
+			cy.get( instructions )
+				.siblings( 'input[name="instructions"]' )
+				.invoke( 'val' )
+				.then( value => {
+					expect( value ).to.match( /<(b|strong)>/ );
+					expect( value ).to.include( 'https://example.com' );
+					expect( value ).to.include( 'Whisk the eggs' );
+				} );
+
+			cy.get( '.tasty-recipes-modal-close' ).click( { force: true } );
+		} );
+
+		it( 'should keep instruction images visible through bulk edit', () => {
+			const recipeTitle = `Cypress Bulk Image Keep ${ Date.now() }`;
+
+			cy.createTastyRecipe( {
+				title: recipeTitle,
+				instructions:
+					'<ol><li>Whisk the eggs.' +
+					'<img src="/wp-content/uploads/whisk.jpg" alt="Whisk" class="wp-image-7" />' +
+					'</li></ol>',
+			} );
+
+			cy.visit( '/wp-admin/edit.php?post_type=tasty_recipe' );
+			openEditRecipeModal( recipeTitle );
+
+			cy.get( instructions )
+				.closest( 'fieldset' )
+				.contains( 'button', 'Bulk Edit' )
+				.click();
+
+			cy.get( '.tasty-recipes-row-list-bulk img' )
+				.should( 'be.visible' )
+				.and( 'have.attr', 'src' )
+				.and( 'include', 'whisk.jpg' );
+			cy.get( '.tasty-recipes-row-list-bulk .tasty-recipes-bulk-image' )
+				.trigger( 'mouseover' );
+			cy.get(
+				'.tasty-recipes-row-list-bulk .tasty-recipes-row-image__remove'
+			).should( 'be.visible' );
+
+			cy.contains( 'button', 'Done' ).click();
+
+			cy.get( instructions )
+				.siblings( 'input[name="instructions"]' )
+				.invoke( 'val' )
+				.then( value => {
+					expect( value ).to.include( 'whisk.jpg' );
+					expect( value ).to.include( 'Whisk the eggs' );
+				} );
+		} );
+
+		it( 'should remove an instruction image from bulk edit', () => {
+			const recipeTitle = `Cypress Bulk Image ${ Date.now() }`;
+
+			cy.createTastyRecipe( {
+				title: recipeTitle,
+				instructions:
+					'<ol><li>Whisk the eggs.' +
+					'<img src="/wp-content/uploads/whisk.jpg" alt="Whisk" class="wp-image-7" />' +
+					'</li></ol>',
+			} );
+
+			cy.visit( '/wp-admin/edit.php?post_type=tasty_recipe' );
+			openEditRecipeModal( recipeTitle );
+
+			cy.get( instructions )
+				.closest( 'fieldset' )
+				.contains( 'button', 'Bulk Edit' )
+				.click();
+
+			cy.get( '.tasty-recipes-row-list-bulk img' )
+				.should( 'be.visible' )
+				.and( 'have.attr', 'src' )
+				.and( 'include', 'whisk.jpg' );
+
+			cy.get( '.tasty-recipes-row-list-bulk .tasty-recipes-bulk-image' )
+				.trigger( 'mouseover' );
+			cy.get(
+				'.tasty-recipes-row-list-bulk .tasty-recipes-row-image__remove'
+			)
+				.should( 'be.visible' )
+				.click();
+
+			cy.get( '.tasty-recipes-row-list-bulk img' ).should( 'not.exist' );
+
+			cy.contains( 'button', 'Done' ).click();
+
+			cy.get( instructions )
+				.siblings( 'input[name="instructions"]' )
+				.invoke( 'val' )
+				.then( value => {
+					expect( value ).to.not.include( 'whisk.jpg' );
+					expect( value ).to.include( 'Whisk the eggs' );
+				} );
+		} );
+
+		it( 'should attach an inserted image to the current bulk instruction line', () => {
+			openCreateRecipeModal();
+			cy.get( '.tasty-recipes-frame-content input#title' ).type(
+				`Cypress Bulk Attach ${ Date.now() }`
+			);
+
+			cy.get( instructions )
+				.closest( 'fieldset' )
+				.contains( 'button', 'Bulk Edit' )
+				.click();
+
+			cy.get( '.tasty-recipes-row-list-bulk' )
+				.first()
+				.click()
+				.type( '{selectall}{backspace}Whisk the eggs' );
+
+			cy.get( '.tasty-recipes-row-list-bulk' )
+				.first()
+				.then( $el => {
+					const el = $el[ 0 ];
+					el.focus();
+					el.ownerDocument.execCommand(
+						'insertHTML',
+						false,
+						'<img src="/wp-content/uploads/step.jpg" alt="Step" class="wp-image-8" />'
+					);
+					el.dispatchEvent( new Event( 'input', { bubbles: true } ) );
+				} );
+
+			cy.contains( 'button', 'Done' ).click();
+
+			cy.get( `${ instructions } .tasty-recipes-item-row` ).should(
+				'have.length',
+				1
+			);
+			cy.get( instructions )
+				.siblings( 'input[name="instructions"]' )
+				.invoke( 'val' )
+				.then( value => {
+					expect( value ).to.include( 'Whisk the eggs' );
+					expect( value ).to.include( 'step.jpg' );
+				} );
 
 			cy.get( '.tasty-recipes-modal-close' ).click( { force: true } );
 		} );

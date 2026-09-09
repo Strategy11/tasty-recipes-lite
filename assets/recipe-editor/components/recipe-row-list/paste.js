@@ -21,17 +21,6 @@ const parsePasteLines = text => {
 			return;
 		}
 
-		if ( trimmed.startsWith( '##' ) ) {
-			const heading = trimmed.replace( /^##\s*/, '' ).trim();
-			if ( heading ) {
-				parts.push( {
-					text: heading,
-					type: 'heading',
-				} );
-			}
-			return;
-		}
-
 		const item = stripItemPrefix( trimmed );
 		if ( item ) {
 			parts.push( {
