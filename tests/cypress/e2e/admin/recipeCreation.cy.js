@@ -290,18 +290,6 @@ describe( 'Recipe Creation', () => {
 		const instructions =
 			'.tasty-recipes-row-list[data-mode="instructions"]';
 
-		// Cypress mouseover does not apply CSS :hover. Focus uses :focus-within.
-		const revealBulkImageRemove = () =>
-			cy
-				.get(
-					'.tasty-recipes-row-list-bulk .tasty-recipes-row-image__remove'
-				)
-				.should( 'exist' )
-				.then( $button => {
-					$button[ 0 ].focus();
-				} )
-				.should( 'be.visible' );
-
 		const openEditRecipeModal = title => {
 			cy.get( '.row-title.tasty-recipes-edit-recipe', {
 				timeout: 10_000,
@@ -1116,7 +1104,9 @@ describe( 'Recipe Creation', () => {
 				.should( 'be.visible' )
 				.and( 'have.attr', 'src' )
 				.and( 'include', 'whisk.jpg' );
-			revealBulkImageRemove();
+			cy.get(
+				'.tasty-recipes-row-list-bulk .tasty-recipes-row-image__remove'
+			).should( 'exist' );
 
 			cy.contains( 'button', 'Done' ).click();
 
@@ -1153,7 +1143,9 @@ describe( 'Recipe Creation', () => {
 				.and( 'have.attr', 'src' )
 				.and( 'include', 'whisk.jpg' );
 
-			revealBulkImageRemove().click();
+			cy.get(
+				'.tasty-recipes-row-list-bulk .tasty-recipes-row-image__remove'
+			).click( { force: true } );
 
 			cy.get( '.tasty-recipes-row-list-bulk img' ).should( 'not.exist' );
 

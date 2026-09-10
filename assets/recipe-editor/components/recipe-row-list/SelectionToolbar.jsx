@@ -5,11 +5,13 @@ import {
 	useRef,
 	useState,
 } from '@wordpress/element';
+import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 import classNames from 'classnames';
 import { getRecipeEditorScrollContainer } from '../dom';
 import { KbdTooltip } from '../kbd-tooltip';
 import { getModifierKeySymbol } from '../platform';
+import { filterEditorActiveCommands } from './toolbar-state';
 import { isSafeUrl } from './utils';
 
 // Not translatable: a translated URL would render an invalid example.
@@ -41,6 +43,23 @@ const getRange = selection => {
 
 const DEFAULT_SURFACE_SELECTOR =
 	'.tasty-recipes-row-input[contenteditable="true"]';
+
+const isSelectionToolbarVisible = ( range, container ) => {
+	/**
+	 * Filters whether the floating selection toolbar should show.
+	 *
+	 * @since x.x
+	 *
+	 * @param {boolean} visible           Default true.
+	 * @param {Object}  context           Selection context.
+	 * @param {Range}   context.range     Active selection range.
+	 * @param {Element} context.container Toolbar container element.
+	 */
+	return applyFilters( 'tasty_recipes_selection_toolbar_visible', true, {
+		range,
+		container,
+	} );
+};
 
 const isInsideSurface = ( node, container, surfaceSelector ) => {
 	if ( ! node || ! container ) {
@@ -161,21 +180,36 @@ export const SelectionToolbar = ( {
 		const editor = getTinyMceEditor( editable );
 
 		if ( editor ) {
-			setActiveCommands( {
-				bold: !! editor.queryCommandState( 'Bold' ),
-				italic: !! editor.queryCommandState( 'Italic' ),
-				underline: !! editor.queryCommandState( 'Underline' ),
-				link: !! editor.dom.getParent( editor.selection.getNode(), 'a' ),
-			} );
+			setActiveCommands(
+				filterEditorActiveCommands(
+					{
+						bold: !! editor.queryCommandState( 'Bold' ),
+						italic: !! editor.queryCommandState( 'Italic' ),
+						underline: !! editor.queryCommandState( 'Underline' ),
+						link: !! editor.dom.getParent(
+							editor.selection.getNode(),
+							'a'
+						),
+					},
+					range,
+					container
+				)
+			);
 			return;
 		}
 
-		setActiveCommands( {
-			bold: document.queryCommandState( 'bold' ),
-			italic: document.queryCommandState( 'italic' ),
-			underline: document.queryCommandState( 'underline' ),
-			link: !! getAnchorFromSelection( container ),
-		} );
+		setActiveCommands(
+			filterEditorActiveCommands(
+				{
+					bold: document.queryCommandState( 'bold' ),
+					italic: document.queryCommandState( 'italic' ),
+					underline: document.queryCommandState( 'underline' ),
+					link: !! getAnchorFromSelection( container ),
+				},
+				range,
+				container
+			)
+		);
 	};
 
 	const hide = () => {
@@ -216,6 +250,11 @@ export const SelectionToolbar = ( {
 				surfaceSelector
 			)
 		) {
+			hide();
+			return;
+		}
+
+		if ( ! isSelectionToolbarVisible( range, container ) ) {
 			hide();
 			return;
 		}
@@ -335,6 +374,10 @@ export const SelectionToolbar = ( {
 					surfaceSelector
 				)
 			) {
+				return;
+			}
+
+			if ( ! isSelectionToolbarVisible( range, container ) ) {
 				return;
 			}
 

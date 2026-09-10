@@ -6,6 +6,7 @@ import { KbdTooltip } from '../kbd-tooltip';
 import { getMediaImage, openImageMediaLibrary } from '../media-library';
 import { getModifierKeySymbol } from '../platform';
 import { DEFAULT_GROUP_LEVEL } from './constants';
+import { filterEditorActiveCommands } from './toolbar-state';
 import { createEditorImageHtml, isSafeUrl } from './utils';
 
 const LINK_PLACEHOLDER_URL = 'https://example.com';
@@ -326,13 +327,19 @@ export const BulkToolbar = ( {
 		const node = range.commonAncestorContainer;
 		const el = isElement( node ) ? node : node.parentElement;
 
-		setActiveCommands( {
-			bold: document.queryCommandState( 'bold' ),
-			italic: document.queryCommandState( 'italic' ),
-			underline: document.queryCommandState( 'underline' ),
-			link: !! el?.closest( 'a' ),
-			heading: !! el?.closest( 'h1,h2,h3,h4,h5,h6' ),
-		} );
+		setActiveCommands(
+			filterEditorActiveCommands(
+				{
+					bold: document.queryCommandState( 'bold' ),
+					italic: document.queryCommandState( 'italic' ),
+					underline: document.queryCommandState( 'underline' ),
+					link: !! el?.closest( 'a' ),
+					heading: !! el?.closest( 'h1,h2,h3,h4,h5,h6' ),
+				},
+				range,
+				editable
+			)
+		);
 	};
 
 	useEffect( () => {
