@@ -217,12 +217,10 @@ With Tasty Recipes, there aren't any confusing settings to configure or customiz
 
 == Changelog ==
 = 1.2.10 (September 10, 2026) =
-* New: Bulk edit toolbar with image controls for recipe rows
-* Enhancement: Recipe row editing improvements including persistent soft breaks (Shift+Enter), Tasty Links integration, and focused instruction toolbars
+* New: Bulk edit for ingredients and instructions
+* Enhancement: Recipe row editing improvements including persistent soft breaks (Shift+Enter)
 * Enhancement: Better process photo handling and preservation in recipe builder
-* Fix: Bulk edit leaving raw text visible after Done
 * Fix: Mediavine video embeds with blank oEmbed responses
-* Fix: Mago never-return issue on Mediavine oEmbed normalization
 
 = 1.2.9 (September 1, 2026) =
 * New: New Ingredients and Instructions fieldw UI
