@@ -3,11 +3,14 @@ import { __ } from '@wordpress/i18n';
 import classNames from 'classnames';
 import { DragGripIcon } from '../icons';
 import { RowActions } from './RowActions';
-import { getCaretSplitHtml, sanitizeInlineHtml, stripHtml } from './utils';
-
-const insertLineBreak = () => {
-	document.execCommand( 'insertHTML', false, '<br>' );
-};
+import {
+	deleteSoftBreakBeforeCaret,
+	fromEditorHtml,
+	getCaretSplitHtml,
+	insertSoftBreak,
+	stripHtml,
+	toEditorHtml,
+} from './utils';
 
 export const RecipeRow = ( {
 	row,
@@ -36,6 +39,17 @@ export const RecipeRow = ( {
 
 	const handleRowKeyDown = event => {
 		if (
+			'Backspace' === event.key &&
+			! event.altKey &&
+			! event.metaKey &&
+			! event.ctrlKey &&
+			deleteSoftBreakBeforeCaret( event.currentTarget )
+		) {
+			event.preventDefault();
+			return;
+		}
+
+		if (
 			'Enter' === event.key &&
 			! event.altKey &&
 			! event.metaKey &&
@@ -44,7 +58,7 @@ export const RecipeRow = ( {
 			event.preventDefault();
 
 			if ( event.shiftKey ) {
-				insertLineBreak();
+				insertSoftBreak( event.currentTarget );
 				return;
 			}
 
@@ -58,14 +72,17 @@ export const RecipeRow = ( {
 
 		if ( 'ArrowUp' === event.key ) {
 			event.preventDefault();
+
 			if ( canMoveUp ) {
 				onMoveUp();
 			}
+
 			return;
 		}
 
 		if ( 'ArrowDown' === event.key ) {
 			event.preventDefault();
+
 			if ( canMoveDown ) {
 				onMoveDown();
 			}
@@ -78,27 +95,30 @@ export const RecipeRow = ( {
 	// onInput already keeps row.value in sync while editing.
 	useLayoutEffect( () => {
 		const el = inputRef.current;
+
 		if ( ! el ) {
 			return;
 		}
 
-		const next = sanitizeInlineHtml( row.value || '' );
+		const next = fromEditorHtml( row.value || '' );
 		const isFocused = el === el.ownerDocument.activeElement;
+		const current = fromEditorHtml( el.innerHTML );
 
 		if ( isFocused ) {
 			if ( ! el.innerHTML && next ) {
-				el.innerHTML = next;
+				el.innerHTML = toEditorHtml( next );
 			}
 			return;
 		}
 
-		if ( sanitizeInlineHtml( el.innerHTML ) !== next ) {
-			el.innerHTML = next;
+		if ( current !== next ) {
+			el.innerHTML = toEditorHtml( next );
 		}
 	} );
 
 	useLayoutEffect( () => {
 		const el = inputRef.current;
+
 		if ( ! el || ! row.isNew ) {
 			return;
 		}
@@ -107,6 +127,7 @@ export const RecipeRow = ( {
 
 		const selection = el.ownerDocument.defaultView.getSelection();
 		const range = el.ownerDocument.createRange();
+
 		range.selectNodeContents( el );
 		range.collapse( false );
 		selection.removeAllRanges();
@@ -120,6 +141,7 @@ export const RecipeRow = ( {
 			className={ classNames( 'tasty-recipes-row-input', {
 				'is-empty': isEmpty,
 			} ) }
+			data-tasty-recipes-autolink=""
 			contentEditable
 			suppressContentEditableWarning
 			role="textbox"
@@ -130,13 +152,15 @@ export const RecipeRow = ( {
 			onPaste={ event => onPaste( event, row.id ) }
 			onInput={ event => {
 				const el = event.currentTarget;
-				if ( '<br>' === el.innerHTML || '<br/>' === el.innerHTML ) {
+
+				if (
+					'<br>' === el.innerHTML ||
+					'<br/>' === el.innerHTML ||
+					'\u200B' === el.textContent
+				) {
 					el.innerHTML = '';
 				}
-				onValueChange(
-					row.id,
-					sanitizeInlineHtml( el.innerHTML || '' )
-				);
+				onValueChange( row.id, fromEditorHtml( el.innerHTML || '' ) );
 			} }
 		/>
 	);

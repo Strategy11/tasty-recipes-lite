@@ -257,3 +257,27 @@ export const RowTrashIcon = (
 		/>
 	</svg>
 );
+
+export const BulkEditIcon = (
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		width="14"
+		height="14"
+		viewBox="0 0 14 14"
+		fill="none"
+		aria-hidden="true"
+	>
+		<path
+			d="M1.75 3.25h6M1.75 7h5.25M1.75 10.75h4"
+			stroke="currentColor"
+			strokeWidth="1.4"
+			strokeLinecap="round"
+		/>
+		<path
+			d="M8.85 8.4l3.05-3.05a.7.7 0 0 1 1 1L9.85 9.4l-1.55.35.55-1.35z"
+			stroke="currentColor"
+			strokeWidth="1.2"
+			strokeLinejoin="round"
+		/>
+	</svg>
+);

@@ -5,11 +5,13 @@ import {
 	useRef,
 	useState,
 } from '@wordpress/element';
+import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 import classNames from 'classnames';
 import { getRecipeEditorScrollContainer } from '../dom';
 import { KbdTooltip } from '../kbd-tooltip';
 import { getModifierKeySymbol } from '../platform';
+import { filterEditorActiveCommands } from './toolbar-state';
 import { isSafeUrl } from './utils';
 
 // Not translatable: a translated URL would render an invalid example.
@@ -41,6 +43,23 @@ const getRange = selection => {
 
 const DEFAULT_SURFACE_SELECTOR =
 	'.tasty-recipes-row-input[contenteditable="true"]';
+
+const isSelectionToolbarVisible = ( range, container ) => {
+	/**
+	 * Filters whether the floating selection toolbar should show.
+	 *
+	 * @since x.x
+	 *
+	 * @param {boolean} visible           Default true.
+	 * @param {Object}  context           Selection context.
+	 * @param {Range}   context.range     Active selection range.
+	 * @param {Element} context.container Toolbar container element.
+	 */
+	return applyFilters( 'tasty_recipes_selection_toolbar_visible', true, {
+		range,
+		container,
+	} );
+};
 
 const isInsideSurface = ( node, container, surfaceSelector ) => {
 	if ( ! node || ! container ) {
@@ -128,12 +147,14 @@ const notifyEditable = ( range, surfaceSelector ) => {
 export const SelectionToolbar = ( {
 	containerRef,
 	surfaceSelector = DEFAULT_SURFACE_SELECTOR,
+	onHasSelectionChange = null,
 } ) => {
 	const toolbarRef = useRef( null );
 	const linkPopoverRef = useRef( null );
 	const linkInputRef = useRef( null );
 	const savedRangeRef = useRef( null );
 	const linkOpenRef = useRef( false );
+	const onHasSelectionChangeRef = useRef( onHasSelectionChange );
 	const [ isVisible, setIsVisible ] = useState( false );
 	const [ position, setPosition ] = useState( { top: 0, left: 0 } );
 	const [ activeCommands, setActiveCommands ] = useState( {} );
@@ -146,6 +167,11 @@ export const SelectionToolbar = ( {
 	} );
 
 	linkOpenRef.current = linkOpen;
+	onHasSelectionChangeRef.current = onHasSelectionChange;
+
+	const reportHasSelection = hasSelection => {
+		onHasSelectionChangeRef.current?.( hasSelection );
+	};
 
 	const updateActiveState = () => {
 		const container = containerRef?.current;
@@ -154,26 +180,42 @@ export const SelectionToolbar = ( {
 		const editor = getTinyMceEditor( editable );
 
 		if ( editor ) {
-			setActiveCommands( {
-				bold: !! editor.queryCommandState( 'Bold' ),
-				italic: !! editor.queryCommandState( 'Italic' ),
-				underline: !! editor.queryCommandState( 'Underline' ),
-				link: !! editor.dom.getParent( editor.selection.getNode(), 'a' ),
-			} );
+			setActiveCommands(
+				filterEditorActiveCommands(
+					{
+						bold: !! editor.queryCommandState( 'Bold' ),
+						italic: !! editor.queryCommandState( 'Italic' ),
+						underline: !! editor.queryCommandState( 'Underline' ),
+						link: !! editor.dom.getParent(
+							editor.selection.getNode(),
+							'a'
+						),
+					},
+					range,
+					container
+				)
+			);
 			return;
 		}
 
-		setActiveCommands( {
-			bold: document.queryCommandState( 'bold' ),
-			italic: document.queryCommandState( 'italic' ),
-			underline: document.queryCommandState( 'underline' ),
-			link: !! getAnchorFromSelection( container ),
-		} );
+		setActiveCommands(
+			filterEditorActiveCommands(
+				{
+					bold: document.queryCommandState( 'bold' ),
+					italic: document.queryCommandState( 'italic' ),
+					underline: document.queryCommandState( 'underline' ),
+					link: !! getAnchorFromSelection( container ),
+				},
+				range,
+				container
+			)
+		);
 	};
 
 	const hide = () => {
 		setIsVisible( false );
 		setLinkOpen( false );
+		reportHasSelection( false );
 	};
 
 	const restoreSelection = () => {
@@ -212,11 +254,18 @@ export const SelectionToolbar = ( {
 			return;
 		}
 
+		if ( ! isSelectionToolbarVisible( range, container ) ) {
+			hide();
+			return;
+		}
+
 		const rect = range.getBoundingClientRect();
 		if ( ! rect.width && ! rect.height ) {
 			hide();
 			return;
 		}
+
+		reportHasSelection( true );
 
 		const scrollBody = getRecipeEditorScrollContainer();
 		if ( scrollBody ) {
@@ -325,6 +374,10 @@ export const SelectionToolbar = ( {
 					surfaceSelector
 				)
 			) {
+				return;
+			}
+
+			if ( ! isSelectionToolbarVisible( range, container ) ) {
 				return;
 			}
 
