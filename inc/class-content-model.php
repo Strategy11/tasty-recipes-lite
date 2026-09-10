@@ -547,7 +547,7 @@ class Content_Model {
 	/**
 	 * Reconstructs Mediavine player HTML when oEmbed returns blank html.
 	 *
-	 * @since x.x
+	 * @since 1.2.10
 	 *
 	 * @param object $response_data oEmbed response data.
 	 *

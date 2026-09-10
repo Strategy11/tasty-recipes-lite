@@ -4,7 +4,7 @@ Tags: recipe, recipe card, recipe maker, food blogging, schema
 Requires at least: 6.3
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.2.9
+Stable tag: 1.2.10
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -216,6 +216,14 @@ The Tasty Recipes plugin installs much like any other WordPress plugin.
 With Tasty Recipes, there aren't any confusing settings to configure or customizations you need to worry about. Share your favorite recipes with the world!
 
 == Changelog ==
+= 1.2.10 (September 10, 2026) =
+* New: Bulk edit toolbar with image controls for recipe rows
+* Enhancement: Recipe row editing improvements including persistent soft breaks (Shift+Enter), Tasty Links integration, and focused instruction toolbars
+* Enhancement: Better process photo handling and preservation in recipe builder
+* Fix: Bulk edit leaving raw text visible after Done
+* Fix: Mediavine video embeds with blank oEmbed responses
+* Fix: Mago never-return issue on Mediavine oEmbed normalization
+
 = 1.2.9 (September 1, 2026) =
 * New: New Ingredients and Instructions fieldw UI
 * Enhancement: Recipe editor improvements including modal behavior refinements, URL field styling, keyboard shortcuts, and checkbox styling
