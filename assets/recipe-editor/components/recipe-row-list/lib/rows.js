@@ -1,4 +1,4 @@
-import { getRecipeEditorScrollContainer } from '../dom';
+import { getRecipeEditorScrollContainer } from '../../dom';
 import { DEFAULT_GROUP_LEVEL, ROW_VISIBILITY_PADDING_PX } from './constants';
 import {
 	escapeHtml,
@@ -24,6 +24,8 @@ export const createRowId = () => {
 
 	return `tasty-recipe-row-${ rowIdCounter }`;
 };
+
+export const clearIsNew = row => ( { ...row, isNew: false } );
 
 export const createItemRow = ( {
 	isNew = false,

@@ -1,6 +1,6 @@
 import { createRoot } from '@wordpress/element';
 import { RecipeForm } from './components/RecipeForm';
-import { undoRowListHistory } from './components/recipe-row-list/history';
+import { undoRowListHistory } from './components/recipe-row-list';
 
 window.tastyRecipesUndoRowList = undoRowListHistory;
 
