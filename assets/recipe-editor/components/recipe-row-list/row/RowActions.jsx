@@ -6,8 +6,8 @@ import {
 	ParagraphIcon,
 	RowTrashIcon,
 	SectionTitleIcon,
-} from '../icons';
-import { getOptionKeySymbol } from '../platform';
+} from '../../icons';
+import { getOptionKeySymbol } from '../../platform';
 import { RowIconButton } from './RowIconButton';
 
 export const RowActions = ( {

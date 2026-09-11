@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { EMPTY_SHORTCUT, KbdTooltip } from '../kbd-tooltip';
+import { EMPTY_SHORTCUT, KbdTooltip } from '../../kbd-tooltip';
 
 export const RowIconButton = ( {
 	label,

@@ -1362,16 +1362,7 @@
 		transition: opacity 0.14s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.14s cubic-bezier(0.2, 0.8, 0.2, 1);
 	}
 
-	.tasty-recipes-row-list:not([data-mode='instructions']) {
-		.tasty-recipes-item-row:hover > .tasty-recipes-row-actions,
-		.tasty-recipes-item-row:focus-within > .tasty-recipes-row-actions {
-			opacity: 1;
-			pointer-events: auto;
-			transform: translateX(0);
-		}
-	}
-
-	.tasty-recipes-row-list[data-mode='instructions']:not(
+	.tasty-recipes-row-list:not(
 			.tasty-recipes-row-list--has-selection
 		) {
 		.tasty-recipes-item-row:focus-within > .tasty-recipes-row-actions {

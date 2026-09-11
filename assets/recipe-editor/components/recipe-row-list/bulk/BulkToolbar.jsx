@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import classNames from 'classnames';
-import { AddImageIcon } from '../icons';
-import { KbdTooltip } from '../kbd-tooltip';
-import { getMediaImage, openImageMediaLibrary } from '../media-library';
-import { getModifierKeySymbol } from '../platform';
-import { DEFAULT_GROUP_LEVEL } from './constants';
-import { filterEditorActiveCommands } from './toolbar-state';
-import { createEditorImageHtml, isSafeUrl } from './utils';
+import { AddImageIcon } from '../../icons';
+import { KbdTooltip } from '../../kbd-tooltip';
+import { getMediaImage, openImageMediaLibrary } from '../../media-library';
+import { getModifierKeySymbol } from '../../platform';
+import { DEFAULT_GROUP_LEVEL } from '../lib/constants';
+import { filterEditorActiveCommands } from '../toolbar';
+import { createEditorImageHtml, isSafeUrl } from '../lib/utils';
 
 const LINK_PLACEHOLDER_URL = 'https://example.com';
 

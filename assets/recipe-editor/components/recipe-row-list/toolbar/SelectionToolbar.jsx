@@ -8,11 +8,11 @@ import {
 import { applyFilters } from '@wordpress/hooks';
 import { __ } from '@wordpress/i18n';
 import classNames from 'classnames';
-import { getRecipeEditorScrollContainer } from '../dom';
-import { KbdTooltip } from '../kbd-tooltip';
-import { getModifierKeySymbol } from '../platform';
+import { getRecipeEditorScrollContainer } from '../../dom';
+import { KbdTooltip } from '../../kbd-tooltip';
+import { getModifierKeySymbol } from '../../platform';
 import { filterEditorActiveCommands } from './toolbar-state';
-import { isSafeUrl } from './utils';
+import { isSafeUrl } from '../lib/utils';
 
 // Not translatable: a translated URL would render an invalid example.
 const LINK_PLACEHOLDER_URL = 'https://example.com';
