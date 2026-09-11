@@ -1205,5 +1205,49 @@ describe( 'Recipe Creation', () => {
 
 			cy.get( '.tasty-recipes-modal-close' ).click( { force: true } );
 		} );
+
+		it( 'should keep the bulk editor at a fixed height and allow vertical resize', () => {
+			const longSteps = Array.from(
+				{ length: 20 },
+				( _, index ) => `Step ${ index + 1 }: mix, fold, and bake.`
+			);
+
+			openCreateRecipeModal();
+			cy.get( '.tasty-recipes-frame-content input#title' ).type(
+				`Cypress Bulk Height ${ Date.now() }`
+			);
+
+			cy.get( instructions )
+				.closest( 'fieldset' )
+				.contains( 'button', 'Bulk Edit' )
+				.click();
+
+			cy.get( '.tasty-recipes-row-list-bulk' )
+				.first()
+				.should( 'have.attr', 'contenteditable', 'true' )
+				.click()
+				.type( `{selectall}{backspace}${ longSteps.join( '{enter}' ) }`, {
+					delay: 0,
+				} );
+
+			cy.get( '.tasty-recipes-row-list-bulk-body' )
+				.first()
+				.then( $el => {
+					const el = $el[ 0 ];
+					const styles =
+						el.ownerDocument.defaultView.getComputedStyle( el );
+
+					expect( el.clientHeight ).to.be.closeTo( 180, 4 );
+					expect( styles.resize ).to.equal( 'vertical' );
+					expect( el.scrollHeight ).to.be.greaterThan(
+						el.clientHeight
+					);
+
+					el.style.height = '320px';
+					expect( el.clientHeight ).to.be.closeTo( 320, 4 );
+				} );
+
+			cy.get( '.tasty-recipes-modal-close' ).click( { force: true } );
+		} );
 	} );
 } );
