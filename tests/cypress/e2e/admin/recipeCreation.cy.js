@@ -743,64 +743,67 @@ describe( 'Recipe Creation', () => {
 			cy.get( '.tasty-recipes-modal-close' ).click( { force: true } );
 		} );
 
-		it( 'should show instruction row actions only on the focused unselected row', () => {
-			const selectNodeContents = el => {
-				const doc = el.ownerDocument;
-				const range = doc.createRange();
-				range.selectNodeContents( el );
-				const selection = doc.defaultView.getSelection();
-				selection.removeAllRanges();
-				selection.addRange( range );
-			};
+		const selectNodeContents = el => {
+			const doc = el.ownerDocument;
+			const range = doc.createRange();
+			range.selectNodeContents( el );
+			const selection = doc.defaultView.getSelection();
+			selection.removeAllRanges();
+			selection.addRange( range );
+		};
 
+		const assertRowActionsOnFocus = ( list, mode, lines ) => {
 			openCreateRecipeModal();
 			cy.get( '.tasty-recipes-frame-content input#title' ).type(
-				`Cypress Instruction Toolbar ${ Date.now() }`
+				`Cypress ${ mode } Toolbar ${ Date.now() }`
 			);
 
-			fillRowList( 'instructions', [
-				'Mix the batter well.',
-				'Bake until golden.',
-			] );
+			fillRowList( mode, lines );
 
-			cy.get( `${ instructions } .tasty-recipes-item-row` )
+			cy.get( `${ list } .tasty-recipes-item-row` )
 				.eq( 0 )
 				.scrollIntoView()
 				.find( '.tasty-recipes-row-actions' )
 				.should( 'not.be.visible' );
-			cy.get( `${ instructions } .tasty-recipes-item-row` )
+			cy.get( `${ list } .tasty-recipes-item-row` )
 				.eq( 1 )
 				.find( '.tasty-recipes-row-actions' )
 				.should( 'be.visible' );
 
-			cy.get( `${ instructions } .tasty-recipes-row-input` )
+			cy.get( `${ list } .tasty-recipes-item-row` )
+				.eq( 0 )
+				.trigger( 'mouseover' )
+				.find( '.tasty-recipes-row-actions' )
+				.should( 'not.be.visible' );
+
+			cy.get( `${ list } .tasty-recipes-row-input` )
 				.first()
 				.click();
 
-			cy.get( `${ instructions } .tasty-recipes-item-row` )
+			cy.get( `${ list } .tasty-recipes-item-row` )
 				.eq( 0 )
 				.find( '.tasty-recipes-row-actions' )
 				.should( 'be.visible' );
-			cy.get( `${ instructions } .tasty-recipes-item-row` )
+			cy.get( `${ list } .tasty-recipes-item-row` )
 				.eq( 1 )
 				.find( '.tasty-recipes-row-actions' )
 				.should( 'not.be.visible' );
 
-			cy.get( `${ instructions } .tasty-recipes-row-input` )
+			cy.get( `${ list } .tasty-recipes-row-input` )
 				.first()
 				.then( $el => selectNodeContents( $el[ 0 ] ) );
 
-			cy.get( instructions ).should(
+			cy.get( list ).should(
 				'have.class',
 				'tasty-recipes-row-list--has-selection'
 			);
-			cy.get( `${ instructions } .tasty-recipes-item-row` )
+			cy.get( `${ list } .tasty-recipes-item-row` )
 				.eq( 0 )
 				.find( '.tasty-recipes-row-actions' )
 				.should( 'not.be.visible' );
 			cy.get( '.tasty-recipes-selection-toolbar' ).should( 'be.visible' );
 
-			cy.get( `${ instructions } .tasty-recipes-row-input` )
+			cy.get( `${ list } .tasty-recipes-row-input` )
 				.first()
 				.then( $el => {
 					$el[ 0 ].ownerDocument.defaultView
@@ -808,17 +811,31 @@ describe( 'Recipe Creation', () => {
 						.collapseToEnd();
 				} );
 
-			cy.get( instructions ).should(
+			cy.get( list ).should(
 				'not.have.class',
 				'tasty-recipes-row-list--has-selection'
 			);
-			cy.get( `${ instructions } .tasty-recipes-item-row` )
+			cy.get( `${ list } .tasty-recipes-item-row` )
 				.eq( 0 )
 				.find( '.tasty-recipes-row-actions' )
 				.should( 'be.visible' );
 			cy.get( '.tasty-recipes-selection-toolbar' ).should( 'not.exist' );
 
 			cy.get( '.tasty-recipes-modal-close' ).click( { force: true } );
+		};
+
+		it( 'should show ingredient row actions only on the focused unselected row', () => {
+			assertRowActionsOnFocus( ingredients, 'ingredients', [
+				'2 cups flour',
+				'1 tsp salt',
+			] );
+		} );
+
+		it( 'should show instruction row actions only on the focused unselected row', () => {
+			assertRowActionsOnFocus( instructions, 'instructions', [
+				'Mix the batter well.',
+				'Bake until golden.',
+			] );
 		} );
 
 		it( 'should apply bulk edit headings from the toolbar', () => {

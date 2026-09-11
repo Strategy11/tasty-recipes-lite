@@ -1,7 +1,7 @@
 import { useLayoutEffect, useRef } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import classNames from 'classnames';
-import { DragGripIcon } from '../icons';
+import { DragGripIcon } from '../../icons';
 import { RowActions } from './RowActions';
 import {
 	deleteSoftBreakBeforeCaret,
@@ -10,7 +10,7 @@ import {
 	insertSoftBreak,
 	stripHtml,
 	toEditorHtml,
-} from './utils';
+} from '../lib/utils';
 
 export const RecipeRow = ( {
 	row,

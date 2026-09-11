@@ -1,2 +1,4 @@
 export { IngredientsList, InstructionsList } from './RecipeRowList';
-export { hasUnsupportedRowContent } from './utils';
+export { undoRowListHistory } from './lib';
+export { hasUnsupportedRowContent } from './lib/utils';
+export { SelectionToolbar } from './toolbar';

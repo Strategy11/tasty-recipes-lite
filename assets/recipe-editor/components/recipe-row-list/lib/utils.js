@@ -12,6 +12,7 @@ export {
 } from './html';
 export { createEditorImageHtml } from './images';
 export {
+	clearIsNew,
 	createGroupRow,
 	createItemRow,
 	createRowId,

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { SelectionToolbar } from './recipe-row-list/SelectionToolbar';
+import { SelectionToolbar } from './recipe-row-list';
 
 const CUSTOM_PLUGINS = [ 'tr_heading', 'tr_image', 'tr_video' ];
 
