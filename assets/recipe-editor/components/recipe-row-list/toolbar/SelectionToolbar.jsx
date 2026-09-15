@@ -13,6 +13,7 @@ import { KbdTooltip } from '../../kbd-tooltip';
 import { getModifierKeySymbol } from '../../platform';
 import {
 	applyAnchorAttributes,
+	getAnchorFromRange,
 	getClosestAnchor,
 	getLinkAttributes,
 	hasRelToken,
@@ -120,12 +121,7 @@ const getAnchorFromSelection = container => {
 		return null;
 	}
 
-	const node = selection.anchorNode;
-	const el =
-		node && Node.ELEMENT_NODE === node.nodeType
-			? node
-			: node?.parentElement;
-	return el?.closest( 'a' ) || null;
+	return getAnchorFromRange( selection.getRangeAt( 0 ) );
 };
 
 const normalizeUrl = raw => {

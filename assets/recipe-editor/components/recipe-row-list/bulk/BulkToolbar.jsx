@@ -9,6 +9,7 @@ import { DEFAULT_GROUP_LEVEL } from '../lib/constants';
 import {
 	applyAnchorAttributes,
 	createEditorImageHtml,
+	getAnchorFromRange,
 	getClosestAnchor,
 	getLinkAttributes,
 	hasRelToken,
@@ -243,9 +244,7 @@ const getAnchorFromSelection = container => {
 		return null;
 	}
 
-	const node = selection.anchorNode;
-	const el = isElement( node ) ? node : node?.parentElement;
-	return el?.closest( 'a' ) || null;
+	return getAnchorFromRange( selection.getRangeAt( 0 ) );
 };
 
 const normalizeUrl = raw => {

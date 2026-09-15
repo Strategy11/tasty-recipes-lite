@@ -341,11 +341,7 @@ describe( 'Recipe Render', () => {
 						.should( 'have.attr', 'rel' )
 						.and( 'include', 'sponsored' )
 						.and( 'include', 'noopener' )
-						.then( $link => {
-							expect( $link.attr( 'rel' ) ).to.not.include(
-								'nofollow'
-							);
-						} );
+						.and( 'not.include', 'nofollow' );
 				} );
 			} );
 		} );

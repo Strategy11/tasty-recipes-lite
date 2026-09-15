@@ -81,6 +81,30 @@ export const getClosestAnchor = node => {
 	return el?.closest( 'a' ) || null;
 };
 
+export const getAnchorFromRange = range => {
+	if ( ! range ) {
+		return null;
+	}
+
+	const fromAncestor = getClosestAnchor( range.commonAncestorContainer );
+	if ( fromAncestor ) {
+		return fromAncestor;
+	}
+
+	const root = range.commonAncestorContainer;
+	const container =
+		Node.ELEMENT_NODE === root.nodeType ? root : root.parentElement;
+	if ( ! container ) {
+		return null;
+	}
+
+	const anchors = Array.from( container.querySelectorAll( 'a' ) ).filter(
+		anchor => range.intersectsNode( anchor )
+	);
+
+	return 1 === anchors.length ? anchors[ 0 ] : null;
+};
+
 export const isRangeInsideNode = ( range, node ) => {
 	if ( ! range || ! node ) {
 		return false;

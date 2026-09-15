@@ -841,11 +841,18 @@ describe( 'Recipe Creation', () => {
 		const openRowLinkPopover = list => {
 			cy.get( `${ list } .tasty-recipes-row-input` )
 				.first()
-				.then( $el => selectNodeContents( $el[ 0 ] ) );
+				.then( $el => {
+					const link = $el.find( 'a' ).get( 0 );
+					if ( link ) {
+						cy.wrap( link ).click();
+						return;
+					}
 
-			cy.get(
-				'.tasty-recipes-selection-toolbar [aria-label="Add link"]'
-			).click();
+					selectNodeContents( $el[ 0 ] );
+					cy.get(
+						'.tasty-recipes-selection-toolbar [aria-label="Add link"]'
+					).click();
+				} );
 			cy.get( '.tasty-recipes-selection-link-popover' ).should(
 				'be.visible'
 			);
@@ -1234,7 +1241,7 @@ describe( 'Recipe Creation', () => {
 			cy.get(
 				'.tasty-recipes-bulk-toolbar [aria-label="Add link"]'
 			).click();
-			cy.get( '.tasty-recipes-bulk-toolbar-link input' )
+			cy.get( '.tasty-recipes-bulk-toolbar-link input[type="text"]' )
 				.clear()
 				.type( 'https://example.com' );
 			cy.get( '.tasty-recipes-bulk-toolbar-link' )

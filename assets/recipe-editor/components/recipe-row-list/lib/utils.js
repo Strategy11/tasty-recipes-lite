@@ -12,6 +12,7 @@ export {
 } from './html';
 export {
 	applyAnchorAttributes,
+	getAnchorFromRange,
 	getClosestAnchor,
 	getLinkAttributes,
 	hasRelToken,
