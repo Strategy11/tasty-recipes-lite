@@ -834,7 +834,7 @@
 		box-sizing: border-box;
 		width: 100%;
 		margin: 0;
-		padding: 0 !important;
+		padding: 0 0 8px !important;
 		overflow: hidden;
 		border-radius: 12px !important;
 
@@ -889,13 +889,20 @@
 		z-index: 20;
 	}
 
+	.tasty-recipes-row-list-bulk-body {
+		box-sizing: border-box;
+		width: 100%;
+		height: 180px;
+		min-height: 180px;
+		overflow-y: auto;
+		resize: vertical;
+	}
+
 	.tasty-recipes-row-list-bulk {
 		box-sizing: border-box;
 		width: 100%;
-		min-height: 180px;
 		margin: 0;
 		padding: 10px 12px;
-		overflow-y: auto;
 		border: 0 !important;
 		border-radius: 0 !important;
 		box-shadow: none !important;

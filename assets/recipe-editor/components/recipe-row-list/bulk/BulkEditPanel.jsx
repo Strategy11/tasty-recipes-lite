@@ -179,22 +179,24 @@ export const BulkEditPanel = ( {
 					showImage={ showImage }
 					onChange={ syncBulkText }
 				/>
-				<div
-					id={ `${ name }-bulk` }
-					ref={ bulkRef }
-					className="tasty-recipes-row-list-bulk"
-					data-tasty-recipes-autolink=""
-					contentEditable
-					suppressContentEditableWarning
-					role="textbox"
-					tabIndex={ 0 }
-					aria-multiline="true"
-					onInput={ handleBulkInput }
-					onKeyDown={ handleBulkKeyDown }
-					onPaste={ handleBulkPaste }
-					onMouseDown={ handleBulkImageClick }
-					onClick={ handleBulkImageClick }
-				/>
+				<div className="tasty-recipes-row-list-bulk-body">
+					<div
+						id={ `${ name }-bulk` }
+						ref={ bulkRef }
+						className="tasty-recipes-row-list-bulk"
+						data-tasty-recipes-autolink=""
+						contentEditable
+						suppressContentEditableWarning
+						role="textbox"
+						tabIndex={ 0 }
+						aria-multiline="true"
+						onInput={ handleBulkInput }
+						onKeyDown={ handleBulkKeyDown }
+						onPaste={ handleBulkPaste }
+						onMouseDown={ handleBulkImageClick }
+						onClick={ handleBulkImageClick }
+					/>
+				</div>
 			</div>
 			<div className="tasty-recipes-row-list-bulk-actions">
 				<button
