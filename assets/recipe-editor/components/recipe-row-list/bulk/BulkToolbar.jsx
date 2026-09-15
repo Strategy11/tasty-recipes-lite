@@ -6,10 +6,16 @@ import { KbdTooltip } from '../../kbd-tooltip';
 import { getMediaImage, openImageMediaLibrary } from '../../media-library';
 import { getModifierKeySymbol } from '../../platform';
 import { DEFAULT_GROUP_LEVEL } from '../lib/constants';
-import { filterEditorActiveCommands } from '../toolbar';
-import { createEditorImageHtml, isSafeUrl } from '../lib/utils';
-
-const LINK_PLACEHOLDER_URL = 'https://example.com';
+import {
+	applyAnchorAttributes,
+	createEditorImageHtml,
+	getClosestAnchor,
+	getLinkAttributes,
+	hasRelToken,
+	isRangeInsideNode,
+	isSafeUrl,
+} from '../lib/utils';
+import { filterEditorActiveCommands, LinkPopoverFields } from '../toolbar';
 
 const LINK_ICON = (
 	<svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -242,8 +248,6 @@ const getAnchorFromSelection = container => {
 	return el?.closest( 'a' ) || null;
 };
 
-const isAbsoluteHttpUrl = value => /^https?:\/\//i.test( value );
-
 const normalizeUrl = raw => {
 	const value = String( raw || '' ).trim();
 	if ( ! value || ! isSafeUrl( value ) ) {
@@ -280,6 +284,9 @@ export const BulkToolbar = ( {
 	const [ linkOpen, setLinkOpen ] = useState( false );
 	const [ linkUrl, setLinkUrl ] = useState( '' );
 	const [ linkHasAnchor, setLinkHasAnchor ] = useState( false );
+	const [ linkSponsored, setLinkSponsored ] = useState( false );
+	const [ linkNofollow, setLinkNofollow ] = useState( false );
+	const existingRelRef = useRef( '' );
 
 	const saveSelection = () => {
 		const range = getRange( getSelection( editorRef?.current ) );
@@ -451,10 +458,52 @@ export const BulkToolbar = ( {
 
 		const editable = editorRef?.current;
 		const anchor = getAnchorFromSelection( editable );
+		const existingRel = anchor ? anchor.getAttribute( 'rel' ) || '' : '';
+		existingRelRef.current = existingRel;
 		setLinkHasAnchor( !! anchor );
 		setLinkUrl( anchor ? anchor.getAttribute( 'href' ) || '' : '' );
+		setLinkSponsored( hasRelToken( existingRel, 'sponsored' ) );
+		setLinkNofollow( hasRelToken( existingRel, 'nofollow' ) );
 		setLinkOpen( true );
 	};
+
+	useEffect( () => {
+		const onClick = event => {
+			const editable = editorRef?.current;
+			const anchor = getClosestAnchor( event.target );
+			if ( ! editable || ! anchor || ! editable.contains( anchor ) ) {
+				return;
+			}
+
+			event.preventDefault();
+
+			if ( event.shiftKey ) {
+				return;
+			}
+
+			const selection = getSelection( editable );
+			const range = getRange( selection );
+			if (
+				selection &&
+				! selection.isCollapsed &&
+				range &&
+				! isRangeInsideNode( range, anchor )
+			) {
+				return;
+			}
+
+			event.stopPropagation();
+			const nextRange = editable.ownerDocument.createRange();
+			nextRange.selectNodeContents( anchor );
+			selection?.removeAllRanges();
+			selection?.addRange( nextRange );
+			openLinkPopover();
+		};
+
+		document.addEventListener( 'click', onClick, true );
+		return () => document.removeEventListener( 'click', onClick, true );
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [ editorRef ] );
 
 	const applyLink = () => {
 		const url = normalizeUrl( linkUrl );
@@ -464,11 +513,15 @@ export const BulkToolbar = ( {
 		}
 
 		document.execCommand( 'createLink', false, url );
-		const anchor = getAnchorFromSelection( editorRef?.current );
-		if ( anchor && isAbsoluteHttpUrl( url ) ) {
-			anchor.setAttribute( 'target', '_blank' );
-			anchor.setAttribute( 'rel', 'noopener noreferrer' );
-		}
+		applyAnchorAttributes(
+			getAnchorFromSelection( editorRef?.current ),
+			getLinkAttributes( {
+				url,
+				existingRel: existingRelRef.current,
+				sponsored: linkSponsored,
+				nofollow: linkNofollow,
+			} )
+		);
 
 		notifyEditable( editorRef?.current );
 		onChange();
@@ -643,44 +696,29 @@ export const BulkToolbar = ( {
 					role="dialog"
 					aria-label={ __( 'Insert link', 'tasty-recipes-lite' ) }
 					onMouseDown={ event => {
-						if ( 'INPUT' !== event.target.tagName ) {
-							event.preventDefault();
+						if (
+							event.target.closest(
+								'input[type="text"], input[type="url"]'
+							)
+						) {
+							return;
 						}
+						event.preventDefault();
 					} }
 				>
-					<input
-						ref={ linkInputRef }
-						type="text"
-						inputMode="url"
-						autoComplete="off"
-						value={ linkUrl }
-						placeholder={ LINK_PLACEHOLDER_URL }
-						onChange={ event => setLinkUrl( event.target.value ) }
-						onKeyDown={ event => {
-							if ( 'Enter' === event.key ) {
-								event.preventDefault();
-								applyLink();
-							}
-							if ( 'Escape' === event.key ) {
-								event.preventDefault();
-								setLinkOpen( false );
-							}
-						} }
+					<LinkPopoverFields
+						inputRef={ linkInputRef }
+						url={ linkUrl }
+						onUrlChange={ setLinkUrl }
+						onSubmit={ applyLink }
+						onCancel={ () => setLinkOpen( false ) }
+						onRemove={ removeLink }
+						hasAnchor={ linkHasAnchor }
+						sponsored={ linkSponsored }
+						nofollow={ linkNofollow }
+						onSponsoredChange={ setLinkSponsored }
+						onNofollowChange={ setLinkNofollow }
 					/>
-					<button type="button" onClick={ applyLink }>
-						{ linkHasAnchor
-							? __( 'Update', 'tasty-recipes-lite' )
-							: __( 'Add', 'tasty-recipes-lite' ) }
-					</button>
-					{ linkHasAnchor && (
-						<button
-							type="button"
-							className="tasty-recipes-selection-link-popover__remove"
-							onClick={ removeLink }
-						>
-							{ __( 'Remove', 'tasty-recipes-lite' ) }
-						</button>
-					) }
 				</div>
 			) }
 		</div>

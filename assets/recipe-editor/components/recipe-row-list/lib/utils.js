@@ -10,6 +10,14 @@ export {
 	isSafeUrl,
 	normalizeRowText,
 } from './html';
+export {
+	applyAnchorAttributes,
+	getClosestAnchor,
+	getLinkAttributes,
+	hasRelToken,
+	isAbsoluteHttpUrl,
+	isRangeInsideNode,
+} from './link';
 export { createEditorImageHtml } from './images';
 export {
 	clearIsNew,

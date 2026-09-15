@@ -838,6 +838,163 @@ describe( 'Recipe Creation', () => {
 			] );
 		} );
 
+		const openRowLinkPopover = list => {
+			cy.get( `${ list } .tasty-recipes-row-input` )
+				.first()
+				.then( $el => selectNodeContents( $el[ 0 ] ) );
+
+			cy.get(
+				'.tasty-recipes-selection-toolbar [aria-label="Add link"]'
+			).click();
+			cy.get( '.tasty-recipes-selection-link-popover' ).should(
+				'be.visible'
+			);
+		};
+
+		const assertLinkRelOption = ( label, checked ) => {
+			cy.get( '.tasty-recipes-selection-link-popover' )
+				.contains( 'label', label )
+				.should( checked ? 'have.class' : 'not.have.class', 'is-checked' );
+		};
+
+		const toggleLinkRelOption = label => {
+			cy.get( '.tasty-recipes-selection-link-popover' )
+				.contains( 'label', label )
+				.click();
+		};
+
+		it( 'should default link attributes off and persist sponsored and nofollow', () => {
+			openCreateRecipeModal();
+			cy.get( '.tasty-recipes-frame-content input#title' ).type(
+				`Cypress Link Attrs ${ Date.now() }`
+			);
+
+			cy.get( `${ ingredients } .tasty-recipes-row-input` )
+				.first()
+				.click()
+				.type( 'affiliate flour' );
+
+			openRowLinkPopover( ingredients );
+			assertLinkRelOption( 'Sponsored', false );
+			assertLinkRelOption( 'Nofollow', false );
+
+			cy.get( '.tasty-recipes-selection-link-popover input[type="text"]' )
+				.clear()
+				.type( 'https://example.com/flour' );
+			toggleLinkRelOption( 'Sponsored' );
+			assertLinkRelOption( 'Sponsored', true );
+			assertLinkRelOption( 'Nofollow', false );
+			cy.get( '.tasty-recipes-selection-link-popover' )
+				.contains( 'button', 'Add' )
+				.click();
+
+			cy.get( ingredients )
+				.siblings( 'input[name="ingredients"]' )
+				.invoke( 'val' )
+				.then( value => {
+					expect( value ).to.include( 'https://example.com/flour' );
+					expect( value ).to.include( 'sponsored' );
+					expect( value ).to.not.include( 'nofollow' );
+					expect( value ).to.include( 'noopener' );
+					expect( value ).to.include( 'noreferrer' );
+				} );
+
+			openRowLinkPopover( ingredients );
+			assertLinkRelOption( 'Sponsored', true );
+			assertLinkRelOption( 'Nofollow', false );
+			toggleLinkRelOption( 'Nofollow' );
+			assertLinkRelOption( 'Nofollow', true );
+			cy.get( '.tasty-recipes-selection-link-popover' )
+				.contains( 'button', 'Update' )
+				.click();
+
+			cy.get( ingredients )
+				.siblings( 'input[name="ingredients"]' )
+				.invoke( 'val' )
+				.then( value => {
+					expect( value ).to.include( 'sponsored' );
+					expect( value ).to.include( 'nofollow' );
+				} );
+
+			cy.get( `${ instructions } .tasty-recipes-row-input` )
+				.first()
+				.click()
+				.type( 'Buy a mixer' );
+
+			openRowLinkPopover( instructions );
+			assertLinkRelOption( 'Sponsored', false );
+			assertLinkRelOption( 'Nofollow', false );
+			cy.get( '.tasty-recipes-selection-link-popover input[type="text"]' )
+				.clear()
+				.type( 'https://example.com/mixer' );
+			toggleLinkRelOption( 'Nofollow' );
+			cy.get( '.tasty-recipes-selection-link-popover' )
+				.contains( 'button', 'Add' )
+				.click();
+
+			cy.get( instructions )
+				.siblings( 'input[name="instructions"]' )
+				.invoke( 'val' )
+				.then( value => {
+					expect( value ).to.include( 'https://example.com/mixer' );
+					expect( value ).to.include( 'nofollow' );
+					expect( value ).to.not.include( 'sponsored' );
+				} );
+
+			cy.get( '.tasty-recipes-modal-close' ).click( { force: true } );
+		} );
+
+		it( 'should restore saved link attributes when editing a recipe', () => {
+			const recipeTitle = `Cypress Saved Link Attrs ${ Date.now() }`;
+
+			cy.createTastyRecipe( {
+				title: recipeTitle,
+				ingredients:
+					'<ul><li><a href="https://example.com/sugar" target="_blank" rel="noopener noreferrer sponsored nofollow">sugar</a></li></ul>',
+			} );
+
+			cy.visit( '/wp-admin/edit.php?post_type=tasty_recipe' );
+			openEditRecipeModal( recipeTitle );
+
+			openRowLinkPopover( ingredients );
+			assertLinkRelOption( 'Sponsored', true );
+			assertLinkRelOption( 'Nofollow', true );
+			cy.get( '.tasty-recipes-selection-link-popover input[type="text"]' )
+				.should( 'have.value', 'https://example.com/sugar' );
+
+			cy.get( '.tasty-recipes-modal-close' ).click( { force: true } );
+		} );
+
+		it( 'should open link settings when clicking a recipe editor link', () => {
+			const recipeTitle = `Cypress Click Link ${ Date.now() }`;
+
+			cy.createTastyRecipe( {
+				title: recipeTitle,
+				ingredients:
+					'<ul><li><a href="https://example.com/sugar" target="_blank" rel="noopener noreferrer sponsored">sugar</a></li></ul>',
+			} );
+
+			cy.visit( '/wp-admin/edit.php?post_type=tasty_recipe' );
+			openEditRecipeModal( recipeTitle );
+
+			cy.get( `${ ingredients } .tasty-recipes-row-input a` )
+				.should( 'be.visible' )
+				.click();
+
+			cy.get( '.tasty-recipes-selection-link-popover' ).should(
+				'be.visible'
+			);
+			cy.get( '.tasty-recipes-selection-link-popover input[type="text"]' )
+				.should( 'have.value', 'https://example.com/sugar' );
+			assertLinkRelOption( 'Sponsored', true );
+			assertLinkRelOption( 'Nofollow', false );
+			cy.get( '.tasty-recipes-selection-link-popover' )
+				.contains( 'button', 'Update' )
+				.should( 'be.visible' );
+
+			cy.get( '.tasty-recipes-modal-close' ).click( { force: true } );
+		} );
+
 		it( 'should apply bulk edit headings from the toolbar', () => {
 			const selectFirstText = el => {
 				const doc = el.ownerDocument;
@@ -1092,6 +1249,83 @@ describe( 'Recipe Creation', () => {
 				.then( value => {
 					expect( value ).to.match( /<(b|strong)>/ );
 					expect( value ).to.include( 'https://example.com' );
+					expect( value ).to.include( 'Whisk the eggs' );
+				} );
+
+			cy.get( '.tasty-recipes-modal-close' ).click( { force: true } );
+		} );
+
+		it( 'should apply sponsored and nofollow from the bulk link popover', () => {
+			const selectFirstText = el => {
+				const doc = el.ownerDocument;
+				const walker = doc.createTreeWalker(
+					el,
+					doc.defaultView.NodeFilter.SHOW_TEXT
+				);
+				const text = walker.nextNode();
+				if ( ! text ) {
+					return;
+				}
+
+				const range = doc.createRange();
+				range.selectNodeContents( text );
+				const selection = doc.defaultView.getSelection();
+				selection.removeAllRanges();
+				selection.addRange( range );
+			};
+
+			openCreateRecipeModal();
+			cy.get( '.tasty-recipes-frame-content input#title' ).type(
+				`Cypress Bulk Link Attrs ${ Date.now() }`
+			);
+
+			cy.get( instructions )
+				.closest( 'fieldset' )
+				.contains( 'button', 'Bulk Edit' )
+				.click();
+
+			cy.get( '.tasty-recipes-row-list-bulk' )
+				.first()
+				.click()
+				.type( '{selectall}{backspace}Whisk the eggs' );
+
+			cy.get( '.tasty-recipes-row-list-bulk' )
+				.first()
+				.then( $el => selectFirstText( $el[ 0 ] ) );
+
+			cy.get(
+				'.tasty-recipes-bulk-toolbar [aria-label="Add link"]'
+			).click();
+			cy.get( '.tasty-recipes-bulk-toolbar-link' ).should( 'be.visible' );
+			cy.get( '.tasty-recipes-bulk-toolbar-link' )
+				.contains( 'label', 'Sponsored' )
+				.should( 'not.have.class', 'is-checked' );
+			cy.get( '.tasty-recipes-bulk-toolbar-link' )
+				.contains( 'label', 'Nofollow' )
+				.should( 'not.have.class', 'is-checked' );
+
+			cy.get( '.tasty-recipes-bulk-toolbar-link input[type="text"]' )
+				.clear()
+				.type( 'https://example.com' );
+			cy.get( '.tasty-recipes-bulk-toolbar-link' )
+				.contains( 'label', 'Sponsored' )
+				.click();
+			cy.get( '.tasty-recipes-bulk-toolbar-link' )
+				.contains( 'label', 'Nofollow' )
+				.click();
+			cy.get( '.tasty-recipes-bulk-toolbar-link' )
+				.contains( 'button', 'Add' )
+				.click();
+
+			cy.contains( 'button', 'Done' ).click();
+
+			cy.get( instructions )
+				.siblings( 'input[name="instructions"]' )
+				.invoke( 'val' )
+				.then( value => {
+					expect( value ).to.include( 'https://example.com' );
+					expect( value ).to.include( 'sponsored' );
+					expect( value ).to.include( 'nofollow' );
 					expect( value ).to.include( 'Whisk the eggs' );
 				} );
 

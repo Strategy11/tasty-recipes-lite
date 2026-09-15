@@ -1,7 +1,7 @@
 import { useLayoutEffect, useRef } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import classNames from 'classnames';
-import { DragGripIcon } from '../../icons';
+import { CloseIcon, DragGripIcon } from '../../icons';
 import { RowActions } from './RowActions';
 import {
 	deleteSoftBreakBeforeCaret,
@@ -204,7 +204,7 @@ export const RecipeRow = ( {
 							) }
 							onClick={ () => onRemoveImage?.( row.id ) }
 						>
-							<span aria-hidden="true">×</span>
+							{ CloseIcon }
 						</button>
 					</div>
 					{ !! row.image.caption && (

@@ -11,11 +11,16 @@ import classNames from 'classnames';
 import { getRecipeEditorScrollContainer } from '../../dom';
 import { KbdTooltip } from '../../kbd-tooltip';
 import { getModifierKeySymbol } from '../../platform';
+import {
+	applyAnchorAttributes,
+	getClosestAnchor,
+	getLinkAttributes,
+	hasRelToken,
+	isRangeInsideNode,
+	isSafeUrl,
+} from '../lib/utils';
+import { LinkPopoverFields } from './LinkPopoverFields';
 import { filterEditorActiveCommands } from './toolbar-state';
-import { isSafeUrl } from '../lib/utils';
-
-// Not translatable: a translated URL would render an invalid example.
-const LINK_PLACEHOLDER_URL = 'https://example.com';
 
 const LINK_ICON = (
 	<svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -95,6 +100,20 @@ const getTinyMceEditor = editable => {
 	return window.tinymce.get( editable.id ) || null;
 };
 
+const getVisibleRect = ( range, anchor ) => {
+	const rangeRect = range?.getBoundingClientRect?.();
+	if ( rangeRect && ( rangeRect.width || rangeRect.height ) ) {
+		return rangeRect;
+	}
+
+	const anchorRect = anchor?.getBoundingClientRect?.();
+	if ( anchorRect && ( anchorRect.width || anchorRect.height ) ) {
+		return anchorRect;
+	}
+
+	return rangeRect || anchorRect || null;
+};
+
 const getAnchorFromSelection = container => {
 	const selection = getSelection( container );
 	if ( ! selection || ! selection.rangeCount ) {
@@ -108,8 +127,6 @@ const getAnchorFromSelection = container => {
 			: node?.parentElement;
 	return el?.closest( 'a' ) || null;
 };
-
-const isAbsoluteHttpUrl = value => /^https?:\/\//i.test( value );
 
 const normalizeUrl = raw => {
 	const value = String( raw || '' ).trim();
@@ -161,6 +178,9 @@ export const SelectionToolbar = ( {
 	const [ linkOpen, setLinkOpen ] = useState( false );
 	const [ linkUrl, setLinkUrl ] = useState( '' );
 	const [ linkHasAnchor, setLinkHasAnchor ] = useState( false );
+	const [ linkSponsored, setLinkSponsored ] = useState( false );
+	const [ linkNofollow, setLinkNofollow ] = useState( false );
+	const existingRelRef = useRef( '' );
 	const [ linkPosition, setLinkPosition ] = useState( {
 		top: 0,
 		left: 0,
@@ -285,7 +305,7 @@ export const SelectionToolbar = ( {
 		} );
 	};
 
-	const openLinkPopover = () => {
+	const openLinkPopover = ( explicitAnchor = null ) => {
 		const container = containerRef?.current;
 		const selection = getSelection( container );
 		const range = getRange( selection );
@@ -306,20 +326,99 @@ export const SelectionToolbar = ( {
 		savedRangeRef.current = range.cloneRange();
 		const editable = getEditableFromRange( range, surfaceSelector );
 		const editor = getTinyMceEditor( editable );
-		const anchor = editor
-			? editor.dom.getParent( editor.selection.getNode(), 'a' )
-			: getAnchorFromSelection( container );
-		const rect = range.getBoundingClientRect();
+		const clickedAnchor =
+			explicitAnchor && Node.ELEMENT_NODE === explicitAnchor.nodeType
+				? explicitAnchor
+				: null;
+		const anchor =
+			clickedAnchor ||
+			( editor
+				? editor.dom.getParent( editor.selection.getNode(), 'a' )
+				: getAnchorFromSelection( container ) );
+		const rect = getVisibleRect( range, anchor );
+		if ( ! rect ) {
+			return;
+		}
+
+		const existingRel = anchor ? anchor.getAttribute( 'rel' ) || '' : '';
+		existingRelRef.current = existingRel;
 		setLinkHasAnchor( !! anchor );
 		// Shown verbatim so editing an existing link cannot rewrite its scheme.
 		setLinkUrl( anchor ? anchor.getAttribute( 'href' ) || '' : '' );
+		setLinkSponsored( hasRelToken( existingRel, 'sponsored' ) );
+		setLinkNofollow( hasRelToken( existingRel, 'nofollow' ) );
+		const center = rect.left + ( rect.width / 2 );
+		setPosition( {
+			top: Math.max( 8, rect.top - 40 ),
+			left: center,
+		} );
 		setLinkPosition( {
 			top: rect.bottom + 12,
-			left: rect.left + ( rect.width / 2 ),
+			left: center,
 		} );
 		setLinkOpen( true );
 		setIsVisible( true );
 	};
+
+	const selectAnchor = anchor => {
+		const editable = anchor.closest( surfaceSelector );
+		const editor = getTinyMceEditor( editable );
+		if ( editor ) {
+			editor.selection.select( anchor );
+			return editor.selection.getRng();
+		}
+
+		const range = anchor.ownerDocument.createRange();
+		range.selectNodeContents( anchor );
+		const selection = getSelection( containerRef?.current );
+		if ( ! selection ) {
+			return range;
+		}
+
+		selection.removeAllRanges();
+		selection.addRange( range );
+		return range;
+	};
+
+	useEffect( () => {
+		const onClick = event => {
+			const container = containerRef?.current;
+			const anchor = getClosestAnchor( event.target );
+			if (
+				! container ||
+				! anchor ||
+				! container.contains( anchor ) ||
+				! anchor.closest( surfaceSelector )
+			) {
+				return;
+			}
+
+			event.preventDefault();
+
+			if ( event.shiftKey ) {
+				return;
+			}
+
+			const selection = getSelection( container );
+			const range = getRange( selection );
+			if (
+				selection &&
+				! selection.isCollapsed &&
+				range &&
+				! isRangeInsideNode( range, anchor )
+			) {
+				return;
+			}
+
+			event.stopPropagation();
+			selectAnchor( anchor );
+			openLinkPopover( anchor );
+		};
+
+		document.addEventListener( 'click', onClick, true );
+		return () => document.removeEventListener( 'click', onClick, true );
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [ containerRef, surfaceSelector ] );
 
 	useEffect( () => {
 		const onSelectionChange = () => syncFromSelection();
@@ -391,30 +490,47 @@ export const SelectionToolbar = ( {
 	}, [ containerRef, surfaceSelector ] );
 
 	useLayoutEffect( () => {
-		if ( ! isVisible || ! toolbarRef.current ) {
+		const clampCenter = ( left, width ) => {
+			const half = width / 2;
+			return Math.max(
+				8 + half,
+				Math.min( left, window.innerWidth - 8 - half )
+			);
+		};
+
+		if ( isVisible && toolbarRef.current ) {
+			const tipRect = toolbarRef.current.getBoundingClientRect();
+			const clamped = clampCenter( position.left, tipRect.width );
+			if ( Math.abs( clamped - position.left ) > 0.5 ) {
+				setPosition( prev => ( { ...prev, left: clamped } ) );
+			}
+		}
+
+		if ( ! linkOpen || ! linkPopoverRef.current ) {
 			return;
 		}
 
-		const tipRect = toolbarRef.current.getBoundingClientRect();
-		const half = tipRect.width / 2;
-		const minLeft = 8 + half;
-		const maxLeft = window.innerWidth - 8 - half;
-		const clamped = Math.max(
-			minLeft,
-			Math.min( position.left, maxLeft )
+		const selRect = getVisibleRect(
+			savedRangeRef.current,
+			getClosestAnchor( savedRangeRef.current?.commonAncestorContainer )
 		);
-		if ( Math.abs( clamped - position.left ) > 0.5 ) {
-			setPosition( prev => ( { ...prev, left: clamped } ) );
-		}
+		const nextTop = selRect ? selRect.bottom + 12 : linkPosition.top;
+		const nextLeft = selRect
+			? selRect.left + ( selRect.width / 2 )
+			: linkPosition.left;
+		const popRect = linkPopoverRef.current.getBoundingClientRect();
+		const clampedLeft = clampCenter( nextLeft, popRect.width );
 
-		if ( linkOpen && savedRangeRef.current ) {
-			const selRect = savedRangeRef.current.getBoundingClientRect();
+		if (
+			Math.abs( clampedLeft - linkPosition.left ) > 0.5 ||
+			Math.abs( nextTop - linkPosition.top ) > 0.5
+		) {
 			setLinkPosition( {
-				top: selRect.bottom + 12,
-				left: clamped,
+				top: nextTop,
+				left: clampedLeft,
 			} );
 		}
-	}, [ isVisible, position.left, position.top, linkOpen ] );
+	}, [ isVisible, position.left, position.top, linkOpen, linkPosition ] );
 
 	useEffect( () => {
 		if ( linkOpen && linkInputRef.current ) {
@@ -482,21 +598,25 @@ export const SelectionToolbar = ( {
 			savedRangeRef.current,
 			surfaceSelector
 		);
+		const attrs = getLinkAttributes( {
+			url,
+			existingRel: existingRelRef.current,
+			sponsored: linkSponsored,
+			nofollow: linkNofollow,
+		} );
 		const editor = getTinyMceEditor( editable );
 		if ( editor ) {
-			const linkAttrs = { href: url };
-			if ( isAbsoluteHttpUrl( url ) ) {
-				linkAttrs.target = '_blank';
-				linkAttrs.rel = 'noopener noreferrer';
-			}
-			editor.execCommand( 'mceInsertLink', false, linkAttrs );
+			editor.execCommand( 'mceInsertLink', false, {
+				href: attrs.href,
+				target: attrs.target,
+				rel: attrs.rel,
+			} );
 		} else {
 			document.execCommand( 'createLink', false, url );
-			const anchor = getAnchorFromSelection( containerRef?.current );
-			if ( anchor && isAbsoluteHttpUrl( url ) ) {
-				anchor.setAttribute( 'target', '_blank' );
-				anchor.setAttribute( 'rel', 'noopener noreferrer' );
-			}
+			applyAnchorAttributes(
+				getAnchorFromSelection( containerRef?.current ),
+				attrs
+			);
 		}
 
 		notifyEditable( savedRangeRef.current, surfaceSelector );
@@ -615,7 +735,7 @@ export const SelectionToolbar = ( {
 							} ) }
 							aria-label={ __( 'Add link', 'tasty-recipes-lite' ) }
 							aria-expanded={ linkOpen }
-							onClick={ openLinkPopover }
+							onClick={ () => openLinkPopover() }
 						>
 							{ LINK_ICON }
 						</button>
@@ -631,46 +751,29 @@ export const SelectionToolbar = ( {
 					role="dialog"
 					aria-label={ __( 'Insert link', 'tasty-recipes-lite' ) }
 					onMouseDown={ event => {
-						if ( 'INPUT' !== event.target.tagName ) {
-							event.preventDefault();
+						if (
+							event.target.closest(
+								'input[type="text"], input[type="url"]'
+							)
+						) {
+							return;
 						}
+						event.preventDefault();
 					} }
 				>
-					<input
-						ref={ linkInputRef }
-						type="text"
-						inputMode="url"
-						autoComplete="off"
-						value={ linkUrl }
-						placeholder={ LINK_PLACEHOLDER_URL }
-						onChange={ event =>
-							setLinkUrl( event.target.value )
-						}
-						onKeyDown={ event => {
-							if ( 'Enter' === event.key ) {
-								event.preventDefault();
-								applyLink();
-							}
-							if ( 'Escape' === event.key ) {
-								event.preventDefault();
-								setLinkOpen( false );
-							}
-						} }
+					<LinkPopoverFields
+						inputRef={ linkInputRef }
+						url={ linkUrl }
+						onUrlChange={ setLinkUrl }
+						onSubmit={ applyLink }
+						onCancel={ () => setLinkOpen( false ) }
+						onRemove={ removeLink }
+						hasAnchor={ linkHasAnchor }
+						sponsored={ linkSponsored }
+						nofollow={ linkNofollow }
+						onSponsoredChange={ setLinkSponsored }
+						onNofollowChange={ setLinkNofollow }
 					/>
-					<button type="button" onClick={ applyLink }>
-						{ linkHasAnchor
-							? __( 'Update', 'tasty-recipes-lite' )
-							: __( 'Add', 'tasty-recipes-lite' ) }
-					</button>
-					{ linkHasAnchor && (
-						<button
-							type="button"
-							className="tasty-recipes-selection-link-popover__remove"
-							onClick={ removeLink }
-						>
-							{ __( 'Remove', 'tasty-recipes-lite' ) }
-						</button>
-					) }
 				</div>
 			) }
 		</>,
