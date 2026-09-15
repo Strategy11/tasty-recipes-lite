@@ -962,31 +962,6 @@
 			img {
 				margin: 0;
 			}
-
-			.tasty-recipes-row-image__remove {
-				top: 6px;
-				right: 6px;
-				width: 20px;
-				height: 20px;
-				padding: 0;
-				font-size: 0;
-				line-height: 0;
-				opacity: 0;
-				pointer-events: none;
-				transition: opacity 0.12s ease, background 0.12s ease;
-
-				svg {
-					display: block;
-					width: 10px;
-					height: 10px;
-				}
-			}
-
-			&:hover .tasty-recipes-row-image__remove,
-			&:focus-within .tasty-recipes-row-image__remove {
-				opacity: 1;
-				pointer-events: auto;
-			}
 		}
 
 		figure img {
@@ -1218,14 +1193,14 @@
 		border-radius: 999px;
 		background: rgba(24, 27, 37, 0.72);
 		color: #fff;
-		font-size: 18px;
-		line-height: 1;
+		line-height: 0;
 		cursor: pointer;
 		transition: background 0.12s ease;
 
-		span {
+		svg {
 			display: block;
-			margin-top: -1px;
+			width: 10px;
+			height: 10px;
 		}
 
 		&:hover,
@@ -1779,18 +1754,25 @@
 	z-index: 10201;
 	box-sizing: border-box;
 	display: flex;
-	align-items: center;
-	gap: 6px;
-	width: 283px;
-	max-width: 283px;
-	padding: 4px 6px;
+	flex-direction: column;
+	align-items: stretch;
+	gap: 8px;
+	width: max-content;
+	min-width: 283px;
+	max-width: calc( 100vw - 16px );
+	padding: 8px;
 	@include editor-shared.floating-panel;
 	border-radius: 10px !important;
 	transform: translateX(-50%);
 
+	.tasty-recipes-selection-link-popover__row {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+	}
+
 	input[type='text'],
-	input[type='url'],
-	input {
+	input[type='url'] {
 		box-sizing: border-box !important;
 		flex: 1 1 0% !important;
 		width: auto !important;
@@ -1801,11 +1783,16 @@
 		max-height: 28px !important;
 		margin: 0 !important;
 		padding: 0 8px !important;
-		@include editor-shared.link-input;
+		border: 1px solid #E1E4EA !important;
+		border-radius: 10px !important;
+		background: #fff !important;
+		box-shadow: none !important;
+		color: #181B25 !important;
 		font-family: 'Inter', sans-serif !important;
 		font-size: 13px !important;
 		font-weight: 400 !important;
 		line-height: 26px !important;
+		outline: none !important;
 		outline-offset: 0 !important;
 
 		&::placeholder {
@@ -1813,15 +1800,18 @@
 			opacity: 1 !important;
 		}
 
-		&:focus,
-		&:focus-visible,
 		&:hover {
+			border-color: #CACFD8 !important;
+		}
+
+		&:focus,
+		&:focus-visible {
 			@include editor-shared.link-input;
 			outline-offset: 0 !important;
 		}
 	}
 
-	button {
+	.tasty-recipes-selection-link-popover__row button {
 		box-sizing: border-box !important;
 		flex: 0 0 auto !important;
 		width: auto !important;
@@ -1845,6 +1835,74 @@
 			color: #fff !important;
 			outline: none !important;
 			box-shadow: none !important;
+		}
+	}
+}
+
+.tasty-recipes-selection-link-popover__options {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 12px;
+}
+
+.tasty-recipes-link-rel-option {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	margin: 0;
+	color: #717784;
+	font-family: 'Inter', sans-serif;
+	font-size: 13px;
+	font-weight: 500;
+	line-height: 18px;
+	cursor: pointer;
+	user-select: none;
+
+	input {
+		position: absolute !important;
+		width: 1px !important;
+		height: 1px !important;
+		margin: -1px !important;
+		padding: 0 !important;
+		overflow: hidden !important;
+		clip: rect( 0, 0, 0, 0 ) !important;
+		white-space: nowrap !important;
+		border: 0 !important;
+	}
+
+	&__mark {
+		box-sizing: border-box;
+		display: inline-flex;
+		flex: 0 0 auto;
+		align-items: center;
+		justify-content: center;
+		width: 16px;
+		height: 16px;
+		border: 1.5px solid #CACFD8;
+		border-radius: 50%;
+		background: #fff;
+	}
+
+	&:hover &__mark,
+	&:focus-within &__mark {
+		border-color: #ED4996;
+	}
+
+	&:focus-within {
+		color: #181B25;
+	}
+
+	&.is-checked {
+		color: #ED4996;
+
+		.tasty-recipes-link-rel-option__mark {
+			border-color: #ED4996;
+			background: #ED4996;
+			background-image: url( "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.8' d='M2.5 6.2l2.4 2.3 4.6-5'/%3E%3C/svg%3E" );
+			background-repeat: no-repeat;
+			background-position: center;
+			background-size: 10px 10px;
 		}
 	}
 }

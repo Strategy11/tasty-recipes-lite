@@ -313,6 +313,40 @@ describe( 'Recipe Render', () => {
 		} );
 	} );
 
+	describe( 'Ingredient and instruction link attributes', () => {
+		it( 'should render sponsored and nofollow on recipe card links', () => {
+			cy.createTastyRecipe( {
+				title: `Link Attribute Recipe ${ Date.now() }`,
+				ingredients:
+					'<ul><li><a href="https://example.com/flour" target="_blank" rel="noopener noreferrer sponsored nofollow">flour</a></li></ul>',
+				instructions:
+					'<ol><li>Use <a href="https://example.com/pan" target="_blank" rel="noopener noreferrer sponsored">the pan</a>.</li></ol>',
+			} ).then( id => {
+				cy.createPostWithRecipe( id, {
+					title: 'Link Attribute Render Test',
+				} ).then( result => {
+					cy.visit( result.postUrl );
+
+					cy.get(
+						'.tasty-recipes-ingredients-body a[href="https://example.com/flour"]'
+					)
+						.should( 'have.attr', 'rel' )
+						.and( 'include', 'sponsored' )
+						.and( 'include', 'nofollow' )
+						.and( 'include', 'noopener' );
+
+					cy.get(
+						'.tasty-recipes-instructions-body a[href="https://example.com/pan"]'
+					)
+						.should( 'have.attr', 'rel' )
+						.and( 'include', 'sponsored' )
+						.and( 'include', 'noopener' )
+						.and( 'not.include', 'nofollow' );
+				} );
+			} );
+		} );
+	} );
+
 	describe( 'WP Tasty Affiliate Link', () => {
 		it( 'should show powered-by with affiliate link when ID is set', () => {
 			cy.setTastyOption( 'tasty_recipes_shareasale', '12345' );
