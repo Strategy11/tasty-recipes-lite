@@ -7,14 +7,14 @@ on:
   pull_request:
     types: [ opened, labeled, synchronize ]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   phpunit:
     if: contains(github.event.pull_request.labels.*.name, 'run tests')
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        php-version: [8.0, 7.4]
 
     services:
       mysql:
@@ -37,7 +37,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php-version }}
+          php-version: '8.0'
           extensions: mysqli
           tools: composer:v2
           ini-values: |
@@ -70,8 +70,8 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-php${{ matrix.php-version }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: ${{ runner.os }}-php${{ matrix.php-version }}-composer-
+          key: ${{ runner.os }}-php8.0-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-php8.0-composer-
 
       - name: Install Composer Dependencies
         env:
