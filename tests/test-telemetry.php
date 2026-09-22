@@ -136,6 +136,7 @@ class Test_Telemetry extends Tasty_Recipes_Testcase {
 	public function test_maybe_enqueue_posthog_on_classic_post_editor() {
 		update_option( Options::ONBOARDING_USAGE_DATA, 'yes' );
 		set_current_screen( 'post' );
+		get_current_screen()->is_block_editor( false );
 
 		Telemetry::maybe_enqueue_posthog();
 
