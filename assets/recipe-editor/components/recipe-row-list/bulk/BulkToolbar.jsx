@@ -16,6 +16,7 @@ import {
 	isRangeInsideNode,
 	isSafeUrl,
 } from '../lib/utils';
+import { trackUsage } from '../../../track';
 import { filterEditorActiveCommands, LinkPopoverFields } from '../toolbar';
 
 const LINK_ICON = (
@@ -274,6 +275,7 @@ export const BulkToolbar = ( {
 	editorRef,
 	showImage = false,
 	onChange = () => {},
+	field = 'ingredients',
 } ) => {
 	const toolbarRef = useRef( null );
 	const linkPopoverRef = useRef( null );
@@ -715,8 +717,24 @@ export const BulkToolbar = ( {
 						hasAnchor={ linkHasAnchor }
 						sponsored={ linkSponsored }
 						nofollow={ linkNofollow }
-						onSponsoredChange={ setLinkSponsored }
-						onNofollowChange={ setLinkNofollow }
+						onSponsoredChange={ enabled => {
+							setLinkSponsored( enabled );
+							trackUsage( 'recipe-modal-link-settings', {
+								setting: 'sponsored',
+								enabled,
+								field,
+								surface: 'bulk',
+							} );
+						} }
+						onNofollowChange={ enabled => {
+							setLinkNofollow( enabled );
+							trackUsage( 'recipe-modal-link-settings', {
+								setting: 'nofollow',
+								enabled,
+								field,
+								surface: 'bulk',
+							} );
+						} }
 					/>
 				</div>
 			) }

@@ -20,6 +20,7 @@ import {
 	isRangeInsideNode,
 	isSafeUrl,
 } from '../lib/utils';
+import { trackUsage } from '../../../track';
 import { LinkPopoverFields } from './LinkPopoverFields';
 import { filterEditorActiveCommands } from './toolbar-state';
 
@@ -161,6 +162,7 @@ export const SelectionToolbar = ( {
 	containerRef,
 	surfaceSelector = DEFAULT_SURFACE_SELECTOR,
 	onHasSelectionChange = null,
+	field = 'ingredients',
 } ) => {
 	const toolbarRef = useRef( null );
 	const linkPopoverRef = useRef( null );
@@ -767,8 +769,24 @@ export const SelectionToolbar = ( {
 						hasAnchor={ linkHasAnchor }
 						sponsored={ linkSponsored }
 						nofollow={ linkNofollow }
-						onSponsoredChange={ setLinkSponsored }
-						onNofollowChange={ setLinkNofollow }
+						onSponsoredChange={ enabled => {
+							setLinkSponsored( enabled );
+							trackUsage( 'recipe-modal-link-settings', {
+								setting: 'sponsored',
+								enabled,
+								field,
+								surface: 'row',
+							} );
+						} }
+						onNofollowChange={ enabled => {
+							setLinkNofollow( enabled );
+							trackUsage( 'recipe-modal-link-settings', {
+								setting: 'nofollow',
+								enabled,
+								field,
+								surface: 'row',
+							} );
+						} }
 					/>
 				</div>
 			) }

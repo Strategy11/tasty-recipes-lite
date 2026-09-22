@@ -112,6 +112,7 @@ const RecipeRowList = ( {
 				{ isBulkEditing ? (
 					<BulkEditPanel
 						name={ name }
+						field={ mode }
 						showImage={ isInstructions }
 						bulkText={ bulkText }
 						setBulkText={ setBulkText }
@@ -177,6 +178,7 @@ const RecipeRowList = ( {
 			{ ! isBulkEditing && (
 				<SelectionToolbar
 					containerRef={ listRef }
+					field={ mode }
 					onHasSelectionChange={ setHasTextSelection }
 				/>
 			) }

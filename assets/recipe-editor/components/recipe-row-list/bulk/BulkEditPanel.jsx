@@ -13,6 +13,7 @@ import {
 
 export const BulkEditPanel = ( {
 	name,
+	field = 'ingredients',
 	showImage = false,
 	bulkText,
 	setBulkText,
@@ -176,6 +177,7 @@ export const BulkEditPanel = ( {
 			<div className="tasty-recipes-row-list-bulk-editor">
 				<BulkToolbar
 					editorRef={ bulkRef }
+					field={ field }
 					showImage={ showImage }
 					onChange={ syncBulkText }
 				/>
