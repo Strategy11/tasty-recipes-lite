@@ -1508,4 +1508,193 @@ describe( 'Recipe Creation', () => {
 			cy.get( '.tasty-recipes-modal-close' ).click( { force: true } );
 		} );
 	} );
+
+	describe( 'Usage tracking', () => {
+		const ingredients = '.tasty-recipes-row-list[data-mode="ingredients"]';
+		const instructions =
+			'.tasty-recipes-row-list[data-mode="instructions"]';
+
+		const stubUsageTracking = () => {
+			cy.window().then( win => {
+				win.tastyRecipesTrackEvent = cy.stub().as( 'trackEvent' );
+			} );
+		};
+
+		const expectTracked = ( event, properties = {} ) => {
+			cy.get( '@trackEvent' ).should( stub => {
+				const match = stub.getCalls().find( call => {
+					if ( event !== call.args[ 0 ] ) {
+						return false;
+					}
+
+					const payload = call.args[ 1 ] || {};
+					return Object.keys( properties ).every(
+						key => payload[ key ] === properties[ key ]
+					);
+				} );
+				expect( match, `expected ${ event }` ).to.exist;
+			} );
+		};
+
+		const expectNotTracked = event => {
+			cy.get( '@trackEvent' ).should( stub => {
+				const match = stub
+					.getCalls()
+					.find( call => event === call.args[ 0 ] );
+				expect( match, `did not expect ${ event }` ).to.not.exist;
+			} );
+		};
+
+		it( 'should track modal open and discard close', () => {
+			stubUsageTracking();
+			openCreateRecipeModal();
+
+			expectTracked( 'recipe_modal_opened', {
+				recipe_type: 'recipe',
+				operation: 'create',
+			} );
+
+			cy.get( '.tasty-recipes-modal-close' ).click( { force: true } );
+
+			expectTracked( 'recipe_modal_closed', {
+				recipe_type: 'recipe',
+				operation: 'create',
+				saved: false,
+				save_successful: false,
+			} );
+			expectNotTracked( 'recipe_created' );
+		} );
+
+		it( 'should track recipe creation only after a successful save', () => {
+			stubUsageTracking();
+			openCreateRecipeModal();
+
+			cy.get( '.tasty-recipes-frame-content input#title' ).type(
+				`Cypress Track Create ${ Date.now() }`
+			);
+			cy.get( '.tasty-recipes-button-insert' ).should( 'be.visible' ).click();
+
+			cy.get( '.tasty-recipes-modal-select-skip-link', {
+				timeout: 10_000,
+			} ).click();
+			cy.get( '.tasty-recipes-modal', { timeout: 10_000 } ).should(
+				'not.be.visible'
+			);
+
+			expectTracked( 'recipe_created', {
+				recipe_type: 'recipe',
+				operation: 'create',
+			} );
+			expectTracked( 'recipe_modal_closed', {
+				recipe_type: 'recipe',
+				operation: 'create',
+				saved: true,
+				save_successful: true,
+			} );
+		} );
+
+		it( 'should track bulk edit and link setting toggles', () => {
+			const selectFirstText = el => {
+				const doc = el.ownerDocument;
+				const walker = doc.createTreeWalker(
+					el,
+					doc.defaultView.NodeFilter.SHOW_TEXT
+				);
+				const text = walker.nextNode();
+				if ( ! text ) {
+					return;
+				}
+
+				const range = doc.createRange();
+				range.selectNodeContents( text );
+				const selection = doc.defaultView.getSelection();
+				selection.removeAllRanges();
+				selection.addRange( range );
+			};
+
+			stubUsageTracking();
+			openCreateRecipeModal();
+
+			cy.get( ingredients )
+				.closest( 'fieldset' )
+				.contains( 'button', 'Bulk Edit' )
+				.click();
+
+			expectTracked( 'recipe-modal-bulk-edit', {
+				field: 'ingredients',
+			} );
+
+			cy.get( '.tasty-recipes-modal-close' ).click( { force: true } );
+			openCreateRecipeModal();
+
+			cy.get( `${ ingredients } .tasty-recipes-row-input` )
+				.first()
+				.click()
+				.type( 'affiliate flour' );
+			cy.get( `${ ingredients } .tasty-recipes-row-input` )
+				.first()
+				.then( $el => selectFirstText( $el[ 0 ] ) );
+			cy.get(
+				'.tasty-recipes-selection-toolbar [aria-label="Add link"]'
+			).click();
+			cy.get( '.tasty-recipes-selection-link-popover' )
+				.contains( 'label', 'Sponsored' )
+				.click();
+			cy.get( '.tasty-recipes-selection-link-popover' )
+				.contains( 'label', 'Nofollow' )
+				.click();
+
+			expectTracked( 'recipe-modal-link-settings', {
+				setting: 'sponsored',
+				enabled: true,
+				field: 'ingredients',
+				surface: 'row',
+			} );
+			expectTracked( 'recipe-modal-link-settings', {
+				setting: 'nofollow',
+				enabled: true,
+				field: 'ingredients',
+				surface: 'row',
+			} );
+
+			cy.get( '.tasty-recipes-modal-close' ).click( { force: true } );
+			openCreateRecipeModal();
+
+			cy.get( instructions )
+				.closest( 'fieldset' )
+				.contains( 'button', 'Bulk Edit' )
+				.click();
+			cy.get( '.tasty-recipes-row-list-bulk' )
+				.first()
+				.click()
+				.type( '{selectall}{backspace}Whisk the eggs' );
+			cy.get( '.tasty-recipes-row-list-bulk' )
+				.first()
+				.then( $el => selectFirstText( $el[ 0 ] ) );
+			cy.get(
+				'.tasty-recipes-bulk-toolbar [aria-label="Add link"]'
+			).click();
+			cy.get( '.tasty-recipes-bulk-toolbar-link' )
+				.contains( 'label', 'Sponsored' )
+				.click();
+			cy.get( '.tasty-recipes-bulk-toolbar-link' )
+				.contains( 'label', 'Nofollow' )
+				.click();
+
+			expectTracked( 'recipe-modal-link-settings', {
+				setting: 'sponsored',
+				enabled: true,
+				field: 'instructions',
+				surface: 'bulk',
+			} );
+			expectTracked( 'recipe-modal-link-settings', {
+				setting: 'nofollow',
+				enabled: true,
+				field: 'instructions',
+				surface: 'bulk',
+			} );
+
+			cy.get( '.tasty-recipes-modal-close' ).click( { force: true } );
+		} );
+	} );
 } );

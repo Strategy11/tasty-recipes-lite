@@ -21,6 +21,7 @@ class Test_Telemetry extends Tasty_Recipes_Testcase {
 	public function tearDown(): void {
 		delete_option( Options::ONBOARDING_USAGE_DATA );
 		$GLOBALS['current_screen'] = null;
+		remove_all_filters( 'tasty_recipes_telemetry_event_properties' );
 		$this->reset_posthog_scripts();
 
 		parent::tearDown();
@@ -125,6 +126,82 @@ class Test_Telemetry extends Tasty_Recipes_Testcase {
 		$this->assertTrue( wp_script_is( Telemetry::POSTHOG_INIT_SCRIPT_HANDLE, 'enqueued' ) );
 		$this->assertFalse( wp_script_is( Telemetry::POSTHOG_BLOCK_EDITOR_SCRIPT_HANDLE, 'enqueued' ) );
 		$this->assertTrue( ! empty( $this->get_posthog_config()['autoInit'] ) );
+	}
+
+	/**
+	 * Classic post editor loads PostHog immediately.
+	 *
+	 * @return void
+	 */
+	public function test_maybe_enqueue_posthog_on_classic_post_editor() {
+		update_option( Options::ONBOARDING_USAGE_DATA, 'yes' );
+		set_current_screen( 'post' );
+		get_current_screen()->is_block_editor( false );
+
+		Telemetry::maybe_enqueue_posthog();
+
+		$this->assertTrue( wp_script_is( Telemetry::POSTHOG_SCRIPT_HANDLE, 'enqueued' ) );
+		$this->assertTrue( wp_script_is( Telemetry::POSTHOG_INIT_SCRIPT_HANDLE, 'enqueued' ) );
+		$this->assertFalse( wp_script_is( Telemetry::POSTHOG_BLOCK_EDITOR_SCRIPT_HANDLE, 'enqueued' ) );
+		$this->assertTrue( ! empty( $this->get_posthog_config()['autoInit'] ) );
+	}
+
+	/**
+	 * Post list screens that host the recipe modal load PostHog immediately.
+	 *
+	 * @return void
+	 */
+	public function test_maybe_enqueue_posthog_on_post_list_screen() {
+		update_option( Options::ONBOARDING_USAGE_DATA, 'yes' );
+		set_current_screen( 'edit-post' );
+
+		Telemetry::maybe_enqueue_posthog();
+
+		$this->assertTrue( wp_script_is( Telemetry::POSTHOG_SCRIPT_HANDLE, 'enqueued' ) );
+		$this->assertTrue( wp_script_is( Telemetry::POSTHOG_INIT_SCRIPT_HANDLE, 'enqueued' ) );
+		$this->assertFalse( wp_script_is( Telemetry::POSTHOG_BLOCK_EDITOR_SCRIPT_HANDLE, 'enqueued' ) );
+		$this->assertTrue( ! empty( $this->get_posthog_config()['autoInit'] ) );
+	}
+
+	/**
+	 * Localized PostHog config includes common client event properties.
+	 *
+	 * @return void
+	 */
+	public function test_posthog_config_includes_client_event_properties() {
+		update_option( Options::ONBOARDING_USAGE_DATA, 'yes' );
+		set_current_screen( 'wp-tasty_page_tasty-recipes' );
+
+		Telemetry::maybe_enqueue_posthog();
+
+		$config = $this->get_posthog_config();
+
+		$this->assertSame( 'lite', $config['eventProperties']['product'] );
+		$this->assertSame( TASTY_RECIPES_LITE_VERSION, $config['eventProperties']['plugin_version'] );
+	}
+
+	/**
+	 * Client event properties stay filterable.
+	 *
+	 * @return void
+	 */
+	public function test_client_event_properties_are_filterable() {
+		add_filter(
+			'tasty_recipes_telemetry_event_properties',
+			static function ( $properties ) {
+				$properties['product']        = 'pro';
+				$properties['license_status'] = 'valid';
+				return $properties;
+			}
+		);
+
+		$properties = Telemetry::get_client_event_properties();
+
+		remove_all_filters( 'tasty_recipes_telemetry_event_properties' );
+
+		$this->assertSame( 'pro', $properties['product'] );
+		$this->assertSame( 'valid', $properties['license_status'] );
+		$this->assertSame( TASTY_RECIPES_LITE_VERSION, $properties['plugin_version'] );
 	}
 
 	/**

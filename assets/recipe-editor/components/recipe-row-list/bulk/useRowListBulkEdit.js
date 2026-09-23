@@ -1,4 +1,5 @@
 import { useState } from '@wordpress/element';
+import { trackUsage } from '../../../track';
 import { applyBulkText, serializeBulkText, serializeRows } from '../lib/utils';
 
 export const useRowListBulkEdit = ( {
@@ -16,6 +17,9 @@ export const useRowListBulkEdit = ( {
 		: serializedValue;
 
 	const handleOpenBulkEdit = () => {
+		trackUsage( 'recipe-modal-bulk-edit', {
+			field: mode,
+		} );
 		setBulkText( serializeBulkText( rows ) );
 		setIsBulkEditing( true );
 	};
