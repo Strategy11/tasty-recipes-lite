@@ -1252,7 +1252,9 @@ class Distribution_Metadata {
 		$current = null;
 		$nested  = 0;
 		foreach ( $tags[0] as $tag ) {
-			list( $markup, $offset ) = $tag;
+			// PREG_OFFSET_CAPTURE yields [markup, byte offset]. Mago types the match as a string.
+			$markup = is_array( $tag ) ? $tag[0] : $tag;
+			$offset = is_array( $tag ) ? $tag[1] : 0;
 
 			if ( null === $current ) {
 				if ( 0 === strpos( $markup, '<li' ) ) {
