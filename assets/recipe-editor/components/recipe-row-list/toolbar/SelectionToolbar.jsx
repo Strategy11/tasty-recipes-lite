@@ -10,6 +10,7 @@ import { __ } from '@wordpress/i18n';
 import classNames from 'classnames';
 import { getRecipeEditorScrollContainer } from '../../dom';
 import { KbdTooltip } from '../../kbd-tooltip';
+import { openLinkSettingsModal } from '../../link-settings';
 import { getModifierKeySymbol } from '../../platform';
 import {
 	applyAnchorAttributes,
@@ -17,6 +18,7 @@ import {
 	getClosestAnchor,
 	getLinkAttributes,
 	hasRelToken,
+	isAbsoluteHttpUrl,
 	isRangeInsideNode,
 	isSafeUrl,
 } from '../lib/utils';
@@ -585,8 +587,13 @@ export const SelectionToolbar = ( {
 		updateActiveState();
 	};
 
-	const applyLink = () => {
-		const url = normalizeUrl( linkUrl );
+	const applyLink = ( {
+		url: rawUrl = linkUrl,
+		text = '',
+		openInNewTab = null,
+		nofollow = null,
+	} = {} ) => {
+		const url = normalizeUrl( rawUrl );
 		if ( ! url || ! restoreSelection() ) {
 			setLinkOpen( false );
 			return;
@@ -600,21 +607,29 @@ export const SelectionToolbar = ( {
 			url,
 			existingRel: existingRelRef.current,
 			sponsored: linkSponsored,
-			nofollow: linkNofollow,
+			nofollow: nofollow ?? linkNofollow,
 		} );
+		if ( null !== openInNewTab ) {
+			attrs.target = openInNewTab ? '_blank' : '';
+		}
+
 		const editor = getTinyMceEditor( editable );
+		let anchor = null;
 		if ( editor ) {
 			editor.execCommand( 'mceInsertLink', false, {
 				href: attrs.href,
-				target: attrs.target,
+				target: attrs.target || null,
 				rel: attrs.rel,
 			} );
+			anchor = editor.dom.getParent( editor.selection.getNode(), 'a' );
 		} else {
 			document.execCommand( 'createLink', false, url );
-			applyAnchorAttributes(
-				getAnchorFromSelection( containerRef?.current ),
-				attrs
-			);
+			anchor = getAnchorFromSelection( containerRef?.current );
+			applyAnchorAttributes( anchor, attrs );
+		}
+
+		if ( anchor && text && text !== anchor.textContent ) {
+			anchor.textContent = text;
 		}
 
 		notifyEditable( savedRangeRef.current, surfaceSelector );
@@ -622,26 +637,58 @@ export const SelectionToolbar = ( {
 		syncFromSelection();
 	};
 
-	const removeLink = () => {
-		if ( ! restoreSelection() ) {
-			setLinkOpen( false );
+	const clearLink = () => {
+		const range = savedRangeRef.current;
+		const anchor = range && getAnchorFromRange( range );
+		if ( anchor && restoreSelection() ) {
+			const editable = getEditableFromRange( range, surfaceSelector );
+			const editor = getTinyMceEditor( editable );
+			const anchorRange = selectAnchor( anchor );
+			if ( editor ) {
+				editor.execCommand( 'unlink' );
+			} else {
+				document.execCommand( 'unlink', false, null );
+			}
+
+			const nextRange =
+				getRange( getSelection( containerRef?.current ) ) || anchorRange;
+			savedRangeRef.current = nextRange.cloneRange();
+			notifyEditable( savedRangeRef.current, surfaceSelector );
+		}
+
+		existingRelRef.current = '';
+		setLinkUrl( '' );
+		setLinkHasAnchor( false );
+		setLinkSponsored( false );
+		setLinkNofollow( false );
+		linkInputRef.current?.focus();
+	};
+
+	const openLinkSettings = () => {
+		const range = savedRangeRef.current;
+		if ( ! range ) {
 			return;
 		}
 
-		const editable = getEditableFromRange(
-			savedRangeRef.current,
-			surfaceSelector
-		);
-		const editor = getTinyMceEditor( editable );
-		if ( editor ) {
-			editor.execCommand( 'unlink' );
-		} else {
-			document.execCommand( 'unlink', false, null );
-		}
+		const anchor = getAnchorFromRange( range );
+		const url = normalizeUrl( linkUrl );
+		const opened = openLinkSettingsModal( {
+			url: url || linkUrl,
+			text: range.toString(),
+			openInNewTab: anchor
+				? '_blank' === anchor.getAttribute( 'target' )
+				: isAbsoluteHttpUrl( url ),
+			nofollow: linkNofollow,
+			isUpdate: linkHasAnchor,
+			onSubmit: settings => {
+				savedRangeRef.current = range;
+				applyLink( settings );
+			},
+		} );
 
-		notifyEditable( savedRangeRef.current, surfaceSelector );
-		setLinkOpen( false );
-		syncFromSelection();
+		if ( opened ) {
+			setLinkOpen( false );
+		}
 	};
 
 	const toolbarStyle = {
@@ -765,7 +812,8 @@ export const SelectionToolbar = ( {
 						onUrlChange={ setLinkUrl }
 						onSubmit={ applyLink }
 						onCancel={ () => setLinkOpen( false ) }
-						onRemove={ removeLink }
+						onClear={ clearLink }
+						onOpenSettings={ openLinkSettings }
 						hasAnchor={ linkHasAnchor }
 						sponsored={ linkSponsored }
 						nofollow={ linkNofollow }

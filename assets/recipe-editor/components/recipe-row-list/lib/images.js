@@ -3,7 +3,9 @@ import {
 	escapeHtml,
 	isSafeUrl,
 	normalizeRowText,
+	parseFragment,
 } from './html';
+import { parseRelTokens } from './link';
 
 const getImageWrappingLink = img => {
 	const link = img?.closest( 'a' );
@@ -11,7 +13,12 @@ const getImageWrappingLink = img => {
 		return null;
 	}
 
-	if ( normalizeRowText( link.textContent ) ) {
+	const linkContent = link.cloneNode( true );
+	linkContent
+		.querySelectorAll( 'figcaption, button' )
+		.forEach( node => node.remove() );
+
+	if ( normalizeRowText( linkContent.textContent ) ) {
 		return null;
 	}
 
@@ -136,3 +143,77 @@ export const serializeRowImage = image => {
 };
 
 export const createEditorImageHtml = image => serializeRowImage( image );
+
+export const toImageDetailsMetadata = image => ( {
+	attachment_id: image.id || false,
+	url: image.url,
+	alt: image.alt || '',
+	caption: image.caption || '',
+	width: image.width,
+	height: image.height,
+	customWidth: image.width,
+	customHeight: image.height,
+	align: 'none',
+	linkUrl: image.link?.href || '',
+	linkTargetBlank: '_blank' === image.link?.target,
+	linkRel: image.link?.rel || '',
+	linkClassName: image.link?.class || '',
+} );
+
+const getImageDetailsLink = ( imageData, previousLink = {} ) => {
+	const href = imageData.linkUrl || '';
+
+	if ( 'none' === imageData.link || ! href || ! isSafeUrl( href ) ) {
+		return null;
+	}
+
+	const link = Object.fromEntries(
+		Object.entries( previousLink ).filter(
+			( [ name ] ) => ! [ 'href', 'target', 'rel', 'class' ].includes( name )
+		)
+	);
+	const relTokens = parseRelTokens( imageData.linkRel );
+
+	link.href = href;
+
+	if ( imageData.linkTargetBlank ) {
+		link.target = '_blank';
+
+		if ( ! relTokens.includes( 'noopener' ) ) {
+			relTokens.push( 'noopener' );
+		}
+	}
+
+	if ( relTokens.length ) {
+		link.rel = relTokens.join( ' ' );
+	}
+
+	if ( imageData.linkClassName ) {
+		link.class = imageData.linkClassName;
+	}
+
+	return link;
+};
+
+export const fromImageDetailsData = ( imageData, previous = {} ) => {
+	const isCustomSize = 'custom' === imageData.size;
+	const width = Number(
+		isCustomSize ? imageData.customWidth : imageData.width
+	);
+	const height = Number(
+		isCustomSize ? imageData.customHeight : imageData.height
+	);
+	const link = getImageDetailsLink( imageData, previous.link );
+
+	return {
+		id: Number( imageData.attachment_id ) || 0,
+		url: imageData.url || previous.url || '',
+		alt: imageData.alt || '',
+		width: width || undefined,
+		height: height || undefined,
+		caption: normalizeRowText(
+			parseFragment( imageData.caption ).textContent
+		),
+		...( link ? { link } : {} ),
+	};
+};

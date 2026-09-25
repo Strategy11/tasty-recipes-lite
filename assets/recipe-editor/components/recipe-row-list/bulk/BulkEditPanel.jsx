@@ -1,14 +1,26 @@
 import { useLayoutEffect, useRef } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { BulkToolbar } from './BulkToolbar';
+import { openImageDetailsModal } from '../../media-library';
 import {
 	decorateBulkImages,
 	deleteSoftBreakBeforeCaret,
 	escapeHtml,
+	exitListItem,
+	fromImageDetailsData,
+	getClosestListItem,
 	insertSoftBreak,
+	isCaretAtListItemStart,
+	isListItemEmpty,
+	liftListItem,
+	parseImageFromElement,
 	parseRowsFromHtml,
+	placeCaret,
+	replaceBulkImage,
 	serializeBulkText,
+	splitListItemAtCaret,
 	stripBulkImageChrome,
+	toImageDetailsMetadata,
 } from '../lib/utils';
 
 export const BulkEditPanel = ( {
@@ -21,6 +33,10 @@ export const BulkEditPanel = ( {
 	onCancel,
 } ) => {
 	const bulkRef = useRef( null );
+	const imageLabels = {
+		editLabel: __( 'Edit image', 'tasty-recipes-lite' ),
+		removeLabel: __( 'Remove image', 'tasty-recipes-lite' ),
+	};
 
 	useLayoutEffect( () => {
 		const el = bulkRef.current;
@@ -28,17 +44,18 @@ export const BulkEditPanel = ( {
 			return;
 		}
 
-		const isFocused = el === el.ownerDocument.activeElement;
+		const { activeElement } = el.ownerDocument;
+		const isFocused = el === activeElement;
 		if ( ! isFocused && stripBulkImageChrome( el.innerHTML ) !== bulkText ) {
 			el.innerHTML = bulkText;
 		}
 
-		decorateBulkImages(
-			el,
-			__( 'Remove image', 'tasty-recipes-lite' )
-		);
+		decorateBulkImages( el, imageLabels );
 
-		if ( ! isFocused ) {
+		const isPanelFocused = !! el
+			.closest( '.tasty-recipes-row-list-bulk-editor' )
+			?.contains( activeElement );
+		if ( ! isPanelFocused ) {
 			el.focus();
 		}
 	}, [ bulkText ] );
@@ -50,23 +67,52 @@ export const BulkEditPanel = ( {
 			return;
 		}
 
-		decorateBulkImages(
-			el,
-			__( 'Remove image', 'tasty-recipes-lite' )
-		);
+		decorateBulkImages( el, imageLabels );
 		setBulkText( stripBulkImageChrome( el.innerHTML || '' ) );
 	};
 
+	const editBulkImage = wrap => {
+		const image = parseImageFromElement( wrap?.querySelector( 'img' ) );
+		if ( ! image ) {
+			return;
+		}
+
+		openImageDetailsModal( {
+			metadata: toImageDetailsMetadata( image ),
+			onUpdate: imageData => {
+				const nextImage = fromImageDetailsData( imageData, image );
+				if ( ! nextImage.url || ! wrap.isConnected ) {
+					return;
+				}
+
+				replaceBulkImage( wrap, nextImage );
+				syncBulkText();
+			},
+		} );
+	};
+
 	const handleBulkImageClick = event => {
-		const button = event.target.closest( '.tasty-recipes-row-image__remove' );
+		const button = event.target.closest(
+			'.tasty-recipes-row-image__edit, .tasty-recipes-row-image__remove'
+		);
 		if ( ! button || ! event.currentTarget.contains( button ) ) {
 			return;
 		}
 
 		event.preventDefault();
 		event.stopPropagation();
-		button.closest( '.tasty-recipes-bulk-image' )?.remove();
-		syncBulkText();
+
+		const wrap = button.closest( '.tasty-recipes-bulk-image' );
+
+		if ( button.classList.contains( 'tasty-recipes-row-image__remove' ) ) {
+			wrap?.remove();
+			syncBulkText();
+			return;
+		}
+
+		if ( 'click' === event.type ) {
+			editBulkImage( wrap );
+		}
 	};
 
 	const handleBulkInput = event => {
@@ -77,7 +123,51 @@ export const BulkEditPanel = ( {
 		syncBulkText();
 	};
 
+	const handleListItemKeyDown = event => {
+		if ( event.altKey || event.metaKey || event.ctrlKey ) {
+			return false;
+		}
+
+		const editable = event.currentTarget;
+		const selection = editable.ownerDocument.defaultView.getSelection();
+		const range = selection?.rangeCount ? selection.getRangeAt( 0 ) : null;
+		const item = range && getClosestListItem( editable, range.startContainer );
+		if ( ! item ) {
+			return false;
+		}
+
+		if ( 'Backspace' === event.key ) {
+			if ( ! isCaretAtListItemStart( item, range ) ) {
+				return false;
+			}
+
+			const [ first ] = liftListItem( item );
+			if ( first ) {
+				placeCaret( first, { before: true } );
+			}
+			syncBulkText();
+			return true;
+		}
+
+		if ( 'Enter' !== event.key || event.shiftKey ) {
+			return false;
+		}
+
+		if ( isListItemEmpty( item ) ) {
+			placeCaret( exitListItem( item ), { before: true } );
+		} else {
+			splitListItemAtCaret( item, range );
+		}
+		syncBulkText();
+		return true;
+	};
+
 	const handleBulkKeyDown = event => {
+		if ( handleListItemKeyDown( event ) ) {
+			event.preventDefault();
+			return;
+		}
+
 		if (
 			'Backspace' === event.key &&
 			! event.altKey &&

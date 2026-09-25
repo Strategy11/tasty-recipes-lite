@@ -1,6 +1,7 @@
 import { useId } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import classNames from 'classnames';
+import { CloseIcon, GearIcon } from '../../icons';
 
 const LINK_PLACEHOLDER_URL = 'https://example.com';
 
@@ -31,7 +32,8 @@ export const LinkPopoverFields = ( {
 	onUrlChange,
 	onSubmit,
 	onCancel,
-	onRemove,
+	onClear,
+	onOpenSettings,
 	hasAnchor,
 	sponsored,
 	nofollow,
@@ -43,39 +45,59 @@ export const LinkPopoverFields = ( {
 	return (
 		<>
 			<div className="tasty-recipes-selection-link-popover__row">
-				<input
-					ref={ inputRef }
-					type="text"
-					inputMode="url"
-					autoComplete="off"
-					value={ url }
-					placeholder={ LINK_PLACEHOLDER_URL }
-					onChange={ event => onUrlChange( event.target.value ) }
-					onKeyDown={ event => {
-						if ( 'Enter' === event.key ) {
-							event.preventDefault();
-							onSubmit();
-						}
-						if ( 'Escape' === event.key ) {
-							event.preventDefault();
-							onCancel();
-						}
-					} }
-				/>
-				<button type="button" onClick={ onSubmit }>
+				<span
+					className={ classNames(
+						'tasty-recipes-selection-link-popover__field',
+						{ 'has-clear': hasAnchor }
+					) }
+				>
+					<input
+						ref={ inputRef }
+						type="text"
+						inputMode="url"
+						autoComplete="off"
+						value={ url }
+						placeholder={ LINK_PLACEHOLDER_URL }
+						onChange={ event => onUrlChange( event.target.value ) }
+						onKeyDown={ event => {
+							if ( 'Enter' === event.key ) {
+								event.preventDefault();
+								onSubmit();
+							}
+							if ( 'Escape' === event.key ) {
+								event.preventDefault();
+								onCancel();
+							}
+						} }
+					/>
+					{ hasAnchor && (
+						<button
+							type="button"
+							className="tasty-recipes-selection-link-popover__clear"
+							aria-label={ __( 'Remove link', 'tasty-recipes-lite' ) }
+							onClick={ onClear }
+						>
+							{ CloseIcon }
+						</button>
+					) }
+				</span>
+				<button
+					type="button"
+					className="tasty-recipes-selection-link-popover__submit"
+					onClick={ () => onSubmit() }
+				>
 					{ hasAnchor
 						? __( 'Update', 'tasty-recipes-lite' )
 						: __( 'Add', 'tasty-recipes-lite' ) }
 				</button>
-				{ hasAnchor && (
-					<button
-						type="button"
-						className="tasty-recipes-selection-link-popover__remove"
-						onClick={ onRemove }
-					>
-						{ __( 'Remove', 'tasty-recipes-lite' ) }
-					</button>
-				) }
+				<button
+					type="button"
+					className="tasty-recipes-selection-link-popover__settings"
+					aria-label={ __( 'Link settings', 'tasty-recipes-lite' ) }
+					onClick={ onOpenSettings }
+				>
+					{ GearIcon }
+				</button>
 			</div>
 			<div
 				className="tasty-recipes-selection-link-popover__options"

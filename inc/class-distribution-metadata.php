@@ -1178,20 +1178,17 @@ class Distribution_Metadata {
 	public static function apply_instruction_step_numbers( $component ) {
 		$step           = 0;
 		$step_set_regex = '#^(\s*)(<[a-z]+)([^>]*>)#';
-		if ( preg_match_all( self::LI_MATCH_REGEX, $component, $matches ) ) {
-			$component = preg_replace_callback(
-				self::LI_MATCH_REGEX,
-				function ( $matches ) use ( &$step, $step_set_regex ) {
-					$step++;
-					$matches[0] = preg_replace(
-						$step_set_regex,
-						'$1$2 id="instruction-step-' . $step . '"$3',
-						$matches[0]
-					);
-					return $matches[0];
-				},
-				$component
-			);
+		$list_items     = self::get_top_level_list_items( $component );
+		if ( $list_items ) {
+			// Replace from the end so earlier byte offsets stay valid.
+			foreach ( array_reverse( $list_items, true ) as $index => $list_item ) {
+				$open_tag  = preg_replace(
+					$step_set_regex,
+					'$1$2 id="instruction-step-' . ( $index + 1 ) . '"$3',
+					$list_item['tag']
+				);
+				$component = substr_replace( $component, $open_tag, $list_item['offset'], strlen( $list_item['tag'] ) );
+			}
 		} elseif ( preg_match_all( self::UNSTRUCTURED_LIST_MATCH_REGEX, $component, $matches, PREG_OFFSET_CAPTURE ) > 1 ) {
 			// Intro text before the first number, so set that as the first step.
 			if ( $matches[0][0][1] > 0 ) {
@@ -1238,6 +1235,103 @@ class Distribution_Metadata {
 	}
 
 	/**
+	 * Finds top-level list items, keeping nested lists inside their parent item.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $component Component HTML.
+	 *
+	 * @return array[] Items with `full`, `tag`, `offset`, `inner` and `inner_offset` keys. Offsets are in bytes.
+	 */
+	private static function get_top_level_list_items( $component ) {
+		if ( ! preg_match_all( '#<li[^>]*>|</li>|<(?:ul|ol)\b[^>]*>|</(?:ul|ol)>#', $component, $tags, PREG_OFFSET_CAPTURE ) ) {
+			return array();
+		}
+
+		$items   = array();
+		$current = null;
+		$nested  = 0;
+		foreach ( $tags[0] as $tag ) {
+			list( $markup, $offset ) = $tag;
+
+			if ( null === $current ) {
+				if ( 0 === strpos( $markup, '<li' ) ) {
+					$current = array(
+						'tag'    => $markup,
+						'offset' => $offset,
+					);
+					$nested  = 0;
+				}
+				continue;
+			}
+
+			if ( '</li>' === $markup ) {
+				if ( $nested ) {
+					continue;
+				}
+
+				$inner_offset = $current['offset'] + strlen( $current['tag'] );
+				$items[]      = array_merge(
+					$current,
+					array(
+						'full'         => substr( $component, $current['offset'], $offset + strlen( $markup ) - $current['offset'] ),
+						'inner'        => substr( $component, $inner_offset, $offset - $inner_offset ),
+						'inner_offset' => $inner_offset,
+					)
+				);
+				$current      = null;
+				continue;
+			}
+
+			if ( 0 === strpos( $markup, '</' ) ) {
+				$nested = max( 0, $nested - 1 );
+			} elseif ( 0 !== strpos( $markup, '<li' ) ) {
+				++$nested;
+			}
+		}
+
+		if ( null === $current ) {
+			return $items;
+		}
+
+		$items = array();
+		if ( preg_match_all( self::LI_MATCH_REGEX, $component, $matches, PREG_OFFSET_CAPTURE ) ) {
+			foreach ( $matches[0] as $i => $match ) {
+				$items[] = array(
+					'full'         => $match[0],
+					'tag'          => substr( $match[0], 0, $matches[1][ $i ][1] - $match[1] ),
+					'offset'       => $match[1],
+					'inner'        => $matches[1][ $i ][0],
+					'inner_offset' => $matches[1][ $i ][1],
+				);
+			}
+		}
+
+		return $items;
+	}
+
+	/**
+	 * Splits a list item into its own markup and the text of any nested list.
+	 *
+	 * @since x.x
+	 *
+	 * @param array $list_item Item from get_top_level_list_items().
+	 *
+	 * @return string[] List item markup without the nested list, and nested items joined by line breaks.
+	 */
+	private static function split_nested_list_item( $list_item ) {
+		if ( ! preg_match( '#<(?:ul|ol)\b#', $list_item['inner'], $match, PREG_OFFSET_CAPTURE ) ) {
+			return array( $list_item['full'], '' );
+		}
+
+		$own_markup  = substr( $list_item['inner'], 0, $match[0][1] );
+		$nested_text = preg_replace( '#\s*</?(?:li|ul|ol)\b[^>]*>\s*#', PHP_EOL, substr( $list_item['inner'], $match[0][1] ) );
+		$nested_text = trim( (string) preg_replace( '#\R+#', PHP_EOL, (string) $nested_text ) );
+
+		return array( $list_item['tag'] . rtrim( $own_markup ) . '</li>', $nested_text );
+	}
+
+	/**
 	 * Get a list from a string of ingredients or instructions.
 	 *
 	 * @param string $component   Existing text to parse.
@@ -1247,10 +1341,11 @@ class Distribution_Metadata {
 	 */
 	public static function parse_recipe_component_list( $component, $parse_names = false ) { // phpcs:ignore SlevomatCodingStandard
 		$component_list = array();
-		if ( preg_match_all( self::LI_MATCH_REGEX, $component, $matches, PREG_OFFSET_CAPTURE ) ) {
+		$list_items     = self::get_top_level_list_items( $component );
+		if ( $list_items ) {
 			$prev_offset = 0;
-			foreach ( $matches[1] as $i => $match ) {
-				$maybe_heading = mb_substr( $component, $prev_offset, $match[1] - $prev_offset, 'UTF-8' );
+			foreach ( $list_items as $list_item ) {
+				$maybe_heading = mb_substr( $component, $prev_offset, $list_item['inner_offset'] - $prev_offset, 'UTF-8' );
 				$maybe_heading = str_replace( array( '<ul>', '</ul>', '<ol>', '</ol>', '<li>', '</li>' ), '', $maybe_heading );
 				$heading_bits  = explode( PHP_EOL, $maybe_heading );
 				foreach ( $heading_bits as $bit ) {
@@ -1262,7 +1357,8 @@ class Distribution_Metadata {
 						);
 					}
 				}
-				$bit  = $matches[0][ $i ][0];
+				list( $bit, $nested_text ) = self::split_nested_list_item( $list_item );
+
 				$item = array(
 					'type' => 'item',
 				);
@@ -1278,9 +1374,9 @@ class Distribution_Metadata {
 						$bit = $name_matches['li'] . $bit;
 					}
 				}
-				$item['value']    = $bit;
+				$item['value']    = '' === $nested_text ? $bit : $bit . PHP_EOL . $nested_text;
 				$component_list[] = $item;
-				$prev_offset      = $match[1] + mb_strlen( $match[0], 'UTF-8' );
+				$prev_offset      = $list_item['inner_offset'] + mb_strlen( $list_item['inner'], 'UTF-8' );
 			}
 		} elseif ( preg_match_all( self::UNSTRUCTURED_LIST_MATCH_REGEX, $component, $matches, PREG_OFFSET_CAPTURE ) > 1 ) {
 			// Intro text before the first number, so save that as the first list item.

@@ -62,6 +62,51 @@ export const CloseIcon = (
 	</svg>
 );
 
+export const PencilIcon = (
+	<svg
+		width="12"
+		height="12"
+		viewBox="0 0 12 12"
+		fill="none"
+		xmlns="http://www.w3.org/2000/svg"
+		aria-hidden="true"
+	>
+		<path
+			d="M7.5 2.5l2 2M1.75 10.25l.5-2.25 6.1-6.1a1.06 1.06 0 0 1 1.5 0l.25.25a1.06 1.06 0 0 1 0 1.5L4 9.75l-2.25.5Z"
+			stroke="currentColor"
+			strokeWidth="1.25"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		/>
+	</svg>
+);
+
+export const GearIcon = (
+	<svg
+		width="18"
+		height="18"
+		viewBox="0 0 24 24"
+		fill="none"
+		xmlns="http://www.w3.org/2000/svg"
+		aria-hidden="true"
+	>
+		<path
+			d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 0 0-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 0 0-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 0 0-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 0 0-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 0 0 1.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065Z"
+			stroke="currentColor"
+			strokeWidth="1.5"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		/>
+		<path
+			d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+			stroke="currentColor"
+			strokeWidth="1.5"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		/>
+	</svg>
+);
+
 export const ChevronIcon = (
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
@@ -170,6 +215,52 @@ export const SectionTitleIcon = (
 			strokeLinejoin="round"
 			strokeWidth="1.35"
 			d="M.675.676v4.909m0 0v5.318m0-5.318h7.773m0 0V.675m0 4.91v5.318"
+		/>
+	</svg>
+);
+
+export const BulletListIcon = (
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		width="16"
+		height="16"
+		fill="none"
+		viewBox="0 0 16 16"
+		aria-hidden="true"
+	>
+		<path
+			stroke="currentColor"
+			strokeLinecap="round"
+			strokeWidth="1.35"
+			d="M6 4h7.5M6 8h7.5M6 12h7.5"
+		/>
+		<circle cx="3" cy="4" r="1" fill="currentColor" />
+		<circle cx="3" cy="8" r="1" fill="currentColor" />
+		<circle cx="3" cy="12" r="1" fill="currentColor" />
+	</svg>
+);
+
+export const NumberedListIcon = (
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		width="16"
+		height="16"
+		fill="none"
+		viewBox="0 0 16 16"
+		aria-hidden="true"
+	>
+		<path
+			stroke="currentColor"
+			strokeLinecap="round"
+			strokeWidth="1.35"
+			d="M6.5 4h7M6.5 8h7M6.5 12h7"
+		/>
+		<path
+			stroke="currentColor"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+			strokeWidth="1.1"
+			d="M2.25 2.75 3 2.25v3.5M2.25 9.25c0-.55.4-1 1-1s1 .4 1 .9c0 .7-2 1.4-2 2.6h2"
 		/>
 	</svg>
 );
