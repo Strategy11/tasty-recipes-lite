@@ -1116,6 +1116,8 @@ describe( 'Recipe Creation', () => {
 
 			typeBulkIngredients( 'Flour{enter}sifted{enter}sieved{enter}Sugar' );
 
+			// Typing scrolls the caret into view and can park the toolbar under the modal title.
+			cy.get( '.tasty-recipes-bulk-toolbar' ).scrollIntoView();
 			cy.get(
 				'.tasty-recipes-bulk-toolbar [aria-label="Bulleted list"]'
 			).should( 'be.visible' );
