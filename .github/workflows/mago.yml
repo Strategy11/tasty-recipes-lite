@@ -1,4 +1,6 @@
-on: [push]
+on:
+  pull_request:
+    types: [ opened, labeled, synchronize ]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -7,6 +9,7 @@ concurrency:
 name: Mago Code Analysis and Linting
 jobs:
   mago:
+    if: contains(github.event.pull_request.labels.*.name, 'run analysis')
     name: Mago
 
     runs-on: ubuntu-latest
