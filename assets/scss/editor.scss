@@ -40,15 +40,12 @@
 			white-space: nowrap;
 			overflow: hidden;
 			text-overflow: ellipsis;
-			label span {
-				width: 84px;
+
+			label {
+				max-width: 70%;
 			}
 		}
 	}
-}
-
-.has-text-field #wp-link .query-results {
-	top: 223px;
 }
 
 /*Hides print button in WP editor*/

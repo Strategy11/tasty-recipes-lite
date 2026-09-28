@@ -1,13 +1,16 @@
 import { useLayoutEffect, useRef } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import classNames from 'classnames';
-import { CloseIcon, DragGripIcon } from '../../icons';
+import { CloseIcon, DragGripIcon, PencilIcon } from '../../icons';
 import { RowActions } from './RowActions';
 import {
 	deleteSoftBreakBeforeCaret,
 	fromEditorHtml,
 	getCaretSplitHtml,
+	getClosestListItem,
 	insertSoftBreak,
+	isListItemEmpty,
+	splitListItemAtCaret,
 	stripHtml,
 	toEditorHtml,
 } from '../lib/utils';
@@ -26,6 +29,7 @@ export const RecipeRow = ( {
 	onConvert,
 	onSplit = () => {},
 	onAddImage = null,
+	onEditImage = null,
 	onRemoveImage = null,
 	onDelete,
 	onPaste = () => {},
@@ -36,6 +40,32 @@ export const RecipeRow = ( {
 	const isGroup = 'group' === row.type;
 	const hasImage = !! row.image?.url;
 	const isEmpty = ! stripHtml( row.value ) && ! hasImage;
+	const handleListItemEnter = el => {
+		const selection = el.ownerDocument.defaultView.getSelection();
+		const range = selection?.rangeCount ? selection.getRangeAt( 0 ) : null;
+		const item = range && getClosestListItem( el, range.startContainer );
+		if ( ! item ) {
+			return false;
+		}
+
+		if ( isListItemEmpty( item ) && ! item.nextElementSibling ) {
+			const list = item.parentElement;
+			item.remove();
+			if ( ! list.children.length ) {
+				list.remove();
+			}
+
+			onSplit( row.id, {
+				before: fromEditorHtml( el.innerHTML ),
+				after: '',
+			} );
+			return true;
+		}
+
+		splitListItemAtCaret( item, range );
+		el.dispatchEvent( new Event( 'input', { bubbles: true } ) );
+		return true;
+	};
 
 	const handleRowKeyDown = event => {
 		if (
@@ -59,6 +89,10 @@ export const RecipeRow = ( {
 
 			if ( event.shiftKey ) {
 				insertSoftBreak( event.currentTarget );
+				return;
+			}
+
+			if ( handleListItemEnter( event.currentTarget ) ) {
 				return;
 			}
 
@@ -195,17 +229,30 @@ export const RecipeRow = ( {
 							width={ row.image.width || undefined }
 							height={ row.image.height || undefined }
 						/>
-						<button
-							type="button"
-							className="tasty-recipes-row-image__remove"
-							aria-label={ __(
-								'Remove image',
-								'tasty-recipes-lite'
-							) }
-							onClick={ () => onRemoveImage?.( row.id ) }
-						>
-							{ CloseIcon }
-						</button>
+						<div className="tasty-recipes-row-image__actions">
+							<button
+								type="button"
+								className="tasty-recipes-row-image__edit"
+								aria-label={ __(
+									'Edit image',
+									'tasty-recipes-lite'
+								) }
+								onClick={ () => onEditImage?.( row.id ) }
+							>
+								{ PencilIcon }
+							</button>
+							<button
+								type="button"
+								className="tasty-recipes-row-image__remove"
+								aria-label={ __(
+									'Remove image',
+									'tasty-recipes-lite'
+								) }
+								onClick={ () => onRemoveImage?.( row.id ) }
+							>
+								{ CloseIcon }
+							</button>
+						</div>
 					</div>
 					{ !! row.image.caption && (
 						<p className="tasty-recipes-row-image__caption">

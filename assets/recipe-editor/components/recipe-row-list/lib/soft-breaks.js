@@ -4,6 +4,7 @@ import {
 	ZWSP,
 } from './constants';
 import { isBr, isSoftBreakSpan, parseFragment } from './html';
+import { mapNestedList } from './lists';
 import { sanitizeInlineHtml } from './sanitize';
 
 const SOFT_BREAK_PLACEHOLDER = `<span class="${ SOFT_BREAK_CLASS }"></span>`;
@@ -113,9 +114,11 @@ export const encodeSoftBreaks = html => {
 };
 
 export const fromEditorHtml = html =>
-	encodeSoftBreaks( sanitizeInlineHtml( stripZwsp( html ) ) );
+	mapNestedList( stripZwsp( html ), part =>
+		encodeSoftBreaks( sanitizeInlineHtml( part ) )
+	);
 
-export const toEditorHtml = html => {
+const inlineToEditorHtml = html => {
 	const root = parseFragment( sanitizeInlineHtml( html ) );
 	collapseSoftBreaks( root );
 	const doc = root.ownerDocument;
@@ -133,7 +136,9 @@ export const toEditorHtml = html => {
 	return root.innerHTML;
 };
 
-export const toMarkedEditorBreaks = html => {
+export const toEditorHtml = html => mapNestedList( html, inlineToEditorHtml );
+
+const inlineToMarkedEditorBreaks = html => {
 	const root = parseFragment( sanitizeInlineHtml( html ) );
 	collapseSoftBreaks( root );
 	const doc = root.ownerDocument;
@@ -146,6 +151,9 @@ export const toMarkedEditorBreaks = html => {
 
 	return root.innerHTML;
 };
+
+export const toMarkedEditorBreaks = html =>
+	mapNestedList( html, inlineToMarkedEditorBreaks );
 
 const isBreakNode = node => isBr( node ) || isSoftBreakSpan( node );
 

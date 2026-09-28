@@ -1,4 +1,8 @@
-import { getMediaImage, openImageMediaLibrary } from '../../media-library';
+import {
+	getMediaImage,
+	openImageDetailsModal,
+	openImageMediaLibrary,
+} from '../../media-library';
 import { DEFAULT_GROUP_LEVEL } from '../lib/constants';
 import { captureRowTops } from './flip';
 import { parseClipboardParts } from '../lib/paste';
@@ -7,8 +11,11 @@ import {
 	createGroupRow,
 	createItemRow,
 	escapeHtml,
+	fromImageDetailsData,
 	moveRow,
-	sanitizeInlineHtml,
+	sanitizeItemHtml,
+	splitNestedList,
+	toImageDetailsMetadata,
 } from '../lib/utils';
 
 export const useRowListActions = ( {
@@ -130,7 +137,7 @@ export const useRowListActions = ( {
 				if ( el ) {
 					handleValueChange(
 						rowId,
-						sanitizeInlineHtml( el.innerHTML || '' )
+						sanitizeItemHtml( el.innerHTML || '' )
 					);
 				}
 			}
@@ -210,19 +217,30 @@ export const useRowListActions = ( {
 	const handleConvertRow = rowId => {
 		pushHistory();
 		commitRows(
-			rows.map( row => {
+			rows.flatMap( row => {
 				if ( row.id !== rowId ) {
-					return clearIsNew( row );
+					return [ clearIsNew( row ) ];
 				}
 
-				const nextType = 'group' === row.type ? 'item' : 'group';
-				return {
-					...row,
-					type: nextType,
-					level: row.level || DEFAULT_GROUP_LEVEL,
-					image: 'group' === nextType ? null : row.image,
-					isNew: true,
-				};
+				if ( 'group' === row.type ) {
+					return [ { ...row, type: 'item', isNew: true } ];
+				}
+
+				const { inline, list } = splitNestedList( row.value );
+
+				return [
+					{
+						...row,
+						type: 'group',
+						value: inline,
+						level: row.level || DEFAULT_GROUP_LEVEL,
+						image: null,
+						isNew: true,
+					},
+					...( list?.items || [] ).map( value =>
+						createItemRow( { value } )
+					),
+				];
 			} )
 		);
 	};
@@ -240,6 +258,37 @@ export const useRowListActions = ( {
 					'medium',
 				] );
 				if ( ! image?.url ) {
+					return;
+				}
+
+				const nextRows = rowsRef.current.map( row => {
+					if ( row.id !== rowId ) {
+						return clearIsNew( row );
+					}
+
+					return {
+						...row,
+						image,
+						isNew: false,
+					};
+				} );
+				pushHistory();
+				commitRows( nextRows );
+			},
+		} );
+	};
+
+	const handleEditImage = rowId => {
+		const current = rowsRef.current.find( row => row.id === rowId );
+		if ( ! current?.image?.url ) {
+			return;
+		}
+
+		openImageDetailsModal( {
+			metadata: toImageDetailsMetadata( current.image ),
+			onUpdate: imageData => {
+				const image = fromImageDetailsData( imageData, current.image );
+				if ( ! image.url ) {
 					return;
 				}
 
@@ -299,6 +348,7 @@ export const useRowListActions = ( {
 		handleMoveRow,
 		handleConvertRow,
 		handleAddImage,
+		handleEditImage,
 		handleRemoveImage,
 		handleDeleteRow,
 	};

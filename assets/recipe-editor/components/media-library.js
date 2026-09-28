@@ -48,6 +48,55 @@ export const uploadImageFile = async file => {
 	}
 };
 
+const getAttachmentSizeName = async ( attachmentId, url ) => {
+	if ( ! attachmentId ) {
+		return 'custom';
+	}
+
+	const attachment = window.wp.media.model.Attachment.get( attachmentId );
+
+	try {
+		if ( ! attachment.get( 'sizes' ) ) {
+			await attachment.fetch();
+		}
+	} catch {
+		return 'custom';
+	}
+
+	const sizes = attachment.get( 'sizes' ) || {};
+
+	return (
+		Object.keys( sizes ).find( name => sizes[ name ].url === url ) ||
+		'custom'
+	);
+};
+
+export const openImageDetailsModal = async ( {
+	metadata,
+	onUpdate = () => {},
+} ) => {
+	if ( ! window.wp?.media?.view?.MediaFrame?.ImageDetails ) {
+		return false;
+	}
+
+	const size = await getAttachmentSizeName(
+		metadata.attachment_id,
+		metadata.url
+	);
+	const frame = window.wp.media( {
+		frame: 'image',
+		state: 'image-details',
+		metadata: { ...metadata, size },
+	} );
+
+	frame.state( 'image-details' ).on( 'update', onUpdate );
+	frame.state( 'replace-image' ).on( 'replace', onUpdate );
+	frame.on( 'close', () => frame.detach() );
+	frame.open();
+
+	return true;
+};
+
 export const openImageMediaLibrary = ( {
 	title = __( 'Media Library', 'tasty-recipes-lite' ),
 	buttonText = __( 'Select Image', 'tasty-recipes-lite' ),

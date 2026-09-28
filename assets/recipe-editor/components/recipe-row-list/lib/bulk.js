@@ -1,5 +1,11 @@
-import { parseFragment } from './html';
+import { normalizeRowText, parseFragment } from './html';
 import { serializeRowImage } from './images';
+import {
+	isListElement,
+	joinNestedList,
+	sanitizeItemHtml,
+	splitNestedList,
+} from './lists';
 import {
 	createGroupRow,
 	createItemRow,
@@ -10,7 +16,13 @@ import { rowHasContent, sanitizeInlineHtml } from './sanitize';
 import { isMarkedSoftBreak, toMarkedEditorBreaks } from './soft-breaks';
 
 const BULK_IMAGE_CLASS = 'tasty-recipes-bulk-image';
+const BULK_IMAGE_ACTIONS_CLASS = 'tasty-recipes-row-image__actions';
+const BULK_IMAGE_EDIT_CLASS = 'tasty-recipes-row-image__edit';
 const BULK_IMAGE_REMOVE_CLASS = 'tasty-recipes-row-image__remove';
+const BULK_IMAGE_EDIT_ICON =
+	'<svg viewBox="0 0 12 12" width="12" height="12" fill="none" aria-hidden="true"><path d="M7.5 2.5l2 2M1.75 10.25l.5-2.25 6.1-6.1a1.06 1.06 0 0 1 1.5 0l.25.25a1.06 1.06 0 0 1 0 1.5L4 9.75l-2.25.5Z" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const BULK_IMAGE_REMOVE_ICON =
+	'<svg viewBox="0 0 10 10" width="10" height="10" fill="none" aria-hidden="true"><path d="M9 1L1 9M1 1L9 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
 
 const isHeadingElement = node =>
 	!! node &&
@@ -79,8 +91,32 @@ const splitBulkLines = value => {
 		current.append( node.cloneNode( true ) );
 	};
 
+	const pushList = list => {
+		if ( current.childNodes.length ) {
+			flush();
+		}
+
+		const previous = lines[ lines.length - 1 ];
+		if ( 'item' === previous?.type ) {
+			previous.html += list.outerHTML;
+			return;
+		}
+
+		Array.from( list.children ).forEach( child => {
+			if ( 'LI' === child.tagName ) {
+				current.innerHTML = child.innerHTML;
+				flush();
+			}
+		} );
+	};
+
 	const walk = parent => {
 		Array.from( parent.childNodes ).forEach( child => {
+			if ( isListElement( child ) ) {
+				pushList( child );
+				return;
+			}
+
 			if (
 				Node.ELEMENT_NODE === child.nodeType &&
 				'BR' === child.tagName
@@ -144,24 +180,37 @@ export const serializeBulkText = rows => {
 			return;
 		}
 
-		const html = sanitizeInlineHtml( row.value );
+		const { inline, list } = splitNestedList(
+			sanitizeItemHtml( row.value )
+		);
 		const imageHtml = serializeRowImage( row.image );
 
-		if ( ! rowHasContent( html ) && ! imageHtml ) {
+		if ( ! rowHasContent( inline ) && ! imageHtml ) {
+			( list?.items || [] ).forEach( item => {
+				parts.push( {
+					html: toMarkedEditorBreaks( item ),
+					isHeading: false,
+				} );
+			} );
 			return;
 		}
 
-		let itemHtml = toMarkedEditorBreaks( html );
+		const listHtml = list
+			? toMarkedEditorBreaks( joinNestedList( '', list ) )
+			: '';
 
-		if ( rowHasContent( html ) && imageHtml ) {
+		let itemHtml = toMarkedEditorBreaks( inline );
+
+		if ( rowHasContent( inline ) && imageHtml ) {
 			itemHtml = `${ itemHtml }${ imageHtml }`;
-		} else if ( ! rowHasContent( html ) ) {
+		} else if ( ! rowHasContent( inline ) ) {
 			itemHtml = imageHtml;
 		}
 
 		parts.push( {
-			html: itemHtml,
+			html: `${ itemHtml }${ listHtml }`,
 			isHeading: false,
+			endsWithList: !! listHtml,
 		} );
 	} );
 
@@ -172,7 +221,7 @@ export const serializeBulkText = rows => {
 
 		const previous = parts[ index - 1 ];
 
-		if ( part.isHeading || previous.isHeading ) {
+		if ( part.isHeading || previous.isHeading || previous.endsWithList ) {
 			return `${ output }${ part.html }`;
 		}
 
@@ -193,9 +242,9 @@ const unwrapElement = node => {
 export const stripBulkImageChrome = html => {
 	const root = parseFragment( html );
 
-	root.querySelectorAll( `.${ BULK_IMAGE_REMOVE_CLASS }` ).forEach( button =>
-		button.remove()
-	);
+	root.querySelectorAll(
+		`.${ BULK_IMAGE_ACTIONS_CLASS }, .${ BULK_IMAGE_EDIT_CLASS }, .${ BULK_IMAGE_REMOVE_CLASS }`
+	).forEach( node => node.remove() );
 
 	root.querySelectorAll( `.${ BULK_IMAGE_CLASS }` ).forEach( wrap => {
 		if ( 'FIGURE' === wrap.tagName ) {
@@ -215,7 +264,31 @@ export const stripBulkImageChrome = html => {
 	return root.innerHTML;
 };
 
-export const decorateBulkImages = ( root, removeLabel ) => {
+const createBulkImageButton = ( doc, className, label, icon ) => {
+	const button = doc.createElement( 'button' );
+	button.type = 'button';
+	button.className = className;
+	button.setAttribute( 'aria-label', label );
+	button.tabIndex = 0;
+	button.innerHTML = icon;
+
+	return button;
+};
+
+export const replaceBulkImage = ( wrap, image ) => {
+	const link = wrap.parentElement;
+	const isLinkOnlyWrap =
+		'A' === link?.tagName &&
+		Array.from( link.childNodes ).every(
+			node => node === wrap || ! normalizeRowText( node.textContent )
+		);
+	const target = isLinkOnlyWrap ? link : wrap;
+	const fragment = parseFragment( serializeRowImage( image ) );
+
+	target.replaceWith( ...fragment.childNodes );
+};
+
+export const decorateBulkImages = ( root, { editLabel, removeLabel } ) => {
 	if ( ! root ) {
 		return;
 	}
@@ -237,18 +310,28 @@ export const decorateBulkImages = ( root, removeLabel ) => {
 
 		wrap.setAttribute( 'contenteditable', 'false' );
 
-		if ( wrap.querySelector( `.${ BULK_IMAGE_REMOVE_CLASS }` ) ) {
+		if ( wrap.querySelector( `.${ BULK_IMAGE_ACTIONS_CLASS }` ) ) {
 			return;
 		}
 
-		const button = root.ownerDocument.createElement( 'button' );
-		button.type = 'button';
-		button.className = BULK_IMAGE_REMOVE_CLASS;
-		button.setAttribute( 'aria-label', removeLabel );
-		button.tabIndex = 0;
-		button.innerHTML =
-			'<svg viewBox="0 0 10 10" width="10" height="10" fill="none" aria-hidden="true"><path d="M9 1L1 9M1 1L9 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
-		wrap.append( button );
+		const doc = root.ownerDocument;
+		const actions = doc.createElement( 'span' );
+		actions.className = BULK_IMAGE_ACTIONS_CLASS;
+		actions.append(
+			createBulkImageButton(
+				doc,
+				BULK_IMAGE_EDIT_CLASS,
+				editLabel,
+				BULK_IMAGE_EDIT_ICON
+			),
+			createBulkImageButton(
+				doc,
+				BULK_IMAGE_REMOVE_CLASS,
+				removeLabel,
+				BULK_IMAGE_REMOVE_ICON
+			)
+		);
+		wrap.append( actions );
 	} );
 };
 

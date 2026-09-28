@@ -1,8 +1,14 @@
 import { useEffect, useRef, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import classNames from 'classnames';
-import { AddImageIcon } from '../../icons';
+import {
+	AddImageIcon,
+	BulletListIcon,
+	NumberedListIcon,
+	SectionTitleIcon,
+} from '../../icons';
 import { KbdTooltip } from '../../kbd-tooltip';
+import { openLinkSettingsModal } from '../../link-settings';
 import { getMediaImage, openImageMediaLibrary } from '../../media-library';
 import { getModifierKeySymbol } from '../../platform';
 import { DEFAULT_GROUP_LEVEL } from '../lib/constants';
@@ -13,8 +19,12 @@ import {
 	getClosestAnchor,
 	getLinkAttributes,
 	hasRelToken,
+	isAbsoluteHttpUrl,
+	isListElement,
 	isRangeInsideNode,
 	isSafeUrl,
+	liftListItem,
+	placeCaret,
 } from '../lib/utils';
 import { trackUsage } from '../../../track';
 import { filterEditorActiveCommands, LinkPopoverFields } from '../toolbar';
@@ -66,13 +76,28 @@ const isLineBoundary = node => {
 		return true;
 	}
 
-	return isElement( node ) && ( 'BR' === node.tagName || BLOCK_TAGS.has( node.tagName ) );
+	return (
+		isElement( node ) &&
+		( 'BR' === node.tagName ||
+			BLOCK_TAGS.has( node.tagName ) ||
+			isListElement( node ) )
+	);
 };
+
+const isTopLevelListItem = ( editable, node ) =>
+	isElement( node ) &&
+	'LI' === node.tagName &&
+	isListElement( node.parentElement ) &&
+	node.parentElement.parentElement === editable;
 
 const getBlockAncestor = ( editable, node ) => {
 	let current = isElement( node ) ? node : node?.parentElement;
 	while ( current && current !== editable ) {
 		if ( isHeadingTag( current ) && editable.contains( current ) ) {
+			return current;
+		}
+
+		if ( isTopLevelListItem( editable, current ) ) {
 			return current;
 		}
 
@@ -89,17 +114,33 @@ const getBlockAncestor = ( editable, node ) => {
 	return null;
 };
 
+const getRangeAnchorNode = range => {
+	const node = range.commonAncestorContainer;
+	if ( ! isListElement( node ) ) {
+		return node;
+	}
+
+	return (
+		node.children[ range.startOffset ] || node.lastElementChild || node
+	);
+};
+
 const collectLineNodes = ( editable, range ) => {
-	const block = getBlockAncestor( editable, range.commonAncestorContainer );
+	const block = getBlockAncestor( editable, getRangeAnchorNode( range ) );
 	if ( block ) {
 		return { block, nodes: [ block ] };
 	}
 
 	let caretNode = range.startContainer;
 	if ( caretNode === editable ) {
-		caretNode =
-			editable.childNodes[ range.startOffset ] ||
-			editable.childNodes[ range.startOffset - 1 ];
+		const after = editable.childNodes[ range.startOffset ] || null;
+		const before = editable.childNodes[ range.startOffset - 1 ] || null;
+
+		if ( isLineBoundary( before ) && isLineBoundary( after ) ) {
+			return { block: null, nodes: [], insertBefore: after };
+		}
+
+		caretNode = isLineBoundary( before ) ? after : before;
 	}
 
 	while ( caretNode && caretNode.parentNode !== editable ) {
@@ -134,6 +175,15 @@ const collectLineNodes = ( editable, range ) => {
 	return { block: null, nodes };
 };
 
+const getLineUnits = editable =>
+	Array.from( editable.childNodes ).flatMap( node =>
+		isListElement( node )
+			? Array.from( node.children ).filter(
+					child => 'LI' === child.tagName
+			  )
+			: [ node ]
+	);
+
 const collectSelectedLines = ( editable, range ) => {
 	const startRange = range.cloneRange();
 	startRange.collapse( true );
@@ -153,37 +203,43 @@ const collectSelectedLines = ( editable, range ) => {
 		return [ start ];
 	}
 
+	const units = getLineUnits( editable );
+	const from = units.indexOf( first );
+	const to = units.indexOf( last );
+	if ( from < 0 || to < from ) {
+		return [ start ];
+	}
+
 	const lines = [];
 	let current = [];
-	let node = first;
-	const stop = last.nextSibling;
+	const flushCurrent = () => {
+		if ( current.length ) {
+			lines.push( { block: null, nodes: current } );
+			current = [];
+		}
+	};
 
-	while ( node && node !== stop ) {
+	units.slice( from, to + 1 ).forEach( node => {
 		if ( isElement( node ) && 'BR' === node.tagName ) {
-			if ( current.length ) {
-				lines.push( { block: null, nodes: current } );
-				current = [];
-			}
-		} else if (
-			isElement( node ) &&
-			BLOCK_TAGS.has( node.tagName ) &&
-			node.parentNode === editable
-		) {
-			if ( current.length ) {
-				lines.push( { block: null, nodes: current } );
-				current = [];
-			}
-			lines.push( { block: node, nodes: [ node ] } );
-		} else {
-			current.push( node );
+			flushCurrent();
+			return;
 		}
 
-		node = node.nextSibling;
-	}
+		if (
+			isTopLevelListItem( editable, node ) ||
+			( isElement( node ) &&
+				BLOCK_TAGS.has( node.tagName ) &&
+				node.parentNode === editable )
+		) {
+			flushCurrent();
+			lines.push( { block: node, nodes: [ node ] } );
+			return;
+		}
 
-	if ( current.length ) {
-		lines.push( { block: null, nodes: current } );
-	}
+		current.push( node );
+	} );
+
+	flushCurrent();
 
 	return lines.length ? lines : [ start ];
 };
@@ -226,6 +282,14 @@ const toggleHeadingLines = ( editable, range, level ) => {
 			return;
 		}
 
+		if ( isTopLevelListItem( editable, line.block ) ) {
+			wrapNodesInHeading(
+				liftListItem( line.block, { addBreaks: false } ),
+				level
+			);
+			return;
+		}
+
 		if ( line.block && [ 'DIV', 'P', 'LI' ].includes( line.block.tagName ) ) {
 			const heading = doc.createElement( `h${ level }` );
 			heading.innerHTML = line.block.innerHTML;
@@ -237,6 +301,156 @@ const toggleHeadingLines = ( editable, range, level ) => {
 			wrapNodesInHeading( line.nodes, level );
 		}
 	} );
+};
+
+const getLineListItem = ( editable, line ) =>
+	isTopLevelListItem( editable, line.block ) ? line.block : null;
+
+const renameList = ( list, tag ) => {
+	const renamed = list.ownerDocument.createElement( tag );
+	while ( list.firstChild ) {
+		renamed.append( list.firstChild );
+	}
+	list.replaceWith( renamed );
+};
+
+const createLineListItem = ( editable, line ) => {
+	const doc = editable.ownerDocument;
+	const item = doc.createElement( 'li' );
+
+	if ( line.block ) {
+		line.block.before( item );
+		while ( line.block.firstChild ) {
+			item.append( line.block.firstChild );
+		}
+		line.block.remove();
+	} else if ( line.nodes.length ) {
+		line.nodes[ 0 ].before( item );
+		item.append( ...line.nodes );
+	} else {
+		editable.insertBefore( item, line.insertBefore || null );
+	}
+
+	if ( ! item.childNodes.length ) {
+		item.append( doc.createElement( 'br' ) );
+	}
+
+	return item;
+};
+
+const placeItemInList = ( item, tag ) => {
+	[ item.previousSibling, item.nextSibling ].forEach( sibling => {
+		if ( isElement( sibling ) && 'BR' === sibling.tagName ) {
+			sibling.remove();
+		}
+	} );
+
+	let list = item.previousSibling;
+	if ( ! isListElement( list ) || list.tagName !== tag ) {
+		list = item.ownerDocument.createElement( tag );
+		item.before( list );
+	}
+	list.append( item );
+
+	const following = list.nextSibling;
+	if ( isListElement( following ) && following.tagName === tag ) {
+		list.append( ...following.childNodes );
+		following.remove();
+	}
+};
+
+const toggleListLines = ( editable, range, tag ) => {
+	const listTag = tag.toUpperCase();
+	const lines = collectSelectedLines( editable, range ).filter(
+		line => ! lineIsHeading( line )
+	);
+	const items = lines.map( line => getLineListItem( editable, line ) );
+
+	if (
+		items.length &&
+		items.every( item => item?.parentElement.tagName === listTag )
+	) {
+		return items.flatMap( item => liftListItem( item ) );
+	}
+
+	return lines.map( ( line, index ) => {
+		const existing = items[ index ];
+		if ( existing ) {
+			if ( existing.parentElement.tagName !== listTag ) {
+				renameList( existing.parentElement, listTag );
+			}
+			return existing;
+		}
+
+		const item = createLineListItem( editable, line );
+		placeItemInList( item, listTag );
+		return item;
+	} );
+};
+
+const selectNodes = ( editable, nodes ) => {
+	const first = nodes[ 0 ];
+	const last = nodes[ nodes.length - 1 ];
+	const selection = getSelection( editable );
+	if ( ! first || ! selection ) {
+		return;
+	}
+
+	const range = editable.ownerDocument.createRange();
+	if ( isElement( first ) && 'BR' !== first.tagName ) {
+		range.setStart( first, 0 );
+	} else {
+		range.setStartBefore( first );
+	}
+
+	if ( isElement( last ) && 'BR' !== last.tagName ) {
+		range.setEnd( last, last.childNodes.length );
+	} else {
+		range.setEndAfter( last );
+	}
+
+	selection.removeAllRanges();
+	selection.addRange( range );
+};
+
+const getRangeBounds = range => ( {
+	collapsed: range.collapsed,
+	startContainer: range.startContainer,
+	startOffset: range.startOffset,
+	endContainer: range.endContainer,
+	endOffset: range.endOffset,
+} );
+
+const isRestorableBoundary = ( editable, container, offset ) => {
+	if ( container === editable || ! editable.contains( container ) ) {
+		return false;
+	}
+
+	const length =
+		Node.TEXT_NODE === container.nodeType
+			? container.length
+			: container.childNodes.length;
+
+	return offset <= length;
+};
+
+const restoreRangeBounds = ( editable, bounds ) => {
+	const selection = getSelection( editable );
+	if (
+		! selection ||
+		! isRestorableBoundary( editable, bounds.startContainer, bounds.startOffset ) ||
+		! isRestorableBoundary( editable, bounds.endContainer, bounds.endOffset )
+	) {
+		return false;
+	}
+
+	const range = editable.ownerDocument.createRange();
+	range.setStart( bounds.startContainer, bounds.startOffset );
+	range.setEnd( bounds.endContainer, bounds.endOffset );
+	selection.removeAllRanges();
+	selection.addRange( range );
+
+	return true;
 };
 
 const getAnchorFromSelection = container => {
@@ -334,6 +548,8 @@ export const BulkToolbar = ( {
 
 		const node = range.commonAncestorContainer;
 		const el = isElement( node ) ? node : node.parentElement;
+		const list = el?.closest( 'ul, ol' );
+		const listTag = list && editable.contains( list ) ? list.tagName : '';
 
 		setActiveCommands(
 			filterEditorActiveCommands(
@@ -343,6 +559,8 @@ export const BulkToolbar = ( {
 					underline: document.queryCommandState( 'underline' ),
 					link: !! el?.closest( 'a' ),
 					heading: !! el?.closest( 'h1,h2,h3,h4,h5,h6' ),
+					bulletList: 'UL' === listTag,
+					numberedList: 'OL' === listTag,
 				},
 				range,
 				editable
@@ -419,7 +637,7 @@ export const BulkToolbar = ( {
 	}, [ editorRef ] );
 
 	const runCommand = command => {
-		if ( ! restoreSelection() && ! saveSelection() ) {
+		if ( ! saveSelection() && ! restoreSelection() ) {
 			return;
 		}
 
@@ -436,7 +654,7 @@ export const BulkToolbar = ( {
 
 	const handleHeading = () => {
 		const editable = editorRef?.current;
-		if ( ! restoreSelection() && ! saveSelection() ) {
+		if ( ! saveSelection() && ! restoreSelection() ) {
 			return;
 		}
 
@@ -447,6 +665,34 @@ export const BulkToolbar = ( {
 		}
 
 		toggleHeadingLines( editable, range, DEFAULT_GROUP_LEVEL );
+		notifyEditable( editable );
+		onChange();
+		updateActiveState();
+	};
+
+	const handleList = tag => {
+		const editable = editorRef?.current;
+		if ( ! saveSelection() && ! restoreSelection() ) {
+			return;
+		}
+
+		restoreSelection();
+		const range = getRange( getSelection( editable ) );
+		if ( ! editable || ! range ) {
+			return;
+		}
+
+		const bounds = getRangeBounds( range );
+		const changedNodes = toggleListLines( editable, range, tag );
+		if ( ! restoreRangeBounds( editable, bounds ) ) {
+			if ( bounds.collapsed && 1 === changedNodes.length ) {
+				placeCaret( changedNodes[ 0 ] );
+			} else {
+				selectNodes( editable, changedNodes );
+			}
+		}
+
+		saveSelection();
 		notifyEditable( editable );
 		onChange();
 		updateActiveState();
@@ -472,7 +718,12 @@ export const BulkToolbar = ( {
 		const onClick = event => {
 			const editable = editorRef?.current;
 			const anchor = getClosestAnchor( event.target );
-			if ( ! editable || ! anchor || ! editable.contains( anchor ) ) {
+			if (
+				! editable ||
+				! anchor ||
+				! editable.contains( anchor ) ||
+				event.target.closest( '.tasty-recipes-row-image__actions' )
+			) {
 				return;
 			}
 
@@ -506,23 +757,33 @@ export const BulkToolbar = ( {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [ editorRef ] );
 
-	const applyLink = () => {
-		const url = normalizeUrl( linkUrl );
+	const applyLink = ( {
+		url: rawUrl = linkUrl,
+		text = '',
+		openInNewTab = null,
+		nofollow = null,
+	} = {} ) => {
+		const url = normalizeUrl( rawUrl );
 		if ( ! url || ! restoreSelection() ) {
 			setLinkOpen( false );
 			return;
 		}
 
 		document.execCommand( 'createLink', false, url );
-		applyAnchorAttributes(
-			getAnchorFromSelection( editorRef?.current ),
-			getLinkAttributes( {
-				url,
-				existingRel: existingRelRef.current,
-				sponsored: linkSponsored,
-				nofollow: linkNofollow,
-			} )
-		);
+		const anchor = getAnchorFromSelection( editorRef?.current );
+		const attrs = getLinkAttributes( {
+			url,
+			existingRel: existingRelRef.current,
+			sponsored: linkSponsored,
+			nofollow: nofollow ?? linkNofollow,
+		} );
+		if ( null !== openInNewTab ) {
+			attrs.target = openInNewTab ? '_blank' : '';
+		}
+		applyAnchorAttributes( anchor, attrs );
+		if ( anchor && text && text !== anchor.textContent ) {
+			anchor.textContent = text;
+		}
 
 		notifyEditable( editorRef?.current );
 		onChange();
@@ -530,17 +791,55 @@ export const BulkToolbar = ( {
 		updateActiveState();
 	};
 
-	const removeLink = () => {
-		if ( ! restoreSelection() ) {
-			setLinkOpen( false );
+	const clearLink = () => {
+		const range = savedRangeRef.current;
+		const anchor = range && getAnchorFromRange( range );
+		if ( anchor && restoreSelection() ) {
+			const selection = getSelection( editorRef.current );
+			const anchorRange = editorRef.current.ownerDocument.createRange();
+			anchorRange.selectNodeContents( anchor );
+			selection.removeAllRanges();
+			selection.addRange( anchorRange );
+			document.execCommand( 'unlink', false, null );
+			saveSelection();
+			notifyEditable( editorRef.current );
+			onChange();
+			updateActiveState();
+		}
+
+		existingRelRef.current = '';
+		setLinkUrl( '' );
+		setLinkHasAnchor( false );
+		setLinkSponsored( false );
+		setLinkNofollow( false );
+		linkInputRef.current?.focus();
+	};
+
+	const openLinkSettings = () => {
+		const range = savedRangeRef.current;
+		if ( ! range ) {
 			return;
 		}
 
-		document.execCommand( 'unlink', false, null );
-		notifyEditable( editorRef?.current );
-		onChange();
-		setLinkOpen( false );
-		updateActiveState();
+		const anchor = getAnchorFromRange( range );
+		const url = normalizeUrl( linkUrl );
+		const opened = openLinkSettingsModal( {
+			url: url || linkUrl,
+			text: range.toString(),
+			openInNewTab: anchor
+				? '_blank' === anchor.getAttribute( 'target' )
+				: isAbsoluteHttpUrl( url ),
+			nofollow: linkNofollow,
+			isUpdate: linkHasAnchor,
+			onSubmit: settings => {
+				savedRangeRef.current = range;
+				applyLink( settings );
+			},
+		} );
+
+		if ( opened ) {
+			setLinkOpen( false );
+		}
 	};
 
 	const handleImage = () => {
@@ -566,9 +865,12 @@ export const BulkToolbar = ( {
 
 				if ( range ) {
 					const { block } = collectLineNodes( editable, range );
-					if ( isHeadingTag( block ) ) {
+					const isListItem = isTopLevelListItem( editable, block );
+					if ( isHeadingTag( block ) || isListItem ) {
 						const insertRange = editable.ownerDocument.createRange();
-						insertRange.setStartAfter( block );
+						insertRange.setStartAfter(
+							isListItem ? block.parentElement : block
+						);
 						insertRange.collapse( true );
 						const selection = getSelection( editable );
 						selection.removeAllRanges();
@@ -576,7 +878,7 @@ export const BulkToolbar = ( {
 						document.execCommand(
 							'insertHTML',
 							false,
-							`<br>${ html }`
+							isListItem ? html : `<br>${ html }`
 						);
 					} else {
 						document.execCommand( 'insertHTML', false, html );
@@ -631,6 +933,29 @@ export const BulkToolbar = ( {
 			content: LINK_ICON,
 		},
 	];
+	const blockActions = [
+		{
+			id: 'heading',
+			label: __( 'Heading', 'tasty-recipes-lite' ),
+			active: activeCommands.heading,
+			onClick: handleHeading,
+			content: SectionTitleIcon,
+		},
+		{
+			id: 'bullet-list',
+			label: __( 'Bulleted list', 'tasty-recipes-lite' ),
+			active: activeCommands.bulletList,
+			onClick: () => handleList( 'ul' ),
+			content: BulletListIcon,
+		},
+		{
+			id: 'numbered-list',
+			label: __( 'Numbered list', 'tasty-recipes-lite' ),
+			active: activeCommands.numberedList,
+			onClick: () => handleList( 'ol' ),
+			content: NumberedListIcon,
+		},
+	];
 
 	return (
 		<div
@@ -663,19 +988,21 @@ export const BulkToolbar = ( {
 				className="tasty-recipes-toolbar-separator"
 				aria-hidden="true"
 			/>
-			<KbdTooltip label={ __( 'Heading', 'tasty-recipes-lite' ) }>
-				<button
-					type="button"
-					className={ classNames( {
-						'is-active': activeCommands.heading,
-					} ) }
-					aria-label={ __( 'Heading', 'tasty-recipes-lite' ) }
-					aria-pressed={ !! activeCommands.heading }
-					onClick={ handleHeading }
-				>
-					<b>H</b>
-				</button>
-			</KbdTooltip>
+			{ blockActions.map( action => (
+				<KbdTooltip key={ action.id } label={ action.label }>
+					<button
+						type="button"
+						className={ classNames( {
+							'is-active': action.active,
+						} ) }
+						aria-label={ action.label }
+						aria-pressed={ !! action.active }
+						onClick={ action.onClick }
+					>
+						{ action.content }
+					</button>
+				</KbdTooltip>
+			) ) }
 			{ showImage && (
 				<KbdTooltip
 					label={ __( 'Add image', 'tasty-recipes-lite' ) }
@@ -713,7 +1040,8 @@ export const BulkToolbar = ( {
 						onUrlChange={ setLinkUrl }
 						onSubmit={ applyLink }
 						onCancel={ () => setLinkOpen( false ) }
-						onRemove={ removeLink }
+						onClear={ clearLink }
+						onOpenSettings={ openLinkSettings }
 						hasAnchor={ linkHasAnchor }
 						sponsored={ linkSponsored }
 						nofollow={ linkNofollow }

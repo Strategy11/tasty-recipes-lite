@@ -1074,6 +1074,205 @@ describe( 'Recipe Creation', () => {
 			cy.get( '.tasty-recipes-modal-close' ).click( { force: true } );
 		} );
 
+		const selectBulkTextNodes = ( el, fromIndex, toIndex ) => {
+			const doc = el.ownerDocument;
+			const walker = doc.createTreeWalker(
+				el,
+				doc.defaultView.NodeFilter.SHOW_TEXT
+			);
+			const texts = [];
+			while ( walker.nextNode() ) {
+				texts.push( walker.currentNode );
+			}
+
+			const range = doc.createRange();
+			range.setStart( texts[ fromIndex ], 0 );
+			range.setEnd(
+				texts[ toIndex ],
+				texts[ toIndex ].textContent.length
+			);
+			const selection = doc.defaultView.getSelection();
+			selection.removeAllRanges();
+			selection.addRange( range );
+		};
+
+		const typeBulkIngredients = text => {
+			cy.get( ingredients )
+				.closest( 'fieldset' )
+				.contains( 'button', 'Bulk Edit' )
+				.click();
+
+			cy.get( '.tasty-recipes-row-list-bulk' )
+				.first()
+				.click()
+				.type( `{selectall}{backspace}${ text }` );
+		};
+
+		it( 'should nest a bulk edit list in the line above it', () => {
+			openCreateRecipeModal();
+			cy.get( '.tasty-recipes-frame-content input#title' ).type(
+				`Cypress Bulk List ${ Date.now() }`
+			);
+
+			typeBulkIngredients( 'Flour{enter}sifted{enter}sieved{enter}Sugar' );
+
+			// Typing scrolls the caret into view and can park the toolbar under the modal title.
+			cy.get( '.tasty-recipes-bulk-toolbar' ).scrollIntoView();
+			cy.get(
+				'.tasty-recipes-bulk-toolbar [aria-label="Bulleted list"]'
+			).should( 'be.visible' );
+			cy.get(
+				'.tasty-recipes-bulk-toolbar [aria-label="Numbered list"]'
+			).should( 'be.visible' );
+
+			cy.get( '.tasty-recipes-row-list-bulk' )
+				.first()
+				.then( $el => selectBulkTextNodes( $el[ 0 ], 1, 2 ) );
+			cy.get(
+				'.tasty-recipes-bulk-toolbar [aria-label="Bulleted list"]'
+			).click();
+
+			cy.get( '.tasty-recipes-row-list-bulk ul li' ).should(
+				'have.length',
+				2
+			);
+			cy.get(
+				'.tasty-recipes-bulk-toolbar [aria-label="Bulleted list"]'
+			).should( 'have.attr', 'aria-pressed', 'true' );
+
+			cy.contains( 'button', 'Done' ).click();
+
+			cy.get( `${ ingredients } .tasty-recipes-item-row` ).should(
+				'have.length',
+				2
+			);
+			cy.get( `${ ingredients } .tasty-recipes-row-input ul li` ).should(
+				'have.length',
+				2
+			);
+			cy.get( ingredients )
+				.siblings( 'input[name="ingredients"]' )
+				.should(
+					'have.value',
+					'<ul><li>Flour<ul><li>sifted</li><li>sieved</li></ul></li><li>Sugar</li></ul>'
+				);
+
+			cy.get( '.tasty-recipes-modal-close' ).click( { force: true } );
+		} );
+
+		it( 'should flatten a bulk edit list with no line above it', () => {
+			openCreateRecipeModal();
+			cy.get( '.tasty-recipes-frame-content input#title' ).type(
+				`Cypress Bulk Orphan List ${ Date.now() }`
+			);
+
+			typeBulkIngredients( 'Salt{enter}Pepper' );
+
+			cy.get( '.tasty-recipes-row-list-bulk' )
+				.first()
+				.then( $el => selectBulkTextNodes( $el[ 0 ], 0, 1 ) );
+			cy.get(
+				'.tasty-recipes-bulk-toolbar [aria-label="Numbered list"]'
+			).click();
+			cy.get( '.tasty-recipes-row-list-bulk ol li' ).should(
+				'have.length',
+				2
+			);
+
+			cy.contains( 'button', 'Done' ).click();
+
+			cy.get( `${ ingredients } .tasty-recipes-item-row` ).should(
+				'have.length',
+				2
+			);
+			cy.get( ingredients )
+				.siblings( 'input[name="ingredients"]' )
+				.should( 'have.value', '<ul><li>Salt</li><li>Pepper</li></ul>' );
+
+			cy.get( '.tasty-recipes-modal-close' ).click( { force: true } );
+		} );
+
+		it( 'should switch and remove bulk edit lists from the toolbar', () => {
+			openCreateRecipeModal();
+			cy.get( '.tasty-recipes-frame-content input#title' ).type(
+				`Cypress Bulk List Toggle ${ Date.now() }`
+			);
+
+			typeBulkIngredients( 'Flour{enter}sifted' );
+
+			cy.get( '.tasty-recipes-row-list-bulk' )
+				.first()
+				.then( $el => selectBulkTextNodes( $el[ 0 ], 1, 1 ) );
+			cy.get(
+				'.tasty-recipes-bulk-toolbar [aria-label="Bulleted list"]'
+			).click();
+			cy.get( '.tasty-recipes-row-list-bulk ul li' ).should(
+				'have.length',
+				1
+			);
+
+			cy.get(
+				'.tasty-recipes-bulk-toolbar [aria-label="Numbered list"]'
+			).click();
+			cy.get( '.tasty-recipes-row-list-bulk ul' ).should( 'not.exist' );
+			cy.get( '.tasty-recipes-row-list-bulk ol li' ).should(
+				'have.length',
+				1
+			);
+
+			cy.get(
+				'.tasty-recipes-bulk-toolbar [aria-label="Numbered list"]'
+			).click();
+			cy.get( '.tasty-recipes-row-list-bulk ol' ).should( 'not.exist' );
+
+			cy.contains( 'button', 'Done' ).click();
+
+			cy.get( ingredients )
+				.siblings( 'input[name="ingredients"]' )
+				.should( 'have.value', '<ul><li>Flour</li><li>sifted</li></ul>' );
+
+			cy.get( '.tasty-recipes-modal-close' ).click( { force: true } );
+		} );
+
+		it( 'should restore saved nested lists when editing a recipe', () => {
+			const recipeTitle = `Cypress Saved Nested List ${ Date.now() }`;
+			const savedIngredients =
+				'<ul><li>Flour<ul><li>sifted</li><li>sieved</li></ul></li><li>Sugar</li></ul>';
+
+			cy.createTastyRecipe( {
+				title: recipeTitle,
+				ingredients: savedIngredients,
+			} );
+
+			cy.visit( '/wp-admin/edit.php?post_type=tasty_recipe' );
+			openEditRecipeModal( recipeTitle );
+
+			cy.get( `${ ingredients } .tasty-recipes-item-row` ).should(
+				'have.length',
+				2
+			);
+			cy.get( `${ ingredients } .tasty-recipes-row-input` )
+				.first()
+				.find( 'ul li' )
+				.should( 'have.length', 2 );
+
+			cy.get( ingredients )
+				.closest( 'fieldset' )
+				.contains( 'button', 'Bulk Edit' )
+				.click();
+			cy.get( '.tasty-recipes-row-list-bulk ul li' ).should(
+				'have.length',
+				2
+			);
+			cy.contains( 'button', 'Done' ).click();
+
+			cy.get( ingredients )
+				.siblings( 'input[name="ingredients"]' )
+				.should( 'have.value', savedIngredients );
+
+			cy.get( '.tasty-recipes-modal-close' ).click( { force: true } );
+		} );
+
 		it( 'should not insert a blank line after a bulk heading', () => {
 			openCreateRecipeModal();
 			cy.get( '.tasty-recipes-frame-content input#title' ).type(

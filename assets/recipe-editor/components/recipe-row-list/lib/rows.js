@@ -8,6 +8,13 @@ import {
 	parseFragment,
 } from './html';
 import { parseImageFromElement, serializeRowImage } from './images';
+import {
+	getTopLevelLists,
+	isListElement,
+	joinNestedList,
+	sanitizeItemHtml,
+	splitNestedList,
+} from './lists';
 import { rowHasContent, sanitizeInlineHtml } from './sanitize';
 import {
 	collapseSoftBreaks,
@@ -90,38 +97,22 @@ export const getGroupLevel = level => {
 	return Math.trunc( parsed );
 };
 
+const getNestedListImageRows = lists =>
+	lists.flatMap( list =>
+		Array.from( list.querySelectorAll( 'img' ) )
+			.map( parseImageFromElement )
+			.filter( Boolean )
+			.map( image => createItemRow( { image } ) )
+	);
+
 export const extractItemContent = html => {
 	const root = parseFragment( protectSoftBreaks( html ) );
 	collapseSoftBreaks( root );
 	stripInsignificantBreakWhitespace( root );
 
 	const extraRows = [];
-
-	// Sub-lists cannot be nested in the row list, so every nested item becomes
-	// its own row instead of being flattened into the parent row.
-	Array.from( root.querySelectorAll( 'ul, ol' ) )
-		.filter( list => ! list.parentElement?.closest( 'ul, ol' ) )
-		.forEach( list => {
-			Array.from( list.children ).forEach( child => {
-				if ( 'LI' !== child.tagName ) {
-					return;
-				}
-
-				const nested = extractItemContent( child.innerHTML );
-
-				if ( rowHasContent( nested.value ) || nested.image ) {
-					extraRows.push(
-						createItemRow( {
-							value: nested.value,
-							image: nested.image,
-						} )
-					);
-				}
-				extraRows.push( ...nested.extraRows );
-			} );
-
-			list.remove();
-		} );
+	const lists = getTopLevelLists( root );
+	lists.forEach( list => list.remove() );
 
 	const images = Array.from( root.querySelectorAll( 'img' ) )
 		.map( parseImageFromElement )
@@ -156,16 +147,48 @@ export const extractItemContent = html => {
 		}
 	}
 
-	images.slice( 1 ).forEach( image => {
-		extraRows.push( createItemRow( { image } ) );
+	const value = sanitizeInlineHtml( root.innerHTML );
+	const image = images[ 0 ] || null;
+	const keepsNestedList = rowHasContent( value ) || !! image;
+	const listRows = keepsNestedList
+		? getNestedListImageRows( lists )
+		: flattenListsToRows( lists );
+
+	images.slice( 1 ).forEach( extraImage => {
+		extraRows.push( createItemRow( { image: extraImage } ) );
 	} );
 
+	const listHtml = lists.map( list => list.outerHTML ).join( '' );
+
 	return {
-		value: sanitizeInlineHtml( root.innerHTML ),
-		image: images[ 0 ] || null,
-		extraRows,
+		value: keepsNestedList ? sanitizeItemHtml( value + listHtml ) : value,
+		image,
+		extraRows: [ ...listRows, ...extraRows ],
 	};
 };
+
+const flattenListsToRows = lists =>
+	lists.flatMap( list =>
+		Array.from( list.children ).flatMap( child => {
+			if ( 'LI' !== child.tagName ) {
+				return [];
+			}
+
+			const nested = extractItemContent( child.innerHTML );
+			const rows = [];
+
+			if ( rowHasContent( nested.value ) || nested.image ) {
+				rows.push(
+					createItemRow( {
+						value: nested.value,
+						image: nested.image,
+					} )
+				);
+			}
+
+			return [ ...rows, ...nested.extraRows ];
+		} )
+	);
 
 export const serializeRows = ( rows, mode = 'ingredients' ) => {
 	const listTag = 'instructions' === mode ? 'ol' : 'ul';
@@ -200,20 +223,26 @@ export const serializeRows = ( rows, mode = 'ingredients' ) => {
 			return;
 		}
 
-		const html = encodeSoftBreaks( sanitizeInlineHtml( row.value ) );
+		const { inline, list } = splitNestedList(
+			sanitizeItemHtml( row.value )
+		);
+		const html = encodeSoftBreaks( inline );
+		const listHtml = list
+			? encodeSoftBreaks( joinNestedList( '', list ) )
+			: '';
 		const imageHtml = serializeRowImage( row.image );
 		const hasText = rowHasContent( html );
 
-		if ( ! hasText && ! imageHtml ) {
+		if ( ! hasText && ! imageHtml && ! listHtml ) {
 			return;
 		}
 
+		let itemHtml = hasText ? html : imageHtml;
 		if ( hasText && imageHtml ) {
-			pendingItems.push( `${ html }<br />${ imageHtml }` );
-			return;
+			itemHtml = `${ html }<br />${ imageHtml }`;
 		}
 
-		pendingItems.push( hasText ? html : imageHtml );
+		pendingItems.push( `${ itemHtml }${ listHtml }` );
 	} );
 
 	flushItems();
@@ -408,6 +437,12 @@ export const getCaretSplitHtml = el => {
 		return null;
 	}
 
+	const list = Array.from( el.children ).find( isListElement );
+
+	if ( list?.contains( range.commonAncestorContainer ) ) {
+		return null;
+	}
+
 	const toHtml = fragmentRange => {
 		const holder = el.ownerDocument.createElement( 'div' );
 		holder.append( fragmentRange.cloneContents() );
@@ -423,8 +458,12 @@ export const getCaretSplitHtml = el => {
 	after.selectNodeContents( el );
 	after.setStart( range.endContainer, range.endOffset );
 
+	if ( list ) {
+		after.setEndBefore( list );
+	}
+
 	return {
-		before: toHtml( before ),
+		before: sanitizeItemHtml( toHtml( before ) + ( list?.outerHTML || '' ) ),
 		after: toHtml( after ),
 	};
 };

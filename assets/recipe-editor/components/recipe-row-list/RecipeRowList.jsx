@@ -78,6 +78,7 @@ const RecipeRowList = ( {
 		handleMoveRow,
 		handleConvertRow,
 		handleAddImage,
+		handleEditImage,
 		handleRemoveImage,
 		handleDeleteRow,
 	} = useRowListActions( {
@@ -157,6 +158,7 @@ const RecipeRowList = ( {
 									onAddImage={
 										isInstructions ? handleAddImage : null
 									}
+									onEditImage={ handleEditImage }
 									onRemoveImage={ handleRemoveImage }
 									onDelete={ () =>
 										handleDeleteRow( row.id )

@@ -1311,6 +1311,82 @@ EOT;
 	}
 
 	/**
+	 * Ensures nested instruction lists stay part of their parent step.
+	 */
+	public function test_parse_recipe_instruction_list_with_nested_list() {
+		$instructions = '<ol><li><strong>Rice:</strong> Rinse it.<ul><li>Use cold water</li><li>Drain well</li></ul></li><li>Cook the rice.</li></ol>';
+
+		$this->assertEquals(
+			array(
+				array(
+					'type'  => 'item',
+					'name'  => 'Rice',
+					'value' => 'Rinse it.' . PHP_EOL . 'Use cold water' . PHP_EOL . 'Drain well',
+					'url'   => '#instruction-step-1',
+				),
+				array(
+					'type'  => 'item',
+					'value' => 'Cook the rice.',
+					'url'   => '#instruction-step-2',
+				),
+			),
+			Distribution_Metadata::parse_recipe_instruction_list( $instructions )
+		);
+	}
+
+	/**
+	 * Ensures step numbers are only applied to top-level instruction items.
+	 */
+	public function test_apply_instruction_step_numbers_with_nested_list() {
+		$this->assertEquals(
+			'<ol><li id="instruction-step-1">Step 1<ul><li>a</li><li>b</li></ul></li><li id="instruction-step-2">Step 2</li></ol>',
+			Distribution_Metadata::apply_instruction_step_numbers( '<ol><li>Step 1<ul><li>a</li><li>b</li></ul></li><li>Step 2</li></ol>' )
+		);
+	}
+
+	/**
+	 * Ensures nested ingredient lists stay part of their parent ingredient.
+	 */
+	public function test_parse_recipe_component_list_with_nested_list() {
+		$this->assertEquals(
+			array(
+				array(
+					'type'  => 'heading',
+					'value' => 'For the cake',
+				),
+				array(
+					'type'  => 'item',
+					'value' => 'Flour' . PHP_EOL . 'sifted' . PHP_EOL . 'sieved',
+				),
+				array(
+					'type'  => 'item',
+					'value' => 'Sugar',
+				),
+			),
+			Distribution_Metadata::parse_recipe_component_list( '<h4>For the cake</h4><ul><li>Flour<ul><li>sifted</li><li>sieved</li></ul></li><li>Sugar</li></ul>' )
+		);
+	}
+
+	/**
+	 * Ensures unbalanced nested lists still produce every item.
+	 */
+	public function test_parse_recipe_component_list_with_unbalanced_nested_list() {
+		$this->assertEquals(
+			array(
+				array(
+					'type'  => 'item',
+					'value' => 'a' . PHP_EOL . 'b',
+				),
+				array(
+					'type'  => 'item',
+					'value' => 'c',
+				),
+			),
+			Distribution_Metadata::parse_recipe_component_list( '<ul><li>a<ul><li>b</li></li><li>c</li></ul>' )
+		);
+	}
+
+	/**
 	 * Ensures expected behavior when parsing instruction list.
 	 */
 	public function test_parse_recipe_instruction_list() {
