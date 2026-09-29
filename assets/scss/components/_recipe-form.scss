@@ -1366,8 +1366,9 @@
 
 	.tasty-recipes-row-actions {
 		position: absolute;
-		top: 4px;
+		top: -21px;
 		right: 4px;
+		z-index: 2;
 		height: 32px;
 		display: flex;
 		align-items: center;
