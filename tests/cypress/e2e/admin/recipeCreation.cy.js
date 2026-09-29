@@ -753,6 +753,32 @@ describe( 'Recipe Creation', () => {
 		};
 
 		const assertRowActionsOnFocus = ( list, mode, lines ) => {
+			const clearRowActionsFromTitle = index => {
+				cy.get( `${ list } .tasty-recipes-item-row` )
+					.eq( index )
+					.find( '.tasty-recipes-row-actions' )
+					.then( $actions => {
+						const actions = $actions[ 0 ];
+						const scroller = actions.closest(
+							'.tasty-recipes-frame-content'
+						);
+						const title = actions.ownerDocument.querySelector(
+							'.tasty-recipes-frame-title'
+						);
+						if ( ! scroller || ! title ) {
+							return;
+						}
+
+						const overlap =
+							title.getBoundingClientRect().bottom +
+							8 -
+							actions.getBoundingClientRect().top;
+						if ( overlap > 0 ) {
+							scroller.scrollTop -= overlap;
+						}
+					} );
+			};
+
 			openCreateRecipeModal();
 			cy.get( '.tasty-recipes-frame-content input#title' ).type(
 				`Cypress ${ mode } Toolbar ${ Date.now() }`
@@ -779,6 +805,9 @@ describe( 'Recipe Creation', () => {
 			cy.get( `${ list } .tasty-recipes-row-input` )
 				.first()
 				.click();
+
+			// The focused toolbar sits above the field and can land under the modal title.
+			clearRowActionsFromTitle( 0 );
 
 			cy.get( `${ list } .tasty-recipes-item-row` )
 				.eq( 0 )
@@ -815,6 +844,7 @@ describe( 'Recipe Creation', () => {
 				'not.have.class',
 				'tasty-recipes-row-list--has-selection'
 			);
+			clearRowActionsFromTitle( 0 );
 			cy.get( `${ list } .tasty-recipes-item-row` )
 				.eq( 0 )
 				.find( '.tasty-recipes-row-actions' )
