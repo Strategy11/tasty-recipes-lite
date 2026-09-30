@@ -288,6 +288,15 @@ final class Options {
 	public const DEFAULT_TERMS_INSERTED = 'tasty_recipes_default_terms_inserted_v2';
 
 	/**
+	 * Nutrifox OAuth connection option.
+	 *
+	 * @since x.x
+	 *
+	 * @var string
+	 */
+	public const NUTRIFOX_CONNECTION = 'tasty_recipes_nutrifox_connection';
+
+	/**
 	 * Option names keyed for settings JavaScript consumption.
 	 *
 	 * @since 1.2.7

@@ -7,6 +7,7 @@
 
 use Tasty_Recipes\Block_Editor;
 use Tasty_Recipes\MetaBox;
+use Tasty_Recipes\Nutrifox_Connection_Routes;
 use Tasty_Recipes\Onboarding_Wizard;
 use Tasty_Recipes\Options;
 use Tasty_Recipes\Recipe_Explorer;
@@ -309,6 +310,7 @@ class Tasty_Recipes {
 		add_action( 'tasty_recipes_process_thumbnails', array( 'Tasty_Recipes\Content_Model', 'action_tasty_recipes_process_thumbnails' ) );
 		add_action( 'rest_api_init', array( 'Tasty_Recipes\Recipe_Explorer', 'action_rest_api_init' ) );
 		add_action( 'rest_api_init', array( 'Tasty_Recipes\Onboarding_Wizard', 'register_api_routes' ) );
+		Nutrifox_Connection_Routes::load_hooks();
 
 		// Frontend.
 		add_action( 'body_class', array( 'Tasty_Recipes\Content_Model', 'filter_body_class' ) );

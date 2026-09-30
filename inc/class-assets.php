@@ -15,6 +15,7 @@ use Tasty_Recipes\Designs\Template;
 use Tasty_Recipes\Block_Editor;
 use Tasty_Recipes\Settings;
 use Tasty_Recipes\Recipe_Explorer;
+use Tasty_Recipes\Nutrifox_Connection;
 
 /**
  * Registers all scripts and styles.
@@ -569,6 +570,7 @@ class Assets {
 				'cooking'   => $cooking_attributes,
 				'nutrition' => $nutrition_attributes,
 			),
+			'nutrifox'               => Nutrifox_Connection::get_editor_data(),
 		);
 
 		// Add additional keys needed by the editor.

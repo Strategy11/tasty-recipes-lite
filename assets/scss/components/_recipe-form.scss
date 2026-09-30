@@ -1629,72 +1629,42 @@
 		gap: 6px;
 	}
 
-	.tasty-recipes-nutrition fieldset.tasty-recipes-nutrifox-container {
+	.tasty-recipes-nutrition-source-container {
 		display: flex;
 		flex-direction: column;
-		gap: 8px;
-		margin: 0;
-		padding: 12px;
-		background-color: #F5F7FA;
+		flex-shrink: 0;
+		align-items: flex-start;
+		gap: 16px;
+
+		> * {
+			align-self: stretch;
+		}
+	}
+
+	.tasty-recipes-nutrifox-panel {
+		overflow: hidden;
+		background-color: #fff;
 		border: 1px solid #E1E4EA;
 		border-radius: 12px;
 
-		.tasty-recipes-nutrifox-card-head {
+		&__head {
 			display: flex;
+			flex-wrap: wrap;
 			align-items: center;
 			justify-content: space-between;
 			gap: 12px;
+			padding: 10px 12px;
+			background-color: #F5F7FA;
 		}
 
-		label {
+		&__head:not(:last-child) {
+			border-bottom: 1px solid #E1E4EA;
+		}
+
+		&__brand {
 			display: flex;
 			align-items: center;
-			gap: 4px;
-			margin: 0;
-			color: #181B25;
-			font-size: 13px;
-			font-weight: 600;
-			line-height: 1.2;
-		}
-
-		.tasty-tooltip-icon {
-			margin-left: 0;
-			flex-shrink: 0;
-			cursor: help;
-
-			&::before {
-				width: 220px;
-				left: 0;
-				bottom: calc(100% + 8px);
-				padding: 8px 10px;
-				background-color: #181B25;
-				color: #fff;
-				font-size: 12px;
-				font-weight: 400;
-				line-height: 16px;
-				text-align: center;
-				border-radius: 8px;
-				box-shadow: 0 8px 24px rgba(14, 18, 27, 0.18);
-				transform: translate3d(0, 2px, 0);
-			}
-
-			&::after {
-				display: none;
-			}
-
-			&:hover::before,
-			&:focus-visible::before {
-				visibility: visible;
-				opacity: 1;
-				transform: translate3d(0, 0, 0);
-			}
-		}
-
-		a.nutrifox-logo {
-			display: flex;
-			align-items: center;
-			flex-shrink: 0;
-			line-height: 0;
+			gap: 10px;
 
 			img {
 				display: block;
@@ -1703,29 +1673,164 @@
 			}
 		}
 
-		input.inline-field {
-			width: 100%;
-			min-height: 40px;
-			padding: 10px 12px;
-		}
-
-		a.nutrifox-edit {
+		&__badge {
 			display: inline-flex;
 			align-items: center;
 			gap: 4px;
+			padding: 2px 8px;
+			background-color: #E0FAEC;
+			border: 1px solid #C2F5DA;
+			border-radius: 999px;
+			color: #1FC16B;
+			font-size: 12px;
+			font-weight: 600;
+			line-height: 18px;
+		}
+
+		&__actions {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 8px;
+
+			.tasty-secondary-button,
+			.tasty-button {
+				min-height: 32px;
+				padding-top: 5px;
+				padding-bottom: 5px;
+				font-size: 13px;
+				text-decoration: none;
+			}
+
+			button:disabled {
+				cursor: default;
+				opacity: 0.6;
+			}
+		}
+
+		&__notice {
+			padding: 8px 12px;
+			border-bottom: 1px solid #E1E4EA;
+			font-size: 13px;
+			line-height: 1.4;
+
+			&:last-child {
+				border-bottom: 0;
+			}
+
+			&.is-info {
+				background-color: #F5F7FA;
+				color: #525866;
+			}
+
+			&.is-warning {
+				background-color: #FFF4E5;
+				color: #8A4B00;
+			}
+
+			&.is-error {
+				background-color: #FFEBEC;
+				color: #B42318;
+			}
+
+			a {
+				color: inherit;
+				font-weight: 600;
+			}
+		}
+
+		&__body {
+			display: flex;
+			flex-direction: column;
+			gap: 12px;
+			padding: 16px;
+		}
+
+		&__empty {
+			display: flex;
+			align-items: flex-start;
+			gap: 14px;
+
+			p {
+				margin: 0 0 10px;
+				color: #525866;
+				font-size: 13px;
+				line-height: 1.4;
+
+				strong {
+					color: #181B25;
+				}
+			}
+		}
+
+		&__empty-icon {
+			flex-shrink: 0;
+			line-height: 0;
+		}
+
+		&__empty-actions,
+		&__label-actions {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+			gap: 16px;
+		}
+
+		&__empty-actions .tasty-button {
+			min-height: 32px;
+			padding-top: 5px;
+			padding-bottom: 5px;
+			font-size: 13px;
+		}
+
+		&__text-button {
+			display: inline-flex;
+			align-items: center;
+			gap: 4px;
+			padding: 0;
+			background: transparent;
+			border: 0;
 			color: #ED4996;
+			font-family: 'Inter', sans-serif;
 			font-size: 13px;
 			font-weight: 500;
 			text-decoration: none;
+			cursor: pointer;
 
 			&:hover {
 				text-decoration: underline;
 			}
+		}
 
-			svg {
-				height: 11px;
-				width: 11px;
+		&__preview,
+		&__preview-placeholder {
+			display: block;
+			flex-shrink: 0;
+			width: 100%;
+			border: 0;
+		}
+
+		&__link {
+			display: flex;
+			flex-direction: column;
+			gap: 6px;
+
+			label {
 				margin: 0;
+				color: #181B25;
+				font-size: 13px;
+				font-weight: 600;
+			}
+		}
+
+		&__link-row {
+			display: flex;
+			gap: 8px;
+
+			input.inline-field {
+				flex: 1 1 auto;
+				width: 100%;
+				min-height: 36px;
+				padding: 8px 12px;
 			}
 		}
 	}
