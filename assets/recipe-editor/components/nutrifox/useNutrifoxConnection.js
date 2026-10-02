@@ -39,14 +39,10 @@ const toConnection = data => ( {
 	connectedFor: data.connectedFor || '',
 } );
 
-/**
- * Manages the site's Nutrifox connection.
- *
- * @param {Object} config Localized Nutrifox data. Defaults to the recipe modal's.
- *
- * @return {Object} Connection state and actions.
- */
-export const useNutrifoxConnection = ( config = getNutrifoxConfig() ) => {
+export const useNutrifoxConnection = ( {
+	config = getNutrifoxConfig(),
+	checkStatus = true,
+} = {} ) => {
 	const [ connection, setConnection ] = useState( () =>
 		toConnection( config )
 	);
@@ -77,11 +73,16 @@ export const useNutrifoxConnection = ( config = getNutrifoxConfig() ) => {
 		}
 	}, [ config.restBase, applyConnection ] );
 
-	useEffect( () => {
-		refreshStatus();
+	const hasCheckedRef = useRef( false );
 
-		return () => stopWatchingRef.current();
-	}, [ refreshStatus ] );
+	useEffect( () => {
+		if ( checkStatus && ! hasCheckedRef.current ) {
+			hasCheckedRef.current = true;
+			refreshStatus();
+		}
+	}, [ checkStatus, refreshStatus ] );
+
+	useEffect( () => () => stopWatchingRef.current(), [] );
 
 	const finish = useCallback(
 		async result => {

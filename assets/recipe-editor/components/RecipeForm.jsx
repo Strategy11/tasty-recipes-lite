@@ -98,7 +98,10 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 		window.tastyRecipesEditorModalData.pluginURL +
 		'/assets/images/nutrifox-logo.png';
 	const nutrifoxConfig = getNutrifoxConfig();
-	const nutrifox = useNutrifoxConnection();
+	const [ hasOpenedNutrition, setHasOpenedNutrition ] = useState( false );
+	const nutrifox = useNutrifoxConnection( {
+		checkStatus: hasOpenedNutrition,
+	} );
 	const NutritionSource = useMemo(
 		() =>
 			applyFilters(
@@ -114,6 +117,7 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 		restBase: nutrifoxConfig.restBase,
 		recipe,
 		isConnected: nutrifox.isConnected,
+		isVisible: hasOpenedNutrition,
 		onChange: handleRecipeChange,
 	} );
 
@@ -454,6 +458,11 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 							initialFieldValues={ recipe }
 							onFieldChange={ handleRecipeChange }
 							defaultCollapsed
+							onCollapseChange={ collapsed => {
+								if ( ! collapsed ) {
+									setHasOpenedNutrition( true );
+								}
+							} }
 							showFields={ showFields }
 							renderBeforeFields={ () => (
 								<div className="tasty-recipes-nutrition-source-container">

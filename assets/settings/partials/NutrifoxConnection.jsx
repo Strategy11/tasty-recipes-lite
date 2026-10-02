@@ -28,7 +28,7 @@ export const NutrifoxConnection = () => {
 		notice,
 		start,
 		disconnect,
-	} = useNutrifoxConnection( nutrifoxConfig );
+	} = useNutrifoxConnection( { config: nutrifoxConfig } );
 
 	if ( ! nutrifoxConfig.restBase || ! nutrifoxConfig.canConnect ) {
 		return null;

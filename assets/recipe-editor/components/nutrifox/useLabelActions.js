@@ -6,7 +6,13 @@ const NO_PENDING = { items: [], editUrl: '' };
 
 const hasText = html => !! ( html || '' ).replaceAll( /<[^>]*>/g, '' ).trim();
 
-export const useLabelActions = ( { restBase, recipe, isConnected, onChange } ) => {
+export const useLabelActions = ( {
+	restBase,
+	recipe,
+	isConnected,
+	isVisible,
+	onChange,
+} ) => {
 	const [ isLinking, setIsLinking ] = useState( false );
 	const [ draftId, setDraftId ] = useState( '' );
 	const [ isAdding, setIsAdding ] = useState( false );
@@ -19,6 +25,10 @@ export const useLabelActions = ( { restBase, recipe, isConnected, onChange } ) =
 	const canBuild = !! recipe.title?.trim() && hasText( recipe.ingredients );
 
 	useEffect( () => {
+		if ( ! isVisible ) {
+			return;
+		}
+
 		if ( ! isConnected || ! labelId ) {
 			setPending( NO_PENDING );
 			return;
@@ -44,7 +54,7 @@ export const useLabelActions = ( { restBase, recipe, isConnected, onChange } ) =
 		return () => {
 			isCurrent = false;
 		};
-	}, [ isConnected, labelId, restBase ] );
+	}, [ isVisible, isConnected, labelId, restBase ] );
 
 	const onLinkLabel = () => {
 		setDraftId( labelId ? String( labelId ) : '' );
