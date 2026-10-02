@@ -9,11 +9,6 @@ const BLOCKED_TAB_TIMEOUT = 5 * 60 * 1000;
 export const getNutrifoxConfig = () =>
 	window.tastyRecipesRecipeEditorData?.nutrifox || {};
 
-/**
- * Opens an empty tab synchronously so browsers treat it as user initiated.
- *
- * @return {Window|null} Tab window, or null when blocked.
- */
 const openAuthTab = () => window.open( '', AUTH_TAB_NAME );
 
 const resultNotices = {
