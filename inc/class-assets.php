@@ -15,7 +15,7 @@ use Tasty_Recipes\Designs\Template;
 use Tasty_Recipes\Block_Editor;
 use Tasty_Recipes\Settings;
 use Tasty_Recipes\Recipe_Explorer;
-use Tasty_Recipes\Nutrifox_Connection;
+use Tasty_Recipes\Integrations\Nutrifox\Connection as Nutrifox_Connection;
 
 /**
  * Registers all scripts and styles.

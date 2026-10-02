@@ -1743,6 +1743,10 @@
 			flex-direction: column;
 			gap: 12px;
 			padding: 16px;
+
+			&.is-preview {
+				padding: 0;
+			}
 		}
 
 		&__empty {
@@ -1767,12 +1771,23 @@
 			line-height: 0;
 		}
 
-		&__empty-actions,
-		&__label-actions {
+		&__empty-actions {
 			display: flex;
 			flex-wrap: wrap;
 			align-items: center;
 			gap: 16px;
+		}
+
+		&__label-actions {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+		}
+
+		&__label-actions-separator {
+			width: 1px;
+			height: 14px;
+			background-color: #E1E4EA;
 		}
 
 		&__empty-actions .tasty-button {
@@ -1832,6 +1847,15 @@
 				min-height: 36px;
 				padding: 8px 12px;
 			}
+
+			.tasty-secondary-button {
+				min-height: 36px;
+				white-space: nowrap;
+			}
+		}
+
+		&__go-back {
+			align-self: flex-start;
 		}
 	}
 

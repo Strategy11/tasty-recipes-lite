@@ -5,8 +5,10 @@
  * @package Tasty_Recipes
  */
 
-namespace Tasty_Recipes;
+namespace Tasty_Recipes\Integrations\Nutrifox;
 
+use Tasty_Recipes\Editor;
+use Tasty_Recipes\Utils;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -17,7 +19,7 @@ use WP_REST_Server;
  *
  * @since x.x
  */
-class Nutrifox_Connection_Routes {
+class Connection_Routes {
 
 	/**
 	 * REST namespace.
@@ -46,8 +48,8 @@ class Nutrifox_Connection_Routes {
 	 */
 	public static function load_hooks() {
 		add_action( 'rest_api_init', array( __CLASS__, 'register_routes' ) );
-		add_action( 'admin_post_' . Nutrifox_Connection::CALLBACK_ACTION, array( __CLASS__, 'handle_callback' ) );
-		add_action( 'admin_post_nopriv_' . Nutrifox_Connection::CALLBACK_ACTION, array( __CLASS__, 'handle_callback' ) );
+		add_action( 'admin_post_' . Connection::CALLBACK_ACTION, array( __CLASS__, 'handle_callback' ) );
+		add_action( 'admin_post_nopriv_' . Connection::CALLBACK_ACTION, array( __CLASS__, 'handle_callback' ) );
 	}
 
 	/**
@@ -94,6 +96,44 @@ class Nutrifox_Connection_Routes {
 				'permission_callback' => array( __CLASS__, 'can_manage_connection' ),
 			)
 		);
+
+		register_rest_route(
+			self::REST_NAMESPACE,
+			'/' . self::REST_BASE . '/labels',
+			array(
+				'methods'             => WP_REST_Server::CREATABLE,
+				'callback'            => array( __CLASS__, 'create_label' ),
+				'permission_callback' => array( __CLASS__, 'can_edit_labels' ),
+				'args'                => array(
+					'title'       => array(
+						'type'              => 'string',
+						'required'          => true,
+						'sanitize_callback' => 'sanitize_text_field',
+					),
+					'ingredients' => array(
+						'type'              => 'string',
+						'required'          => true,
+						'sanitize_callback' => 'wp_kses_post',
+					),
+				),
+			)
+		);
+
+		register_rest_route(
+			self::REST_NAMESPACE,
+			'/' . self::REST_BASE . '/labels/(?P<id>\d+)',
+			array(
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => array( __CLASS__, 'get_label' ),
+				'permission_callback' => array( __CLASS__, 'can_edit_labels' ),
+				'args'                => array(
+					'id' => array(
+						'type'     => 'integer',
+						'required' => true,
+					),
+				),
+			)
+		);
 	}
 
 	/**
@@ -105,6 +145,17 @@ class Nutrifox_Connection_Routes {
 	 */
 	public static function can_view_connection() {
 		return current_user_can( 'edit_posts' );
+	}
+
+	/**
+	 * Whether the current user may build or link labels, matching the recipe modal's create and edit capability.
+	 *
+	 * @since x.x
+	 *
+	 * @return bool
+	 */
+	public static function can_edit_labels() {
+		return Editor::rest_check_permission();
 	}
 
 	/**
@@ -128,7 +179,7 @@ class Nutrifox_Connection_Routes {
 	 * @return WP_Error|WP_REST_Response
 	 */
 	public static function connect( WP_REST_Request $request ) {
-		$url = Nutrifox_Connection::get_authorize_url( (string) $request->get_param( 'intent' ) );
+		$url = Connection::get_authorize_url( (string) $request->get_param( 'intent' ) );
 
 		if ( is_wp_error( $url ) ) {
 			return $url;
@@ -145,12 +196,78 @@ class Nutrifox_Connection_Routes {
 	 * @return WP_REST_Response
 	 */
 	public static function status() {
-		$status = Nutrifox_Connection::check_status();
+		$status = Connection::check_status();
 
 		return rest_ensure_response(
 			array(
 				'status' => $status,
-				'email'  => Nutrifox_Connection::get_email(),
+				'email'  => Connection::get_email(),
+			)
+		);
+	}
+
+	/**
+	 * Builds a Nutrifox label from the recipe in the modal.
+	 *
+	 * @since x.x
+	 *
+	 * @param WP_REST_Request $request REST request.
+	 *
+	 * @return WP_Error|WP_REST_Response
+	 */
+	public static function create_label( WP_REST_Request $request ) {
+		$title = (string) $request->get_param( 'title' );
+		$lines = Labels::get_ingredient_lines( (string) $request->get_param( 'ingredients' ) );
+
+		if ( '' === trim( $title ) || ! $lines ) {
+			return new WP_Error(
+				'tasty_recipes_nutrifox_label',
+				__( 'Add a recipe title and at least one ingredient before building a label.', 'tasty-recipes-lite' ),
+				array( 'status' => 400 )
+			);
+		}
+
+		$label = Labels::create( $title, $lines );
+
+		return is_wp_error( $label ) ? $label : rest_ensure_response( $label );
+	}
+
+	/**
+	 * Returns a Nutrifox label's review state, or a 404 when no such label exists.
+	 *
+	 * @since x.x
+	 *
+	 * @param WP_REST_Request $request REST request.
+	 *
+	 * @return WP_Error|WP_REST_Response
+	 */
+	public static function get_label( WP_REST_Request $request ) {
+		$label_id = (int) $request->get_param( 'id' );
+		$label    = Labels::get( $label_id );
+
+		if ( ! is_wp_error( $label ) ) {
+			return rest_ensure_response( $label );
+		}
+
+		$exists = Labels::exists( $label_id );
+		if ( is_wp_error( $exists ) ) {
+			return $exists;
+		}
+
+		if ( ! $exists ) {
+			return new WP_Error(
+				'tasty_recipes_nutrifox_label_not_found',
+				// translators: %d: Nutrifox recipe ID.
+				sprintf( __( 'No Nutrifox recipe found with ID %d. Check the ID and try again.', 'tasty-recipes-lite' ), $label_id ),
+				array( 'status' => 404 )
+			);
+		}
+
+		return rest_ensure_response(
+			array(
+				'id'                  => $label_id,
+				'pending_ingredients' => array(),
+				'edit_url'            => '',
 			)
 		);
 	}
@@ -163,11 +280,11 @@ class Nutrifox_Connection_Routes {
 	 * @return WP_REST_Response
 	 */
 	public static function disconnect() {
-		Nutrifox_Connection::disconnect();
+		Connection::disconnect();
 
 		return rest_ensure_response(
 			array(
-				'status' => Nutrifox_Connection::get_status(),
+				'status' => Connection::get_status(),
 				'email'  => '',
 			)
 		);
@@ -187,7 +304,7 @@ class Nutrifox_Connection_Routes {
 			self::render_callback_page( 'error', __( 'Please log in to WordPress as an administrator and try connecting again.', 'tasty-recipes-lite' ) );
 		}
 
-		$result = Nutrifox_Connection::complete_authorization(
+		$result = Connection::complete_authorization(
 			Utils::get_param( 'state' ),
 			Utils::get_param( 'code' ),
 			Utils::get_param( 'error' )
@@ -201,7 +318,7 @@ class Nutrifox_Connection_Routes {
 			self::render_callback_page( 'denied', __( 'Connection cancelled. You can close this tab.', 'tasty-recipes-lite' ) );
 		}
 
-		self::render_callback_page( Nutrifox_Connection::STATUS_CONNECTED, __( 'Nutrifox is connected. You can close this tab.', 'tasty-recipes-lite' ) );
+		self::render_callback_page( Connection::STATUS_CONNECTED, __( 'Nutrifox is connected. You can close this tab.', 'tasty-recipes-lite' ) );
 	}
 
 	/**

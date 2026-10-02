@@ -408,7 +408,7 @@ class Content_Model {
 	}
 
 	/**
-	 * Fetches Nutrifox API data when the Nutrifox ID is updated.
+	 * Fetches Nutrifox API data when the Nutrifox ID is updated, and skips the update when no such label exists.
 	 *
 	 * @param mixed  $check      Existing check value.
 	 * @param int    $object_id  ID for the post being updated.
@@ -429,6 +429,10 @@ class Content_Model {
 		// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.wp_remote_get_wp_remote_get
 		$response      = wp_remote_get( sprintf( '%s/api/recipes/%d', Tasty_Recipes::nutrifox_url(), $meta_value ) );
 		$response_code = wp_remote_retrieve_response_code( $response );
+		if ( ! is_wp_error( $response ) && 404 === $response_code ) {
+			// The label doesn't exist, so keep the recipe's current ID.
+			return false;
+		}
 		if ( ! is_wp_error( $response ) && 200 === $response_code ) {
 			$body          = wp_remote_retrieve_body( $response );
 			$response_data = json_decode( $body, true );

@@ -5,9 +5,10 @@
  * @package Tasty_Recipes
  */
 
-namespace Tasty_Recipes;
+namespace Tasty_Recipes\Integrations\Nutrifox;
 
 use Tasty_Recipes;
+use Tasty_Recipes\Options;
 use WP_Error;
 
 /**
@@ -15,7 +16,7 @@ use WP_Error;
  *
  * @since x.x
  */
-class Nutrifox_Connection {
+class Connection {
 
 	/**
 	 * Connection has valid tokens.
@@ -141,9 +142,9 @@ class Nutrifox_Connection {
 		return array(
 			'status'      => self::get_status(),
 			'email'       => self::get_email(),
-			'canConnect'  => Nutrifox_Connection_Routes::can_manage_connection(),
+			'canConnect'  => Connection_Routes::can_manage_connection(),
 			'trialUrl'    => self::get_trial_url(),
-			'restBase'    => Nutrifox_Connection_Routes::REST_NAMESPACE . '/' . Nutrifox_Connection_Routes::REST_BASE,
+			'restBase'    => Connection_Routes::REST_NAMESPACE . '/' . Connection_Routes::REST_BASE,
 			'nutrifoxUrl' => Tasty_Recipes::nutrifox_url(),
 		);
 	}
@@ -617,7 +618,7 @@ class Nutrifox_Connection {
 	 *
 	 * @return WP_Error
 	 */
-	private static function response_error( $response ) {
+	public static function response_error( $response ) {
 		$message = $response['body']['message'] ?? $response['body']['error_description'] ?? '';
 
 		if ( ! $message ) {

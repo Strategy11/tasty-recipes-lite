@@ -1,9 +1,14 @@
-import { __, sprintf } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import classNames from 'classnames';
 import { NutrifoxLabelPreview } from './NutrifoxLabelPreview';
 import { CheckIcon, ExternalLinkIcon, LabelPlaceholderIcon } from './icons';
 
-const PanelNotice = ( { type = 'info', message, url } ) => (
+const PanelNotice = ( {
+	type = 'info',
+	message,
+	url,
+	linkLabel = __( 'Open Nutrifox', 'tasty-recipes-lite' ),
+} ) => (
 	<div
 		className={ classNames(
 			'tasty-recipes-nutrifox-panel__notice',
@@ -16,7 +21,7 @@ const PanelNotice = ( { type = 'info', message, url } ) => (
 			<>
 				{ ' ' }
 				<a href={ url } target="_blank" rel="noopener">
-					{ __( 'Open Nutrifox', 'tasty-recipes-lite' ) }
+					{ linkLabel }
 				</a>
 			</>
 		) }
@@ -70,32 +75,84 @@ const ConnectedBadge = ( { email } ) => (
 	</span>
 );
 
-const LabelIdField = ( { nutrifoxId, onChange, onDone } ) => (
-	<div className="tasty-recipes-nutrifox-panel__link">
-		<label htmlFor="tasty-recipes-recipe-nutrifox_id">
-			{ __( 'Nutrifox label ID', 'tasty-recipes-lite' ) }
-		</label>
-		<div className="tasty-recipes-nutrifox-panel__link-row">
-			<input
-				id="tasty-recipes-recipe-nutrifox_id"
-				type="text"
-				name="nutrifox_id"
-				className="inline-field"
-				placeholder={ __(
-					'Paste your Nutrifox recipe ID',
-					'tasty-recipes-lite'
-				) }
-				value={ nutrifoxId }
-				onChange={ event => onChange( event.target.value ) }
-			/>
-			<button type="button" className="tasty-button" onClick={ onDone }>
-				{ __( 'Done', 'tasty-recipes-lite' ) }
-			</button>
-		</div>
+const LabelHeadActions = ( { editUrl, onUnlink } ) => (
+	<div className="tasty-recipes-nutrifox-panel__label-actions">
+		<button
+			type="button"
+			className="tasty-recipes-nutrifox-panel__text-button"
+			onClick={ onUnlink }
+		>
+			{ __( 'Unlink Label', 'tasty-recipes-lite' ) }
+		</button>
+		<span
+			className="tasty-recipes-nutrifox-panel__label-actions-separator"
+			aria-hidden="true"
+		/>
+		<a
+			className="tasty-recipes-nutrifox-panel__text-button"
+			href={ editUrl }
+			target="_blank"
+			rel="noopener noreferrer"
+		>
+			{ __( 'Edit in Nutrifox', 'tasty-recipes-lite' ) }
+			{ ExternalLinkIcon }
+		</a>
 	</div>
 );
 
-const EmptyLabel = ( { onBuildLabel, onLinkLabel } ) => (
+const LabelIdField = ( {
+	draftId,
+	isAdding,
+	onDraftChange,
+	onAdd,
+	onGoBack,
+} ) => (
+	<div className="tasty-recipes-nutrifox-panel__link">
+		<label htmlFor="tasty-recipes-nutrifox-label-id">
+			{ __( 'Nutrifox Recipe ID', 'tasty-recipes-lite' ) }
+		</label>
+		<div className="tasty-recipes-nutrifox-panel__link-row">
+			<input
+				id="tasty-recipes-nutrifox-label-id"
+				type="text"
+				className="inline-field"
+				placeholder={ __(
+					'Paste recipe id from Nutrifox',
+					'tasty-recipes-lite'
+				) }
+				value={ draftId }
+				onChange={ event => onDraftChange( event.target.value ) }
+				onKeyDown={ event => {
+					if ( 'Enter' === event.key ) {
+						event.preventDefault();
+						if ( ! isAdding ) {
+							onAdd();
+						}
+					}
+				} }
+			/>
+			<button
+				type="button"
+				className="tasty-secondary-button"
+				onClick={ onAdd }
+				disabled={ isAdding }
+			>
+				{ isAdding
+					? __( 'Checking…', 'tasty-recipes-lite' )
+					: __( 'Add Label', 'tasty-recipes-lite' ) }
+			</button>
+		</div>
+		<button
+			type="button"
+			className="tasty-recipes-nutrifox-panel__text-button tasty-recipes-nutrifox-panel__go-back"
+			onClick={ onGoBack }
+		>
+			{ __( 'Go back', 'tasty-recipes-lite' ) }
+		</button>
+	</div>
+);
+
+const EmptyLabel = ( { isBuilding, canBuild, onBuildLabel, onLinkLabel } ) => (
 	<div className="tasty-recipes-nutrifox-panel__empty">
 		<span className="tasty-recipes-nutrifox-panel__empty-icon">
 			{ LabelPlaceholderIcon }
@@ -112,9 +169,20 @@ const EmptyLabel = ( { onBuildLabel, onLinkLabel } ) => (
 				<button
 					type="button"
 					className="tasty-button"
+					disabled={ isBuilding || ! canBuild }
+					title={
+						canBuild
+							? undefined
+							: __(
+									'Add a recipe title and ingredients first.',
+									'tasty-recipes-lite'
+							  )
+					}
 					onClick={ onBuildLabel }
 				>
-					{ __( 'Build from this Recipe', 'tasty-recipes-lite' ) }
+					{ isBuilding
+						? __( 'Building…', 'tasty-recipes-lite' )
+						: __( 'Build from this Recipe', 'tasty-recipes-lite' ) }
 				</button>
 				<button
 					type="button"
@@ -128,29 +196,27 @@ const EmptyLabel = ( { onBuildLabel, onLinkLabel } ) => (
 	</div>
 );
 
-const LinkedLabel = ( { labelId, nutrifoxUrl, onLinkLabel } ) => (
-	<>
-		<NutrifoxLabelPreview labelId={ labelId } nutrifoxUrl={ nutrifoxUrl } />
-		<div className="tasty-recipes-nutrifox-panel__label-actions">
-			<a
-				className="tasty-recipes-nutrifox-panel__text-button"
-				href={ `${ nutrifoxUrl }/recipes/${ labelId }/edit` }
-				target="_blank"
-				rel="noopener noreferrer"
-			>
-				{ ExternalLinkIcon }
-				{ __( 'Edit in Nutrifox', 'tasty-recipes-lite' ) }
-			</a>
-			<button
-				type="button"
-				className="tasty-recipes-nutrifox-panel__text-button"
-				onClick={ onLinkLabel }
-			>
-				{ __( 'Change label', 'tasty-recipes-lite' ) }
-			</button>
-		</div>
-	</>
-);
+const PendingNotice = ( { pending } ) => {
+	const count = pending.items.length;
+
+	return (
+		<PanelNotice
+			type="warning"
+			message={ sprintf(
+				/* translators: %d: number of ingredients Nutrifox could not match. */
+				_n(
+					'%d ingredient needs review in Nutrifox.',
+					'%d ingredients need review in Nutrifox.',
+					count,
+					'tasty-recipes-lite'
+				),
+				count
+			) }
+			url={ pending.editUrl }
+			linkLabel={ __( 'Review ingredients', 'tasty-recipes-lite' ) }
+		/>
+	);
+};
 
 export const NutrifoxPanel = ( {
 	connection,
@@ -161,44 +227,75 @@ export const NutrifoxPanel = ( {
 	trialUrl,
 	nutrifoxUrl,
 	logoUrl,
-	nutrifoxId,
-	onNutrifoxIdChange,
-	isLinking,
-	onBuildLabel,
-	onLinkLabel,
-	onLinkDone,
+	label,
 } ) => {
 	const isConnected = 'connected' === connection.status;
-	const labelId = Number.parseInt( nutrifoxId, 10 ) || 0;
-	const showBody = isConnected || isLinking || labelId > 0;
+	const { labelId, isLinking } = label;
+	const hasPending = labelId > 0 && label.pending.items.length > 0;
+
+	const renderHeadActions = () => {
+		if ( labelId && ! isLinking ) {
+			return (
+				<LabelHeadActions
+					editUrl={ `${ nutrifoxUrl }/recipes/${ labelId }/edit` }
+					onUnlink={ label.onUnlink }
+				/>
+			);
+		}
+
+		if ( ! isConnected && canConnect && ! isLinking ) {
+			return (
+				<ConnectActions
+					isConnecting={ isConnecting }
+					trialUrl={ trialUrl }
+					onConnect={ onConnect }
+				/>
+			);
+		}
+
+		return null;
+	};
 
 	const renderBody = () => {
 		if ( isLinking ) {
 			return (
-				<LabelIdField
-					nutrifoxId={ nutrifoxId }
-					onChange={ onNutrifoxIdChange }
-					onDone={ onLinkDone }
-				/>
+				<div className="tasty-recipes-nutrifox-panel__body">
+					<LabelIdField
+						draftId={ label.draftId }
+						isAdding={ label.isAdding }
+						onDraftChange={ label.setDraftId }
+						onAdd={ label.onAddLabel }
+						onGoBack={ label.onGoBack }
+					/>
+				</div>
 			);
 		}
 
-		if ( labelId > 0 ) {
+		if ( labelId ) {
 			return (
-				<LinkedLabel
-					labelId={ labelId }
-					nutrifoxUrl={ nutrifoxUrl }
-					onLinkLabel={ onLinkLabel }
-				/>
+				<div className="tasty-recipes-nutrifox-panel__body is-preview">
+					<NutrifoxLabelPreview
+						labelId={ labelId }
+						nutrifoxUrl={ nutrifoxUrl }
+					/>
+				</div>
 			);
 		}
 
-		return (
-			<EmptyLabel
-				onBuildLabel={ onBuildLabel }
-				onLinkLabel={ onLinkLabel }
-			/>
-		);
+		if ( isConnected ) {
+			return (
+				<div className="tasty-recipes-nutrifox-panel__body">
+					<EmptyLabel
+						isBuilding={ label.isBuilding }
+						canBuild={ label.canBuild }
+						onBuildLabel={ label.onBuildLabel }
+						onLinkLabel={ label.onLinkLabel }
+					/>
+				</div>
+			);
+		}
+
+		return null;
 	};
 
 	return (
@@ -207,9 +304,12 @@ export const NutrifoxPanel = ( {
 				'is-connected': isConnected,
 			} ) }
 		>
-			{ ! isLinking && (
-				<input type="hidden" name="nutrifox_id" value={ nutrifoxId } />
-			) }
+			<input type="hidden" name="nutrifox_id" value={ labelId || '' } />
+			<input
+				type="hidden"
+				name="nutrifox_sync"
+				value={ label.isSynced ? '1' : '' }
+			/>
 			<div className="tasty-recipes-nutrifox-panel__head">
 				<div className="tasty-recipes-nutrifox-panel__brand">
 					<img
@@ -222,20 +322,12 @@ export const NutrifoxPanel = ( {
 						<ConnectedBadge email={ connection.email } />
 					) }
 				</div>
-				{ ! isConnected && canConnect && (
-					<ConnectActions
-						isConnecting={ isConnecting }
-						trialUrl={ trialUrl }
-						onConnect={ onConnect }
-					/>
-				) }
+				{ renderHeadActions() }
 			</div>
 			{ notice && <PanelNotice { ...notice } /> }
-			{ showBody && (
-				<div className="tasty-recipes-nutrifox-panel__body">
-					{ renderBody() }
-				</div>
-			) }
+			{ label.notice && <PanelNotice { ...label.notice } /> }
+			{ hasPending && <PendingNotice pending={ label.pending } /> }
+			{ renderBody() }
 		</div>
 	);
 };

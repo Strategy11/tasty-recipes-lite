@@ -99,7 +99,6 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 		'/assets/images/nutrifox-logo.png';
 	const nutrifoxConfig = getNutrifoxConfig();
 	const nutrifox = useNutrifoxConnection();
-	const labelActions = useLabelActions( nutrifoxConfig.nutrifoxUrl );
 	const NutritionSource = useMemo(
 		() =>
 			applyFilters(
@@ -111,6 +110,12 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 
 	const handleRecipeChange = ( field, value ) =>
 		setRecipe( ( prev ) => ( { ...prev, [ field ]: value } ) );
+	const nutrifoxLabel = useLabelActions( {
+		restBase: nutrifoxConfig.restBase,
+		recipe,
+		isConnected: nutrifox.isConnected,
+		onChange: handleRecipeChange,
+	} );
 
 	const modalTitles = {
 		create: __( 'Create Recipe', 'tasty-recipes-lite' ),
@@ -437,11 +442,7 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 							trialUrl={ nutrifoxConfig.trialUrl }
 							nutrifoxUrl={ nutrifoxConfig.nutrifoxUrl }
 							logoUrl={ nutrifoxLogoUrl }
-							nutrifoxId={ recipe.nutrifox_id || '' }
-							onNutrifoxIdChange={ ( value ) =>
-								handleRecipeChange( 'nutrifox_id', value )
-							}
-							{ ...labelActions }
+							label={ nutrifoxLabel }
 						/>
 					) }
 					renderGroup={ ( { beforeFields, showFields } ) => (

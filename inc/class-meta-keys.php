@@ -44,6 +44,17 @@ final class Meta_Keys {
 	public const NUTRIFOX_ERROR = 'nutrifox_error';
 
 	/**
+	 * Nutrifox sync state for recipes built in Nutrifox from the recipe.
+	 *
+	 * Stores array( 'hash' => string ); its presence means the label syncs on save.
+	 *
+	 * @since x.x
+	 *
+	 * @var string
+	 */
+	public const NUTRIFOX_SYNC = '_tasty_recipes_nutrifox_sync';
+
+	/**
 	 * Cached video URL provider response meta.
 	 *
 	 * @since 1.2.7
