@@ -229,6 +229,7 @@ class Assets {
 					'settings'       => self::get_settings_tab_options(),
 					'converters'     => self::get_converters_data(),
 					'optionNames'    => $option_names,
+					'nutrifox'       => Nutrifox_Connection::get_editor_data(),
 				)
 			);
 		}

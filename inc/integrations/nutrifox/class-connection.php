@@ -112,6 +112,19 @@ class Connection {
 	}
 
 	/**
+	 * Gets how long the site has been connected, e.g. "2 months".
+	 *
+	 * @since x.x
+	 *
+	 * @return string Empty when not connected or the connection date is unknown.
+	 */
+	public static function get_connected_for() {
+		$connected_at = self::is_connected() ? self::get_connection()['connected_at'] : 0;
+
+		return $connected_at ? human_time_diff( $connected_at ) : '';
+	}
+
+	/**
 	 * Gets the URL of the optional external trial page.
 	 *
 	 * @since x.x
@@ -136,16 +149,17 @@ class Connection {
 	 *
 	 * @since x.x
 	 *
-	 * @return array{status: string, email: string, canConnect: bool, trialUrl: string, restBase: string, nutrifoxUrl: string}
+	 * @return array{status: string, email: string, connectedFor: string, canConnect: bool, trialUrl: string, restBase: string, nutrifoxUrl: string}
 	 */
 	public static function get_editor_data() {
 		return array(
-			'status'      => self::get_status(),
-			'email'       => self::get_email(),
-			'canConnect'  => Connection_Routes::can_manage_connection(),
-			'trialUrl'    => self::get_trial_url(),
-			'restBase'    => Connection_Routes::REST_NAMESPACE . '/' . Connection_Routes::REST_BASE,
-			'nutrifoxUrl' => Tasty_Recipes::nutrifox_url(),
+			'status'       => self::get_status(),
+			'email'        => self::get_email(),
+			'connectedFor' => self::get_connected_for(),
+			'canConnect'   => Connection_Routes::can_manage_connection(),
+			'trialUrl'     => self::get_trial_url(),
+			'restBase'     => Connection_Routes::REST_NAMESPACE . '/' . Connection_Routes::REST_BASE,
+			'nutrifoxUrl'  => Tasty_Recipes::nutrifox_url(),
 		);
 	}
 
@@ -261,6 +275,11 @@ class Connection {
 		}
 
 		self::store_tokens( $response['body'] );
+
+		$connection                 = self::get_connection();
+		$connection['connected_at'] = time();
+		self::save_connection( $connection );
+
 		self::refresh_account();
 
 		return self::STATUS_CONNECTED;
@@ -317,18 +336,31 @@ class Connection {
 	}
 
 	/**
-	 * Disconnects the site, revoking its tokens on Nutrifox when reachable.
+	 * Disconnects the site after Nutrifox revokes its tokens.
 	 *
 	 * @since x.x
 	 *
-	 * @return void
+	 * @return true|WP_Error
 	 */
 	public static function disconnect() {
-		if ( self::is_connected() ) {
-			self::authorized_request( 'DELETE', '/api/v1/connection' );
+		if ( ! self::is_connected() ) {
+			return true;
+		}
+
+		$response = self::authorized_request( 'DELETE', '/api/v1/connection' );
+
+		if ( is_wp_error( $response ) ) {
+			// Nutrifox already revoked access, and authorized_request() cleared the tokens.
+			return 'tasty_recipes_nutrifox_not_connected' === $response->get_error_code() ? true : $response;
+		}
+
+		if ( 204 !== $response['code'] ) {
+			return self::response_error( $response );
 		}
 
 		self::clear_tokens();
+
+		return true;
 	}
 
 	/**
@@ -511,6 +543,7 @@ class Connection {
 		$connection['refresh_token'] = '';
 		$connection['expires_at']    = 0;
 		$connection['email']         = '';
+		$connection['connected_at']  = 0;
 
 		self::save_connection( $connection );
 	}
@@ -520,7 +553,7 @@ class Connection {
 	 *
 	 * @since x.x
 	 *
-	 * @return array{client_id: string, client_secret: string, redirect_uri: string, access_token: string, refresh_token: string, expires_at: int, email: string}
+	 * @return array{client_id: string, client_secret: string, redirect_uri: string, access_token: string, refresh_token: string, expires_at: int, email: string, connected_at: int}
 	 */
 	private static function get_connection() {
 		$stored = get_option( Options::NUTRIFOX_CONNECTION, array() );
@@ -537,6 +570,7 @@ class Connection {
 			'refresh_token' => (string) ( $secrets['refresh_token'] ?? '' ),
 			'expires_at'    => (int) ( $stored['expires_at'] ?? 0 ),
 			'email'         => (string) ( $stored['email'] ?? '' ),
+			'connected_at'  => (int) ( $stored['connected_at'] ?? 0 ),
 		);
 	}
 

@@ -171,6 +171,28 @@
 	}
 }
 
+.tasty-recipes-nutrifox-connection {
+	&__row {
+		display: flex;
+		align-items: center;
+		gap: var(--gap-sm);
+	}
+
+	&__status {
+		color: var(--grey-900);
+		font-size: 14px;
+	}
+
+	&__notice {
+		margin: var(--gap-2xs) 0 0;
+		font-size: 13px;
+
+		&.is-error {
+			color: var(--red, #d63638);
+		}
+	}
+}
+
 .tasty-recipes-template-variations {
 	display: flex;
 	width: 100%;

@@ -18,6 +18,7 @@ import { UpgradeBanner } from '../partials/UpgradeBanner';
 import { CookMode } from '../partials/CookMode';
 import { InstacartButton } from '../partials/InstacartButton';
 import { UnitConversion } from '../partials/UnitConversion';
+import { NutrifoxConnection } from '../partials/NutrifoxConnection';
 import { isSettingDisabled } from '../utils/helpers';
 import { optionNames } from '../utils/optionNames.js';
 
@@ -482,6 +483,7 @@ export const Settings = () => {
 				generateUpgradeUrl={ generateUpgradeUrl }
 			/>
 			{ EnableHowTos }
+			<NutrifoxConnection />
 			<TabletSaveButton />
 		</div>
 	);

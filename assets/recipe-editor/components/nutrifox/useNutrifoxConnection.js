@@ -33,37 +33,49 @@ const resultNotices = {
 	},
 };
 
+const toConnection = data => ( {
+	status: data.status || 'disconnected',
+	email: data.email || '',
+	connectedFor: data.connectedFor || '',
+} );
+
 /**
- * Manages the site's Nutrifox connection from the recipe modal.
+ * Manages the site's Nutrifox connection.
+ *
+ * @param {Object} config Localized Nutrifox data. Defaults to the recipe modal's.
  *
  * @return {Object} Connection state and actions.
  */
-export const useNutrifoxConnection = () => {
-	const config = getNutrifoxConfig();
-	const [ connection, setConnection ] = useState( {
-		status: config.status || 'disconnected',
-		email: config.email || '',
-	} );
+export const useNutrifoxConnection = ( config = getNutrifoxConfig() ) => {
+	const [ connection, setConnection ] = useState( () =>
+		toConnection( config )
+	);
 	const [ isConnecting, setIsConnecting ] = useState( false );
+	const [ isDisconnecting, setIsDisconnecting ] = useState( false );
 	const [ notice, setNotice ] = useState( null );
 	const stopWatchingRef = useRef( () => {} );
+	const configRef = useRef( config );
+
+	const applyConnection = useCallback( data => {
+		const next = toConnection( data );
+
+		// Keep the localized data fresh so the next modal opens in the right state.
+		Object.assign( configRef.current, next );
+		setConnection( next );
+	}, [] );
 
 	const refreshStatus = useCallback( async () => {
 		try {
 			const response = await apiFetch( {
 				path: `/${ config.restBase }/status`,
 			} );
-			const next = { status: response.status, email: response.email };
-
-			// Keep the localized data fresh so the next modal opens in the right state.
-			Object.assign( getNutrifoxConfig(), next );
-			setConnection( next );
+			applyConnection( response );
 
 			return response.status;
 		} catch {
 			return null;
 		}
-	}, [ config.restBase ] );
+	}, [ config.restBase, applyConnection ] );
 
 	useEffect( () => {
 		refreshStatus();
@@ -196,11 +208,39 @@ export const useNutrifoxConnection = () => {
 		[ config.restBase, watch ]
 	);
 
+	const disconnect = useCallback( async () => {
+		setNotice( null );
+		setIsDisconnecting( true );
+
+		try {
+			applyConnection(
+				await apiFetch( {
+					path: `/${ config.restBase }/disconnect`,
+					method: 'POST',
+				} )
+			);
+		} catch ( error ) {
+			setNotice( {
+				type: 'error',
+				message:
+					error?.message ||
+					__(
+						'Nutrifox could not be disconnected. Please try again.',
+						'tasty-recipes-lite'
+					),
+			} );
+		} finally {
+			setIsDisconnecting( false );
+		}
+	}, [ config.restBase, applyConnection ] );
+
 	return {
 		connection,
 		isConnected: 'connected' === connection.status,
 		isConnecting,
+		isDisconnecting,
 		notice,
 		start,
+		disconnect,
 	};
 };

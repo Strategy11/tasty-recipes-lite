@@ -200,8 +200,9 @@ class Connection_Routes {
 
 		return rest_ensure_response(
 			array(
-				'status' => $status,
-				'email'  => Connection::get_email(),
+				'status'       => $status,
+				'email'        => Connection::get_email(),
+				'connectedFor' => Connection::get_connected_for(),
 			)
 		);
 	}
@@ -273,19 +274,24 @@ class Connection_Routes {
 	}
 
 	/**
-	 * Disconnects the site from Nutrifox.
+	 * Disconnects the site from Nutrifox, revoking its access there.
 	 *
 	 * @since x.x
 	 *
-	 * @return WP_REST_Response
+	 * @return WP_Error|WP_REST_Response
 	 */
 	public static function disconnect() {
-		Connection::disconnect();
+		$result = Connection::disconnect();
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
 
 		return rest_ensure_response(
 			array(
-				'status' => Connection::get_status(),
-				'email'  => '',
+				'status'       => Connection::get_status(),
+				'email'        => '',
+				'connectedFor' => '',
 			)
 		);
 	}
