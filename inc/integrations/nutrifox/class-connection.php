@@ -632,14 +632,13 @@ class Connection {
 	 *
 	 * @since x.x
 	 *
-	 * @param array  $args  Request arguments.
-	 * @param string $token Access token.
+	 * @param array  $args   Request arguments.
+	 * @param string $access Access token.
 	 *
 	 * @return array
 	 */
-	// @mago-ignore lint:sensitive-parameter -- SensitiveParameter requires PHP 8.2; plugin supports 7.4.
-	private static function with_bearer( $args, $token ) {
-		$args['headers'] = array_merge( $args['headers'] ?? array(), array( 'Authorization' => 'Bearer ' . $token ) );
+	private static function with_bearer( $args, $access ) {
+		$args['headers'] = array_merge( $args['headers'] ?? array(), array( 'Authorization' => 'Bearer ' . $access ) );
 
 		return $args;
 	}

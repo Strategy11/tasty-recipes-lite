@@ -104,7 +104,7 @@ class Tasty_Recipes_Converter_Testcase extends Tasty_Recipes_Testcase {
 		} else {
 			$this->assertEmpty( $image_url );
 		}
-		unset( $expected['image_sizes'], $recipe_json['image_sizes'], $recipe_json['image_id'] );
+		unset( $expected['image_sizes'], $recipe_json['image_sizes'], $recipe_json['image_id'], $recipe_json['nutrifox_sync'] );
 		$this->assertEquals( $expected, $recipe_json );
 	}
 }

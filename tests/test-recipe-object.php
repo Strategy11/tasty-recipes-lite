@@ -98,6 +98,7 @@ class Test_Recipe_Object extends Tasty_Recipes_Testcase {
 				'additional_time_label'       => '',
 				'additional_time_value'       => '',
 				'notes_video_settings'        => '',
+				'nutrifox_sync'               => false,
 			),
 			$recipe_json
 		);
