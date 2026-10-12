@@ -814,6 +814,7 @@ class Ratings {
 		$params = array(
 			$post_id,
 			Vars::server_param( 'REMOTE_ADDR' ),
+			Vars::server_param( 'HTTP_USER_AGENT' ),
 		);
 
 		if ( is_user_logged_in() ) {
