@@ -947,7 +947,7 @@ class Assets {
 
 		$vars = array(
 			'ajaxurl'     => esc_url_raw( admin_url( 'admin-ajax.php' ) ),
-			'ratingNonce' => is_user_logged_in() ? wp_create_nonce( 'tasty-recipes-save-rating' ) : '',
+			'ratingNonce' => wp_create_nonce( 'tasty-recipes-save-rating' ),
 			'postId'      => $post ? $post->ID : 0,
 		);
 

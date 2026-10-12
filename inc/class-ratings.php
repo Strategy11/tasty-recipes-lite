@@ -621,16 +621,14 @@ class Ratings {
 	 * @return void
 	 */
 	public static function save_rating() {
-		if ( is_user_logged_in() ) {
-			check_ajax_referer( 'tasty-recipes-save-rating', 'nonce' );
-		}
+		check_ajax_referer( 'tasty-recipes-save-rating', 'nonce' );
 
-		$rating    = Vars::post_param( 'rating', 'intval' );
-		$post_id   = Vars::post_param( 'post_id', 'intval' );
-		$recipe_id = Vars::post_param( 'recipe_id', 'intval' );
+		$rating    = (int) Vars::post_param( 'rating', 'intval' );
+		$post_id   = (int) Vars::post_param( 'post_id', 'intval' );
+		$recipe_id = (int) Vars::post_param( 'recipe_id', 'intval' );
 		$recipe    = ! empty( $recipe_id ) ? Recipe::get_by_id( $recipe_id ) : null;
 
-		if ( ! $rating || ! $post_id || ! $recipe ) {
+		if ( ! $rating || ! $recipe || ! self::can_rate_recipe( $post_id, $recipe_id ) ) {
 			Utils::send_json_error( __( 'Invalid request', 'tasty-recipes-lite' ) );
 		}
 
@@ -706,25 +704,61 @@ class Ratings {
 	 * @return void
 	 */
 	private static function create_rating( $comment_hash ) {
-		$rating  = Vars::post_param( 'rating', 'intval' );
-		$post_id = Vars::post_param( 'post_id', 'intval' );
+		$rating  = (int) Vars::post_param( 'rating', 'intval' );
+		$post_id = (int) Vars::post_param( 'post_id', 'intval' );
 
 		$comment_args = array(
-			'comment_post_ID'   => $post_id,
-			'comment_author_IP' => Vars::server_param( 'REMOTE_ADDR' ),
-			'comment_meta'      => array(
+			'comment_post_ID'      => $post_id,
+			'comment_author_IP'    => Vars::server_param( 'REMOTE_ADDR' ),
+			'comment_author'       => __( 'Anonymous', 'tasty-recipes-lite' ),
+			'comment_author_email' => '',
+			'comment_author_url'   => '',
+			'comment_content'      => '',
+			'comment_meta'         => array(
 				self::RATING_COMMENT_HASH_META_KEY => $comment_hash,
 				self::COMMENT_META_KEY             => $rating,
 			),
 		);
 		if ( is_user_logged_in() ) {
-			$comment_args['user_id'] = get_current_user_id();
+			$user                                 = wp_get_current_user();
+			$comment_args['user_id']              = $user->ID;
+			$comment_args['comment_author']       = $user->display_name;
+			$comment_args['comment_author_email'] = $user->user_email;
 		}
-		$created = wp_insert_comment( $comment_args );
 
-		if ( ! $created ) {
+		add_filter( 'allow_empty_comment', '__return_true', 100 );
+		add_filter( 'pre_option_require_name_email', '__return_zero' );
+		add_filter( 'duplicate_comment_id', '__return_zero', 100 );
+
+		$created = wp_new_comment( $comment_args, true );
+
+		remove_filter( 'allow_empty_comment', '__return_true', 100 );
+		remove_filter( 'pre_option_require_name_email', '__return_zero' );
+		remove_filter( 'duplicate_comment_id', '__return_zero', 100 );
+
+		if ( is_wp_error( $created ) || ! $created ) {
 			Utils::send_json_error( __( 'Something went wrong. Your rating was not saved.', 'tasty-recipes-lite' ) );
 		}
+	}
+
+	/**
+	 * Whether a quick rating may be stored for this post and recipe.
+	 *
+	 * @since x.x
+	 *
+	 * @param int $post_id   Post ID from the request.
+	 * @param int $recipe_id Recipe ID from the request.
+	 *
+	 * @return bool
+	 */
+	private static function can_rate_recipe( $post_id, $recipe_id ) {
+		$post = get_post( $post_id );
+		if ( ! $post || ! is_post_publicly_viewable( $post ) || ! comments_open( $post_id ) ) {
+			return false;
+		}
+
+		$recipe_ids = array_map( 'intval', Tasty_Recipes::get_recipe_ids_for_post( $post_id ) );
+		return in_array( $recipe_id, $recipe_ids, true );
 	}
 
 	/**
@@ -757,8 +791,6 @@ class Ratings {
 		$params = array(
 			$post_id,
 			Vars::server_param( 'REMOTE_ADDR' ),
-			Vars::server_param( 'HTTP_USER_AGENT' ),
-			wp_nonce_tick( 'tasty-recipes-rating-hash-tick' ),
 		);
 
 		if ( is_user_logged_in() ) {
