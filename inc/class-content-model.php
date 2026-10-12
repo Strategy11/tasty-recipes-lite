@@ -714,7 +714,7 @@ class Content_Model {
 	 * @return void
 	 */
 	private static function schedule_thumbnail_continuation( $attach_id ) {
-		if ( wp_next_scheduled( 'tasty_recipes_process_thumbnails_continue' ) ) {
+		if ( self::thumbnail_continuation_is_queued() ) {
 			return;
 		}
 		wp_schedule_single_event(
@@ -722,6 +722,32 @@ class Content_Model {
 			'tasty_recipes_process_thumbnails_continue',
 			array( (int) $attach_id )
 		);
+	}
+
+	/**
+	 * Whether a thumbnail continuation is already queued, regardless of its cursor.
+	 *
+	 * @since x.x
+	 *
+	 * @return bool
+	 */
+	private static function thumbnail_continuation_is_queued() {
+		if ( ! function_exists( '_get_cron_array' ) ) {
+			return false;
+		}
+
+		$crons = _get_cron_array();
+		if ( ! is_array( $crons ) ) {
+			return false;
+		}
+
+		foreach ( $crons as $hooks ) {
+			if ( isset( $hooks['tasty_recipes_process_thumbnails_continue'] ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
