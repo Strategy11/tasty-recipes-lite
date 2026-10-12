@@ -543,6 +543,7 @@ class Editor {
 	 * @since x.x
 	 *
 	 * @param Recipe $recipe Recipe instance.
+	 *
 	 * @return array
 	 */
 	private static function prepare_editor_recipe_json( $recipe ) {
