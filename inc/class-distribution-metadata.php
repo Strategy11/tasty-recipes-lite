@@ -102,8 +102,15 @@ class Distribution_Metadata {
 		}
 
 		foreach ( $schemas as $schema ) {
+			$json = wp_json_encode(
+				$schema,
+				JSON_HEX_TAG | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT
+			);
+			if ( false === $json ) {
+				continue;
+			}
 			echo wp_get_inline_script_tag(
-				wp_json_encode( $schema, JSON_PRETTY_PRINT ),
+				$json,
 				array(
 					'type' => 'application/ld+json',
 				)
