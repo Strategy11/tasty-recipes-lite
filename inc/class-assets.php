@@ -322,6 +322,56 @@ class Assets {
 	}
 
 	/**
+	 * Let integrations enqueue recipe editor scripts on screens that open it.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
+	 */
+	private static function enqueue_recipe_editor_integration_scripts() {
+		if ( ! self::screen_opens_recipe_editor() ) {
+			return;
+		}
+
+		/**
+		 * Allow Tasty Links to enqueue its scripts.
+		 *
+		 * @since 1.1.1
+		 */
+		do_action( 'tasty_recipes_enqueue_editor_scripts' );
+	}
+
+	/**
+	 * Whether the current screen can open the recipe editor.
+	 *
+	 * @since x.x
+	 *
+	 * @return bool
+	 */
+	private static function screen_opens_recipe_editor() {
+		if ( ! function_exists( 'get_current_screen' ) ) {
+			return false;
+		}
+
+		$screen = get_current_screen();
+		if ( ! $screen ) {
+			return false;
+		}
+
+		if ( Recipe_Explorer::is_current_page( 'tasty_recipe' ) && 'edit' === $screen->base ) {
+			return true;
+		}
+
+		if ( 'post' === $screen->base || 'edit' === $screen->base ) {
+			return true;
+		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$action = isset( $_GET['action'] ) ? sanitize_key( wp_unslash( $_GET['action'] ) ) : '';
+		return 'elementor' === $action;
+	}
+
+	/**
 	 * Enqueues relevant scripts in the editor.
 	 *
 	 * @since 3.12.3
@@ -376,10 +426,7 @@ class Assets {
 				'pluginURL'         => plugins_url( '', __DIR__ ),
 			)
 		);
-		/**
-		 * Allow Tasty Links to enqueue its scripts.
-		 */
-		do_action( 'tasty_recipes_enqueue_editor_scripts' );
+		self::enqueue_recipe_editor_integration_scripts();
 		if ( ! did_action( 'admin_footer' ) && ! doing_action( 'admin_footer' ) ) {
 			add_action( 'admin_footer', array( __CLASS__, 'action_admin_footer_render_template' ) );
 		} else {
@@ -429,10 +476,7 @@ class Assets {
 				'dismissedConverters' => Editor::get_dismissed_converters(),
 			)
 		);
-		/**
-		 * Allow Tasty Links to enqueue its scripts.
-		 */
-		do_action( 'tasty_recipes_enqueue_editor_scripts' );
+		self::enqueue_recipe_editor_integration_scripts();
 		if ( ! did_action( 'admin_footer' ) && ! doing_action( 'admin_footer' ) ) {
 			add_action( 'admin_footer', array( __CLASS__, 'action_admin_footer_render_template' ) );
 		} else {
