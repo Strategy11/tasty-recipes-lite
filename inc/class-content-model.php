@@ -605,15 +605,26 @@ class Content_Model {
 	/**
 	 * Cron callback to generate image sizes for attachments associated with Tasty Recipes.
 	 *
+	 * @since x.x
+	 *
+	 * @param int $after_id Attachment ID to resume from. 0 starts at the beginning.
+	 *
 	 * @return void
 	 */
-	public static function action_tasty_recipes_process_thumbnails() {
+	public static function action_tasty_recipes_process_thumbnails( $after_id = 0 ) {
 		global $wpdb;
+
+		$after_id = (int) $after_id;
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
 		$attach_ids = $wpdb->get_col(
-			"SELECT DISTINCT pm.meta_value FROM {$wpdb->postmeta} as pm
-			LEFT JOIN {$wpdb->posts} as p ON p.ID = pm.post_id
-			WHERE pm.meta_key='_thumbnail_id' AND p.post_type='tasty_recipe' AND pm.meta_value != ''"
+			$wpdb->prepare(
+				"SELECT DISTINCT pm.meta_value FROM {$wpdb->postmeta} as pm
+				LEFT JOIN {$wpdb->posts} as p ON p.ID = pm.post_id
+				WHERE pm.meta_key='_thumbnail_id' AND p.post_type='tasty_recipe' AND pm.meta_value != ''
+				AND CAST(pm.meta_value AS UNSIGNED) >= %d
+				ORDER BY CAST(pm.meta_value AS UNSIGNED) ASC",
+				$after_id
+			)
 		);
 		$started    = microtime( true );
 		foreach ( $attach_ids as $attach_id ) {
@@ -621,9 +632,9 @@ class Content_Model {
 			if ( ! $attach_id ) {
 				continue;
 			}
-			if ( self::get_missing_json_ld_image_sizes( $attach_id ) && ( microtime( true ) - $started ) >= 10 ) {
-				self::schedule_thumbnail_continuation();
-				break;
+			if ( microtime( true ) - $started >= 10 ) {
+				self::schedule_thumbnail_continuation( $attach_id );
+				return;
 			}
 			self::generate_attachment_image_sizes( $attach_id );
 		}
@@ -698,13 +709,19 @@ class Content_Model {
 	 *
 	 * @since x.x
 	 *
+	 * @param int $attach_id Attachment ID the next pass should resume from.
+	 *
 	 * @return void
 	 */
-	private static function schedule_thumbnail_continuation() {
+	private static function schedule_thumbnail_continuation( $attach_id ) {
 		if ( wp_next_scheduled( 'tasty_recipes_process_thumbnails_continue' ) ) {
 			return;
 		}
-		wp_schedule_single_event( time() + MINUTE_IN_SECONDS, 'tasty_recipes_process_thumbnails_continue' );
+		wp_schedule_single_event(
+			time() + MINUTE_IN_SECONDS,
+			'tasty_recipes_process_thumbnails_continue',
+			array( (int) $attach_id )
+		);
 	}
 
 	/**

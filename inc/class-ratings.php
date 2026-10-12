@@ -650,17 +650,27 @@ class Ratings {
 		}
 
 		if ( $creating ) {
-			self::create_rating( $comment_hash );
+			$comment_id = self::create_rating( $comment_hash );
 		} else {
 			// Update the rating on existing comment.
 			update_comment_meta( $comment_id, self::COMMENT_META_KEY, $rating );
 		}
 
+		$stored_comment = get_comment( $comment_id );
+		if ( $stored_comment && in_array( (string) $stored_comment->comment_approved, array( 'spam', 'trash' ), true ) ) {
+			Utils::send_json_error( __( 'Something went wrong. Your rating was not saved.', 'tasty-recipes-lite' ) );
+		}
+
 		self::update_recipe_rating( $recipe, $post_id );
+
+		$message = self::rating_message( $message_id, $rating );
+		if ( $stored_comment && '0' === (string) $stored_comment->comment_approved ) {
+			$message = self::rating_pending_message();
+		}
 
 		$response = array(
 			'hash'    => $comment_hash,
-			'message' => self::rating_message( $message_id, $rating ),
+			'message' => $message,
 			'count'   => (int) $recipe->get_total_reviews(),
 			'average' => $recipe->get_average_rating(),
 		);
@@ -701,7 +711,7 @@ class Ratings {
 	 *
 	 * @param string $comment_hash Comment hash.
 	 *
-	 * @return void
+	 * @return int Comment ID.
 	 */
 	private static function create_rating( $comment_hash ) {
 		$rating  = (int) Vars::post_param( 'rating', 'intval' );
@@ -739,6 +749,19 @@ class Ratings {
 		if ( is_wp_error( $created ) || ! $created ) {
 			Utils::send_json_error( __( 'Something went wrong. Your rating was not saved.', 'tasty-recipes-lite' ) );
 		}
+
+		return (int) $created;
+	}
+
+	/**
+	 * Message shown when a quick rating is waiting for approval.
+	 *
+	 * @since x.x
+	 *
+	 * @return string
+	 */
+	private static function rating_pending_message() {
+		return esc_html__( 'Thanks. Your rating will appear after it is approved.', 'tasty-recipes-lite' );
 	}
 
 	/**
