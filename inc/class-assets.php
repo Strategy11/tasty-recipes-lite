@@ -351,27 +351,6 @@ class Assets {
 		$script_data = array(
 			'recipeDataStore' => array(),
 		);
-		foreach ( $GLOBALS['wp_query']->posts as $post ) {
-			foreach ( Tasty_Recipes::get_recipes_for_post( $post->ID ) as $recipe ) {
-				/**
-				 * Permit modification of the recipe JSON before it's returned.
-				 *
-				 * @param array $recipe_json Existing recipe JSON blob.
-				 */
-				$recipe_json = apply_filters( 'tasty_recipes_shortcode_response_recipe_json', $recipe->to_json() );
-				// These fields are stored without paragraph tags,
-				// so they need to be added for TinyMCE compat.
-				foreach ( array(
-					'description',
-					'ingredients',
-					'instructions',
-					'notes',
-				) as $field ) {
-					$recipe_json[ $field ] = wpautop( $recipe_json[ $field ] );
-				}
-				$script_data['recipeDataStore'][ $recipe->get_id() ] = $recipe_json;
-			}
-		}
 		wp_localize_script( 'tasty-recipes-manage-posts', 'tastyRecipesManagePosts', $script_data );
 		$time = filemtime( dirname( __DIR__ ) . '/assets/dist/editor.css' );
 		wp_enqueue_style(

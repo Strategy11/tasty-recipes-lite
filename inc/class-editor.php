@@ -506,6 +506,64 @@ class Editor {
 	}
 
 	/**
+	 * Returns one recipe's editor JSON for the posts list modal.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
+	 */
+	public static function handle_wp_ajax_get_recipe_json() {
+		$recipe_id = Utils::post_param( 'recipe_id', 'intval', 0 );
+		$nonce     = Utils::post_param( 'nonce' );
+
+		if (
+			empty( $recipe_id ) ||
+			empty( $nonce ) ||
+			! wp_verify_nonce( $nonce, 'tasty_recipes_modify_recipe' ) ||
+			! current_user_can( 'edit_post', $recipe_id )
+		) {
+			wp_send_json_error();
+		}
+
+		$recipe = Recipe::get_by_id( $recipe_id );
+		if ( ! $recipe ) {
+			wp_send_json_error();
+		}
+
+		wp_send_json_success(
+			array(
+				'recipe' => self::prepare_editor_recipe_json( $recipe ),
+			)
+		);
+	}
+
+	/**
+	 * Recipe JSON used by the editor modal.
+	 *
+	 * @since x.x
+	 *
+	 * @param Recipe $recipe Recipe instance.
+	 * @return array
+	 */
+	private static function prepare_editor_recipe_json( $recipe ) {
+		/**
+		 * Permit modification of the recipe JSON before it's returned.
+		 *
+		 * @param array $recipe_json Existing recipe JSON blob.
+		 */
+		$recipe_json = apply_filters( 'tasty_recipes_shortcode_response_recipe_json', $recipe->to_json() );
+		foreach ( array(
+			'description',
+			'ingredients',
+			'instructions',
+			'notes',
+		) as $field ) {
+			$recipe_json[ $field ] = wpautop( $recipe_json[ $field ] );
+		}
+		return $recipe_json;
+	}
+
+	/**
 	 * Handles an AJAX request to modify a recipe.
 	 *
 	 * @return void

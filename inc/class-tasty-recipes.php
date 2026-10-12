@@ -343,6 +343,7 @@ class Tasty_Recipes {
 		add_action( 'wp_ajax_tasty_recipes_revert_ignore_type_convert', array( 'Tasty_Recipes\Editor', 'handle_wp_ajax_revert_ignore_type_convert' ) );
 		add_action( 'wp_ajax_tasty_recipes_parse_shortcode', array( 'Tasty_Recipes\Editor', 'handle_wp_ajax_parse_shortcode' ) );
 		add_action( 'wp_ajax_tasty_recipes_modify_recipe', array( 'Tasty_Recipes\Editor', 'handle_wp_ajax_modify_recipe' ) );
+		add_action( 'wp_ajax_tasty_recipes_get_recipe_json', array( 'Tasty_Recipes\Editor', 'handle_wp_ajax_get_recipe_json' ) );
 		add_action( 'wp_ajax_tasty_recipes_dismiss_description_format_tip', array( 'Tasty_Recipes\Editor', 'handle_wp_ajax_dismiss_description_format_tip' ) );
 		add_action( 'rest_api_init', array( 'Tasty_Recipes\Editor', 'action_rest_api_init' ) );
 
