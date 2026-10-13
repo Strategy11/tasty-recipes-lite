@@ -605,7 +605,7 @@ class Content_Model {
 	/**
 	 * Cron callback to generate image sizes for attachments associated with Tasty Recipes.
 	 *
-	 * @since x.x
+	 * @since 1.2.11
 	 *
 	 * @param int $after_id Attachment ID to resume from. 0 starts at the beginning.
 	 *
@@ -676,7 +676,7 @@ class Content_Model {
 	/**
 	 * Image sizes still missing from an attachment's metadata.
 	 *
-	 * @since x.x
+	 * @since 1.2.11
 	 *
 	 * @param int        $attachment_id Attachment ID.
 	 * @param array|bool $existing      Attachment metadata, when already loaded.
@@ -707,7 +707,7 @@ class Content_Model {
 	/**
 	 * Queue another thumbnail pass soon, without touching the recurring cron event.
 	 *
-	 * @since x.x
+	 * @since 1.2.11
 	 *
 	 * @param int $attach_id Attachment ID the next pass should resume from.
 	 *
@@ -727,7 +727,7 @@ class Content_Model {
 	/**
 	 * Whether a thumbnail continuation is already queued, regardless of its cursor.
 	 *
-	 * @since x.x
+	 * @since 1.2.11
 	 *
 	 * @return bool
 	 */

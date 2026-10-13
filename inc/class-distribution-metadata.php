@@ -836,7 +836,7 @@ class Distribution_Metadata {
 	/**
 	 * Whether a string has any marker worth scanning for a video.
 	 *
-	 * @since x.x
+	 * @since 1.2.11
 	 *
 	 * @param string $content Content to inspect.
 	 *
@@ -865,7 +865,7 @@ class Distribution_Metadata {
 	/**
 	 * Find a supported video URL already present in markup.
 	 *
-	 * @since x.x
+	 * @since 1.2.11
 	 *
 	 * @param string $content Markup to search.
 	 *
@@ -933,7 +933,7 @@ class Distribution_Metadata {
 	/**
 	 * Build markup that can expose embeds without rendering recipe cards.
 	 *
-	 * @since x.x
+	 * @since 1.2.11
 	 *
 	 * @param string $content Content that did not already contain a matched video.
 	 *
@@ -952,7 +952,7 @@ class Distribution_Metadata {
 	/**
 	 * Remove tasty-recipe shortcodes so detection cannot render their cards.
 	 *
-	 * @since x.x
+	 * @since 1.2.11
 	 *
 	 * @param string $content Content to strip.
 	 *
@@ -970,7 +970,7 @@ class Distribution_Metadata {
 	/**
 	 * Render only embed, video, and HTML blocks. Skip recipe card blocks.
 	 *
-	 * @since x.x
+	 * @since 1.2.11
 	 *
 	 * @param array $blocks Parsed blocks.
 	 *
@@ -1012,7 +1012,7 @@ class Distribution_Metadata {
 	/**
 	 * Convert classic embed shortcodes and bare URLs into embed HTML.
 	 *
-	 * @since x.x
+	 * @since 1.2.11
 	 *
 	 * @param string $content Markup to embed.
 	 *
@@ -1409,7 +1409,7 @@ class Distribution_Metadata {
 	/**
 	 * Finds top-level list items, keeping nested lists inside their parent item.
 	 *
-	 * @since x.x
+	 * @since 1.2.11
 	 *
 	 * @param string $component Component HTML.
 	 *
@@ -1487,7 +1487,7 @@ class Distribution_Metadata {
 	/**
 	 * Splits a list item into its own markup and the text of any nested list.
 	 *
-	 * @since x.x
+	 * @since 1.2.11
 	 *
 	 * @param array $list_item Item from get_top_level_list_items().
 	 *

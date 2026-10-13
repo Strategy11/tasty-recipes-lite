@@ -485,7 +485,7 @@ class Telemetry {
 	/**
 	 * Common properties attached to client-side PostHog events.
 	 *
-	 * @since x.x
+	 * @since 1.2.11
 	 *
 	 * @return array
 	 */
@@ -498,7 +498,7 @@ class Telemetry {
 		/**
 		 * Filters common properties attached to client-side PostHog events.
 		 *
-		 * @since x.x
+		 * @since 1.2.11
 		 *
 		 * @param array $properties Common event properties.
 		 */

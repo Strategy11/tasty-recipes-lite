@@ -508,7 +508,7 @@ class Editor {
 	/**
 	 * Returns one recipe's editor JSON for the posts list modal.
 	 *
-	 * @since x.x
+	 * @since 1.2.11
 	 *
 	 * @return void
 	 */
@@ -540,7 +540,7 @@ class Editor {
 	/**
 	 * Recipe JSON used by the editor modal.
 	 *
-	 * @since x.x
+	 * @since 1.2.11
 	 *
 	 * @param Recipe $recipe Recipe instance.
 	 *
@@ -1040,7 +1040,7 @@ class Editor {
 	/**
 	 * Validate that a taxonomy is one registered for recipes.
 	 *
-	 * @since x.x
+	 * @since 1.2.11
 	 *
 	 * @param string $taxonomy Taxonomy name.
 	 *
@@ -1053,7 +1053,7 @@ class Editor {
 	/**
 	 * Check whether the current user can create a term in the requested taxonomy.
 	 *
-	 * @since x.x
+	 * @since 1.2.11
 	 *
 	 * @param \WP_REST_Request $request The request object.
 	 *
@@ -1074,7 +1074,7 @@ class Editor {
 	/**
 	 * Check whether the current user can update the requested term.
 	 *
-	 * @since x.x
+	 * @since 1.2.11
 	 *
 	 * @param \WP_REST_Request $request The request object.
 	 *
@@ -1087,7 +1087,7 @@ class Editor {
 	/**
 	 * Check whether the current user can delete the requested term.
 	 *
-	 * @since x.x
+	 * @since 1.2.11
 	 *
 	 * @param \WP_REST_Request $request The request object.
 	 *
