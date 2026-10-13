@@ -407,7 +407,7 @@ EOT;
 						'@type'        => 'VideoObject',
 						'@context'     => 'http://schema.org',
 						'name'         => 'Black Pepper Stir Fried Noodles',
-						'description'  => 'Black Pepper Stir Fried Noodles – this simple 30 minute stir fry is packed with AMAZING flavor!',
+						'description'  => 'Black Pepper Stir Fried Noodles - this simple 30 minute stir fry is packed with AMAZING flavor!',
 						'uploadDate'   => '2017-02-24T20:40:06+00:00',
 						'thumbnailUrl' => array( 'https://content.jwplatform.com/thumbs/iVKGcLPq-720.jpg' ),
 						'contentUrl'   => 'https://content.jwplatform.com/videos/iVKGcLPq.mp4',

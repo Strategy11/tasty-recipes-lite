@@ -51,6 +51,13 @@ class Distribution_Metadata {
 	);
 
 	/**
+	 * Per-request cache of video URLs found in content, keyed by an md5 of the input.
+	 *
+	 * @var array<string, false|string>
+	 */
+	private static $video_url_from_content_cache = array();
+
+	/**
 	 * Looks wp_head hooks so markup is added later.
 	 *
 	 * @return void
@@ -102,8 +109,15 @@ class Distribution_Metadata {
 		}
 
 		foreach ( $schemas as $schema ) {
+			$json = wp_json_encode(
+				$schema,
+				JSON_HEX_TAG | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT
+			);
+			if ( false === $json ) {
+				continue;
+			}
 			echo wp_get_inline_script_tag(
-				wp_json_encode( $schema, JSON_PRETTY_PRINT ),
+				$json,
 				array(
 					'type' => 'application/ld+json',
 				)
@@ -792,15 +806,72 @@ class Distribution_Metadata {
 	 * @return false|string
 	 */
 	public static function get_video_url_from_content( $content ) {
+		if ( ! is_string( $content ) || '' === $content ) {
+			return false;
+		}
+
+		$cache_key = md5( $content );
+		if ( array_key_exists( $cache_key, self::$video_url_from_content_cache ) ) {
+			return self::$video_url_from_content_cache[ $cache_key ];
+		}
+
+		self::$video_url_from_content_cache[ $cache_key ] = false;
 
 		// Transform any AdThrive shortcodes into a special format
 		// that only Tasty Recipes will process.
 		$content = str_replace( '[adthrive-in-post-video-player ', '[tr-adthrive-in-post-video-player ', $content );
 
-		// Process any AdThrive, YouTube, or Vimeo videos within the post content.
-		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
-		$content = apply_filters( 'the_content', $content );
+		$video_url = false;
+		if ( self::content_may_contain_video( $content ) ) {
+			$video_url = self::match_video_url_in_markup( $content );
+			if ( ! $video_url ) {
+				$video_url = self::match_video_url_in_markup( self::build_video_detection_markup( $content ) );
+			}
+		}
 
+		self::$video_url_from_content_cache[ $cache_key ] = $video_url;
+		return $video_url;
+	}
+
+	/**
+	 * Whether a string has any marker worth scanning for a video.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $content Content to inspect.
+	 *
+	 * @return bool
+	 */
+	private static function content_may_contain_video( $content ) {
+		$markers = array(
+			'http',
+			'<iframe',
+			'<script',
+			'[embed',
+			'adthrive-in-post-video-player',
+			'mv-video-target',
+			'wp:embed',
+			'wp:video',
+			'wp:html',
+		);
+		foreach ( $markers as $marker ) {
+			if ( false !== stripos( $content, $marker ) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Find a supported video URL already present in markup.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $content Markup to search.
+	 *
+	 * @return false|string
+	 */
+	private static function match_video_url_in_markup( $content ) {
 		if ( false === stripos( $content, '<iframe ' )
 			&& false === stripos( $content, '<script ' )
 			&& false === stripos( $content, 'adthrive-in-post-video-player' )
@@ -857,6 +928,107 @@ class Distribution_Metadata {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Build markup that can expose embeds without rendering recipe cards.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $content Content that did not already contain a matched video.
+	 *
+	 * @return string
+	 */
+	private static function build_video_detection_markup( $content ) {
+		$content = self::strip_recipe_shortcodes_for_video_detection( $content );
+
+		if ( has_blocks( $content ) ) {
+			$content = self::render_blocks_for_video_detection( parse_blocks( $content ) );
+		}
+
+		return self::embed_classic_markup_for_video_detection( $content );
+	}
+
+	/**
+	 * Remove tasty-recipe shortcodes so detection cannot render their cards.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $content Content to strip.
+	 *
+	 * @return string
+	 */
+	private static function strip_recipe_shortcodes_for_video_detection( $content ) {
+		if ( false === stripos( $content, '[tasty-recipe' ) ) {
+			return $content;
+		}
+
+		$stripped = preg_replace( '/\[\/?tasty-recipe\b[^\]]*\]/', '', $content );
+		return is_string( $stripped ) ? $stripped : $content;
+	}
+
+	/**
+	 * Render only embed, video, and HTML blocks. Skip recipe card blocks.
+	 *
+	 * @since x.x
+	 *
+	 * @param array $blocks Parsed blocks.
+	 *
+	 * @return string
+	 */
+	private static function render_blocks_for_video_detection( $blocks ) {
+		$markup = '';
+		foreach ( $blocks as $block ) {
+			if ( ! is_array( $block ) ) {
+				continue;
+			}
+
+			$name = $block['blockName'] ?? '';
+			if ( 'wp-tasty/tasty-recipe' === $name ) {
+				continue;
+			}
+
+			if ( in_array( $name, array( 'core/embed', 'core/video', 'core/html' ), true ) ) {
+				$markup .= render_block( $block );
+				// render_block() keeps the saved URL for these blocks. Put it on its own line so autoembed can resolve it.
+				if ( 'core/embed' === $name && ! empty( $block['attrs']['url'] ) ) {
+					$markup .= "\n" . $block['attrs']['url'] . "\n";
+				} elseif ( 'core/video' === $name && ! empty( $block['attrs']['src'] ) ) {
+					$markup .= "\n" . $block['attrs']['src'] . "\n";
+				}
+				continue;
+			}
+
+			if ( ! empty( $block['innerBlocks'] ) ) {
+				$markup .= self::render_blocks_for_video_detection( $block['innerBlocks'] );
+			}
+			if ( ! empty( $block['innerHTML'] ) ) {
+				$markup .= $block['innerHTML'];
+			}
+		}
+		return $markup;
+	}
+
+	/**
+	 * Convert classic embed shortcodes and bare URLs into embed HTML.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $content Markup to embed.
+	 *
+	 * @return string
+	 */
+	private static function embed_classic_markup_for_video_detection( $content ) {
+		global $wp_embed;
+		if ( ! $wp_embed instanceof \WP_Embed ) {
+			return $content;
+		}
+
+		if ( false !== stripos( $content, '[embed' ) ) {
+			$content = $wp_embed->run_shortcode( $content );
+		}
+
+		return $wp_embed->autoembed( $content );
 	}
 
 	/**
