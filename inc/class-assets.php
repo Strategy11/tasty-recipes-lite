@@ -324,7 +324,7 @@ class Assets {
 	/**
 	 * Let integrations enqueue recipe editor scripts on screens that open it.
 	 *
-	 * @since x.x
+	 * @since 1.2.11
 	 *
 	 * @return void
 	 */
@@ -344,7 +344,7 @@ class Assets {
 	/**
 	 * Whether the current screen can open the recipe editor.
 	 *
-	 * @since x.x
+	 * @since 1.2.11
 	 *
 	 * @return bool
 	 */

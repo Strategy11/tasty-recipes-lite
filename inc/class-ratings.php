@@ -756,7 +756,7 @@ class Ratings {
 	/**
 	 * Message shown when a quick rating is waiting for approval.
 	 *
-	 * @since x.x
+	 * @since 1.2.11
 	 *
 	 * @return string
 	 */
@@ -767,7 +767,7 @@ class Ratings {
 	/**
 	 * Whether a quick rating may be stored for this post and recipe.
 	 *
-	 * @since x.x
+	 * @since 1.2.11
 	 *
 	 * @param int $post_id   Post ID from the request.
 	 * @param int $recipe_id Recipe ID from the request.

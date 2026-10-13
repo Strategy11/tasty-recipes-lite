@@ -4,7 +4,7 @@ Tags: recipe, recipe card, recipe maker, food blogging, schema
 Requires at least: 6.3
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.2.10
+Stable tag: 1.2.11
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -216,6 +216,20 @@ The Tasty Recipes plugin installs much like any other WordPress plugin.
 With Tasty Recipes, there aren't any confusing settings to configure or customizations you need to worry about. Share your favorite recipes with the world!
 
 == Changelog ==
+= 1.2.11 (October 13, 2026) =
+* New: PostHog event tracking for recipe modal usage including lifecycle, bulk edit, and link controls
+* Enhancement: Recipe editor modal improvements including bulk edit textarea with fixed height and resizable support for long ingredient/instruction lists
+* Enhancement: Nested list support in recipe editor with link popover, wpLink integration, and image detail editing
+* Enhancement: Better row actions toolbar positioning and visibility in recipe editor
+* Enhancement: Recipe thumbnail continuation detection and improved image size handling
+* Enhancement: Quick rating visitor tracking with browser identification and approval status messaging
+* Fix: Issue #2930 - limit recipe term routes to recipe taxonomies
+* Fix: Issue #2917 - sponsored and nofollow controls now visible and consistent in bulk edit
+* Fix: Detect schema videos without running full post content filters
+* Fix: Prevent division by zero in recipe amounts with zero denominators
+* Fix: Properly escape recipe JSON-LD for fields containing script tags
+* Fix: Recipe explorer filters now limited to main recipe list query
+
 = 1.2.10 (September 10, 2026) =
 * New: Bulk edit for ingredients and instructions
 * Enhancement: Recipe row editing improvements including persistent soft breaks (Shift+Enter)
