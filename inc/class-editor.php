@@ -953,6 +953,7 @@ class Editor {
 							'required'          => true,
 							'type'              => 'string',
 							'sanitize_callback' => 'sanitize_text_field',
+							'validate_callback' => array( __CLASS__, 'rest_validate_taxonomy' ),
 						),
 						'search'   => array(
 							'required'          => false,
@@ -965,12 +966,13 @@ class Editor {
 				array(
 					'methods'             => 'POST',
 					'callback'            => array( __CLASS__, 'rest_create_taxonomy_term' ),
-					'permission_callback' => array( __CLASS__, 'rest_check_permission' ),
+					'permission_callback' => array( __CLASS__, 'rest_check_create_permission' ),
 					'args'                => array(
 						'taxonomy' => array(
 							'required'          => true,
 							'type'              => 'string',
 							'sanitize_callback' => 'sanitize_text_field',
+							'validate_callback' => array( __CLASS__, 'rest_validate_taxonomy' ),
 						),
 						'name'     => array(
 							'required'          => true,
@@ -982,12 +984,13 @@ class Editor {
 				array(
 					'methods'             => 'PUT',
 					'callback'            => array( __CLASS__, 'rest_update_taxonomy_term' ),
-					'permission_callback' => array( __CLASS__, 'rest_check_permission' ),
+					'permission_callback' => array( __CLASS__, 'rest_check_update_permission' ),
 					'args'                => array(
 						'taxonomy' => array(
 							'required'          => true,
 							'type'              => 'string',
 							'sanitize_callback' => 'sanitize_text_field',
+							'validate_callback' => array( __CLASS__, 'rest_validate_taxonomy' ),
 						),
 						'id'       => array(
 							'required'          => true,
@@ -1004,12 +1007,13 @@ class Editor {
 				array(
 					'methods'             => 'DELETE',
 					'callback'            => array( __CLASS__, 'rest_delete_taxonomy_term' ),
-					'permission_callback' => array( __CLASS__, 'rest_check_permission' ),
+					'permission_callback' => array( __CLASS__, 'rest_check_delete_permission' ),
 					'args'                => array(
 						'taxonomy' => array(
 							'required'          => true,
 							'type'              => 'string',
 							'sanitize_callback' => 'sanitize_text_field',
+							'validate_callback' => array( __CLASS__, 'rest_validate_taxonomy' ),
 						),
 						'id'       => array(
 							'required'          => true,
@@ -1031,6 +1035,66 @@ class Editor {
 	 */
 	public static function rest_check_permission() {
 		return current_user_can( 'edit_posts' );
+	}
+
+	/**
+	 * Validate that a taxonomy is one registered for recipes.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $taxonomy Taxonomy name.
+	 *
+	 * @return bool
+	 */
+	public static function rest_validate_taxonomy( $taxonomy ) {
+		return array_key_exists( $taxonomy, Content_Model::get_taxonomy_definitions() ) && taxonomy_exists( $taxonomy );
+	}
+
+	/**
+	 * Check whether the current user can create a term in the requested taxonomy.
+	 *
+	 * @since x.x
+	 *
+	 * @param \WP_REST_Request $request The request object.
+	 *
+	 * @return bool
+	 */
+	public static function rest_check_create_permission( $request ) {
+		$taxonomy = get_taxonomy( (string) $request->get_param( 'taxonomy' ) );
+
+		if ( ! $taxonomy ) {
+			return false;
+		}
+
+		$capability = $taxonomy->hierarchical ? $taxonomy->cap->edit_terms : $taxonomy->cap->assign_terms;
+
+		return current_user_can( $capability );
+	}
+
+	/**
+	 * Check whether the current user can update the requested term.
+	 *
+	 * @since x.x
+	 *
+	 * @param \WP_REST_Request $request The request object.
+	 *
+	 * @return bool
+	 */
+	public static function rest_check_update_permission( $request ) {
+		return current_user_can( 'edit_term', (int) $request->get_param( 'id' ) );
+	}
+
+	/**
+	 * Check whether the current user can delete the requested term.
+	 *
+	 * @since x.x
+	 *
+	 * @param \WP_REST_Request $request The request object.
+	 *
+	 * @return bool
+	 */
+	public static function rest_check_delete_permission( $request ) {
+		return current_user_can( 'delete_term', (int) $request->get_param( 'id' ) );
 	}
 
 	/**
@@ -1268,6 +1332,8 @@ class Editor {
 			'id'        => $term->term_id,
 			'count'     => $term->count,
 			'isDefault' => Content_Model::is_default_term( $term->term_id, $taxonomy ),
+			'canEdit'   => current_user_can( 'edit_term', $term->term_id ),
+			'canDelete' => current_user_can( 'delete_term', $term->term_id ),
 		);
 	}
 }
