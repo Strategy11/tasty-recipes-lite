@@ -21,9 +21,10 @@ const wpDevCliEval = ( command ) => {
 	// Encode as UTF-8 bytes, then base64-encode for safe shell passing.
 	const encoded = Cypress.Buffer.from( phpCode, 'utf8' ).toString( 'base64' );
 
-	return cy.exec(
+	return cy.task(
+		'shellExec',
 		`npm --silent run env run cli -- wp eval 'eval(base64_decode("${ encoded }"));'`,
-		{ timeout: 30000 }
+		{ timeout: 35000 }
 	);
 };
 
