@@ -1993,7 +1993,7 @@ class Distribution_Metadata {
 	 * @since x.x
 	 *
 	 * @param array     $units   Unit map, updated in place.
-	 * @param int|float $seconds Duration length.
+	 * @param float|int $seconds Duration length.
 	 * @param array     $names   Unit words.
 	 *
 	 * @return void
