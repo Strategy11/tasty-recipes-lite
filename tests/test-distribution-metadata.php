@@ -1084,6 +1084,53 @@ EOT;
 	}
 
 	/**
+	 * Non-English units and joining words become durations, and junk is omitted.
+	 */
+	public function test_non_english_and_unparsed_times() {
+		$this->assertEquals( 'PT15M', Distribution_Metadata::get_duration_for_time( '15 minutos' ) );
+		$this->assertEquals( 'PT1H30M', Distribution_Metadata::get_duration_for_time( '1 hora y 30 minutos' ) );
+		$this->assertEquals( 'PT1H45M', Distribution_Metadata::get_duration_for_time( '1 hora y 45 minutos' ) );
+		$this->assertEquals( 'PT1H30M', Distribution_Metadata::get_duration_for_time( '1 hour y 30 minutes' ) );
+		$this->assertEquals( 'PT48H30M', Distribution_Metadata::get_duration_for_time( '2 days and 30 minutes' ) );
+		$this->assertEquals( 'PT30M', Distribution_Metadata::get_duration_for_time( 'about 30 minutes' ) );
+		$this->assertEquals( 'PT168H', Distribution_Metadata::get_duration_for_time( '1 week' ) );
+		$this->assertEquals( '', Distribution_Metadata::get_duration_for_time( 'not-a-time' ) );
+		$this->assertEquals( '', Distribution_Metadata::get_duration_for_time( '1.5 hours' ) );
+		$this->assertSame( 5400, Distribution_Metadata::get_seconds_for_time( '1 hour 30 min' ) );
+		$this->assertNull( Distribution_Metadata::get_seconds_for_time( '1 hr 30 min' ) );
+		$this->assertSame( 1209600, Distribution_Metadata::get_seconds_for_time( '1 fortnight' ) );
+
+		$now = time();
+		$this->assertSame(
+			strtotime( '1 month', $now ) - $now,
+			Distribution_Metadata::get_seconds_for_time( '1 month' )
+		);
+	}
+
+	/**
+	 * Spanish times are valid schema durations, and an unparsed time is left out.
+	 */
+	public function test_schema_omits_unparsed_times() {
+		$recipe = $this->create_mock_recipe();
+		$recipe->set_prep_time( '15 minutos' );
+		$recipe->set_cook_time( '1 hora y 30 minutos' );
+		$recipe->set_total_time( '1 hora y 45 minutos' );
+		$schema = Distribution_Metadata::get_google_schema_for_recipe( $recipe );
+		$this->assertEquals( 'PT15M', $schema['prepTime'] );
+		$this->assertEquals( 'PT1H30M', $schema['cookTime'] );
+		$this->assertEquals( 'PT1H45M', $schema['totalTime'] );
+		$this->assertStringNotContainsString( 'PT-', wp_json_encode( $schema ) );
+
+		$recipe = $this->create_mock_recipe();
+		$recipe->set_prep_time( '20 minutes' );
+		$recipe->set_cook_time( 'not-a-time' );
+		$schema = Distribution_Metadata::get_google_schema_for_recipe( $recipe );
+		$this->assertEquals( 'PT20M', $schema['prepTime'] );
+		$this->assertArrayNotHasKey( 'cookTime', $schema );
+		$this->assertEquals( 'PT20M', $schema['totalTime'] );
+	}
+
+	/**
 	 * Ensures expected behavior for heading testing.
 	 */
 	public function test_get_heading() {
