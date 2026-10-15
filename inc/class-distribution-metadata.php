@@ -1957,29 +1957,52 @@ class Distribution_Metadata {
 	 */
 	private static function get_duration_unit_seconds() {
 		$units = array();
-		foreach ( self::duration_unit_groups() as $seconds => $names ) {
-			foreach ( $names as $name ) {
-				$units[ $name ] = (int) $seconds;
-			}
-		}
+		self::add_duration_units(
+			$units,
+			1,
+			array( 'sec', 'secs', 'second', 'seconds', 'segundo', 'segundos', 'secondo', 'secondi', 'seconde', 'secondes', 'sekunde', 'sekunden' )
+		);
+		self::add_duration_units(
+			$units,
+			MINUTE_IN_SECONDS,
+			array( 'min', 'mins', 'minute', 'minutes', 'minuto', 'minutos', 'minuten', 'minuti' )
+		);
+		self::add_duration_units(
+			$units,
+			HOUR_IN_SECONDS,
+			array( 'hour', 'hours', 'hora', 'horas', 'heure', 'heures', 'stunde', 'stunden', 'ora', 'ore' )
+		);
+		self::add_duration_units(
+			$units,
+			DAY_IN_SECONDS,
+			array( 'day', 'days', 'dia', 'dias', 'jour', 'jours', 'tag', 'tage', 'giorno', 'giorni' )
+		);
+		self::add_duration_units(
+			$units,
+			WEEK_IN_SECONDS,
+			array( 'week', 'weeks', 'semana', 'semanas', 'semaine', 'semaines', 'woche', 'wochen', 'settimana', 'settimane' )
+		);
 		return self::add_translated_duration_units( $units );
 	}
 
 	/**
-	 * English and common translated duration units, grouped by length.
+	 * Add unit names that share one duration length.
+	 *
+	 * WordPress time constants are cast to int so they can be stored as array values.
 	 *
 	 * @since x.x
 	 *
-	 * @return array
+	 * @param array     $units   Unit map, updated in place.
+	 * @param int|float $seconds Duration length.
+	 * @param array     $names   Unit words.
+	 *
+	 * @return void
 	 */
-	private static function duration_unit_groups() {
-		return array(
-			1                 => array( 'sec', 'secs', 'second', 'seconds', 'segundo', 'segundos', 'secondo', 'secondi', 'seconde', 'secondes', 'sekunde', 'sekunden' ),
-			MINUTE_IN_SECONDS => array( 'min', 'mins', 'minute', 'minutes', 'minuto', 'minutos', 'minuten', 'minuti' ),
-			HOUR_IN_SECONDS   => array( 'hour', 'hours', 'hora', 'horas', 'heure', 'heures', 'stunde', 'stunden', 'ora', 'ore' ),
-			DAY_IN_SECONDS    => array( 'day', 'days', 'dia', 'dias', 'jour', 'jours', 'tag', 'tage', 'giorno', 'giorni' ),
-			WEEK_IN_SECONDS   => array( 'week', 'weeks', 'semana', 'semanas', 'semaine', 'semaines', 'woche', 'wochen', 'settimana', 'settimane' ),
-		);
+	private static function add_duration_units( &$units, $seconds, $names ) {
+		$seconds = (int) $seconds;
+		foreach ( $names as $name ) {
+			$units[ $name ] = $seconds;
+		}
 	}
 
 	/**
