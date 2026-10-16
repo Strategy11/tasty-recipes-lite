@@ -27,11 +27,7 @@
 
 	.tasty-recipes-ratings-buttons,
 	.tasty-recipes-rating {
-		color: #F2B955;
-	}
-
-	[data-tr-default-rating] > span:not([data-tr-checked]) .tasty-recipes-rating-solid svg {
-		opacity: 1;
+		color: var(--tr-comment-star-color, var(--tr-star-color, #F2B955));
 	}
 }
 
