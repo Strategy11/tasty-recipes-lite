@@ -489,6 +489,94 @@ class Ratings {
 	}
 
 	/**
+	 * Star color for the comment form when the card color would disappear on white.
+	 *
+	 * Near-white card stars stay on the card. The comment form uses gold instead.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $star_color Card star color.
+	 *
+	 * @return string Gold hex when the color is too light, otherwise an empty string.
+	 */
+	public static function get_comment_form_star_color( $star_color ) {
+		$rgb = self::hex_color_to_rgb( $star_color );
+		if ( null === $rgb ) {
+			return '';
+		}
+
+		if ( self::relative_luminance( $rgb ) < 0.85 ) {
+			return '';
+		}
+
+		return '#F2B955';
+	}
+
+	/**
+	 * Convert a hex color to RGB channels.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $color Hex color (#RGB, #RRGGBB, or #RRGGBBAA).
+	 *
+	 * @return int[]|null Red, green, and blue from 0 to 255, or null when the color cannot be parsed.
+	 */
+	private static function hex_color_to_rgb( $color ) {
+		$color = trim( $color );
+		if ( ! preg_match( '/^#([0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})$/i', $color, $matches ) ) {
+			return null;
+		}
+
+		$hex = strtolower( $matches[1] );
+		if ( 3 === strlen( $hex ) ) {
+			$hex = substr( $hex, 0, 1 ) . substr( $hex, 0, 1 )
+				. substr( $hex, 1, 1 ) . substr( $hex, 1, 1 )
+				. substr( $hex, 2, 1 ) . substr( $hex, 2, 1 );
+		}
+
+		return array(
+			hexdec( substr( $hex, 0, 2 ) ),
+			hexdec( substr( $hex, 2, 2 ) ),
+			hexdec( substr( $hex, 4, 2 ) ),
+		);
+	}
+
+	/**
+	 * Relative luminance for an sRGB color.
+	 *
+	 * @since x.x
+	 *
+	 * @param int[] $rgb Red, green, and blue channels from 0 to 255.
+	 *
+	 * @return float
+	 */
+	private static function relative_luminance( $rgb ) {
+		$red   = self::linear_channel( $rgb[0] );
+		$green = self::linear_channel( $rgb[1] );
+		$blue  = self::linear_channel( $rgb[2] );
+
+		return ( 0.2126 * $red ) + ( 0.7152 * $green ) + ( 0.0722 * $blue );
+	}
+
+	/**
+	 * Convert one sRGB channel to linear light.
+	 *
+	 * @since x.x
+	 *
+	 * @param int $channel Channel from 0 to 255.
+	 *
+	 * @return float
+	 */
+	private static function linear_channel( $channel ) {
+		$value = ( (int) $channel ) / 255;
+		if ( 0.04045 >= $value ) {
+			return $value / 12.92;
+		}
+
+		return ( ( $value + 0.055 ) / 1.055 ) ** 2.4;
+	}
+
+	/**
 	 * Get rating stars HTML.
 	 *
 	 * @param bool $no_ratings Show no rating template without review yet.

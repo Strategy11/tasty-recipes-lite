@@ -858,6 +858,12 @@ class Assets {
 			}
 		}
 
+		$star_color         = isset( $settings['star_color'] ) ? (string) $settings['star_color'] : '';
+		$comment_star_color = Ratings::get_comment_form_star_color( $star_color );
+		if ( '' !== $comment_star_color ) {
+			$css_vars['--tr-comment-star-color'] = $comment_star_color;
+		}
+
 		$css_vars = (array) apply_filters( 'tasty_recipes_css_vars', $css_vars, $settings );
 		$css_vars = array_filter(
 			$css_vars,
