@@ -468,6 +468,18 @@
 			content: attr( data-placeholder );
 		}
 
+		p,
+		li {
+
+			&,
+			#wpcontent & {
+				color: inherit;
+				font-family: inherit;
+				font-size: inherit;
+				line-height: inherit;
+			}
+		}
+
 		p {
 			margin: 0 0 0.5em;
 
