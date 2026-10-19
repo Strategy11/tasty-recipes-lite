@@ -1,0 +1,131 @@
+@use "editor-shared";
+
+.tasty-recipes-modal-container {
+
+	.tasty-framework.is-pasting-recipe > :not(.tasty-recipes-paste-panel) {
+		display: none !important;
+	}
+
+	&.tasty-recipes-is-pasting {
+
+		.tasty-recipes-frame-toolbar {
+			display: none;
+		}
+
+		.tasty-recipes-frame-content {
+			bottom: 0;
+		}
+	}
+
+	.tasty-recipes-paste-panel {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+
+		.tasty-button:disabled,
+		.tasty-button:disabled:hover {
+			border-color: #F9B4D0;
+			background-color: #F9B4D0;
+			cursor: not-allowed;
+		}
+
+		&__header {
+			display: flex;
+			flex-direction: column;
+			gap: 4px;
+
+			h3 {
+				margin: 0;
+				padding: 0;
+				color: #181B25;
+				font-family: 'Inter', sans-serif;
+				font-size: 16px;
+				font-weight: 600;
+				line-height: 24px;
+			}
+
+			p {
+				margin: 0;
+				color: #525866;
+				font-family: 'Inter', sans-serif;
+				font-size: 14px;
+				line-height: 22px;
+			}
+		}
+
+		textarea.tasty-recipes-paste-panel__input {
+			min-height: 320px;
+			resize: vertical;
+			line-height: 22px;
+		}
+
+		&__error {
+			margin: 0;
+			color: #D92D20;
+			font-family: 'Inter', sans-serif;
+			font-size: 14px;
+			line-height: 22px;
+		}
+
+		&__actions {
+			display: flex;
+			justify-content: flex-end;
+			gap: 12px;
+		}
+	}
+
+	.tasty-recipes-paste-notice {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		padding: 7px 8px 7px 12px;
+		@include editor-shared.teal-callout;
+		color: #525866;
+		font-family: 'Inter', sans-serif;
+		font-size: 14px;
+		line-height: 22px;
+
+		&__message {
+			flex: 1 1 auto;
+			min-width: 0;
+		}
+
+		&__undo {
+			flex: 0 0 auto;
+			margin: 0;
+			padding: 0;
+			border: 0;
+			background: transparent;
+			color: #ED4996;
+			font: inherit;
+			font-weight: 600;
+			text-decoration: underline;
+			cursor: pointer;
+
+			&:hover,
+			&:focus {
+				color: #D93A84;
+			}
+		}
+
+		&__close {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			flex: 0 0 auto;
+			margin: 0;
+			padding: 0;
+			border: 0;
+			border-radius: 6px;
+			background: transparent;
+			color: #525866;
+			line-height: 1;
+			cursor: pointer;
+
+			&:hover,
+			&:focus {
+				color: #181B25;
+			}
+		}
+	}
+}

@@ -1,4 +1,10 @@
-import { useState, useMemo, useEffect, useRef } from '@wordpress/element';
+import {
+	Fragment,
+	useState,
+	useMemo,
+	useEffect,
+	useRef,
+} from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import { FieldGroup } from './FieldGroup';
@@ -10,6 +16,12 @@ import {
 } from './recipe-row-list';
 import { RichTextarea } from './RichTextarea';
 import { ImageField } from './ImageField';
+import {
+	getDefaultSections,
+	PasteFilledNotice,
+	PasteRecipePanel,
+} from './recipe-parser';
+import { trackUsage } from '../track';
 
 const FormatTipField = ( {
 	field,
@@ -36,7 +48,12 @@ const FormatTipField = ( {
 	</div>
 );
 
-export const RecipeForm = ( { initialRecipe, config } ) => {
+export const RecipeForm = ( {
+	initialRecipe,
+	config,
+	initialView = 'form',
+	entryPoint = 'unknown',
+} ) => {
 	const defaultRecipeType = config.defaultRecipeType || 'recipe';
 	const initialRecipeState = applyFilters(
 		'tasty_recipes_recipe_editor_initial_recipe',
@@ -52,6 +69,13 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 		!! config.descriptionFormatTipDismissed
 	);
 	const classicEditorFieldsRef = useRef( {} );
+	const [ view, setView ] = useState(
+		'paste' === initialView ? 'paste' : 'form'
+	);
+	// Rich text, row list and detail fields read their value once on mount,
+	// so filling them from a paste remounts them with the new values.
+	const [ formRevision, setFormRevision ] = useState( 0 );
+	const [ pasteResult, setPasteResult ] = useState( null );
 
 	const shouldUseClassicEditor = ( field ) => {
 		const decisions = classicEditorFieldsRef.current;
@@ -214,6 +238,96 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 		}
 	);
 
+	const visibleFieldNames = richTextareaSettings.map( ( field ) => field.name );
+	const fieldLabels = richTextareaSettings.reduce( ( labels, field ) => {
+		labels[ field.name ] = field.label;
+		return labels;
+	}, {} );
+
+	const pasteSections = applyFilters(
+		'tasty_recipes_recipe_parser_sections',
+		getDefaultSections()
+			.filter( ( section ) => visibleFieldNames.includes( section.name ) )
+			.map( ( section ) => ( {
+				...section,
+				label: fieldLabels[ section.name ] || section.label,
+			} ) ),
+		recipeType,
+		recipe
+	);
+	const pasteDetailFields = {
+		title: { label: titleLabel },
+		...( showDetailsGroup ? detailsFields : {} ),
+		video_url: { label: __( 'Video URL', 'tasty-recipes-lite' ) },
+		author_name: { label: __( 'Author', 'tasty-recipes-lite' ) },
+		...( showNutritionGroup ? nutritionAttributes : {} ),
+	};
+	const handlePasteFill = ( parsedValues, { stats } ) => {
+		const values = applyFilters(
+			'tasty_recipes_recipe_parser_result',
+			parsedValues,
+			recipe,
+			recipeType
+		);
+		const filled = Object.keys( values );
+		// Some fields keep their value under another key (Total Time reads
+		// `total_time_raw`), so store each value where its field reads it.
+		const recipeValues = Object.fromEntries(
+			filled.map( ( name ) => [
+				pasteDetailFields[ name ]?.object_key || name,
+				values[ name ],
+			] )
+		);
+
+		trackUsage( 'recipe_paste_parsed', {
+			...stats,
+			entry_point: entryPoint,
+			fields_filled: filled.length,
+		} );
+
+		classicEditorFieldsRef.current = {};
+		setPasteResult( {
+			count: filled.length,
+			previous: filled.length ? recipe : null,
+		} );
+		setRecipe( { ...recipe, ...recipeValues } );
+		setFormRevision( ( revision ) => revision + 1 );
+		setView( 'form' );
+	};
+
+	const handlePasteUndo = () => {
+		if ( ! pasteResult?.previous ) {
+			return;
+		}
+
+		trackUsage( 'recipe_paste_undone', {
+			fields_filled: pasteResult.count,
+		} );
+		classicEditorFieldsRef.current = {};
+		setRecipe( pasteResult.previous );
+		setPasteResult( null );
+		setFormRevision( ( revision ) => revision + 1 );
+	};
+
+	// The modal footer (Cancel / Insert / Update) belongs to the form, so it is
+	// hidden while the paste panel is open.
+	useEffect( () => {
+		const container = document.querySelector(
+			'.tasty-recipes-modal-container'
+		);
+
+		container?.classList.toggle( 'tasty-recipes-is-pasting', 'paste' === view );
+
+		// Switching views changes the content height; start each at the top.
+		container
+			?.querySelector( '.tasty-recipes-frame-content' )
+			?.scrollTo( 0, 0 );
+
+		return () => {
+			container?.classList.remove( 'tasty-recipes-is-pasting' );
+		};
+	}, [ view ] );
+
 	useEffect( () => {
 		const event = new CustomEvent( 'tasty-recipes-editor-labels-update', {
 			detail: {
@@ -233,259 +347,280 @@ export const RecipeForm = ( { initialRecipe, config } ) => {
 	] );
 
 	return (
-		<form className="tasty-framework">
+		<form
+			className={ `tasty-framework${
+				'paste' === view ? ' is-pasting-recipe' : ''
+			}` }
+		>
 			<input type="hidden" name="id" value={ recipe.id } />
 			<input type="hidden" name="recipe_type" value={ recipeType } />
-			{ typeSelector }
-			<fieldset className="tasty-recipes-title-field">
-				<label htmlFor="title">
-					{ titleLabel }
-				</label>
-				<input
-					type="text"
-					name="title"
-					id="title"
-					className="regular-text"
-					placeholder={ titlePlaceholder }
-					value={ recipe.title || '' }
-					onChange={ ( e ) =>
-						handleRecipeChange( 'title', e.target.value )
-					}
-				/>
-			</fieldset>
-			{ descriptionField && (
-				<FormatTipField
-					field={ descriptionField }
-					isFormatTipDismissed={ isFormatTipDismissed }
-					isRevealed={ 'description' === formatTipAnchor }
-					modifyNonce={ config.modifyNonce }
-					onDismiss={ () => setIsFormatTipDismissed( true ) }
-					onFocus={ () => setFormatTipAnchor( 'description' ) }
-					onValueChange={ handleRecipeChange }
+			{ 'paste' === view && (
+				<PasteRecipePanel
+					sections={ pasteSections }
+					detailFields={ pasteDetailFields }
+					onCancel={ () => setView( 'form' ) }
+					onFill={ handlePasteFill }
 				/>
 			) }
-			<ImageField
-				recipe={ recipe }
-				handleRecipeChange={ handleRecipeChange }
-				labels={ imageLabels }
-			/>
-			{ remainingRichTextareas.map( ( field ) => {
-				const isNotes = 'notes' === field.name;
-				const isIngredients = 'ingredients' === field.name;
-				const isInstructions = 'instructions' === field.name;
-				const useClassicEditor =
-					( isIngredients || isInstructions ) &&
-					shouldUseClassicEditor( field );
+			{ 'form' === view && pasteResult && (
+				<PasteFilledNotice
+					count={ pasteResult.count }
+					onUndo={ handlePasteUndo }
+					onDismiss={ () => setPasteResult( null ) }
+				/>
+			) }
+			{ typeSelector }
+			<Fragment key={ `fields-${ formRevision }` }>
+				<fieldset className="tasty-recipes-title-field">
+					<label htmlFor="title">
+						{ titleLabel }
+					</label>
+					<input
+						type="text"
+						name="title"
+						id="title"
+						className="regular-text"
+						placeholder={ titlePlaceholder }
+						value={ recipe.title || '' }
+						onChange={ ( e ) =>
+							handleRecipeChange( 'title', e.target.value )
+						}
+					/>
+				</fieldset>
+				{ descriptionField && (
+					<FormatTipField
+						field={ descriptionField }
+						isFormatTipDismissed={ isFormatTipDismissed }
+						isRevealed={ 'description' === formatTipAnchor }
+						modifyNonce={ config.modifyNonce }
+						onDismiss={ () => setIsFormatTipDismissed( true ) }
+						onFocus={ () => setFormatTipAnchor( 'description' ) }
+						onValueChange={ handleRecipeChange }
+					/>
+				) }
+				<ImageField
+					recipe={ recipe }
+					handleRecipeChange={ handleRecipeChange }
+					labels={ imageLabels }
+				/>
+				{ remainingRichTextareas.map( ( field ) => {
+					const isNotes = 'notes' === field.name;
+					const isIngredients = 'ingredients' === field.name;
+					const isInstructions = 'instructions' === field.name;
+					const useClassicEditor =
+						( isIngredients || isInstructions ) &&
+						shouldUseClassicEditor( field );
 
-				// Legacy media/embeds cannot round-trip through the row list —
-				// keep the classic TinyMCE field (with video settings) intact.
-				if ( useClassicEditor ) {
+					// Legacy media/embeds cannot round-trip through the row list —
+					// keep the classic TinyMCE field (with video settings) intact.
+					if ( useClassicEditor ) {
+						return (
+							<RichTextarea
+								key={ field.name }
+								{ ...field }
+								onChange={ ( value ) =>
+									handleRecipeChange( field.name, value )
+								}
+							/>
+						);
+					}
+
+					if ( isIngredients ) {
+						return (
+							<IngredientsList
+								key={ field.name }
+								name={ field.name }
+								label={ field.label }
+								placeholder={ field.placeholder }
+								initialValue={ field.initialValue }
+								addItemLabel={ field.addItemLabel }
+								onChange={ ( value ) =>
+									handleRecipeChange( field.name, value )
+								}
+							/>
+						);
+					}
+
+					if ( isInstructions ) {
+						return (
+							<InstructionsList
+								key={ field.name }
+								name={ field.name }
+								label={ field.label }
+								placeholder={ field.placeholder }
+								initialValue={ field.initialValue }
+								onChange={ ( value ) =>
+									handleRecipeChange( field.name, value )
+								}
+							/>
+						);
+					}
+
+					if ( isNotes ) {
+						return (
+							<FormatTipField
+								key={ field.name }
+								field={ field }
+								isFormatTipDismissed={ isFormatTipDismissed }
+								isRevealed={ 'notes' === formatTipAnchor }
+								modifyNonce={ config.modifyNonce }
+								onDismiss={ () => setIsFormatTipDismissed( true ) }
+								onFocus={ () => setFormatTipAnchor( 'notes' ) }
+								onValueChange={ handleRecipeChange }
+							/>
+						);
+					}
+
 					return (
 						<RichTextarea
 							key={ field.name }
 							{ ...field }
+							bubbleToolbar
 							onChange={ ( value ) =>
 								handleRecipeChange( field.name, value )
 							}
 						/>
 					);
-				}
-
-				if ( isIngredients ) {
-					return (
-						<IngredientsList
-							key={ field.name }
-							name={ field.name }
-							label={ field.label }
-							placeholder={ field.placeholder }
-							initialValue={ field.initialValue }
-							addItemLabel={ field.addItemLabel }
-							onChange={ ( value ) =>
-								handleRecipeChange( field.name, value )
-							}
+				} ) }
+				<section className="tasty-recipes-details-section">
+					{ showDetailsGroup && (
+						<FieldGroup
+							className="tasty-recipes-details"
+							heading={ detailsHeading }
+							fields={ detailsFields }
+							initialFieldValues={ recipe }
+							onFieldChange={ handleRecipeChange }
+							showAdditionalTime={ showAdditionalTime }
+							group="details"
+							recipe={ recipe }
 						/>
-					);
-				}
-
-				if ( isInstructions ) {
-					return (
-						<InstructionsList
-							key={ field.name }
-							name={ field.name }
-							label={ field.label }
-							placeholder={ field.placeholder }
-							initialValue={ field.initialValue }
-							onChange={ ( value ) =>
-								handleRecipeChange( field.name, value )
-							}
-						/>
-					);
-				}
-
-				if ( isNotes ) {
-					return (
-						<FormatTipField
-							key={ field.name }
-							field={ field }
-							isFormatTipDismissed={ isFormatTipDismissed }
-							isRevealed={ 'notes' === formatTipAnchor }
-							modifyNonce={ config.modifyNonce }
-							onDismiss={ () => setIsFormatTipDismissed( true ) }
-							onFocus={ () => setFormatTipAnchor( 'notes' ) }
-							onValueChange={ handleRecipeChange }
-						/>
-					);
-				}
-
-				return (
-					<RichTextarea
-						key={ field.name }
-						{ ...field }
-						bubbleToolbar
-						onChange={ ( value ) =>
-							handleRecipeChange( field.name, value )
-						}
-					/>
-				);
-			} ) }
-			<section className="tasty-recipes-details-section">
-				{ showDetailsGroup && (
+					) }
 					<FieldGroup
-						className="tasty-recipes-details"
-						heading={ detailsHeading }
-						fields={ detailsFields }
+						className="tasty-recipes-video-url"
+						fields={ {
+							video_url: {
+								type: 'url',
+								label: __( 'Video URL', 'tasty-recipes-lite' ),
+								placeholder: __(
+									'youtube.com/watch?v=…',
+									'tasty-recipes-lite'
+								),
+							},
+						} }
 						initialFieldValues={ recipe }
 						onFieldChange={ handleRecipeChange }
-						showAdditionalTime={ showAdditionalTime }
-						group="details"
+						group="video"
+						recipe={ recipe }
+					/>
+					{ editorConfig.after_video_url_markup && (
+						<div
+							className="tasty-recipes-after-video-url"
+							dangerouslySetInnerHTML={ {
+								__html: editorConfig.after_video_url_markup,
+							} }
+						/>
+					) }
+					<fieldset className="tasty-recipes-author-field">
+						<label htmlFor="author_name">
+							{ __( 'Author', 'tasty-recipes-lite' ) }
+						</label>
+						<input
+							type="text"
+							name="author_name"
+							id="author_name"
+							className="regular-text"
+							value={ recipe.author_name || '' }
+							onChange={ ( e ) =>
+								handleRecipeChange( 'author_name', e.target.value )
+							}
+						/>
+					</fieldset>
+				</section>
+				{ showNutritionGroup && (
+					<FieldGroup
+						className="tasty-recipes-nutrition"
+						group="nutrition"
+						heading={ nutritionHeading }
+						fields={ nutritionAttributes }
+						initialFieldValues={ recipe }
+						onFieldChange={ handleRecipeChange }
+						defaultCollapsed
+						renderBeforeFields={ () => (
+							<fieldset className="tasty-recipes-nutrifox-container">
+								<div className="tasty-recipes-nutrifox-card-head">
+									<label htmlFor="tasty-recipes-recipe-nutrifox_id">
+										{ attributes.nutrition.nutrifox_id.label }
+										<span
+											className="tasty-tooltip-icon"
+											tabIndex={ 0 }
+											role="img"
+											aria-label={ __(
+												'What is this?',
+												'tasty-recipes-lite'
+											) }
+											data-tasty-tooltip={ __(
+												'Pull nutrition automatically from your existing Nutrifox recipe.',
+												'tasty-recipes-lite'
+											) }
+										/>
+									</label>
+									<a
+										className="nutrifox-logo"
+										href="https://nutrifox.com/?utm_source=tasty-recipes&utm_medium=dashboard&utm_campaign=recipe-editor"
+										target="_blank"
+										rel="noopener noreferrer"
+										aria-label={ __(
+											'Nutrifox',
+											'tasty-recipes-lite'
+										) }
+									>
+										<img
+											alt=""
+											src={ nutrifoxLogoUrl }
+											width="96"
+											height="22"
+										/>
+									</a>
+								</div>
+								<input
+									id="tasty-recipes-recipe-nutrifox_id"
+									type="text"
+									name="nutrifox_id"
+									className="inline-field"
+									placeholder={ __(
+										'Paste your Nutrifox recipe ID',
+										'tasty-recipes-lite'
+									) }
+									value={ recipe.nutrifox_id || '' }
+									onChange={ ( e ) => {
+										handleRecipeChange(
+											'nutrifox_id',
+											e.target.value
+										);
+									} }
+								/>
+								{ recipe.nutrifox_id && (
+									<a
+										className="nutrifox-edit"
+										href={ `https://nutrifox.com/recipes/${ parseInt(
+											recipe.nutrifox_id
+										) }/edit` }
+										target="_blank"
+										rel="noopener noreferrer"
+									>
+										<NutrifoxIcon />
+										{ __(
+											'Edit recipe in Nutrifox',
+											'tasty-recipes-lite'
+										) }
+									</a>
+								) }
+							</fieldset>
+						) }
 						recipe={ recipe }
 					/>
 				) }
-				<FieldGroup
-					className="tasty-recipes-video-url"
-					fields={ {
-						video_url: {
-							type: 'url',
-							label: __( 'Video URL', 'tasty-recipes-lite' ),
-							placeholder: __(
-								'youtube.com/watch?v=…',
-								'tasty-recipes-lite'
-							),
-						},
-					} }
-					initialFieldValues={ recipe }
-					onFieldChange={ handleRecipeChange }
-					group="video"
-					recipe={ recipe }
-				/>
-				{ editorConfig.after_video_url_markup && (
-					<div
-						className="tasty-recipes-after-video-url"
-						dangerouslySetInnerHTML={ {
-							__html: editorConfig.after_video_url_markup,
-						} }
-					/>
-				) }
-				<fieldset className="tasty-recipes-author-field">
-					<label htmlFor="author_name">
-						{ __( 'Author', 'tasty-recipes-lite' ) }
-					</label>
-					<input
-						type="text"
-						name="author_name"
-						id="author_name"
-						className="regular-text"
-						value={ recipe.author_name || '' }
-						onChange={ ( e ) =>
-							handleRecipeChange( 'author_name', e.target.value )
-						}
-					/>
-				</fieldset>
-			</section>
-			{ showNutritionGroup && (
-				<FieldGroup
-					className="tasty-recipes-nutrition"
-					group="nutrition"
-					heading={ nutritionHeading }
-					fields={ nutritionAttributes }
-					initialFieldValues={ recipe }
-					onFieldChange={ handleRecipeChange }
-					defaultCollapsed
-					renderBeforeFields={ () => (
-						<fieldset className="tasty-recipes-nutrifox-container">
-							<div className="tasty-recipes-nutrifox-card-head">
-								<label htmlFor="tasty-recipes-recipe-nutrifox_id">
-									{ attributes.nutrition.nutrifox_id.label }
-									<span
-										className="tasty-tooltip-icon"
-										tabIndex={ 0 }
-										role="img"
-										aria-label={ __(
-											'What is this?',
-											'tasty-recipes-lite'
-										) }
-										data-tasty-tooltip={ __(
-											'Pull nutrition automatically from your existing Nutrifox recipe.',
-											'tasty-recipes-lite'
-										) }
-									/>
-								</label>
-								<a
-									className="nutrifox-logo"
-									href="https://nutrifox.com/?utm_source=tasty-recipes&utm_medium=dashboard&utm_campaign=recipe-editor"
-									target="_blank"
-									rel="noopener noreferrer"
-									aria-label={ __(
-										'Nutrifox',
-										'tasty-recipes-lite'
-									) }
-								>
-									<img
-										alt=""
-										src={ nutrifoxLogoUrl }
-										width="96"
-										height="22"
-									/>
-								</a>
-							</div>
-							<input
-								id="tasty-recipes-recipe-nutrifox_id"
-								type="text"
-								name="nutrifox_id"
-								className="inline-field"
-								placeholder={ __(
-									'Paste your Nutrifox recipe ID',
-									'tasty-recipes-lite'
-								) }
-								value={ recipe.nutrifox_id || '' }
-								onChange={ ( e ) => {
-									handleRecipeChange(
-										'nutrifox_id',
-										e.target.value
-									);
-								} }
-							/>
-							{ recipe.nutrifox_id && (
-								<a
-									className="nutrifox-edit"
-									href={ `https://nutrifox.com/recipes/${ parseInt(
-										recipe.nutrifox_id
-									) }/edit` }
-									target="_blank"
-									rel="noopener noreferrer"
-								>
-									<NutrifoxIcon />
-									{ __(
-										'Edit recipe in Nutrifox',
-										'tasty-recipes-lite'
-									) }
-								</a>
-							) }
-						</fieldset>
-					) }
-					recipe={ recipe }
-				/>
-			) }
+			</Fragment>
 		</form>
 	);
 };

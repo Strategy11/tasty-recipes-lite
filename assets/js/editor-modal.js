@@ -117,7 +117,7 @@
 		 * @param {Object}   data     The recipe data to open the modal with.
 		 * @param {Function} callback The callback to run when the modal is closed.
 		 */
-		open( data = null, callback = null ) {
+		open( data = null, callback = null, options = {} ) {
 			if (isOpen) {
 				return;
 			}
@@ -127,7 +127,8 @@
 			document.querySelector('.tasty-recipes-modal-container .tasty-recipes-frame-content').appendChild(editorInstance);
 			window.tastyRecipesMountRecipeEditor(
 				editorInstance,
-				data
+				data,
+				options || {}
 			);
 			if ( typeof data === 'object' && typeof data.id !== 'undefined' ) {
 				container.addClass('tasty-recipes-state-editing');
