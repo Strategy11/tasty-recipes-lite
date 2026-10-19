@@ -102,11 +102,40 @@ describe( 'Recipe Block', () => {
 					cy.contains( 'button', 'Create new recipe' ).should(
 						'be.visible'
 					);
+					cy.contains( 'button', 'Paste a recipe' ).should(
+						'be.visible'
+					);
 					cy.contains(
 						'button',
 						'Embed existing recipe'
 					).should( 'be.visible' );
 				} );
+		} );
+
+		it( 'should open the paste panel from Paste a recipe', () => {
+			cy.visit( '/wp-admin/post-new.php' );
+			cy.closeWelcomeGuide();
+
+			insertRecipeBlock();
+
+			cy.getBlockEditor()
+				.find( '.tasty-recipes-block-placeholder-buttons' )
+				.contains( 'button', 'Paste a recipe' )
+				.click();
+
+			cy.get( '.tasty-recipes-modal', { timeout: 10000 } ).should(
+				'be.visible'
+			);
+			cy.get( '.tasty-recipes-paste-panel__input' ).should( 'be.visible' );
+			cy.get( '.tasty-recipes-frame-toolbar' ).should( 'not.be.visible' );
+
+			cy.contains( '.tasty-recipes-paste-panel button', 'Cancel' ).click();
+
+			cy.get( '.tasty-recipes-modal' ).should( 'be.visible' );
+			cy.get( '.tasty-recipes-frame-content input#title' ).should(
+				'be.visible'
+			);
+			cy.get( '.tasty-recipes-modal-close' ).click( { force: true } );
 		} );
 
 		it( 'should show embed select after clicking Embed existing recipe', () => {
