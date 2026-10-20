@@ -18,11 +18,12 @@ import { UpgradeBanner } from '../partials/UpgradeBanner';
 import { CookMode } from '../partials/CookMode';
 import { InstacartButton } from '../partials/InstacartButton';
 import { UnitConversion } from '../partials/UnitConversion';
+import { AiConnection } from '../partials/AiConnection';
 import { isSettingDisabled } from '../utils/helpers';
 import { optionNames } from '../utils/optionNames.js';
 
 const globalSettings = window.tastyRecipesSettings;
-const { settings } = globalSettings;
+const { settings, aiConnection } = globalSettings;
 
 const recipeCardOptions = ( value ) => {
 	const isPro = applyFilters( 'tasty_recipes_is_pro', false );
@@ -304,6 +305,13 @@ export const Settings = () => {
 				) }
 				isNew
 			/>
+			{ aiConnection &&
+				applyFilters(
+					'tasty_recipes_ai_connection_setting',
+					<AiConnection initialStatus={ aiConnection } />,
+					formData,
+					handleChange
+				) }
 			<UpgradeBanner generateUpgradeUrl={ generateUpgradeUrl } />
 			<SelectInput
 				onClick={ () => {

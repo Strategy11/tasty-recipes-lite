@@ -372,3 +372,27 @@ export const BulkEditIcon = (
 		/>
 	</svg>
 );
+
+export const MagicIcon = (
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		width="16"
+		height="16"
+		viewBox="0 0 24 24"
+		fill="none"
+		aria-hidden="true"
+	>
+		<path
+			d="M10 4.75l1.35 3.9a3 3 0 0 0 1.85 1.85l3.9 1.35-3.9 1.35a3 3 0 0 0-1.85 1.85L10 18.95l-1.35-3.9a3 3 0 0 0-1.85-1.85l-3.9-1.35 3.9-1.35a3 3 0 0 0 1.85-1.85L10 4.75z"
+			stroke="currentColor"
+			strokeWidth="1.5"
+			strokeLinejoin="round"
+		/>
+		<path
+			d="M18 3.25v4M16 5.25h4M18.5 16.25v3.5M16.75 18h3.5"
+			stroke="currentColor"
+			strokeWidth="1.5"
+			strokeLinecap="round"
+		/>
+	</svg>
+);

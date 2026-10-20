@@ -228,6 +228,8 @@ class Assets {
 					'settings'       => self::get_settings_tab_options(),
 					'converters'     => self::get_converters_data(),
 					'optionNames'    => $option_names,
+					// Status only (provider, model, last 4 characters); never the key.
+					'aiConnection'   => current_user_can( Admin::CAPABILITY ) ? AI\Connection::get_public_status() : null,
 				)
 			);
 		}
@@ -601,6 +603,8 @@ class Assets {
 			true
 		);
 		$editor_data['modifyNonce']                   = wp_create_nonce( 'tasty_recipes_modify_recipe' );
+		// Whether recipe photos can be read; never the key.
+		$editor_data['ai'] = AI\Recipe_Image::get_editor_status();
 
 		/**
 		 * Filters the recipe editor data sent to the client.

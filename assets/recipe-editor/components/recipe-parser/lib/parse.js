@@ -13,7 +13,7 @@ export const UNSORTED = 'unsorted';
 const SENTENCE_END_PATTERN = /[.!?]$/;
 const INLINE_SECTION_PATTERN = /^([^:]{2,40}):\s*(\S.*)$/;
 const GENERIC_RICH_HEADING_PATTERN =
-	/^((recipe|cook('|’)?s|chef('|’)?s|kitchen)\s+)?(notes?|tips?|description|summary|introduction|intro)\s*:?$/i;
+	/^((recipe|cook('|’)?s|chef('|’)?s|kitchen|short)\s+)?(notes?|tips?|description|summary|introduction|intro)\s*:?$/i;
 const QUANTITY_PATTERN =
 	/^([\d½⅓⅔¼¾⅛⅜⅝⅞]|(a|an|one|two|three|four|half|pinch|dash|handful|few)\b)/i;
 

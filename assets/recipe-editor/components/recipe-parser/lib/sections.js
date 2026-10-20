@@ -6,7 +6,8 @@ export const getDefaultSections = () => [
 		label: __( 'Description', 'tasty-recipes-lite' ),
 		format: 'rich',
 		patterns: [
-			/^(description|summary|introduction|intro|about( this| the)? recipe)$/,
+			/^((short|recipe) )?(description|summary)$/,
+			/^(introduction|intro|about( this| the)? recipe)$/,
 		],
 	},
 	{

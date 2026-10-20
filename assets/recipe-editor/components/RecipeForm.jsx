@@ -1,11 +1,12 @@
 import {
+	createPortal,
 	Fragment,
 	useState,
 	useMemo,
 	useEffect,
 	useRef,
 } from '@wordpress/element';
-import { __ } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import { applyFilters } from '@wordpress/hooks';
 import { FieldGroup } from './FieldGroup';
 import { DescriptionFormatTip } from './DescriptionFormatTip';
@@ -15,6 +16,11 @@ import {
 	InstructionsList,
 } from './recipe-row-list';
 import { RichTextarea } from './RichTextarea';
+import {
+	AiAssistButton,
+	AiAssistPanel,
+	updateRecipe,
+} from './ai-assist/AiAssist';
 import { ImageField } from './ImageField';
 import {
 	getDefaultSections,
@@ -76,6 +82,7 @@ export const RecipeForm = ( {
 	// so filling them from a paste remounts them with the new values.
 	const [ formRevision, setFormRevision ] = useState( 0 );
 	const [ pasteResult, setPasteResult ] = useState( null );
+	const [ isRecipeAiOpen, setIsRecipeAiOpen ] = useState( false );
 
 	const shouldUseClassicEditor = ( field ) => {
 		const decisions = classicEditorFieldsRef.current;
@@ -262,13 +269,8 @@ export const RecipeForm = ( {
 		author_name: { label: __( 'Author', 'tasty-recipes-lite' ) },
 		...( showNutritionGroup ? nutritionAttributes : {} ),
 	};
-	const handlePasteFill = ( parsedValues, { stats } ) => {
-		const values = applyFilters(
-			'tasty_recipes_recipe_parser_result',
-			parsedValues,
-			recipe,
-			recipeType
-		);
+	// Fills the form with new values in one step that the notice can undo.
+	const fillRecipe = ( values, message = '' ) => {
 		const filled = Object.keys( values );
 		// Some fields keep their value under another key (Total Time reads
 		// `total_time_raw`), so store each value where its field reads it.
@@ -279,21 +281,74 @@ export const RecipeForm = ( {
 			] )
 		);
 
-		trackUsage( 'recipe_paste_parsed', {
-			...stats,
-			entry_point: entryPoint,
-			fields_filled: filled.length,
-		} );
-
 		classicEditorFieldsRef.current = {};
 		setPasteResult( {
 			count: filled.length,
+			message,
 			previous: filled.length ? recipe : null,
 		} );
 		setRecipe( { ...recipe, ...recipeValues } );
 		setFormRevision( ( revision ) => revision + 1 );
 		setView( 'form' );
 	};
+
+	const handlePasteFill = ( parsedValues, { stats } ) => {
+		const values = applyFilters(
+			'tasty_recipes_recipe_parser_result',
+			parsedValues,
+			recipe,
+			recipeType
+		);
+
+		trackUsage( 'recipe_paste_parsed', {
+			...stats,
+			entry_point: entryPoint,
+			fields_filled: Object.keys( values ).length,
+		} );
+
+		fillRecipe( values );
+	};
+
+	// Only fields this form shows can be changed.
+	const aiFieldNames = [ ...visibleFieldNames, ...Object.keys( pasteDetailFields ) ];
+	const canUseAi = Boolean( editorConfig.ai?.ready );
+
+	const handleRecipeAiUpdate = async ( request ) => {
+		const fields = await updateRecipe( request, recipe, aiFieldNames );
+		const values = Object.fromEntries(
+			Object.entries( fields ).filter( ( [ name ] ) =>
+				aiFieldNames.includes( name )
+			)
+		);
+		const count = Object.keys( values ).length;
+
+		setIsRecipeAiOpen( false );
+		fillRecipe(
+			values,
+			sprintf(
+				/* translators: %d: number of recipe fields updated. */
+				_n(
+					'Updated %d field.',
+					'Updated %d fields.',
+					count,
+					'tasty-recipes-lite'
+				),
+				count
+			)
+		);
+	};
+
+	const toggleRecipeAi = () => {
+		setIsRecipeAiOpen( ! isRecipeAiOpen );
+		document
+			.querySelector( '.tasty-recipes-modal-container .tasty-recipes-frame-content' )
+			?.scrollTo( 0, 0 );
+	};
+
+	// The magic icon sits in the modal header, next to the close button.
+	const modalHeader = document.querySelector(
+		'.tasty-recipes-modal-container .tasty-recipes-frame-title'
+	);
 
 	const handlePasteUndo = () => {
 		if ( ! pasteResult?.previous ) {
@@ -358,13 +413,43 @@ export const RecipeForm = ( {
 				<PasteRecipePanel
 					sections={ pasteSections }
 					detailFields={ pasteDetailFields }
+					ai={ editorConfig.ai }
 					onCancel={ () => setView( 'form' ) }
 					onFill={ handlePasteFill }
+				/>
+			) }
+			{ canUseAi &&
+				'form' === view &&
+				modalHeader &&
+				createPortal(
+					<AiAssistButton
+						className="tasty-recipes-ai-recipe-toggle"
+						label={ __( 'Update recipe with AI', 'tasty-recipes-lite' ) }
+						isOpen={ isRecipeAiOpen }
+						onToggle={ toggleRecipeAi }
+					/>,
+					modalHeader
+				) }
+			{ 'form' === view && isRecipeAiOpen && (
+				<AiAssistPanel
+					className="tasty-recipes-ai-assist--recipe"
+					label={ __(
+						'What should the AI change in this recipe?',
+						'tasty-recipes-lite'
+					) }
+					placeholder={ __(
+						'e.g. Make it gluten-free and double the servings',
+						'tasty-recipes-lite'
+					) }
+					maxLength={ 1000 }
+					onGenerate={ handleRecipeAiUpdate }
+					onClose={ () => setIsRecipeAiOpen( false ) }
 				/>
 			) }
 			{ 'form' === view && pasteResult && (
 				<PasteFilledNotice
 					count={ pasteResult.count }
+					message={ pasteResult.message }
 					onUndo={ handlePasteUndo }
 					onDismiss={ () => setPasteResult( null ) }
 				/>
@@ -391,7 +476,7 @@ export const RecipeForm = ( {
 					<FormatTipField
 						field={ descriptionField }
 						isFormatTipDismissed={ isFormatTipDismissed }
-						isRevealed={ 'description' === formatTipAnchor }
+												isRevealed={ 'description' === formatTipAnchor }
 						modifyNonce={ config.modifyNonce }
 						onDismiss={ () => setIsFormatTipDismissed( true ) }
 						onFocus={ () => setFormatTipAnchor( 'description' ) }
@@ -462,7 +547,7 @@ export const RecipeForm = ( {
 								key={ field.name }
 								field={ field }
 								isFormatTipDismissed={ isFormatTipDismissed }
-								isRevealed={ 'notes' === formatTipAnchor }
+																isRevealed={ 'notes' === formatTipAnchor }
 								modifyNonce={ config.modifyNonce }
 								onDismiss={ () => setIsFormatTipDismissed( true ) }
 								onFocus={ () => setFormatTipAnchor( 'notes' ) }

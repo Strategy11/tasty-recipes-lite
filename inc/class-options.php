@@ -215,6 +215,25 @@ final class Options {
 	public const AI_SCRAPER_PREVENTION = 'tasty_recipes_ai_scraper_prevention';
 
 	/**
+	 * AI provider connection: provider, model and the encrypted API key.
+	 *
+	 * @since x.x
+	 *
+	 * @var string
+	 */
+	public const AI_CONNECTION = 'tasty_recipes_ai_connection';
+
+	/**
+	 * AI model ID, saved over REST as soon as the user picks it. Kept apart
+	 * from AI_CONNECTION so reading the model never touches the key.
+	 *
+	 * @since x.x
+	 *
+	 * @var string
+	 */
+	public const AI_MODEL = 'tasty_recipes_ai_model';
+
+	/**
 	 * Improved keys notice dismissal option.
 	 *
 	 * @since 1.2.7
