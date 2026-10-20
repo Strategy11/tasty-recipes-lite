@@ -1784,8 +1784,6 @@ class Distribution_Metadata {
 	/**
 	 * ISO duration for a recipe time field.
 	 *
-	 * Additional time is included in prep time. Unparsed times are omitted.
-	 *
 	 * @since x.x
 	 *
 	 * @param string $name        Cooking attribute name.
@@ -1806,8 +1804,6 @@ class Distribution_Metadata {
 
 	/**
 	 * Sum prep and additional time as a seconds string.
-	 *
-	 * A part that cannot be parsed contributes nothing.
 	 *
 	 * @since x.x
 	 *
@@ -1833,9 +1829,6 @@ class Distribution_Metadata {
 
 	/**
 	 * Convert a human-readable time into a duration in seconds.
-	 *
-	 * Bare numbers are minutes. Known unit words are summed and joining words
-	 * are ignored. Strings that still do not parse fall back to strtotime().
 	 *
 	 * @since x.x
 	 *
@@ -1987,8 +1980,6 @@ class Distribution_Metadata {
 
 	/**
 	 * Add unit names that share one duration length.
-	 *
-	 * WordPress time constants are cast to int so they can be stored as array values.
 	 *
 	 * @since x.x
 	 *
