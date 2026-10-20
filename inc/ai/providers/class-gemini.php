@@ -58,7 +58,10 @@ class Gemini extends Provider {
 	 *
 	 * @return array<int, array{id: string, label: string}>|WP_Error
 	 */
-	public function list_models( $api_key ) {
+	public function list_models(
+		#[\SensitiveParameter]
+		$api_key
+	) {
 		$data = $this->request( 'GET', self::API_BASE . '/models?pageSize=1000', $api_key, $this->auth_headers( $api_key ) );
 
 		if ( is_wp_error( $data ) ) {
@@ -131,7 +134,13 @@ class Gemini extends Provider {
 	 *
 	 * @return string|WP_Error
 	 */
-	public function generate( $api_key, $model, $prompt, $args = array() ) {
+	public function generate(
+		#[\SensitiveParameter]
+		$api_key,
+		$model,
+		$prompt,
+		$args = array()
+	) {
 		if ( ! $this->is_valid_model_id( $model ) ) {
 			return new WP_Error( 'tasty_recipes_ai_bad_model', __( 'Choose a model before using AI features.', 'tasty-recipes-lite' ) );
 		}
@@ -203,7 +212,12 @@ class Gemini extends Provider {
 	 *
 	 * @return WP_Error
 	 */
-	protected function error_from_response( $status, $data, $api_key ) {
+	protected function error_from_response(
+		$status,
+		$data,
+		#[\SensitiveParameter]
+		$api_key
+	) {
 		$reasons = wp_list_pluck( (array) ( $data['error']['details'] ?? array() ), 'reason' );
 
 		if ( in_array( 'API_KEY_INVALID', $reasons, true ) ) {
@@ -222,7 +236,10 @@ class Gemini extends Provider {
 	 *
 	 * @return array
 	 */
-	private function auth_headers( $api_key ) {
+	private function auth_headers(
+		#[\SensitiveParameter]
+		$api_key
+	) {
 		return array(
 			'x-goog-api-key' => $api_key,
 		);

@@ -62,7 +62,10 @@ abstract class Provider {
 	 *
 	 * @return array<int, array{id: string, label: string}>|WP_Error
 	 */
-	abstract public function list_models( $api_key );
+	abstract public function list_models(
+		#[\SensitiveParameter]
+		$api_key
+	);
 
 	/**
 	 * Generates text.
@@ -84,7 +87,13 @@ abstract class Provider {
 	 *
 	 * @return string|WP_Error The generated text, or an error.
 	 */
-	abstract public function generate( $api_key, $model, $prompt, $args = array() );
+	abstract public function generate(
+		#[\SensitiveParameter]
+		$api_key,
+		$model,
+		$prompt,
+		$args = array()
+	);
 
 	/**
 	 * Name of the model line get_recommended_model() picks from, shown to users.
@@ -210,7 +219,14 @@ abstract class Provider {
 	 *
 	 * @return array|WP_Error Decoded JSON response, or an error.
 	 */
-	protected function request( $method, $url, $api_key, $headers, $body = null ) {
+	protected function request(
+		$method,
+		$url,
+		#[\SensitiveParameter]
+		$api_key,
+		$headers,
+		$body = null
+	) {
 		$args = array(
 			'method'      => $method,
 			'headers'     => array_merge(
@@ -283,7 +299,12 @@ abstract class Provider {
 	 *
 	 * @return WP_Error
 	 */
-	protected function error_from_response( $status, $data, $api_key ) {
+	protected function error_from_response(
+		$status,
+		$data,
+		#[\SensitiveParameter]
+		$api_key
+	) {
 		if ( 401 === $status || 403 === $status ) {
 			return new WP_Error(
 				'tasty_recipes_ai_invalid_key',
@@ -347,7 +368,11 @@ abstract class Provider {
 	 *
 	 * @return string
 	 */
-	public static function scrub( $text, $api_key = '' ) {
+	public static function scrub(
+		$text,
+		#[\SensitiveParameter]
+		$api_key = ''
+	) {
 		$text = wp_strip_all_tags( (string) $text );
 
 		if ( '' !== $api_key ) {

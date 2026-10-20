@@ -215,7 +215,11 @@ final class Connection {
 	 *
 	 * @return array|WP_Error The model list on success, or an error.
 	 */
-	public static function connect( $provider_id, $api_key ) {
+	public static function connect(
+		$provider_id,
+		#[\SensitiveParameter]
+		$api_key
+	) {
 		$provider = self::get_provider( $provider_id );
 
 		if ( ! $provider ) {

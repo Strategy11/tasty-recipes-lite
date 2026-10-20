@@ -72,7 +72,10 @@ class Open_Router extends Open_AI {
 	 *
 	 * @return array<int, array{id: string, label: string}>|WP_Error
 	 */
-	public function list_models( $api_key ) {
+	public function list_models(
+		#[\SensitiveParameter]
+		$api_key
+	) {
 		$key_check = $this->request( 'GET', self::API_BASE . '/key', $api_key, $this->auth_headers( $api_key ) );
 
 		if ( is_wp_error( $key_check ) ) {

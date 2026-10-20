@@ -80,7 +80,10 @@ class Open_AI extends Provider {
 	 *
 	 * @return array<int, array{id: string, label: string}>|WP_Error
 	 */
-	public function list_models( $api_key ) {
+	public function list_models(
+		#[\SensitiveParameter]
+		$api_key
+	) {
 		$data = $this->request( 'GET', static::API_BASE . '/models', $api_key, $this->auth_headers( $api_key ) );
 
 		if ( is_wp_error( $data ) ) {
@@ -159,7 +162,13 @@ class Open_AI extends Provider {
 	 *
 	 * @return string|WP_Error
 	 */
-	public function generate( $api_key, $model, $prompt, $args = array() ) {
+	public function generate(
+		#[\SensitiveParameter]
+		$api_key,
+		$model,
+		$prompt,
+		$args = array()
+	) {
 		$messages = array();
 
 		if ( ! empty( $args['system'] ) ) {
@@ -242,7 +251,10 @@ class Open_AI extends Provider {
 	 *
 	 * @return array
 	 */
-	protected function auth_headers( $api_key ) {
+	protected function auth_headers(
+		#[\SensitiveParameter]
+		$api_key
+	) {
 		return array(
 			'Authorization' => 'Bearer ' . $api_key,
 		);

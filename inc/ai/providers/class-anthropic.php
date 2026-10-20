@@ -90,7 +90,10 @@ class Anthropic extends Provider {
 	 *
 	 * @return array<int, array{id: string, label: string}>|WP_Error
 	 */
-	public function list_models( $api_key ) {
+	public function list_models(
+		#[\SensitiveParameter]
+		$api_key
+	) {
 		$data = $this->request( 'GET', self::API_BASE . '/models?limit=1000', $api_key, $this->auth_headers( $api_key ) );
 
 		if ( is_wp_error( $data ) ) {
@@ -131,7 +134,13 @@ class Anthropic extends Provider {
 	 *
 	 * @return string|WP_Error
 	 */
-	public function generate( $api_key, $model, $prompt, $args = array() ) {
+	public function generate(
+		#[\SensitiveParameter]
+		$api_key,
+		$model,
+		$prompt,
+		$args = array()
+	) {
 		$content = array();
 		foreach ( $this->get_images( $args ) as $image ) {
 			$content[] = array(
@@ -196,7 +205,10 @@ class Anthropic extends Provider {
 	 *
 	 * @return array
 	 */
-	private function auth_headers( $api_key ) {
+	private function auth_headers(
+		#[\SensitiveParameter]
+		$api_key
+	) {
 		return array(
 			'x-api-key'         => $api_key,
 			'anthropic-version' => self::API_VERSION,
