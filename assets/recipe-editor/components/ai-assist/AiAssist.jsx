@@ -7,29 +7,9 @@ import { MagicIcon } from '../icons';
 
 const API = '/tasty-recipes/v1/ai';
 
-// Only what the server reads as context; the rest of the form state stays local.
-const CONTEXT_FIELDS = [
-	'title',
-	'description',
-	'ingredients',
-	'instructions',
-	'notes',
-	'yield',
-	'prep_time',
-	'cook_time',
-	'additional_time',
-	'total_time',
-	'category',
-	'method',
-	'cuisine',
-	'diet',
-	'keywords',
-	'author_name',
-	'video_url',
-];
-
-const getRecipeContext = recipe =>
-	CONTEXT_FIELDS.reduce( ( context, key ) => {
+// Only the fields the AI may change; the rest of the form state stays local.
+const getRecipeContext = ( recipe, fields ) =>
+	fields.reduce( ( context, key ) => {
 		// Total Time keeps its typed value under `total_time_raw`.
 		const value =
 			'total_time' === key
@@ -43,11 +23,16 @@ const getRecipeContext = recipe =>
 		return context;
 	}, {} );
 
-export const updateRecipe = ( request, recipe, fields ) =>
+export const updateRecipe = ( request, recipe, fields, type ) =>
 	apiFetch( {
 		path: `${ API }/recipe-assist`,
 		method: 'POST',
-		data: { request, recipe: getRecipeContext( recipe ), fields },
+		data: {
+			request,
+			recipe: getRecipeContext( recipe, fields ),
+			fields,
+			type,
+		},
 	} ).then( response => response.fields );
 
 export const AiAssistButton = ( { label, isOpen, className, onToggle } ) => (

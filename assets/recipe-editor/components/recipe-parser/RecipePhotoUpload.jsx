@@ -34,7 +34,13 @@ const shrinkPhoto = async file => {
 	}
 };
 
-export const RecipePhotoUpload = ( { ai, onText, onReadingChange = () => {} } ) => {
+export const RecipePhotoUpload = ( {
+	ai,
+	recipeType = 'recipe',
+	labels,
+	onText,
+	onReadingChange = () => {},
+} ) => {
 	const [ isReading, setIsReadingState ] = useState( false );
 	const [ isDragging, setIsDragging ] = useState( false );
 	const [ preview, setPreview ] = useState( '' );
@@ -89,6 +95,7 @@ export const RecipePhotoUpload = ( { ai, onText, onReadingChange = () => {} } ) 
 
 			const body = new window.FormData();
 			body.append( 'image', photo, photo === file ? file.name : 'recipe.jpg' );
+			body.append( 'type', recipeType );
 
 			const response = await apiFetch( {
 				path: '/tasty-recipes/v1/ai/recipe-from-image',
@@ -157,11 +164,7 @@ export const RecipePhotoUpload = ( { ai, onText, onReadingChange = () => {} } ) 
 				'tasty-recipes-lite'
 			);
 	} else if ( isReading ) {
-		subtitle = sprintf(
-			/* translators: %s: AI model name, e.g. Claude Haiku 4.5. */
-			__( 'Reading your recipe with %s…', 'tasty-recipes-lite' ),
-			ai.model || ai.provider
-		);
+		subtitle = sprintf( labels.readingWith, ai.model || ai.provider );
 	}
 
 	return (
@@ -188,9 +191,7 @@ export const RecipePhotoUpload = ( { ai, onText, onReadingChange = () => {} } ) 
 				) }
 				<div className="tasty-recipes-editor-image-placeholder-text">
 					<p className="tasty-recipes-editor-image-placeholder-title">
-						{ isReading
-							? __( 'Reading your recipe…', 'tasty-recipes-lite' )
-							: __( 'Upload a recipe photo', 'tasty-recipes-lite' ) }
+						{ isReading ? labels.reading : labels.photoTitle }
 					</p>
 					<p className="tasty-recipes-editor-image-placeholder-subtitle">
 						{ subtitle }

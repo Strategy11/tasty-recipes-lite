@@ -258,6 +258,8 @@ export const RecipeForm = ( {
 			.map( ( section ) => ( {
 				...section,
 				label: fieldLabels[ section.name ] || section.label,
+				// Extra heading words for this recipe type, from `typeSettings`.
+				headings: typeSettings.pasteHeadings?.[ section.name ] || [],
 			} ) ),
 		recipeType,
 		recipe
@@ -309,12 +311,21 @@ export const RecipeForm = ( {
 		fillRecipe( values );
 	};
 
-	// Only fields this form shows can be changed.
-	const aiFieldNames = [ ...visibleFieldNames, ...Object.keys( pasteDetailFields ) ];
+	// Only fields this form shows can be changed. Nutrition is left out, so the
+	// AI never makes up nutrition facts.
+	const aiFieldNames = [
+		...visibleFieldNames,
+		...Object.keys( pasteDetailFields ),
+	].filter( ( name ) => ! ( name in nutritionAttributes ) );
 	const canUseAi = Boolean( editorConfig.ai?.ready );
 
 	const handleRecipeAiUpdate = async ( request ) => {
-		const fields = await updateRecipe( request, recipe, aiFieldNames );
+		const fields = await updateRecipe(
+			request,
+			recipe,
+			aiFieldNames,
+			recipeType
+		);
 		const values = Object.fromEntries(
 			Object.entries( fields ).filter( ( [ name ] ) =>
 				aiFieldNames.includes( name )
@@ -414,6 +425,8 @@ export const RecipeForm = ( {
 					sections={ pasteSections }
 					detailFields={ pasteDetailFields }
 					ai={ editorConfig.ai }
+					recipeType={ recipeType }
+					labels={ typeSettings.pasteLabels }
 					onCancel={ () => setView( 'form' ) }
 					onFill={ handlePasteFill }
 				/>

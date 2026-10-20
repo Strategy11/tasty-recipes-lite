@@ -12,7 +12,7 @@ use WP_Error;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Entry point for features (Lite or Pro) that need the site's AI model.
+ * Entry point for features that need the site's AI model.
  *
  * @since x.x
  */

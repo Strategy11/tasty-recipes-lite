@@ -78,32 +78,33 @@ final class Recipe_Image {
 	const NO_RECIPE = 'NO_RECIPE';
 
 	/**
-	 * System instructions for the transcription.
+	 * System instructions for the transcription. `{noun}` is filled per request.
 	 *
 	 * @since x.x
 	 *
 	 * @var string
 	 */
 	const SYSTEM_PROMPT = <<<'PROMPT'
-You transcribe photos of recipes, handwritten or printed, into plain text.
-Copy the recipe faithfully: keep quantities, units and wording as written, and never add ingredients, steps or details that are not in the photo.
-Keep the recipe in its original language. Write only the recipe, with no commentary and no Markdown.
+You transcribe photos of a {noun}, handwritten or printed, into plain text.
+Copy the {noun} faithfully: keep quantities, units and wording as written, and never add ingredients, steps or details that are not in the photo.
+Keep the {noun} in its original language. Write only the {noun}, with no commentary and no Markdown.
 PROMPT;
 
 	/**
 	 * The transcription request. The layout matches what the paste parser
-	 * recognizes, so the text sorts into the right fields.
+	 * recognizes, so the text sorts into the right fields. `{noun}` is filled
+	 * per request.
 	 *
 	 * @since x.x
 	 *
 	 * @var string
 	 */
 	const PROMPT = <<<'PROMPT'
-Transcribe the recipe in this photo using the layout below.
+Transcribe the {noun} in this photo using the layout below.
 Use the labels and headings exactly as written (in English), and replace each part in [brackets] with what the photo says.
 Leave out any line or section the photo doesn't have; never write a label without a value.
 
-Title: [recipe title]
+Title: [{noun} title]
 Description: [short description]
 Prep Time: [time]
 Cook Time: [time]
@@ -113,7 +114,7 @@ Method: [cooking method]
 Video: [video URL]
 
 Ingredients
-[one ingredient per line; start an ingredient group with a line like "For the sauce:"]
+[one ingredient or item per line; start a group with a line like "For the sauce:"]
 
 Instructions
 [one step per line, numbered: 1. … 2. …]
@@ -121,7 +122,7 @@ Instructions
 Notes
 [any notes or tips]
 
-If the photo doesn't contain a recipe, reply with only: NO_RECIPE
+If the photo doesn't contain a {noun}, reply with only: NO_RECIPE
 PROMPT;
 
 	/**
@@ -182,7 +183,7 @@ PROMPT;
 	 *
 	 * @since x.x
 	 *
-	 * @param WP_REST_Request $request Request with an `image` file.
+	 * @param WP_REST_Request $request Request with an `image` file and an optional recipe `type`.
 	 *
 	 * @return WP_Error|WP_REST_Response
 	 */
@@ -200,17 +201,18 @@ PROMPT;
 			return $limited;
 		}
 
-		$files = $request->get_file_params();
-		$image = self::prepare_image( $files['image'] ?? null );
+		$subject = Subject::get( sanitize_key( (string) $request->get_param( 'type' ) ) );
+		$files   = $request->get_file_params();
+		$image   = self::prepare_image( $files['image'] ?? null );
 
 		if ( is_wp_error( $image ) ) {
 			return $image;
 		}
 
 		$text = Client::generate(
-			self::PROMPT,
+			str_replace( '{noun}', $subject['noun'], self::PROMPT ),
 			array(
-				'system'     => self::SYSTEM_PROMPT,
+				'system'     => str_replace( '{noun}', $subject['noun'], self::SYSTEM_PROMPT ),
 				'images'     => array( $image ),
 				'max_tokens' => 4096,
 				'feature'    => 'recipe_from_image',
@@ -228,7 +230,7 @@ PROMPT;
 		if ( '' === $text || self::NO_RECIPE === $text ) {
 			return new WP_Error(
 				'tasty_recipes_ai_no_recipe',
-				__( 'We couldn’t find a recipe in that photo. Try a clearer photo of the whole recipe.', 'tasty-recipes-lite' ),
+				$subject['not_found_message'],
 				array( 'status' => 422 )
 			);
 		}
