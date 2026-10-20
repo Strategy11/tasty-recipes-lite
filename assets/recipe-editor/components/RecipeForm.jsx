@@ -255,13 +255,16 @@ export const RecipeForm = ( {
 		recipeType,
 		recipe
 	);
-	const pasteDetailFields = {
-		title: { label: titleLabel },
-		...( showDetailsGroup ? detailsFields : {} ),
-		video_url: { label: __( 'Video URL', 'tasty-recipes-lite' ) },
-		author_name: { label: __( 'Author', 'tasty-recipes-lite' ) },
-		...( showNutritionGroup ? nutritionAttributes : {} ),
-	};
+	// Locked fields aren't shown in the form, so a paste never fills them.
+	const pasteDetailFields = Object.fromEntries(
+		Object.entries( {
+			title: { label: titleLabel },
+			...( showDetailsGroup ? detailsFields : {} ),
+			video_url: { label: __( 'Video URL', 'tasty-recipes-lite' ) },
+			author_name: { label: __( 'Author', 'tasty-recipes-lite' ) },
+			...( showNutritionGroup ? nutritionAttributes : {} ),
+		} ).filter( ( [ , field ] ) => ! field.is_pro )
+	);
 	const handlePasteFill = ( parsedValues, { stats } ) => {
 		const values = applyFilters(
 			'tasty_recipes_recipe_parser_result',

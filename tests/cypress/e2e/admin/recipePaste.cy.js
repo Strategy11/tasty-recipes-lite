@@ -199,18 +199,30 @@ describe( 'Recipe Paste', () => {
 			instructions:
 				'<ol><li>Mix everything.</li><li>Bake until set.</li></ol>',
 			notes: '<p>Chill before slicing.</p>',
-			serving_size: '1 bar',
-			calories: '150',
-			sugar: '12g',
-			sodium: '40mg',
-			fat: '7g',
-			saturated_fat: '4g',
-			unsaturated_fat: '2g',
-			trans_fat: '0g',
-			carbohydrates: '20g',
-			fiber: '1g',
-			protein: '2g',
-			cholesterol: '30mg',
+		} );
+
+		// Nutrition fields are locked unless another plugin unlocks them, and
+		// locked fields aren't in the form. The Notes check above shows their
+		// lines don't land anywhere else.
+		formValues().then( ( values ) => {
+			if ( ! ( 'calories' in values ) ) {
+				return;
+			}
+
+			expect( values ).to.deep.include( {
+				serving_size: '1 bar',
+				calories: '150',
+				sugar: '12g',
+				sodium: '40mg',
+				fat: '7g',
+				saturated_fat: '4g',
+				unsaturated_fat: '2g',
+				trans_fat: '0g',
+				carbohydrates: '20g',
+				fiber: '1g',
+				protein: '2g',
+				cholesterol: '30mg',
+			} );
 		} );
 	} );
 
