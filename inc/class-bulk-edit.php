@@ -353,7 +353,7 @@ class Bulk_Edit {
 	 * @return WP_Error|\WP_REST_Response
 	 */
 	public static function bulk_edit_endpoint( $request ) {
-		$recipe_type = $request->get_param( 'recipe_type' );
+		$recipe_type = (string) $request->get_param( 'recipe_type' );
 		$types       = self::get_recipe_types();
 
 		if ( ! isset( $types[ $recipe_type ] ) ) {
