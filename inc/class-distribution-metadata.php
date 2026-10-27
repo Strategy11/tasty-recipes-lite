@@ -419,14 +419,10 @@ class Distribution_Metadata {
 
 			$value = $recipe_json[ $name ];
 			if ( false !== stripos( $name, '_time' ) ) {
-				if ( 'prep_time' === $name
-					&& ! empty( $recipe_json['additional_time_value'] ) ) {
-					$time  = time();
-					$value = self::strtotime( $value, $time ) - $time
-							+ self::strtotime( $recipe_json['additional_time_value'], $time ) - $time;
-					$value = "{$value} seconds";
+				$value = self::duration_schema_value( $name, $value, $recipe_json );
+				if ( '' === $value ) {
+					continue;
 				}
-				$value = self::get_duration_for_time( $value );
 			}
 			if ( $value && in_array( $name, array( 'cuisine', 'category', 'method' ), true ) ) {
 				$bits  = explode( ',', $value );
@@ -1786,6 +1782,302 @@ class Distribution_Metadata {
 
 
 	/**
+	 * ISO duration for a recipe time field.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $name        Cooking attribute name.
+	 * @param string $value       Stored time value.
+	 * @param array  $recipe_json Recipe JSON data.
+	 *
+	 * @return string
+	 */
+	private static function duration_schema_value( $name, $value, $recipe_json ) {
+		if ( 'prep_time' === $name && ! empty( $recipe_json['additional_time_value'] ) ) {
+			$value = self::sum_prep_and_additional_time( $value, $recipe_json['additional_time_value'] );
+			if ( '' === $value ) {
+				return '';
+			}
+		}
+		return self::get_duration_for_time( $value );
+	}
+
+	/**
+	 * Sum prep and additional time as a seconds string.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $prep       Prep time.
+	 * @param string $additional Additional time.
+	 *
+	 * @return string Empty when the sum is not a positive duration.
+	 */
+	private static function sum_prep_and_additional_time( $prep, $additional ) {
+		$sum = 0;
+		foreach ( array( $prep, $additional ) as $part ) {
+			$seconds = self::get_seconds_for_time( $part );
+			if ( null === $seconds ) {
+				continue;
+			}
+			$sum += $seconds;
+		}
+		if ( $sum <= 0 ) {
+			return '';
+		}
+		return $sum . ' seconds';
+	}
+
+	/**
+	 * Convert a human-readable time into a duration in seconds.
+	 *
+	 * @since x.x
+	 *
+	 * @param mixed $time Time to convert.
+	 *
+	 * @return int|null Seconds, or null when the time cannot be parsed.
+	 */
+	public static function get_seconds_for_time( $time ) {
+		if ( ! is_string( $time ) && ! is_numeric( $time ) ) {
+			return null;
+		}
+
+		$time = trim( (string) $time );
+		if ( '' === $time ) {
+			return null;
+		}
+		if ( is_numeric( $time ) ) {
+			return (int) $time * MINUTE_IN_SECONDS;
+		}
+
+		$time = self::normalize_duration_time_string( $time );
+		if ( '' === $time ) {
+			return null;
+		}
+
+		$seconds = self::sum_duration_unit_pairs( $time );
+		if ( null !== $seconds ) {
+			return $seconds;
+		}
+		return self::get_seconds_from_strtotime( $time );
+	}
+
+	/**
+	 * Strip notes and expand clock times before duration parsing.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $time Time string.
+	 *
+	 * @return string
+	 */
+	private static function normalize_duration_time_string( $time ) {
+		$time = preg_replace( '/\([^\)]+\)/', '', $time );
+		$time = preg_replace( '/(\d+):(\d+)/', '$1 hours $2 minutes', $time );
+		if ( ! is_string( $time ) ) {
+			return '';
+		}
+		return trim( $time );
+	}
+
+	/**
+	 * Sum integer quantities that are each followed by a known unit.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $time Normalized time string.
+	 *
+	 * @return int|null Null when a quantity has no known unit, or when no quantity exists.
+	 */
+	private static function sum_duration_unit_pairs( $time ) {
+		if ( ! preg_match_all( '/(?<![\d.,])(\d+)(?![\d.,])/', $time, $matches, PREG_OFFSET_CAPTURE ) ) {
+			return null;
+		}
+
+		$units = self::get_duration_unit_seconds();
+		$total = 0;
+		foreach ( $matches[1] as $number_match ) {
+			$unit = self::duration_unit_after_number( $time, $number_match );
+			if ( null === $unit || ! isset( $units[ $unit ] ) ) {
+				return null;
+			}
+			$total += (int) $number_match[0] * $units[ $unit ];
+		}
+		return $total;
+	}
+
+	/**
+	 * Unit word that follows a captured number.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $time         Time string.
+	 * @param array  $number_match Number match from preg_match_all() with PREG_OFFSET_CAPTURE.
+	 *
+	 * @return string|null
+	 */
+	private static function duration_unit_after_number( $time, $number_match ) {
+		$after = substr( $time, $number_match[1] + strlen( $number_match[0] ) );
+		if ( ! preg_match( '/^[\s,]*([^\s\d,]+)/', $after, $unit_match ) ) {
+			return null;
+		}
+		$unit = self::normalize_duration_unit( $unit_match[1] );
+		if ( '' === $unit ) {
+			return null;
+		}
+		return $unit;
+	}
+
+	/**
+	 * Normalize a unit word for lookup.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $unit Raw unit word.
+	 *
+	 * @return string
+	 */
+	private static function normalize_duration_unit( $unit ) {
+		$unit = strtolower( remove_accents( $unit ) );
+		return trim( $unit, '.,:;!?' );
+	}
+
+	/**
+	 * Map of duration unit words to seconds.
+	 *
+	 * @since x.x
+	 *
+	 * @return array
+	 */
+	private static function get_duration_unit_seconds() {
+		$units = array();
+		self::add_duration_units(
+			$units,
+			1,
+			array( 'sec', 'secs', 'second', 'seconds', 'segundo', 'segundos', 'secondo', 'secondi', 'seconde', 'secondes', 'sekunde', 'sekunden' )
+		);
+		self::add_duration_units(
+			$units,
+			MINUTE_IN_SECONDS,
+			array( 'min', 'mins', 'minute', 'minutes', 'minuto', 'minutos', 'minuten', 'minuti' )
+		);
+		self::add_duration_units(
+			$units,
+			HOUR_IN_SECONDS,
+			array( 'hour', 'hours', 'hora', 'horas', 'heure', 'heures', 'stunde', 'stunden', 'ora', 'ore' )
+		);
+		self::add_duration_units(
+			$units,
+			DAY_IN_SECONDS,
+			array( 'day', 'days', 'dia', 'dias', 'jour', 'jours', 'tag', 'tage', 'giorno', 'giorni' )
+		);
+		self::add_duration_units(
+			$units,
+			WEEK_IN_SECONDS,
+			array( 'week', 'weeks', 'semana', 'semanas', 'semaine', 'semaines', 'woche', 'wochen', 'settimana', 'settimane' )
+		);
+		return self::add_translated_duration_units( $units );
+	}
+
+	/**
+	 * Add unit names that share one duration length.
+	 *
+	 * @since x.x
+	 *
+	 * @param array     $units   Unit map, updated in place.
+	 * @param float|int $seconds Duration length.
+	 * @param array     $names   Unit words.
+	 *
+	 * @return void
+	 */
+	private static function add_duration_units( &$units, $seconds, $names ) {
+		$seconds = (int) $seconds;
+		foreach ( $names as $name ) {
+			$units[ $name ] = $seconds;
+		}
+	}
+
+	/**
+	 * Add unit words from the current locale's simple time formats.
+	 *
+	 * @since x.x
+	 *
+	 * @param array $units Unit map.
+	 *
+	 * @return array
+	 */
+	private static function add_translated_duration_units( $units ) {
+		$strings = self::time_strings();
+		foreach ( self::simple_duration_string_keys() as $key => $seconds ) {
+			$format = isset( $strings[ $key ] ) ? $strings[ $key ] : '';
+			$word   = self::duration_word_from_format( $format );
+			if ( '' === $word ) {
+				continue;
+			}
+			$units[ $word ] = $seconds;
+		}
+		return $units;
+	}
+
+	/**
+	 * Simple time-format keys that name a single unit.
+	 *
+	 * @since x.x
+	 *
+	 * @return array
+	 */
+	private static function simple_duration_string_keys() {
+		return array(
+			'individual_hour'   => HOUR_IN_SECONDS,
+			'multiple_hours'    => HOUR_IN_SECONDS,
+			'individual_minute' => MINUTE_IN_SECONDS,
+			'multiple_minutes'  => MINUTE_IN_SECONDS,
+		);
+	}
+
+	/**
+	 * Unit word from a `%s unit` format string.
+	 *
+	 * @since x.x
+	 *
+	 * @param mixed $format Format string.
+	 *
+	 * @return string
+	 */
+	private static function duration_word_from_format( $format ) {
+		if ( ! is_string( $format ) || '' === $format ) {
+			return '';
+		}
+		$word = trim( str_replace( '%s', '', $format ) );
+		$word = self::normalize_duration_unit( $word );
+		if ( '' === $word || false !== strpos( $word, ' ' ) ) {
+			return '';
+		}
+		return $word;
+	}
+
+	/**
+	 * Duration in seconds from strtotime(), or null when that result is unusable.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $time Normalized time string.
+	 *
+	 * @return int|null
+	 */
+	private static function get_seconds_from_strtotime( $time ) {
+		$now    = time();
+		$parsed = self::strtotime( $time, $now );
+		if ( false === $parsed ) {
+			return null;
+		}
+		$seconds = $parsed - $now;
+		if ( $seconds <= 0 ) {
+			return null;
+		}
+		return $seconds;
+	}
+
+	/**
 	 * Get an ISO 8601 duration based on a human-readable time.
 	 *
 	 * @param string $time Time to get the duration of.
@@ -1793,14 +2085,11 @@ class Distribution_Metadata {
 	 * @return string
 	 */
 	public static function get_duration_for_time( $time ) {
-		// Assume a number is minutes.
-		if ( is_numeric( $time ) ) {
-			$time = "{$time} minutes";
+		$seconds = self::get_seconds_for_time( $time );
+		if ( null === $seconds || $seconds <= 0 ) {
+			return '';
 		}
-		$now              = time();
-		$time             = self::strtotime( $time, $now );
-		$time             = $time - $now;
-		$calculated_times = self::convert_seconds_to_minutes_hours( $time );
+		$calculated_times = self::convert_seconds_to_minutes_hours( $seconds );
 		$duration         = 'PT';
 		if ( ! empty( $calculated_times['hours'] ) ) {
 			$duration .= $calculated_times['hours'] . 'H';
