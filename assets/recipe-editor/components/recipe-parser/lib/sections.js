@@ -6,7 +6,8 @@ export const getDefaultSections = () => [
 		label: __( 'Description', 'tasty-recipes-lite' ),
 		format: 'rich',
 		patterns: [
-			/^(description|summary|introduction|intro|about( this| the)? recipe)$/,
+			/^((short|recipe) )?(description|summary)$/,
+			/^(introduction|intro|about( this| the)? recipe)$/,
 		],
 	},
 	{
@@ -61,8 +62,13 @@ export const matchSectionHeading = ( sections, text ) => {
 		return 'nutrition';
 	}
 
-	const section = sections.find( item =>
-		( item.patterns || [] ).some( pattern => pattern.test( heading ) )
+	// `headings` are plain words a recipe type adds, matched as whole headings.
+	const section = sections.find(
+		item =>
+			( item.patterns || [] ).some( pattern => pattern.test( heading ) ) ||
+			( item.headings || [] ).some(
+				word => normalizeHeading( word ) === heading
+			)
 	);
 
 	return section ? section.name : null;

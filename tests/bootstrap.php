@@ -158,3 +158,4 @@ echo PHP_EOL . PHP_EOL;
 
 require __DIR__ . '/class-tasty-recipes-testcase.php';
 require __DIR__ . '/class-tasty-recipes-converter-testcase.php';
+require __DIR__ . '/class-tasty-recipes-ai-testcase.php';

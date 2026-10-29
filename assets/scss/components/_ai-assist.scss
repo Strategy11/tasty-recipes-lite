@@ -1,0 +1,80 @@
+.tasty-recipes-modal-container {
+
+	.tasty-recipes-ai-assist-toggle {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		flex: 0 0 auto;
+		width: 28px;
+		height: 28px;
+		margin: 0;
+		padding: 0;
+		border: 0;
+		border-radius: 8px;
+		background: transparent;
+		color: #ED4996;
+		cursor: pointer;
+
+		&:hover,
+		&.is-active {
+			background-color: #FEF6FA;
+			color: #D93A84;
+		}
+
+		&:focus-visible {
+			outline: 2px solid #ED4996;
+			outline-offset: 1px;
+		}
+	}
+
+	// Matches the close button (14px from the top, 24px square), just left of it.
+	.tasty-recipes-frame-title .tasty-recipes-ai-recipe-toggle {
+		position: absolute;
+		top: 14px;
+		right: 48px;
+		width: 24px;
+		height: 24px;
+		border-radius: 6px;
+	}
+
+	.tasty-recipes-ai-assist {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+		margin-bottom: 8px;
+		padding: 12px;
+		border: 1px solid #F9B4D0;
+		border-radius: 8px;
+		background-color: #FEF6FA;
+
+		textarea.tasty-recipes-ai-assist__input {
+			min-height: 64px;
+			resize: vertical;
+			background-color: #fff;
+			line-height: 22px;
+		}
+
+		&__error {
+			margin: 0;
+			color: #D92D20;
+			font-family: 'Inter', sans-serif;
+			font-size: 14px;
+			line-height: 22px;
+		}
+
+		&__footer {
+			display: flex;
+			align-items: center;
+			justify-content: flex-end;
+			gap: 12px;
+		}
+
+
+		.tasty-button:disabled,
+		.tasty-button:disabled:hover {
+			border-color: #F9B4D0;
+			background-color: #F9B4D0;
+			cursor: not-allowed;
+		}
+	}
+}

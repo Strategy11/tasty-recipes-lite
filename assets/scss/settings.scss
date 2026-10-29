@@ -207,3 +207,194 @@
 		}
 	}
 }
+
+// AI provider connection (Settings tab).
+.tasty-settings-group-content {
+
+	.tasty-recipes-ai-key-row {
+		display: flex;
+		gap: var(--gap-2xs);
+		align-items: center;
+
+		input[type="password"] {
+			flex: 1 1 auto;
+			min-width: 0;
+			min-height: 36px;
+			padding: 6px var(--gap-2xs);
+			border: 1px solid var(--grey-400);
+			border-radius: var(--radius-md);
+			background-color: var(--white);
+			box-shadow: 0 1px 2px 0 rgba(10, 13, 20, 0.03);
+			color: var(--grey-900);
+			font-family: var(--inter);
+			font-size: var(--text-sm);
+
+			&::placeholder {
+				color: #99A0AE;
+			}
+
+			&:hover {
+				border-color: #99A0AE;
+			}
+
+			&:focus {
+				border-color: var(--pink);
+				outline: none;
+				box-shadow: 0 0 0 1px var(--pink);
+			}
+
+			&:disabled {
+				background-color: var(--grey-200);
+				cursor: not-allowed;
+			}
+		}
+
+		.tasty-button {
+			flex: 0 0 auto;
+			min-height: 36px;
+			font-size: var(--text-sm);
+
+			&:disabled {
+				background-color: #F9B4D0;
+				cursor: not-allowed;
+			}
+		}
+	}
+
+	.tasty-recipes-ai-key-link {
+		display: inline-block;
+		margin-top: var(--gap-2xs);
+		color: var(--pink);
+		font-size: var(--text-sm);
+	}
+
+	.tasty-recipes-ai-connected {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--gap-2xs);
+		align-items: center;
+		font-size: var(--text-sm);
+	}
+
+	.tasty-recipes-ai-connected-name {
+		color: var(--grey-900);
+		font-weight: 600;
+	}
+
+	.tasty-recipes-ai-connected-badge {
+		padding: 2px var(--gap-2xs);
+		border-radius: var(--radius-sm);
+		background-color: #E0FAEC;
+		color: #16643B;
+		font-size: var(--text-xs);
+		font-weight: 600;
+	}
+
+	.tasty-recipes-ai-connected-key {
+		color: var(--grey-600);
+	}
+
+	.tasty-recipes-ai-actions {
+		display: flex;
+		gap: var(--gap-xs);
+		align-items: center;
+		padding-top: var(--gap-2xs);
+	}
+
+	.tasty-recipes-ai-disconnect {
+		padding: 0;
+		border: 0;
+		background: none;
+		color: var(--grey-700);
+		font-size: var(--text-sm);
+		text-decoration: underline;
+		cursor: pointer;
+
+		&:hover,
+		&:focus {
+			color: #D92D20;
+		}
+
+		&:disabled {
+			cursor: not-allowed;
+			opacity: 0.6;
+		}
+	}
+
+	// `#wpcontent &` outranks the framework's `.tasty-framework #wpcontent p`.
+	.tasty-recipes-ai-error,
+	.tasty-recipes-ai-notice {
+
+		&,
+		#wpcontent & {
+			margin: var(--gap-2xs) 0 0;
+			font-size: var(--text-sm);
+			line-height: 22px;
+		}
+	}
+
+	.tasty-recipes-ai-error {
+
+		&,
+		#wpcontent & {
+			color: #D92D20;
+		}
+	}
+
+	.tasty-recipes-ai-notice {
+
+		&,
+		#wpcontent & {
+			color: #16643B;
+		}
+	}
+}
+
+.tasty-settings-group-content {
+
+	.tasty-recipes-ai-model-view {
+		display: flex;
+		gap: var(--gap-xs);
+		align-items: center;
+	}
+
+	.tasty-recipes-ai-model-name {
+		color: var(--grey-900);
+		font-size: var(--text-sm);
+		font-weight: 600;
+	}
+
+	.tasty-recipes-ai-link-button {
+		padding: 0;
+		border: 0;
+		background: none;
+		color: var(--pink);
+		font-size: var(--text-sm);
+		text-decoration: underline;
+		cursor: pointer;
+
+		&:hover,
+		&:focus {
+			color: var(--pink-900);
+		}
+	}
+
+	.tasty-recipes-ai-model-select {
+		max-width: 350px;
+	}
+}
+
+// Match the key field to the 350px dropdown above it, with Connect beside it.
+// The framework sizes any wrapper that contains an input to 400px, which would
+// squeeze both into that width.
+@media screen and (min-width: 450px) {
+
+	.tasty-tab-content .tasty-settings-main .tasty-form-field .tasty-recipes-ai-key-row {
+		width: auto;
+
+		input[type="password"] {
+			flex: 0 0 350px;
+			width: 350px;
+		}
+	}
+}
