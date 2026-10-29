@@ -90,6 +90,15 @@ class Telemetry {
 	const POSTHOG_BLOCK_EDITOR_SCRIPT_HANDLE = 'tasty-recipes-posthog-block-editor';
 
 	/**
+	 * Most AI features counted, so a filtered feature ID can't grow the option.
+	 *
+	 * @since x.x
+	 *
+	 * @var int
+	 */
+	const AI_FEATURE_LIMIT = 20;
+
+	/**
 	 * Register telemetry hooks.
 	 *
 	 * @since 1.2.9
@@ -102,6 +111,7 @@ class Telemetry {
 		add_action( 'update_option_' . Options::ONBOARDING_USAGE_DATA, array( __CLASS__, 'handle_consent_option_change' ), 10, 2 );
 		add_action( 'add_option_' . Options::ONBOARDING_USAGE_DATA, array( __CLASS__, 'handle_consent_option_add' ), 10, 2 );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'maybe_enqueue_posthog' ) );
+		add_action( 'tasty_recipes_ai_after_request', array( __CLASS__, 'record_ai_request' ), 10, 4 );
 	}
 
 	/**
@@ -531,6 +541,7 @@ class Telemetry {
 			'recipe_count'            => self::get_recipe_count(),
 			'editor_engagement'       => self::get_editor_engagement(),
 			'features'                => self::get_features(),
+			'ai'                      => self::get_ai_usage(),
 		);
 
 		/**
@@ -607,6 +618,80 @@ class Telemetry {
 		 * @param array $features Feature toggles currently in use.
 		 */
 		return apply_filters( 'tasty_recipes_telemetry_features', $features );
+	}
+
+	/**
+	 * Counts a finished AI request for the usage snapshot.
+	 *
+	 * Only totals per feature are kept: no prompt, reply or key.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $provider Provider ID.
+	 * @param string $model    Model ID.
+	 * @param bool   $success  Whether text came back.
+	 * @param string $feature  Calling feature ID.
+	 *
+	 * @return void
+	 */
+	public static function record_ai_request( $provider, $model, $success, $feature ) {
+		unset( $provider, $model );
+
+		if ( ! self::has_usage_consent() ) {
+			return;
+		}
+
+		$feature  = sanitize_key( (string) $feature );
+		$feature  = '' !== $feature ? $feature : 'other';
+		$requests = self::get_ai_requests();
+
+		if ( ! isset( $requests[ $feature ] ) && count( $requests ) >= self::AI_FEATURE_LIMIT ) {
+			return;
+		}
+
+		$requests[ $feature ] = wp_parse_args(
+			$requests[ $feature ] ?? array(),
+			array(
+				'success' => 0,
+				'failure' => 0,
+			)
+		);
+		++$requests[ $feature ][ $success ? 'success' : 'failure' ];
+
+		update_option( Options::TELEMETRY_AI_REQUESTS, $requests, false );
+	}
+
+	/**
+	 * AI connection state and request totals.
+	 *
+	 * @since x.x
+	 *
+	 * @return array
+	 */
+	private static function get_ai_usage() {
+		$status = AI\Connection::get_public_status();
+
+		return array(
+			'connected'  => (bool) $status['connected'],
+			'provider'   => (string) $status['provider'],
+			'model'      => (string) $status['model'],
+			'model_auto' => (bool) $status['modelIsAuto'],
+			'key_source' => (string) $status['keySource'],
+			'requests'   => self::get_ai_requests(),
+		);
+	}
+
+	/**
+	 * Stored AI request totals, keyed by feature.
+	 *
+	 * @since x.x
+	 *
+	 * @return array<string, array{success: int, failure: int}>
+	 */
+	private static function get_ai_requests() {
+		$requests = get_option( Options::TELEMETRY_AI_REQUESTS, array() );
+
+		return is_array( $requests ) ? $requests : array();
 	}
 
 	/**

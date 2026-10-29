@@ -3,6 +3,7 @@ import { useEffect, useState } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 import classNames from 'classnames';
 import { FormField, SelectInput, SettingsGroup } from '@library';
+import { trackUsage } from '../../recipe-editor/track';
 
 const API = '/tasty-recipes/v1/ai';
 
@@ -66,8 +67,21 @@ export const AiConnection = ( { initialStatus } ) => {
 		setError( '' );
 		setNotice( '' );
 
+		// Sends the action's outcome and provider, never the key.
+		const track = ( success, errorCode = '' ) =>
+			trackUsage( 'ai_connection_action', {
+				action,
+				success,
+				error_code: errorCode,
+				provider,
+			} );
+
 		return request()
-			.catch( ( err ) => setError( errorMessage( err ) ) )
+			.then( () => track( true ) )
+			.catch( ( err ) => {
+				track( false, err?.code || 'unknown' );
+				setError( errorMessage( err ) );
+			} )
 			.finally( () => setBusy( '' ) );
 	};
 

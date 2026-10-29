@@ -30,6 +30,7 @@ export const PasteRecipePanel = ( {
 	labels: customLabels,
 	onCancel,
 	onFill,
+	onEmpty = () => {},
 } ) => {
 	const labels = getLabels( customLabels );
 	const [ text, setText ] = useState( '' );
@@ -75,6 +76,7 @@ export const PasteRecipePanel = ( {
 
 		if ( ! Object.keys( values ).length ) {
 			setIsEmptyResult( true );
+			onEmpty( { source } );
 			return;
 		}
 

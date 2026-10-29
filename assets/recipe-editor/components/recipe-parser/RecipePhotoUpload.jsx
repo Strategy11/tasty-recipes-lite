@@ -4,6 +4,7 @@ import { Icon } from '@wordpress/icons';
 import apiFetch from '@wordpress/api-fetch';
 import classNames from 'classnames';
 import { UploadIcon } from '../icons';
+import { trackUsage } from '../../track';
 
 const ACCEPT = 'image/jpeg,image/png,image/webp,image/gif,image/heic,image/heif';
 const MAX_DIMENSION = 2000;
@@ -54,6 +55,14 @@ export const RecipePhotoUpload = ( {
 	const isReady = Boolean( ai?.ready );
 	const isBlocked = ! isReady || isReading;
 
+	// Only the outcome is sent, never the photo or what was read from it.
+	const trackRead = ( success, errorCode = '' ) =>
+		trackUsage( 'recipe_photo_read', {
+			success,
+			error_code: errorCode,
+			recipe_type: recipeType,
+		} );
+
 	const readPhoto = async file => {
 		if ( ! file ) {
 			return;
@@ -62,6 +71,7 @@ export const RecipePhotoUpload = ( {
 		setError( '' );
 
 		if ( ! ACCEPT.split( ',' ).includes( file.type ) ) {
+			trackRead( false, 'bad_type' );
 			setError(
 				__(
 					'Upload a JPG, PNG, WebP or HEIC photo of the recipe.',
@@ -80,6 +90,7 @@ export const RecipePhotoUpload = ( {
 
 			// PHP drops uploads over the site's limit, so say so up front.
 			if ( maxUploadSize && photo.size > maxUploadSize ) {
+				trackRead( false, 'too_large' );
 				setError(
 					sprintf(
 						/* translators: %s: maximum upload size, such as "8 MB". */
@@ -103,8 +114,10 @@ export const RecipePhotoUpload = ( {
 				body,
 			} );
 
+			trackRead( true );
 			onText( response.text );
 		} catch ( err ) {
+			trackRead( false, err?.code || 'unknown' );
 			setError(
 				err?.message ||
 					__(

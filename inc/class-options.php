@@ -280,6 +280,15 @@ final class Options {
 	public const TELEMETRY_SITE_ID = 'tasty_recipes_telemetry_site_id';
 
 	/**
+	 * Running totals of AI requests per feature, sent with the usage snapshot.
+	 *
+	 * @since x.x
+	 *
+	 * @var string
+	 */
+	public const TELEMETRY_AI_REQUESTS = 'tasty_recipes_telemetry_ai_requests';
+
+	/**
 	 * Database version option.
 	 *
 	 * @since 1.2.7

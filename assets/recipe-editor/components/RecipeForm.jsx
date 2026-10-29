@@ -275,7 +275,7 @@ export const RecipeForm = ( {
 		} ).filter( ( [ , field ] ) => ! field.is_pro )
 	);
 	// Fills the form with new values in one step that the notice can undo.
-	const fillRecipe = ( values, message = '' ) => {
+	const fillRecipe = ( values, { message = '', origin = 'paste' } = {} ) => {
 		const filled = Object.keys( values );
 		// Some fields keep their value under another key (Total Time reads
 		// `total_time_raw`), so store each value where its field reads it.
@@ -290,6 +290,7 @@ export const RecipeForm = ( {
 		setPasteResult( {
 			count: filled.length,
 			message,
+			origin,
 			previous: filled.length ? recipe : null,
 		} );
 		setRecipe( { ...recipe, ...recipeValues } );
@@ -308,6 +309,7 @@ export const RecipeForm = ( {
 		trackUsage( 'recipe_paste_parsed', {
 			...stats,
 			entry_point: entryPoint,
+			recipe_type: recipeType,
 			fields_filled: Object.keys( values ).length,
 		} );
 
@@ -322,13 +324,39 @@ export const RecipeForm = ( {
 	].filter( ( name ) => ! ( name in nutritionAttributes ) );
 	const canUseAi = Boolean( editorConfig.ai?.ready );
 
+	const handlePasteEmpty = ( { source } ) =>
+		trackUsage( 'recipe_paste_empty', {
+			source,
+			entry_point: entryPoint,
+			recipe_type: recipeType,
+		} );
+
+	const handlePasteCancel = () => {
+		trackUsage( 'recipe_paste_cancelled', {
+			entry_point: entryPoint,
+			recipe_type: recipeType,
+		} );
+		setView( 'form' );
+	};
+
 	const handleRecipeAiUpdate = async ( request ) => {
-		const fields = await updateRecipe(
-			request,
-			recipe,
-			aiFieldNames,
-			recipeType
-		);
+		let fields;
+		try {
+			fields = await updateRecipe(
+				request,
+				recipe,
+				aiFieldNames,
+				recipeType
+			);
+		} catch ( error ) {
+			// The panel shows the error; only its code is sent.
+			trackUsage( 'recipe_ai_assist_used', {
+				success: false,
+				error_code: error?.code || 'unknown',
+				recipe_type: recipeType,
+			} );
+			throw error;
+		}
 		const values = Object.fromEntries(
 			Object.entries( fields ).filter( ( [ name ] ) =>
 				aiFieldNames.includes( name )
@@ -336,10 +364,16 @@ export const RecipeForm = ( {
 		);
 		const count = Object.keys( values ).length;
 
+		trackUsage( 'recipe_ai_assist_used', {
+			success: true,
+			fields_changed: count,
+			recipe_type: recipeType,
+		} );
+
 		setIsRecipeAiOpen( false );
-		fillRecipe(
-			values,
-			sprintf(
+		fillRecipe( values, {
+			origin: 'ai_assist',
+			message: sprintf(
 				/* translators: %d: number of recipe fields updated. */
 				_n(
 					'Updated %d field.',
@@ -348,8 +382,8 @@ export const RecipeForm = ( {
 					'tasty-recipes-lite'
 				),
 				count
-			)
-		);
+			),
+		} );
 	};
 
 	const toggleRecipeAi = () => {
@@ -369,9 +403,15 @@ export const RecipeForm = ( {
 			return;
 		}
 
-		trackUsage( 'recipe_paste_undone', {
-			fields_filled: pasteResult.count,
-		} );
+		trackUsage(
+			'ai_assist' === pasteResult.origin
+				? 'recipe_ai_assist_undone'
+				: 'recipe_paste_undone',
+			{
+				fields_filled: pasteResult.count,
+				recipe_type: recipeType,
+			}
+		);
 		classicEditorFieldsRef.current = {};
 		setRecipe( pasteResult.previous );
 		setPasteResult( null );
@@ -430,8 +470,9 @@ export const RecipeForm = ( {
 					ai={ editorConfig.ai }
 					recipeType={ recipeType }
 					labels={ typeSettings.pasteLabels }
-					onCancel={ () => setView( 'form' ) }
+					onCancel={ handlePasteCancel }
 					onFill={ handlePasteFill }
+					onEmpty={ handlePasteEmpty }
 				/>
 			) }
 			{ canUseAi &&
