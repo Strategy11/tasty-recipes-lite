@@ -16,6 +16,7 @@ export const FieldGroup = ( {
 	onFieldChange = () => {},
 	renderBeforeFields,
 	renderAfterField = null,
+	showFields = true,
 	className = '',
 	recipe,
 	defaultCollapsed = false,
@@ -164,33 +165,6 @@ export const FieldGroup = ( {
 			</div>
 		</div>
 	);
-
-	if (
-		group === 'nutrition' &&
-		initialFieldValues?.nutrifox_id?.length > 1
-	) {
-		return (
-			<>
-				{ beforeSettingHook }
-				<div
-					className={ classNames(
-						className,
-						'tasty-recipes-field-group',
-						{
-							'is-collapsed': isCollapsed,
-						}
-					) }
-				>
-					{ renderToggle() }
-					{ renderCollapsibleBody(
-						renderBeforeFields &&
-							renderBeforeFields( { fieldValues } )
-					) }
-				</div>
-				{ afterSettingHook }
-			</>
-		);
-	}
 
 	const renderFieldInput = ( name, field ) => {
 		const placeholder = getFieldPlaceholder( name, field );
@@ -364,26 +338,28 @@ export const FieldGroup = ( {
 	const fieldsContent = (
 		<>
 			{ renderBeforeFields && renderBeforeFields( { fieldValues } ) }
-			<div className="tasty-recipes-fields-container">
-				{ Object.entries( fields ).map( ( [ name, field ] ) => {
-					if ( ! showField( field ) ) {
-						return null;
-					}
+			{ showFields && (
+				<div className="tasty-recipes-fields-container">
+					{ Object.entries( fields ).map( ( [ name, field ] ) => {
+						if ( ! showField( field ) ) {
+							return null;
+						}
 
-					const afterField = renderAfterField?.[ name ];
+						const afterField = renderAfterField?.[ name ];
 
-					return (
-						<Fragment key={ name }>
-							{ renderField( name, field ) }
-							{ afterField ? (
-								<div className="tasty-recipes-fields-insert">
-									{ afterField( { fieldValues } ) }
-								</div>
-							) : null }
-						</Fragment>
-					);
-				} ) }
-			</div>
+						return (
+							<Fragment key={ name }>
+								{ renderField( name, field ) }
+								{ afterField ? (
+									<div className="tasty-recipes-fields-insert">
+										{ afterField( { fieldValues } ) }
+									</div>
+								) : null }
+							</Fragment>
+						);
+					} ) }
+				</div>
+			) }
 		</>
 	);
 

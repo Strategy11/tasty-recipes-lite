@@ -10,6 +10,7 @@
 namespace Tasty_Recipes\Objects;
 
 use Tasty_Recipes\Distribution_Metadata;
+use Tasty_Recipes\Integrations\Nutrifox\Labels as Nutrifox_Labels;
 use Tasty_Recipes\Utils;
 
 /**
@@ -1314,6 +1315,7 @@ class Recipe {
 		}
 
 		$recipe_json['total_time_raw'] = $this->get_meta( 'total_time' );
+		$recipe_json['nutrifox_sync']  = Nutrifox_Labels::is_synced( $this->get_id() );
 
 		$image_sizes = array( 'thumbnail', 'medium', 'medium_large', 'large', 'full' );
 		if ( isset( $_wp_additional_image_sizes ) ) {
