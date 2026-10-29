@@ -1,4 +1,8 @@
+const { exec } = require( 'child_process' );
+const { promisify } = require( 'util' );
 const { defineConfig } = require( 'cypress' );
+
+const execAsync = promisify( exec );
 
 module.exports = defineConfig( {
 	e2e: {
@@ -13,7 +17,27 @@ module.exports = defineConfig( {
 			runMode: 1,
 		},
 		setupNodeEvents( on, config ) {
-			// implement node event listeners here
+			on( 'task', {
+				shellExec( command ) {
+					return execAsync( command, {
+						timeout: 30000,
+						maxBuffer: 10 * 1024 * 1024,
+					} ).then(
+						( { stdout, stderr } ) => ( {
+							code: 0,
+							stdout,
+							stderr,
+						} ),
+						( error ) => {
+							throw new Error(
+								error.stderr || error.stdout || error.message
+							);
+						}
+					);
+				},
+			} );
+
+			return config;
 		},
 	},
 } );

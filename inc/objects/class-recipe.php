@@ -866,29 +866,17 @@ class Recipe {
 			return '';
 		}
 
-		// Assume minutes if just an integer was provided.
-		if ( is_numeric( $prep ) ) {
-			$prep = "{$prep} minutes";
-		}
-		if ( is_numeric( $addl ) ) {
-			$addl = "{$addl} minutes";
-		}
-		if ( is_numeric( $cook ) ) {
-			$cook = "{$cook} minutes";
-		}
-
-		$time  = time();
 		$total = 0;
-		if ( '' !== $prep ) {
-			$total += Distribution_Metadata::strtotime( $prep, $time ) - $time;
+		foreach ( array( $prep, $addl, $cook ) as $part ) {
+			if ( '' === $part ) {
+				continue;
+			}
+			$seconds = Distribution_Metadata::get_seconds_for_time( $part );
+			if ( null === $seconds ) {
+				continue;
+			}
+			$total += $seconds;
 		}
-		if ( '' !== $addl ) {
-			$total += Distribution_Metadata::strtotime( $addl, $time ) - $time;
-		}
-		if ( '' !== $cook ) {
-			$total += Distribution_Metadata::strtotime( $cook, $time ) - $time;
-		}
-		// If strtotime failed, return 0.
 		$total = max( 0, $total );
 
 		return Distribution_Metadata::format_time_for_human( $total );

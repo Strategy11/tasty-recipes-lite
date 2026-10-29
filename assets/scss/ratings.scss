@@ -24,6 +24,11 @@
 	&.tasty-recipes-ratings {
 		display: block;
 	}
+
+	.tasty-recipes-ratings-buttons,
+	.tasty-recipes-rating {
+		color: var(--tr-comment-star-color, var(--tr-star-color, #F2B955));
+	}
 }
 
 .tasty-recipes-entry-header div.tasty-recipes-rating p,
