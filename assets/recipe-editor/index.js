@@ -6,12 +6,14 @@ window.tastyRecipesUndoRowList = undoRowListHistory;
 
 let instance;
 
-window.tastyRecipesMountRecipeEditor = ( el, initialRecipe ) => {
+window.tastyRecipesMountRecipeEditor = ( el, initialRecipe, options = {} ) => {
 	instance = createRoot( el );
 	instance.render(
 		<RecipeForm
 			initialRecipe={ initialRecipe }
 			config={ window.tastyRecipesRecipeEditorData }
+			initialView={ options?.initialView }
+			entryPoint={ options?.entryPoint }
 		/>
 	);
 };

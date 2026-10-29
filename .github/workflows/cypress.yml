@@ -58,12 +58,12 @@ jobs:
       - name: Build assets
         run: pnpm run build
 
+      - name: Start WordPress environment
+        run: pnpm run env start
+
       - name: Cypress run
         uses: cypress-io/github-action@v6
         with:
-          start: pnpm run env start
-          wait-on: 'http://localhost:3000'
-          wait-on-timeout: 300
           browser: chrome
           command: pnpm run e2e:run -- --browser chrome
           install: false  # Already installed via pnpm

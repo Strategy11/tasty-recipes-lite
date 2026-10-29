@@ -21,7 +21,7 @@ export const RecipePlaceholder = ( { handleModalClose, setAttributes } ) => {
 	const [ pageState, setPageState ] = useState( 'placeholder' );
 	const blockProps = useBlockProps();
 
-	const defaultOnClickHandler = () => {
+	const openEditor = ( options = {} ) => {
 		window.tastyRecipesEditorModal.open(
 			{
 				author_name:
@@ -31,9 +31,18 @@ export const RecipePlaceholder = ( { handleModalClose, setAttributes } ) => {
 				),
 				diet: '',
 			},
-			handleModalClose
+			handleModalClose,
+			options
 		);
 	};
+
+	const defaultOnClickHandler = () => openEditor();
+
+	const pasteOnClickHandler = () =>
+		openEditor( {
+			initialView: 'paste',
+			entryPoint: 'block_placeholder',
+		} );
 
 	return (
 		<div { ...blockProps }>
@@ -58,7 +67,7 @@ export const RecipePlaceholder = ( { handleModalClose, setAttributes } ) => {
 					</div>
 					<p>
 						{ __(
-							'Select an already created recipe to embed or create a new one from scratch.',
+							'Create a new recipe, paste one from a document, or embed one you already made.',
 							'tasty-recipes-lite'
 						) }
 					</p>
@@ -72,6 +81,12 @@ export const RecipePlaceholder = ( { handleModalClose, setAttributes } ) => {
 									'Create new recipe',
 									'tasty-recipes-lite'
 								) }
+							</Button>
+							<Button
+								variant="tertiary"
+								onClick={ pasteOnClickHandler }
+							>
+								{ __( 'Paste a recipe', 'tasty-recipes-lite' ) }
 							</Button>
 							<Button
 								variant="tertiary"

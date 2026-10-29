@@ -8,6 +8,7 @@ module.exports = defineConfig( {
 	e2e: {
 		baseUrl: 'http://localhost:3000',
 		supportFile: 'tests/cypress/support/e2e.js',
+		fixturesFolder: 'tests/cypress/fixtures',
 		specPattern: 'tests/cypress/e2e/**/*.cy.{js,jsx,ts,tsx}',
 		video: false,
 		// WP 6.3+ loads the block canvas in a blob iframe; Electron/Chrome

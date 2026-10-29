@@ -1,0 +1,34 @@
+Title: Lemon Bars
+Description: Bright and tangy.
+Author: Jane Doe
+Prep Time: 15 minutes
+Cook Time: 30 minutes
+Total Time: 45 minutes
+Yield: 16 bars
+Category: Dessert
+Method: Baking
+Cuisine: American
+Diet: Vegetarian
+Keywords: lemon, bars, citrus
+Video URL: https://www.youtube.com/watch?v=dQw4w9WgXcQ&list=PL1234567890abcdef&index=3
+Ingredients
+1 cup flour
+2 lemons
+Instructions
+Mix everything.
+Bake until set.
+Notes
+Chill before slicing.
+Nutrition
+Serving Size: 1 bar
+Calories: 150
+Sugar: 12g
+Sodium: 40mg
+Fat: 7g
+Saturated Fat: 4g
+Unsaturated Fat: 2g
+Trans Fat: 0g
+Carbohydrates: 20g
+Fiber: 1g
+Protein: 2g
+Cholesterol: 30mg
