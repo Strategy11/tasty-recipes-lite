@@ -578,6 +578,107 @@ describe( 'Recipe Creation', () => {
 				} );
 		} );
 
+		const pasteClipboard = ( el, win, { text, html } ) => {
+			const data = new win.DataTransfer();
+			data.setData( 'text/plain', text );
+			if ( html ) {
+				data.setData( 'text/html', html );
+			}
+			el.dispatchEvent(
+				new win.ClipboardEvent( 'paste', {
+					clipboardData: data,
+					bubbles: true,
+					cancelable: true,
+				} )
+			);
+		};
+
+		const pasteIntoFirstRow = ( list, clipboard ) => {
+			openCreateRecipeModal();
+			cy.get( `${ list } .tasty-recipes-row-input` )
+				.first()
+				.scrollIntoView()
+				.click();
+
+			cy.window().then( win => {
+				cy.get( `${ list } .tasty-recipes-row-input` )
+					.first()
+					.then( $el => pasteClipboard( $el[ 0 ], win, clipboard ) );
+			} );
+		};
+
+		it( 'should turn bold lines in pasted HTML into ingredient headings', () => {
+			pasteIntoFirstRow( ingredients, {
+				text: 'For the sauce\n1 cup tomatoes\n2 cloves garlic\nFor the pasta\n200 g spaghetti',
+				html:
+					'<p><b>For the sauce:</b></p>' +
+					'<ul><li>1 cup tomatoes</li><li>2 cloves garlic</li></ul>' +
+					'<p><span style="font-weight:700">For the pasta</span></p>' +
+					'<ul><li>200 g spaghetti</li></ul>',
+			} );
+
+			cy.get( `${ ingredients } .tasty-recipes-item-row` ).should(
+				'have.length',
+				5
+			);
+			cy.get( `${ ingredients } .tasty-recipes-item-row--group` ).should(
+				'have.length',
+				2
+			);
+			cy.get( ingredients )
+				.siblings( 'input[name="ingredients"]' )
+				.should(
+					'have.value',
+					'<h4>For the sauce</h4><ul><li>1 cup tomatoes</li><li>2 cloves garlic</li></ul>' +
+						'<h4>For the pasta</h4><ul><li>200 g spaghetti</li></ul>'
+				);
+		} );
+
+		it( 'should strip every pasted bullet and number style', () => {
+			pasteIntoFirstRow( instructions, {
+				text: [
+					'1. Preheat the oven.',
+					'2) Grease the pan.',
+					'- Mix the batter.',
+					'• Pour it in.',
+					'· Smooth the top.',
+					'◦ Tap the pan.',
+					'▪ Bake for 20 minutes.',
+					'● Let it cool.',
+					'Step 9: Slice and serve.',
+				].join( '\n' ),
+			} );
+
+			cy.get( `${ instructions } .tasty-recipes-item-row` ).should(
+				'have.length',
+				9
+			);
+			cy.get( instructions )
+				.siblings( 'input[name="instructions"]' )
+				.should(
+					'have.value',
+					'<ol><li>Preheat the oven.</li><li>Grease the pan.</li>' +
+						'<li>Mix the batter.</li><li>Pour it in.</li>' +
+						'<li>Smooth the top.</li><li>Tap the pan.</li>' +
+						'<li>Bake for 20 minutes.</li><li>Let it cool.</li>' +
+						'<li>Slice and serve.</li></ol>'
+				);
+		} );
+
+		it( 'should keep ordered HTML list items as separate steps', () => {
+			pasteIntoFirstRow( instructions, {
+				text: 'Boil the water.\nAdd the pasta.',
+				html: '<ol><li>Boil the water.</li><li>Add the pasta.</li></ol>',
+			} );
+
+			cy.get( instructions )
+				.siblings( 'input[name="instructions"]' )
+				.should(
+					'have.value',
+					'<ol><li>Boil the water.</li><li>Add the pasta.</li></ol>'
+				);
+		} );
+
 		it( 'should insert a line break in the same row on Shift+Enter', () => {
 			openCreateRecipeModal();
 			cy.get( '.tasty-recipes-frame-content input#title' ).type(
