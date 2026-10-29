@@ -305,6 +305,7 @@ export const Settings = () => {
 				) }
 				isNew
 			/>
+			<NutrifoxConnection />
 			<UpgradeBanner generateUpgradeUrl={ generateUpgradeUrl } />
 			<SelectInput
 				onClick={ () => {
@@ -483,7 +484,6 @@ export const Settings = () => {
 				generateUpgradeUrl={ generateUpgradeUrl }
 			/>
 			{ EnableHowTos }
-			<NutrifoxConnection />
 			<TabletSaveButton />
 		</div>
 	);
