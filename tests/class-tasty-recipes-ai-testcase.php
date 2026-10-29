@@ -24,7 +24,7 @@ class Tasty_Recipes_Fake_AI_Provider extends Provider {
 	/**
 	 * Models list_models() returns, or a WP_Error.
 	 *
-	 * @var array|WP_Error
+	 * @var array<int, array{id: string, label: string}>|WP_Error
 	 */
 	public $models = array(
 		array(
@@ -110,9 +110,12 @@ class Tasty_Recipes_Fake_AI_Provider extends Provider {
 	 *
 	 * @param string $api_key API key.
 	 *
-	 * @return array|WP_Error
+	 * @return array<int, array{id: string, label: string}>|WP_Error
 	 */
-	public function list_models( $api_key ) {
+	public function list_models(
+		#[\SensitiveParameter]
+		$api_key
+	) {
 		$this->listed_keys[] = $api_key;
 
 		return $this->models;
@@ -128,7 +131,13 @@ class Tasty_Recipes_Fake_AI_Provider extends Provider {
 	 *
 	 * @return string|WP_Error
 	 */
-	public function generate( $api_key, $model, $prompt, $args = array() ) {
+	public function generate(
+		#[\SensitiveParameter]
+		$api_key,
+		$model,
+		$prompt,
+		$args = array()
+	) {
 		$this->calls[] = array(
 			'model'  => $model,
 			'prompt' => $prompt,
