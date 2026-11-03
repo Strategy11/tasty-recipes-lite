@@ -1,0 +1,120 @@
+@use "../../components/editor-shared";
+
+// Fields reuse the recipe editor field styles and the framework checkbox;
+// only the layout and the progress bar live here.
+#tasty-recipes-bulk-edit-modal {
+	.tasty-framework-modal-container {
+		width: 640px !important;
+		max-width: calc(100% - 32px);
+	}
+}
+
+.tasty-recipes-bulk-edit {
+	font-size: 14px;
+	color: var(--grey-700, #525866);
+
+	&__fields {
+		margin-top: var(--gap-sm, 16px);
+		border-top: 1px solid var(--grey-300, #E1E4EA);
+
+		input[type='text'] {
+			@include editor-shared.editor-text-input;
+		}
+
+		@include editor-shared.taxonomy-select;
+		@include editor-shared.react-select-input;
+		@include editor-shared.taxonomy-select-options;
+	}
+
+	&__row {
+		display: flex;
+		gap: var(--gap-sm, 16px);
+		padding: var(--gap-sm, 16px) 0;
+		border-bottom: 1px solid var(--grey-300, #E1E4EA);
+	}
+
+	&__label {
+		flex: 0 0 160px;
+		padding-top: 10px;
+		font-weight: 600;
+		color: var(--grey-900, #181B25);
+	}
+
+	&__controls {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+		gap: var(--gap-xs, 12px);
+		min-width: 0;
+	}
+
+	&__modes {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--gap-md, 24px);
+
+		// The framework checkmark hides checkbox inputs only.
+		input[type="radio"] {
+			position: absolute;
+			width: 0;
+			height: 0;
+			opacity: 0;
+		}
+	}
+
+	// Renaming or deleting terms affects every recipe, so it stays in the recipe editor.
+	.tasty-taxonomy-option-edit,
+	.tasty-taxonomy-option-delete {
+		display: none !important;
+	}
+
+	&__meta {
+		margin: var(--gap-sm, 16px) 0 0;
+		font-size: 12px;
+		color: var(--grey-600, #717784);
+	}
+
+	&__footer {
+		margin-top: var(--gap-md, 24px);
+		gap: var(--gap-2xs, 8px);
+
+		.tasty-button-primary:disabled {
+			opacity: 0.5;
+			cursor: not-allowed;
+		}
+	}
+
+	&__progress {
+		margin-top: var(--gap-sm, 16px);
+	}
+
+	&__progress-track {
+		height: 8px;
+		overflow: hidden;
+		border-radius: 200px;
+		background-color: var(--grey-200, #F2F5F8);
+	}
+
+	&__progress-bar {
+		height: 100%;
+		border-radius: 200px;
+		background-color: var(--pink, #ED4996);
+		transition: width 0.2s ease;
+	}
+
+	&__error {
+		margin: var(--gap-sm, 16px) 0 0;
+	}
+}
+
+@media screen and (max-width: 600px) {
+	.tasty-recipes-bulk-edit__row {
+		flex-direction: column;
+		gap: var(--gap-2xs, 8px);
+	}
+
+	.tasty-recipes-bulk-edit__label {
+		flex-basis: auto;
+		padding-top: 0;
+	}
+}

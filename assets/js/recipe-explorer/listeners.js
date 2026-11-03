@@ -4,8 +4,11 @@ import { openEditorExtension } from './modals/editorExtensionModal';
 import { openTrashModal } from './modals/trashModal';
 import { openPermanentDeleteModal } from './modals/permanentDeleteModal';
 import { toggleFiltersForm } from './manageFiltersForm';
+import { registerBulkEdit } from './modals/bulkEditModal';
 
 export const registerEvents = () => {
+	registerBulkEdit();
+
 	const addRecipeItems = document.querySelectorAll(
 		'.tasty-recipes-add-new-item'
 	);
