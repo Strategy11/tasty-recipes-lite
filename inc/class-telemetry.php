@@ -153,7 +153,7 @@ class Telemetry {
 	 * @return bool
 	 */
 	public static function should_load_posthog() {
-		$should_load = self::has_usage_consent() && ! self::is_cypress_request();
+		$should_load = self::has_usage_consent() && ! self::is_excluded_environment();
 
 		/**
 		 * Filters whether PostHog may load on recipe-related admin screens.
@@ -311,7 +311,18 @@ class Telemetry {
 	 * @return bool
 	 */
 	public static function is_excluded_environment() {
-		return self::is_cypress_request() || self::is_local_site();
+		$is_excluded = self::is_cypress_request() || self::is_local_site();
+
+		/**
+		 * Filters whether the current environment is excluded from telemetry.
+		 *
+		 * Excluded environments never load PostHog or send usage snapshots.
+		 *
+		 * @since x.x
+		 *
+		 * @param bool $is_excluded Whether telemetry is excluded.
+		 */
+		return (bool) apply_filters( 'tasty_recipes_telemetry_excluded_environment', $is_excluded );
 	}
 
 	/**
