@@ -137,6 +137,27 @@ function _oembed_api_request( $pre, $r, $url ) {
 tests_add_filter( 'pre_http_request', '_oembed_api_request', 10, 3 );
 
 /**
+ * Block any request to PostHog that a test has not mocked.
+ *
+ * @param mixed  $pre Existing filter value.
+ * @param array  $r   Request arguments.
+ * @param string $url Request URL.
+ *
+ * @return mixed
+ */
+function _block_posthog_api_request( $pre, $r, $url ) {
+	if ( false !== $pre ) {
+		return $pre;
+	}
+	$host = (string) parse_url( $url, PHP_URL_HOST );
+	if ( 'posthog.com' !== $host && '.posthog.com' !== substr( $host, -12 ) ) {
+		return $pre;
+	}
+	return new WP_Error( 'http_request_blocked', 'PostHog requests are blocked in tests.' );
+}
+tests_add_filter( 'pre_http_request', '_block_posthog_api_request', PHP_INT_MAX, 3 );
+
+/**
  * Unset 'spam' when creating users on multisite because it causes errors in the test suite.
  *
  * @param array $args Original creation arguments.

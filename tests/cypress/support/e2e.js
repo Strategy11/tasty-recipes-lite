@@ -16,6 +16,11 @@
 import '@10up/cypress-wp-utils';
 import './commands';
 
+// Never let a test browser reach PostHog, even if the snippet loads.
+beforeEach( () => {
+	cy.intercept( { hostname: /(^|\.)posthog\.com$/ }, { statusCode: 204 } );
+} );
+
 Cypress.on( 'uncaught:exception', ( err ) => {
 	if ( err.message.includes( 'No route was found' ) ) {
 		return false;
