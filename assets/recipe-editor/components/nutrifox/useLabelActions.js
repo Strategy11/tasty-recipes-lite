@@ -10,7 +10,6 @@ export const useLabelActions = ( {
 	restBase,
 	recipe,
 	isConnected,
-	isVisible,
 	onChange,
 } ) => {
 	const [ isLinking, setIsLinking ] = useState( false );
@@ -25,10 +24,6 @@ export const useLabelActions = ( {
 	const canBuild = !! recipe.title?.trim() && hasText( recipe.ingredients );
 
 	useEffect( () => {
-		if ( ! isVisible ) {
-			return;
-		}
-
 		if ( ! isConnected || ! labelId ) {
 			setPending( NO_PENDING );
 			return;
@@ -54,7 +49,7 @@ export const useLabelActions = ( {
 		return () => {
 			isCurrent = false;
 		};
-	}, [ isVisible, isConnected, labelId, restBase ] );
+	}, [ isConnected, labelId, restBase ] );
 
 	const onLinkLabel = () => {
 		setDraftId( labelId ? String( labelId ) : '' );
