@@ -653,6 +653,11 @@ class Assets {
 			return;
 		}
 
+		// Password-protected posts don't load the print template, so skip its assets too.
+		if ( post_password_required( get_queried_object() ) ) {
+			return;
+		}
+
 		$recipe_ids = Tasty_Recipes::get_recipe_ids_for_post( get_queried_object_id() );
 		if ( ! in_array( $recipe_id, $recipe_ids, true ) ) {
 			return;

@@ -785,7 +785,8 @@ class Content_Model {
 	public static function filter_template_include( $template ) {
 
 		$recipe_id = (int) get_query_var( self::get_print_query_var() );
-		if ( is_singular() && $recipe_id ) {
+		// Password-protected posts fall back to the theme template, which shows the password form.
+		if ( is_singular() && $recipe_id && ! post_password_required( get_queried_object() ) ) {
 			$recipe_ids = Tasty_Recipes::get_recipe_ids_for_post( get_queried_object_id() );
 			if ( in_array( $recipe_id, $recipe_ids, true ) ) {
 				$template = Tasty_Recipes::get_template_path( 'recipe-print' );

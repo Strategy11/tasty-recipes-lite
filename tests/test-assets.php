@@ -91,4 +91,26 @@ class Test_Assets extends Tasty_Recipes_Testcase {
 			),
 		);
 	}
+
+	/**
+	 * Ensures print assets only load for a password-protected post once the password is entered.
+	 *
+	 * @since x.x
+	 */
+	public function test_print_assets_password_protected_post() {
+		$recipe = $this->prime_password_protected_recipe_post();
+		$this->go_to( tasty_recipes_get_print_url( $this->post_id, $recipe->get_id() ) );
+
+		Assets::action_wp_print_styles();
+		$this->assertFalse( wp_style_is( 'tasty-recipes-print', 'enqueued' ) );
+		$this->assertFalse( wp_script_is( 'tasty-recipes-print-controls', 'enqueued' ) );
+
+		$this->enter_post_password();
+		Assets::action_wp_print_styles();
+		$this->assertTrue( wp_style_is( 'tasty-recipes-print', 'enqueued' ) );
+		$this->assertTrue( wp_script_is( 'tasty-recipes-print-controls', 'enqueued' ) );
+
+		wp_dequeue_style( 'tasty-recipes-print' );
+		wp_dequeue_script( 'tasty-recipes-print-controls' );
+	}
 }

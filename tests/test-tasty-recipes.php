@@ -170,6 +170,24 @@ EOT;
 	}
 
 	/**
+	 * Ensures the print template only loads for a password-protected post once the password is entered.
+	 *
+	 * @since x.x
+	 */
+	public function test_print_template_password_protected_post() {
+		$recipe = $this->prime_password_protected_recipe_post();
+		$this->go_to( tasty_recipes_get_print_url( $this->post_id, $recipe->get_id() ) );
+
+		$this->assertSame( 'theme-template.php', Content_Model::filter_template_include( 'theme-template.php' ) );
+
+		$this->enter_post_password();
+		$this->assertSame(
+			Tasty_Recipes::get_template_path( 'recipe-print' ),
+			Content_Model::filter_template_include( 'theme-template.php' )
+		);
+	}
+
+	/**
 	 * Ensures the print links are generated as expected.
 	 */
 	public function test_tasty_recipes_get_print_url() {

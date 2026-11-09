@@ -92,6 +92,10 @@ class Distribution_Metadata {
 	 * @return void
 	 */
 	public static function action_wp_head_google_schema() {
+		// Don't expose recipes of password-protected posts before the password is entered.
+		if ( post_password_required( get_queried_object() ) ) {
+			return;
+		}
 
 		$recipes = Tasty_Recipes::get_recipes_for_post(
 			0,

@@ -83,6 +83,41 @@ class Tasty_Recipes_Testcase extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Primes a password-protected post with an embedded recipe.
+	 *
+	 * @since x.x
+	 *
+	 * @return Recipe
+	 */
+	protected function prime_password_protected_recipe_post() {
+		$recipe        = $this->create_mock_recipe();
+		$this->post_id = $this->factory->post->create(
+			array(
+				'post_status'   => 'publish',
+				'post_author'   => 1,
+				'post_password' => wp_generate_password( 12, false ),
+				'post_content'  => Shortcodes::get_shortcode_for_recipe( $recipe ),
+			)
+		);
+		$this->go_to( get_permalink( $this->post_id ) );
+		return $recipe;
+	}
+
+	/**
+	 * Sets the cookie WordPress uses to remember the test post's entered password.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
+	 */
+	protected function enter_post_password() {
+		require_once ABSPATH . WPINC . '/class-phpass.php';
+		$hasher = new PasswordHash( 8, true );
+
+		$_COOKIE[ 'wp-postpass_' . COOKIEHASH ] = $hasher->HashPassword( get_post( $this->post_id )->post_password );
+	}
+
+	/**
 	 * Adds a featured image to the test post.
 	 */
 	protected function add_featured_image_to_post() {
@@ -589,6 +624,7 @@ EOT;
 	public function tearDown(): void {
 		remove_filter( 'pre_http_request', array( $this, 'filter_pre_http_request' ) );
 		remove_action( 'tasty_recipes_imported_image', array( $this, 'action_tasty_recipes_imported_image' ) );
+		unset( $_COOKIE[ 'wp-postpass_' . COOKIEHASH ] );
 		parent::tearDown();
 	}
 }

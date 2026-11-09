@@ -67,6 +67,10 @@ class Recipe_Graph_Piece_Yoast extends Abstract_Schema_Piece {
 		if ( ! is_singular() ) {
 			return false;
 		}
+		// Don't expose recipes of password-protected posts before the password is entered.
+		if ( post_password_required( $this->context->id ) ) {
+			return false;
+		}
 		$recipes = \Tasty_Recipes::get_recipes_for_post(
 			$this->context->id,
 			array(
