@@ -87,17 +87,15 @@ class Tasty_Recipes_Testcase extends WP_UnitTestCase {
 	 *
 	 * @since x.x
 	 *
-	 * @param string $password Post password.
-	 *
 	 * @return Recipe
 	 */
-	protected function prime_password_protected_recipe_post( $password = 'secret' ) {
+	protected function prime_password_protected_recipe_post() {
 		$recipe        = $this->create_mock_recipe();
 		$this->post_id = $this->factory->post->create(
 			array(
 				'post_status'   => 'publish',
 				'post_author'   => 1,
-				'post_password' => $password,
+				'post_password' => wp_generate_password( 12, false ),
 				'post_content'  => Shortcodes::get_shortcode_for_recipe( $recipe ),
 			)
 		);
@@ -106,19 +104,17 @@ class Tasty_Recipes_Testcase extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Sets the cookie WordPress uses to remember an entered post password.
+	 * Sets the cookie WordPress uses to remember the test post's entered password.
 	 *
 	 * @since x.x
 	 *
-	 * @param string $password Post password.
-	 *
 	 * @return void
 	 */
-	protected function enter_post_password( $password = 'secret' ) {
+	protected function enter_post_password() {
 		require_once ABSPATH . WPINC . '/class-phpass.php';
 		$hasher = new PasswordHash( 8, true );
 
-		$_COOKIE[ 'wp-postpass_' . COOKIEHASH ] = $hasher->HashPassword( $password );
+		$_COOKIE[ 'wp-postpass_' . COOKIEHASH ] = $hasher->HashPassword( get_post( $this->post_id )->post_password );
 	}
 
 	/**
