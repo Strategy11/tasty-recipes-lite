@@ -152,6 +152,71 @@ class Test_Distribution_Metadata extends Tasty_Recipes_Testcase {
 	}
 
 	/**
+	 * Ensures JSON+LD is only printed for a password-protected post once the password is entered.
+	 *
+	 * @since x.x
+	 */
+	public function test_google_schema_password_protected_post() {
+		$this->prime_password_protected_recipe_post();
+
+		ob_start();
+		Distribution_Metadata::action_wp_head_google_schema();
+		$this->assertSame( '', ob_get_clean() );
+
+		$this->enter_post_password();
+
+		ob_start();
+		Distribution_Metadata::action_wp_head_google_schema();
+		$output = ob_get_clean();
+		$this->assertStringContainsString( 'application/ld+json', $output );
+		$this->assertStringContainsString( '"@type": "Recipe"', $output );
+	}
+
+	/**
+	 * Ensures the Yoast SEO graph piece is only needed once the password is entered.
+	 *
+	 * @since x.x
+	 */
+	public function test_yoast_graph_piece_password_protected_post() {
+		if ( ! class_exists( '\Yoast\WP\SEO\Context\Meta_Tags_Context' ) ) {
+			$this->markTestSkipped( 'Requires Yoast SEO.' );
+		}
+
+		$this->prime_password_protected_recipe_post();
+
+		// Yoast SEO memoizes the schema per request, so build the context directly.
+		$reflection  = new ReflectionClass( '\Yoast\WP\SEO\Context\Meta_Tags_Context' );
+		$context     = $reflection->newInstanceWithoutConstructor();
+		$context->id = $this->post_id;
+		$piece       = new \Tasty_Recipes\Integrations\Recipe_Graph_Piece_Yoast( $context );
+		$this->assertFalse( $piece->is_needed() );
+
+		$this->enter_post_password();
+		$this->assertTrue( $piece->is_needed() );
+	}
+
+	/**
+	 * Ensures the legacy Yoast SEO graph piece is only needed once the password is entered.
+	 *
+	 * @since x.x
+	 */
+	public function test_legacy_yoast_graph_piece_password_protected_post() {
+		if ( ! interface_exists( '\WPSEO_Graph_Piece' ) ) {
+			$this->markTestSkipped( 'Requires a Yoast SEO version with WPSEO_Graph_Piece.' );
+		}
+
+		$this->prime_password_protected_recipe_post();
+
+		$context     = new \WPSEO_Schema_Context();
+		$context->id = $this->post_id;
+		$piece       = new \Tasty_Recipes\Integrations\Recipe_Graph_Piece( $context );
+		$this->assertFalse( $piece->is_needed() );
+
+		$this->enter_post_password();
+		$this->assertTrue( $piece->is_needed() );
+	}
+
+	/**
 	 * Ensures expected format for JSON+LD without an author.
 	 */
 	public function test_google_schema_recipe_without_author() {
