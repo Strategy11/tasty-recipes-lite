@@ -54,12 +54,10 @@ class WP_Ultimate_Recipe extends Converter {
 			return false;
 		}
 		$recipe_id     = (int) $data['id'];
-		$existing_post = get_post( $recipe_id );
+		$existing_post = self::get_source_post( $recipe_id, 'recipe', $post_id );
 		if ( ! $existing_post ) {
 			return false;
 		}
-
-		$post_id = (int) $post_id; // Avoid UnusedVariable.
 
 		$recipe         = Recipe::create();
 		$converted_data = array();
@@ -175,6 +173,6 @@ class WP_Ultimate_Recipe extends Converter {
 		// Restore registered taxonomies.
 		$GLOBALS['wp_taxonomies'] = $backup_taxonomies; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 
-		return self::save_converted_data_to_recipe( $converted_data, $recipe );
+		return self::save_converted_data_to_recipe( $converted_data, $recipe, $post_id );
 	}
 }

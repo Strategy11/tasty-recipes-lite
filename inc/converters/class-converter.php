@@ -12,6 +12,7 @@ use Tasty_Recipes\Objects\Recipe;
 use Tasty_Recipes\Ratings;
 use Tasty_Recipes\Shortcodes;
 use Tasty_Recipes\Utils;
+use WP_Post;
 
 /**
  * Base converter class.
@@ -257,14 +258,120 @@ abstract class Converter {
 	}
 
 	/**
+	 * Get the legacy recipe post referenced by the content being converted.
+	 *
+	 * Published recipes without a password can always be used. Anything else
+	 * (private, draft, pending, password protected, etc.) is only used when
+	 * both the current user and the author of the post being converted are
+	 * allowed to access it.
+	 *
+	 * @since x.x
+	 *
+	 * @param int|string $source_id ID of the legacy recipe post.
+	 * @param string     $post_type Post type the legacy recipe must have.
+	 * @param int        $post_id   ID of the post being converted.
+	 *
+	 * @return WP_Post|null
+	 */
+	protected static function get_source_post( $source_id, $post_type, $post_id ) {
+		$source_post = get_post( (int) $source_id );
+		if ( ! $source_post || $post_type !== $source_post->post_type ) {
+			return null;
+		}
+
+		if ( 'publish' === $source_post->post_status && '' === $source_post->post_password ) {
+			return $source_post;
+		}
+
+		$user_ids = array(
+			get_current_user_id(),
+			(int) get_post_field( 'post_author', $post_id ),
+		);
+		foreach ( $user_ids as $user_id ) {
+			if ( ! self::user_can_access_source_post( $user_id, $source_post ) ) {
+				return null;
+			}
+		}
+
+		return $source_post;
+	}
+
+	/**
+	 * Check if a user owns a legacy recipe post or can edit other users' posts.
+	 *
+	 * Meta capabilities are not used because the legacy post type is usually
+	 * not registered anymore.
+	 *
+	 * @since x.x
+	 *
+	 * @param int     $user_id     User ID.
+	 * @param WP_Post $source_post Legacy recipe post.
+	 *
+	 * @return bool
+	 */
+	private static function user_can_access_source_post( $user_id, $source_post ) {
+		if ( ! $user_id ) {
+			return false;
+		}
+		return (int) $source_post->post_author === $user_id || user_can( $user_id, 'edit_others_posts' );
+	}
+
+	/**
+	 * Check if converted data can be saved without sanitizing it.
+	 *
+	 * Only when both the current user and the author of the converted post
+	 * are allowed to save unfiltered HTML.
+	 *
+	 * @since x.x
+	 *
+	 * @param int $post_id ID of the post being converted.
+	 *
+	 * @return bool
+	 */
+	private static function can_keep_unfiltered_html( $post_id ) {
+		if ( ! $post_id || ! current_user_can( 'unfiltered_html' ) ) {
+			return false;
+		}
+		$author_id = (int) get_post_field( 'post_author', $post_id );
+		return $author_id && user_can( $author_id, 'unfiltered_html' );
+	}
+
+	/**
+	 * Sanitize converted data with the same callbacks as the recipe editor.
+	 *
+	 * @since x.x
+	 *
+	 * @param array $converted_data Data to be saved.
+	 *
+	 * @return array
+	 */
+	private static function sanitize_converted_data( $converted_data ) {
+		$attributes = Recipe::get_attributes();
+		foreach ( $converted_data as $key => $value ) {
+			if ( ! is_string( $value ) ) {
+				continue;
+			}
+			$sanitize_callback = ! empty( $attributes[ $key ]['sanitize_callback'] ) ? $attributes[ $key ]['sanitize_callback'] : 'sanitize_text_field';
+			if ( 'intval' === $sanitize_callback && '' === $value ) {
+				continue;
+			}
+			// wp_filter_post_kses() expects slashed data.
+			$converted_data[ $key ] = wp_unslash( call_user_func( $sanitize_callback, wp_slash( $value ) ) );
+		}
+		return $converted_data;
+	}
+
+	/**
 	 * Apply a filter to converted data before saving to the database.
 	 *
 	 * @param array  $converted_data Data to be converted.
 	 * @param Recipe $recipe         Created recipe object.
+	 * @param int    $post_id        ID of the post being converted. Since x.x.
+	 *                               Without it, the data is always sanitized.
 	 *
 	 * @return Recipe
 	 */
-	protected static function save_converted_data_to_recipe( $converted_data, $recipe ) {
+	protected static function save_converted_data_to_recipe( $converted_data, $recipe, $post_id = 0 ) {
 		/**
 		 * Filter converted data before it's applied to the recipe.
 		 *
@@ -276,6 +383,9 @@ abstract class Converter {
 		$type           = array_pop( $bits );
 		$type           = strtolower( $type );
 		$converted_data = apply_filters( 'tasty_recipes_convert_recipe', $converted_data, $type );
+		if ( ! self::can_keep_unfiltered_html( $post_id ) ) {
+			$converted_data = self::sanitize_converted_data( $converted_data );
+		}
 		foreach ( $converted_data as $key => $value ) {
 			$setter = "set_{$key}";
 			$recipe->$setter( $value );
@@ -390,6 +500,11 @@ abstract class Converter {
 		$retval = apply_filters( 'tasty_recipes_pre_import_image', null, $file );
 		if ( null !== $retval ) {
 			return $retval;
+		}
+
+		if ( ! current_user_can( 'upload_files' ) ) {
+			do_action( 'tasty_recipes_imported_image', 0 );
+			return 0;
 		}
 
 		preg_match( '/[^\?]+\.(jpe?g|jpe|gif|png)\b/i', $file, $matches );

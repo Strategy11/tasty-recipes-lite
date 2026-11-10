@@ -119,6 +119,6 @@ class Yummly extends Converter {
 			}
 			$converted_data[ $tr ] = $value;
 		}
-		return self::save_converted_data_to_recipe( $converted_data, $recipe );
+		return self::save_converted_data_to_recipe( $converted_data, $recipe, $post_id );
 	}
 }

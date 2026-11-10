@@ -105,7 +105,7 @@ class WPCom extends Converter {
 			return false;
 		}
 
-		return self::save_converted_data_to_recipe( $converted_data, $recipe );
+		return self::save_converted_data_to_recipe( $converted_data, $recipe, $post_id );
 	}
 
 	/**
