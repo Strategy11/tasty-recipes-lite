@@ -51,7 +51,7 @@ class Editor {
 	public static function action_admin_notices() {
 		$screen  = get_current_screen();
 		$post_id = Utils::get_param( 'post', 'intval', 0 );
-		if ( 'post' !== $screen->base || empty( $post_id ) ) {
+		if ( 'post' !== $screen->base || empty( $post_id ) || ! current_user_can( 'edit_post', $post_id ) ) {
 			return;
 		}
 
@@ -869,6 +869,11 @@ class Editor {
 		$post_id = $post ? $post->ID : Utils::get_param( 'post', 'intval', 0 );
 
 		if ( empty( $post_id ) ) {
+			return array();
+		}
+
+		// Only use the query arg for a post the current user can edit. The post type check avoids a notice when it isn't registered yet.
+		if ( ! $post && ( ! post_type_exists( (string) get_post_type( $post_id ) ) || ! current_user_can( 'edit_post', $post_id ) ) ) {
 			return array();
 		}
 
