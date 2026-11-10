@@ -318,6 +318,7 @@ class Tasty_Recipes {
 		foreach ( array( 'wp_insert_comment', 'wp_update_comment', 'wp_set_comment_status' ) as $hook ) {
 			add_action( $hook, array( 'Tasty_Recipes\Ratings', 'action_modify_comment_update_recipe_ratings' ) );
 		}
+		add_action( 'transition_comment_status', array( 'Tasty_Recipes\Ratings', 'action_transition_comment_status' ), 10, 3 );
 		add_action( 'rest_insert_comment', array( 'Tasty_Recipes\Ratings', 'action_rest_insert_comment' ), 10, 2 );
 		add_action( 'admin_head', array( 'Tasty_Recipes\Ratings', 'action_admin_head' ) );
 
