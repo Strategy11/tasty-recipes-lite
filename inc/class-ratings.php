@@ -70,6 +70,33 @@ class Ratings {
 	private static $svg_loaded = false;
 
 	/**
+	 * Cookie that holds the random token identifying a logged-out rater.
+	 *
+	 * @since x.x
+	 *
+	 * @var string
+	 */
+	const RATER_COOKIE = 'tasty_recipes_rater';
+
+	/**
+	 * Rater token created during this request, before the browser sends it back.
+	 *
+	 * @since x.x
+	 *
+	 * @var string
+	 */
+	private static $rater_token = '';
+
+	/**
+	 * Comment ID to remove once the new comment from the same rater is saved.
+	 *
+	 * @since x.x
+	 *
+	 * @var int
+	 */
+	private static $replaced_comment_id = 0;
+
+	/**
 	 * Whether or not ratings are enabled. Optionally pass a comment status to
 	 * check if comments are open for the current post.
 	 *
@@ -168,7 +195,8 @@ class Ratings {
 		// Some comments may have ER, Cookbook, and Simple Recipe Pro.
 		$comment_ratings = array();
 		foreach ( $ratings as $rating ) {
-			if ( $rating->meta_value >= 1 ) {
+			// Ignore values outside the 1-5 star range (imported ratings may have decimals).
+			if ( is_numeric( $rating->meta_value ) && $rating->meta_value >= 1 && $rating->meta_value <= 5 ) {
 				$comment_ratings[ $rating->comment_id ] = $rating->meta_value;
 			}
 		}
@@ -219,24 +247,68 @@ class Ratings {
 	 * @return array
 	 */
 	public static function filter_preprocess_comment( $commentdata ) {
-		// We need to remove the old quick rating that was added before from this user if found.
-		list( $comment_hash, $comment_id ) = self::get_previous_comment( $commentdata['comment_post_ID'] );
-		if ( $comment_id ) {
-			wp_delete_comment( $comment_id );
+		$rating = Utils::post_param( 'tasty-recipes-rating' );
+		if ( ! self::is_valid_rating( $rating ) ) {
+			return $commentdata;
 		}
 
-		$rating = Utils::post_param( 'tasty-recipes-rating' );
-		if ( empty( $rating ) ) {
-			return $commentdata;
+		$post_id = (int) $commentdata['comment_post_ID'];
+
+		// Replace the earlier rating from this rater, but only after the new comment is saved.
+		list( $comment_hash, $comment_id ) = self::get_previous_comment( $post_id );
+		if ( $comment_id ) {
+			self::$replaced_comment_id = $comment_id;
+			add_action( 'comment_post', array( __CLASS__, 'delete_replaced_comment' ), 10, 2 );
 		}
 
 		if ( ! isset( $commentdata['comment_meta'] ) ) {
 			$commentdata['comment_meta'] = array();
 		}
 		$commentdata['comment_meta'][ self::COMMENT_META_KEY ]             = (int) $rating;
-		$commentdata['comment_meta'][ self::RATING_COMMENT_HASH_META_KEY ] = $comment_hash;
+		$commentdata['comment_meta'][ self::RATING_COMMENT_HASH_META_KEY ] = self::get_hash_for_saving( $comment_hash, $post_id );
 
 		return $commentdata;
+	}
+
+	/**
+	 * Remove the rater's earlier comment once their new rated comment is saved.
+	 *
+	 * @since x.x
+	 *
+	 * @param int        $comment_id       ID of the new comment.
+	 * @param int|string $comment_approved Approval status of the new comment.
+	 *
+	 * @return void
+	 */
+	public static function delete_replaced_comment( $comment_id, $comment_approved ) {
+		remove_action( 'comment_post', array( __CLASS__, 'delete_replaced_comment' ), 10 );
+
+		$replaced                  = self::$replaced_comment_id;
+		self::$replaced_comment_id = 0;
+
+		if ( ! $replaced || (int) $comment_id === $replaced || in_array( (string) $comment_approved, array( 'spam', 'trash' ), true ) ) {
+			return;
+		}
+
+		wp_delete_comment( $replaced );
+	}
+
+	/**
+	 * Whether a value is a whole star rating from 1 to 5.
+	 *
+	 * @since x.x
+	 *
+	 * @param mixed $rating Rating value.
+	 *
+	 * @return bool
+	 */
+	private static function is_valid_rating( $rating ) {
+		if ( ! is_numeric( $rating ) || (float) $rating !== (float) (int) $rating ) {
+			return false;
+		}
+
+		$rating = (int) $rating;
+		return $rating >= 1 && $rating <= 5;
 	}
 
 	/**
@@ -248,7 +320,7 @@ class Ratings {
 	 * @return void
 	 */
 	public static function action_rest_insert_comment( $comment, $request ) {
-		if ( ! empty( $request['meta']['tasty-recipes-rating'] ) ) {
+		if ( isset( $request['meta']['tasty-recipes-rating'] ) && self::is_valid_rating( $request['meta']['tasty-recipes-rating'] ) ) {
 			update_comment_meta(
 				$comment->comment_ID,
 				self::COMMENT_META_KEY,
@@ -665,8 +737,8 @@ class Ratings {
 		}
 
 		$minimum_rating_without_comment = self::get_minimum_rating_without_comment( $comment_data );
-		$post_rating                    = (int) Utils::get_post_value( 'tasty-recipes-rating' );
-		return ! empty( $post_rating ) && $post_rating >= $minimum_rating_without_comment;
+		$post_rating                    = Utils::get_post_value( 'tasty-recipes-rating' );
+		return self::is_valid_rating( $post_rating ) && (int) $post_rating >= $minimum_rating_without_comment;
 	}
 
 	/**
@@ -716,7 +788,7 @@ class Ratings {
 		$recipe_id = (int) Vars::post_param( 'recipe_id', 'intval' );
 		$recipe    = ! empty( $recipe_id ) ? Recipe::get_by_id( $recipe_id ) : null;
 
-		if ( ! $rating || ! $recipe || ! self::can_rate_recipe( $post_id, $recipe_id ) ) {
+		if ( ! self::is_valid_rating( $rating ) || ! $recipe || ! self::can_rate_recipe( $post_id, $recipe_id ) ) {
 			Utils::send_json_error( __( 'Invalid request', 'tasty-recipes-lite' ) );
 		}
 
@@ -738,7 +810,8 @@ class Ratings {
 		}
 
 		if ( $creating ) {
-			$comment_id = self::create_rating( $comment_hash );
+			$comment_hash = self::get_hash_for_saving( $comment_hash, $post_id );
+			$comment_id   = self::create_rating( $comment_hash );
 		} else {
 			// Update the rating on existing comment.
 			update_comment_meta( $comment_id, self::COMMENT_META_KEY, $rating );
@@ -890,6 +963,58 @@ class Ratings {
 	}
 
 	/**
+	 * Get the hash to store with a new rating, creating the rater token if needed.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $comment_hash Hash for the current rater, empty when there is none yet.
+	 * @param int    $post_id      Post ID.
+	 *
+	 * @return string
+	 */
+	private static function get_hash_for_saving( $comment_hash, $post_id ) {
+		if ( $comment_hash ) {
+			return $comment_hash;
+		}
+
+		self::set_rater_token();
+		return self::generate_comment_hash( $post_id );
+	}
+
+	/**
+	 * Get the logged-out rater token from this request or the browser cookie.
+	 *
+	 * @since x.x
+	 *
+	 * @return string Empty when the browser has no valid token.
+	 */
+	private static function get_rater_token() {
+		if ( self::$rater_token ) {
+			return self::$rater_token;
+		}
+
+		$token = isset( $_COOKIE[ self::RATER_COOKIE ] ) ? sanitize_text_field( wp_unslash( $_COOKIE[ self::RATER_COOKIE ] ) ) : '';
+		return preg_match( '/^[A-Za-z0-9]{32}$/', $token ) ? $token : '';
+	}
+
+	/**
+	 * Create a random rater token and send it to the browser in an HttpOnly cookie.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
+	 */
+	private static function set_rater_token() {
+		self::$rater_token = wp_generate_password( 32, false );
+
+		if ( ! headers_sent() ) {
+			// Only sent on the rating AJAX and comment POST responses, never on cached page views.
+			// phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.cookies_setcookie
+			setcookie( self::RATER_COOKIE, self::$rater_token, time() + YEAR_IN_SECONDS, COOKIEPATH, (string) COOKIE_DOMAIN, is_ssl(), true );
+		}
+	}
+
+	/**
 	 * Generate comment hash for specific post and the current user.
 	 *
 	 * @since 3.12
@@ -899,15 +1024,18 @@ class Ratings {
 	 * @return string
 	 */
 	private static function generate_comment_hash( $post_id ) {
+		if ( ! is_user_logged_in() ) {
+			// Logged-out raters are identified by a random token only their browser has.
+			$token = self::get_rater_token();
+			return $token ? hash_hmac( 'sha256', $post_id . '::' . $token, wp_salt( 'auth' ) ) : '';
+		}
+
 		$params = array(
 			$post_id,
 			Vars::server_param( 'REMOTE_ADDR' ),
 			Vars::server_param( 'HTTP_USER_AGENT' ),
+			get_current_user_id(),
 		);
-
-		if ( is_user_logged_in() ) {
-			$params[] = get_current_user_id();
-		}
 
 		if ( defined( 'AUTH_SALT' ) && ! empty( AUTH_SALT ) ) {
 			$params[] = AUTH_SALT;
@@ -927,6 +1055,11 @@ class Ratings {
 	 * @return int
 	 */
 	private static function get_comment_id_by_hash( $hash, $post_id = 0 ) {
+		// An empty meta_value is ignored by the meta query and would match any rated comment.
+		if ( empty( $hash ) || ! is_string( $hash ) ) {
+			return 0;
+		}
+
 		$args = array(
 			'fields'     => 'ids',
 			'meta_key'   => self::RATING_COMMENT_HASH_META_KEY, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
@@ -940,8 +1073,12 @@ class Ratings {
 		$comments_query = new WP_Comment_Query( $args );
 		$comments       = $comments_query->get_comments();
 
-		// Return the first comment ID.
-		return $comments ? $comments[0] : 0;
+		if ( ! $comments ) {
+			return 0;
+		}
+
+		$stored_hash = (string) get_comment_meta( $comments[0], self::RATING_COMMENT_HASH_META_KEY, true );
+		return hash_equals( $stored_hash, $hash ) ? (int) $comments[0] : 0;
 	}
 
 	/**
@@ -1060,11 +1197,12 @@ class Ratings {
 			return $comment;
 		}
 
-		$comment['content'] = $has_comment->comment_content;
-		if ( ! is_user_logged_in() ) {
-			$comment['email'] = $has_comment->comment_author_email;
-			$comment['name']  = $has_comment->comment_author;
+		// Only approved (already public) content is sent back. Never the author's email.
+		if ( '1' !== (string) $has_comment->comment_approved ) {
+			return $comment;
 		}
+
+		$comment['content'] = $has_comment->comment_content;
 		return $comment;
 	}
 
