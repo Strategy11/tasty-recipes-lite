@@ -25,9 +25,12 @@ namespace Tasty_Recipes_Pro {
 			/**
 			 * Get the minimum rating without a comment.
 			 *
+			 * @param array $comment_data Comment data if found.
+			 *
 			 * @return int
 			 */
-			public static function get_minimum_rating_without_comment() {
+			public static function get_minimum_rating_without_comment( $comment_data = array() ) {
+				unset( $comment_data );
 				return self::$minimum;
 			}
 		}
