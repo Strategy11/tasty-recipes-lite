@@ -8,12 +8,32 @@
 use Tasty_Recipes\Content_Model;
 use Tasty_Recipes\Distribution_Metadata;
 use Tasty_Recipes\Objects\Recipe;
+use Tasty_Recipes\Shortcodes;
 use Tasty_Recipes\Utils;
 
 /**
  * Tests the main Tasty_Recipes controller class.
  */
 class Test_Tasty_Recipes extends Tasty_Recipes_Testcase {
+
+	/**
+	 * Recipe category term used by the taxonomy archive tests.
+	 *
+	 * @var int
+	 */
+	protected $category_term_id = 0;
+
+	/**
+	 * Restores the recipe taxonomies when a test enabled the taxonomy archives.
+	 */
+	public function tearDown(): void {
+		if ( $this->category_term_id ) {
+			delete_option( Tasty_Recipes::ENABLE_TAXONOMY_LINKS_OPTION );
+			Content_Model::action_init_register_taxonomies();
+			$this->category_term_id = 0;
+		}
+		parent::tearDown();
+	}
 
 	/**
 	 * Ensures the tasty_recipes() function yields a Tasty_Recipes instance.
@@ -210,5 +230,155 @@ EOT;
 			'/print/' . $recipe->get_id() . '?lang=de',
 			tasty_recipes_get_print_url( $this->post_id, $recipe->get_id() )
 		);
+	}
+
+	/**
+	 * Ensures a recipe whose only parent is not public is left out of the taxonomy archive.
+	 *
+	 * @since x.x
+	 */
+	public function test_taxonomy_archive_excludes_recipe_without_public_parent() {
+		$this->enable_recipe_taxonomy_archives();
+		$draft     = $this->create_recipe_with_parents( array( array( 'post_status' => 'draft' ) ) );
+		$pending   = $this->create_recipe_with_parents( array( array( 'post_status' => 'pending' ) ) );
+		$protected = $this->create_recipe_with_parents( array( array( 'post_password' => 'secret' ) ) );
+
+		$archive_ids = $this->get_recipe_category_archive_ids();
+
+		$this->assertNotContains( $draft->get_id(), $archive_ids );
+		$this->assertNotContains( $pending->get_id(), $archive_ids );
+		$this->assertNotContains( $protected->get_id(), $archive_ids );
+	}
+
+	/**
+	 * Ensures a recipe with a published parent is listed on the taxonomy archive.
+	 *
+	 * @since x.x
+	 */
+	public function test_taxonomy_archive_includes_recipe_with_published_parent() {
+		$this->enable_recipe_taxonomy_archives();
+		$recipe = $this->create_recipe_with_parents( array( array() ) );
+
+		$this->assertSame( array( $recipe->get_id() ), $this->get_recipe_category_archive_ids() );
+	}
+
+	/**
+	 * Ensures a recipe in a draft and a published post is listed and links to the published post.
+	 *
+	 * @since x.x
+	 */
+	public function test_taxonomy_archive_uses_published_parent_when_first_parent_is_draft() {
+		$this->enable_recipe_taxonomy_archives();
+		$recipe     = $this->create_recipe_with_parents(
+			array(
+				array( 'post_status' => 'draft' ),
+				array(),
+			)
+		);
+		$parent_ids = array_map( 'intval', $recipe->get_parent_posts() );
+
+		$this->assertSame( array( $recipe->get_id() ), $this->get_recipe_category_archive_ids() );
+
+		$data = Content_Model::get_archive_item_data( $recipe->get_id() );
+		$this->assertIsArray( $data );
+		$this->assertSame( $parent_ids[1], $data['parent_post_id'] );
+		$this->assertSame( get_permalink( $parent_ids[1] ), $data['permalink'] );
+		$this->assertSame( get_permalink( $parent_ids[1] ), get_permalink( $recipe->get_id() ) );
+	}
+
+	/**
+	 * Ensures a recipe without a public parent has no archive data and keeps its own permalink.
+	 *
+	 * @since x.x
+	 */
+	public function test_archive_item_data_and_permalink_for_recipe_without_public_parent() {
+		$this->enable_recipe_taxonomy_archives();
+		$published = $this->create_recipe_with_parents( array( array() ) );
+		$hidden    = array(
+			$this->create_recipe_with_parents( array( array( 'post_status' => 'draft' ) ) ),
+			$this->create_recipe_with_parents( array( array( 'post_status' => 'pending' ) ) ),
+			$this->create_recipe_with_parents( array( array( 'post_password' => 'secret' ) ) ),
+			$this->create_recipe_with_parents( array() ),
+		);
+		$this->get_recipe_category_archive_ids();
+
+		// The permalink filter is active on this archive.
+		$this->assertSame(
+			get_permalink( $published->get_parent_posts()[0] ),
+			Content_Model::filter_recipe_permalink( 'http://example.org/original/', get_post( $published->get_id() ) )
+		);
+
+		foreach ( $hidden as $recipe ) {
+			$this->assertFalse( Content_Model::get_archive_item_data( $recipe->get_id() ) );
+			$this->assertSame(
+				'http://example.org/original/',
+				Content_Model::filter_recipe_permalink( 'http://example.org/original/', get_post( $recipe->get_id() ) )
+			);
+		}
+	}
+
+	/**
+	 * Turns on the recipe taxonomy archives and creates a recipe category term.
+	 *
+	 * @since x.x
+	 *
+	 * @return void
+	 */
+	protected function enable_recipe_taxonomy_archives() {
+		update_option( Tasty_Recipes::ENABLE_TAXONOMY_LINKS_OPTION, '1' );
+		Content_Model::action_init_register_taxonomies();
+		flush_rewrite_rules();
+
+		$this->category_term_id = $this->factory->term->create(
+			array(
+				'taxonomy' => 'tasty_recipe_category',
+				'name'     => 'Weeknight Dinner',
+			)
+		);
+	}
+
+	/**
+	 * Creates a recipe in the test category, embedded in one post per set of post arguments.
+	 *
+	 * @since x.x
+	 *
+	 * @param array $parents Arguments for wp_insert_post(), one array per parent post.
+	 *
+	 * @return Recipe
+	 */
+	protected function create_recipe_with_parents( $parents ) {
+		$recipe = $this->create_mock_recipe();
+		wp_set_object_terms( $recipe->get_id(), $this->category_term_id, 'tasty_recipe_category' );
+
+		foreach ( $parents as $parent_args ) {
+			$parent_id = wp_insert_post(
+				array_merge(
+					array(
+						'post_title'   => 'Recipe parent',
+						'post_status'  => 'publish',
+						'post_author'  => 1,
+						'post_content' => Shortcodes::get_shortcode_for_recipe( $recipe ),
+					),
+					$parent_args
+				)
+			);
+			$recipe->add_parent_post( $parent_id );
+		}
+
+		return $recipe;
+	}
+
+	/**
+	 * Loads the test category archive and returns the IDs of the recipes it lists.
+	 *
+	 * @since x.x
+	 *
+	 * @return int[]
+	 */
+	protected function get_recipe_category_archive_ids() {
+		$this->go_to( get_term_link( $this->category_term_id, 'tasty_recipe_category' ) );
+		$this->assertTrue( is_tax( 'tasty_recipe_category' ) );
+
+		return array_map( 'intval', wp_list_pluck( $GLOBALS['wp_query']->posts, 'ID' ) );
 	}
 }
