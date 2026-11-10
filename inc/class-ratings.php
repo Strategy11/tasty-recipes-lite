@@ -993,6 +993,8 @@ class Ratings {
 			return self::$rater_token;
 		}
 
+		// Only read while handling a rating AJAX or comment POST request, never on cached page views.
+		// phpcs:ignore WordPressVIPMinimum.Variables.RestrictedVariables.cache_constraints___COOKIE
 		$token = isset( $_COOKIE[ self::RATER_COOKIE ] ) ? sanitize_text_field( wp_unslash( $_COOKIE[ self::RATER_COOKIE ] ) ) : '';
 		return preg_match( '/^[A-Za-z0-9]{32}$/', $token ) ? $token : '';
 	}
