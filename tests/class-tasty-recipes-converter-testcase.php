@@ -54,6 +54,14 @@ class Tasty_Recipes_Converter_Testcase extends Tasty_Recipes_Testcase {
 		wp_set_current_user( $this->admin_id );
 
 		$this->prime_basic_test_post();
+		$this->ensure_post_author_keeps_html();
+	}
+
+	/**
+	 * Makes the admin the author of the post being converted, when the seeded
+	 * author can't keep unfiltered HTML, so converted fields aren't sanitized.
+	 */
+	protected function ensure_post_author_keeps_html() {
 		if ( ! user_can( (int) get_post_field( 'post_author', $this->post_id ), 'unfiltered_html' ) ) {
 			wp_update_post(
 				array(
@@ -86,6 +94,7 @@ class Tasty_Recipes_Converter_Testcase extends Tasty_Recipes_Testcase {
 		global $wpdb;
 
 		static::pre_recipe_conversion( $source, $expected );
+		$this->ensure_post_author_keeps_html();
 
 		$wpdb->update( $wpdb->posts, array( 'post_content' => $source ), array( 'ID' => $this->post_id ) );
 		clean_post_cache( $this->post_id );
