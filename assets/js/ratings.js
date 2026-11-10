@@ -307,10 +307,6 @@ window.TastyRecipes.ratings = {
 
 		// Add comment details for editing.
 		commentBox.innerHTML = data.comment.content;
-		if ( data.comment.name ) {
-			commentForm.querySelector( '[name=author]' ).value = data.comment.name;
-			commentForm.querySelector( '[name=email]' ).value = data.comment.email;
-		}
 	},
 	maybeResetTooltip( recipeCardElement, data, rating ) {
 		if ( this.savingRating === rating ) {
