@@ -40,8 +40,9 @@ class Content_Model {
 		// Prevent deletion of default taxonomy terms.
 		add_action( 'pre_delete_term', array( __CLASS__, 'filter_pre_delete_term' ), 10, 2 );
 
-		// Filter taxonomy archive queries to only show recipes with parent posts.
+		// Filter taxonomy archive queries to only show recipes with published parent posts.
 		add_action( 'pre_get_posts', array( __CLASS__, 'filter_taxonomy_archive_query' ) );
+		add_filter( 'posts_where', array( __CLASS__, 'filter_taxonomy_archive_where' ), 10, 2 );
 	}
 
 	/**
@@ -797,7 +798,7 @@ class Content_Model {
 	}
 
 	/**
-	 * Modify the taxonomy archive query to only include recipes with parent posts.
+	 * Modify the taxonomy archive query to only include recipes with a published parent post.
 	 *
 	 * @since 1.2
 	 *
@@ -813,18 +814,64 @@ class Content_Model {
 		// Force the post type to tasty_recipe since it's not public.
 		$query->set( 'post_type', 'tasty_recipe' );
 
-		// Only include recipes that have a parent post.
-		$existing_meta_query = $query->get( 'meta_query' );
-		if ( ! is_array( $existing_meta_query ) ) {
-			$existing_meta_query = array();
+		// Only include recipes that have a published parent post. See filter_taxonomy_archive_where().
+		$query->set( 'tasty_recipes_published_parent', true );
+	}
+
+	/**
+	 * Limit the recipe taxonomy archive query to recipes embedded in at least one
+	 * published post that is not password protected.
+	 *
+	 * @since x.x
+	 *
+	 * @param string    $where The WHERE clause of the query.
+	 * @param \WP_Query $query The query object.
+	 *
+	 * @return string
+	 */
+	public static function filter_taxonomy_archive_where( $where, $query ) {
+		if ( ! $query->get( 'tasty_recipes_published_parent' ) ) {
+			return $where;
 		}
 
-		$existing_meta_query[] = array(
-			'key'     => Meta_Keys::RECIPE_PARENTS,
-			'compare' => 'EXISTS',
+		global $wpdb;
+
+		$where .= $wpdb->prepare(
+			" AND EXISTS (
+				SELECT 1 FROM {$wpdb->postmeta} AS tr_parents
+				INNER JOIN {$wpdb->posts} AS tr_parent_posts ON tr_parent_posts.ID = CAST( tr_parents.meta_value AS UNSIGNED )
+				WHERE tr_parents.post_id = {$wpdb->posts}.ID
+				AND tr_parents.meta_key = %s
+				AND tr_parent_posts.post_status = %s
+				AND tr_parent_posts.post_password = ''
+			)",
+			Meta_Keys::RECIPE_PARENTS,
+			'publish'
 		);
 
-		$query->set( 'meta_query', $existing_meta_query );
+		return $where;
+	}
+
+	/**
+	 * Get the first published, non password protected post that embeds a recipe.
+	 *
+	 * @since x.x
+	 *
+	 * @param int $recipe_id The recipe post ID.
+	 *
+	 * @return \WP_Post|null The parent post, or null when the recipe has no public parent.
+	 */
+	private static function get_published_parent( $recipe_id ) {
+		$parent_ids = get_post_meta( $recipe_id, Meta_Keys::RECIPE_PARENTS, false );
+
+		foreach ( (array) $parent_ids as $parent_id ) {
+			$parent_post = get_post( (int) $parent_id );
+			if ( $parent_post && 'publish' === $parent_post->post_status && '' === $parent_post->post_password ) {
+				return $parent_post;
+			}
+		}
+
+		return null;
 	}
 
 	/**
@@ -856,15 +903,12 @@ class Content_Model {
 	 * @return array|false Array with display data or false if no parent exists.
 	 */
 	public static function get_archive_item_data( $recipe_id ) {
-		$parent_post_id = get_post_meta( $recipe_id, Meta_Keys::RECIPE_PARENTS, true );
-		if ( empty( $parent_post_id ) ) {
+		$parent_post = self::get_published_parent( $recipe_id );
+		if ( ! $parent_post ) {
 			return false;
 		}
 
-		$parent_post = get_post( $parent_post_id );
-		if ( ! $parent_post || 'publish' !== $parent_post->post_status ) {
-			return false;
-		}
+		$parent_post_id = $parent_post->ID;
 
 		$recipe = Objects\Recipe::get_by_id( $recipe_id );
 		if ( ! $recipe ) {
@@ -902,17 +946,12 @@ class Content_Model {
 			return $permalink;
 		}
 
-		$parent_post_id = get_post_meta( $post->ID, Meta_Keys::RECIPE_PARENTS, true );
-		if ( empty( $parent_post_id ) ) {
+		$parent_post = self::get_published_parent( $post->ID );
+		if ( ! $parent_post ) {
 			return $permalink;
 		}
 
-		$parent_post = get_post( $parent_post_id );
-		if ( ! $parent_post || 'publish' !== $parent_post->post_status ) {
-			return $permalink;
-		}
-
-		return get_permalink( $parent_post_id );
+		return get_permalink( $parent_post );
 	}
 
 	/**
@@ -928,6 +967,11 @@ class Content_Model {
 	public static function filter_recipe_excerpt( $excerpt ) {
 		if ( 'tasty_recipe' !== get_post_type() || ! self::is_recipe_taxonomy_archive() ) {
 			return $excerpt;
+		}
+
+		// Never show the description of a recipe that is not in a public post.
+		if ( ! self::get_published_parent( get_the_ID() ) ) {
+			return '';
 		}
 
 		$recipe = Objects\Recipe::get_by_id( get_the_ID() );
