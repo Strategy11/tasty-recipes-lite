@@ -134,11 +134,11 @@ namespace {
 		/**
 		 * Start a new request from a browser with the given rater token.
 		 *
-		 * @param string $token Rater cookie token. Empty for no cookie.
+		 * @param string $cookie Rater cookie value. Empty for no cookie.
 		 *
 		 * @return void
 		 */
-		private function new_request( $token = '' ) {
+		private function new_request( $cookie = '' ) {
 			foreach ( array( 'rater_token' => '', 'replaced_comment_id' => 0 ) as $property => $value ) {
 				if ( property_exists( Ratings::class, $property ) ) {
 					$reflection = new ReflectionProperty( Ratings::class, $property );
@@ -147,8 +147,8 @@ namespace {
 				}
 			}
 
-			if ( $token ) {
-				$_COOKIE[ self::COOKIE ] = $token;
+			if ( $cookie ) {
+				$_COOKIE[ self::COOKIE ] = $cookie;
 			} else {
 				unset( $_COOKIE[ self::COOKIE ] );
 			}
@@ -486,8 +486,8 @@ namespace {
 			$this->new_request( self::TOKEN_A );
 			$this->post_comment_form( 4 );
 
-			foreach ( array( self::TOKEN_B, '' ) as $token ) {
-				$this->new_request( $token );
+			foreach ( array( self::TOKEN_B, '' ) as $cookie ) {
+				$this->new_request( $cookie );
 				$response = $this->send_quick_rating( 3 );
 
 				$this->assertTrue( $response['success'] );
