@@ -134,6 +134,15 @@ final class Meta_Keys {
 	public const RATING_COMMENT_HASH = 'tasty-recipes-comment-hash';
 
 	/**
+	 * Comment meta on a held rated comment with the ID of the earlier comment it replaces once approved.
+	 *
+	 * @since x.x
+	 *
+	 * @var string
+	 */
+	public const RATING_REPLACES_COMMENT = 'tasty-recipes-replaces-comment';
+
+	/**
 	 * Imported Create ratings post meta.
 	 *
 	 * @since 1.2.7

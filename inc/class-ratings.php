@@ -290,7 +290,81 @@ class Ratings {
 			return;
 		}
 
-		wp_delete_comment( $replaced );
+		if ( '1' !== (string) $comment_approved ) {
+			// Keep the earlier rating counted until the new comment is approved.
+			update_comment_meta( $comment_id, Meta_Keys::RATING_REPLACES_COMMENT, $replaced );
+			return;
+		}
+
+		self::replace_comment( $replaced, (int) $comment_id );
+	}
+
+	/**
+	 * Remove the earlier comment a held rated comment replaces once it is approved.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $new_status New comment status.
+	 * @param string $old_status Old comment status.
+	 * @param object $comment    Comment object.
+	 *
+	 * @return void
+	 */
+	public static function action_transition_comment_status( $new_status, $old_status, $comment ) {
+		if ( 'approved' !== $new_status || ! $comment ) {
+			return;
+		}
+
+		$replaced = (int) get_comment_meta( $comment->comment_ID, Meta_Keys::RATING_REPLACES_COMMENT, true );
+		if ( $replaced ) {
+			self::replace_comment( $replaced, (int) $comment->comment_ID );
+		}
+	}
+
+	/**
+	 * Delete an earlier comment from the same rater, and any it was waiting to replace.
+	 *
+	 * @since x.x
+	 *
+	 * @param int $replaced   ID of the earlier comment.
+	 * @param int $comment_id ID of the approved comment that replaces it.
+	 *
+	 * @return void
+	 */
+	private static function replace_comment( $replaced, $comment_id ) {
+		delete_comment_meta( $comment_id, Meta_Keys::RATING_REPLACES_COMMENT );
+
+		$hash = (string) get_comment_meta( $comment_id, self::RATING_COMMENT_HASH_META_KEY, true );
+
+		// Also remove any earlier comment a held one was waiting to replace.
+		$depth = 0;
+		while ( $depth < 5 && $replaced !== $comment_id && self::is_same_rater_comment( $replaced, $hash ) ) {
+			$next = (int) get_comment_meta( $replaced, Meta_Keys::RATING_REPLACES_COMMENT, true );
+			wp_delete_comment( $replaced );
+			$replaced = $next;
+			++$depth;
+		}
+
+		self::action_modify_comment_update_recipe_ratings( $comment_id );
+	}
+
+	/**
+	 * Whether a comment is a counted rating left by the rater with this hash.
+	 *
+	 * @since x.x
+	 *
+	 * @param int    $comment_id Comment ID.
+	 * @param string $hash       Rater hash.
+	 *
+	 * @return bool
+	 */
+	private static function is_same_rater_comment( $comment_id, $hash ) {
+		$comment = $comment_id ? get_comment( $comment_id ) : null;
+		if ( ! $comment || ! $hash || in_array( $comment->comment_approved, array( 'spam', 'trash' ), true ) ) {
+			return false;
+		}
+
+		return hash_equals( (string) get_comment_meta( $comment_id, self::RATING_COMMENT_HASH_META_KEY, true ), $hash );
 	}
 
 	/**
