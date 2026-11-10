@@ -241,7 +241,7 @@ EOT;
 		$this->enable_recipe_taxonomy_archives();
 		$draft     = $this->create_recipe_with_parents( array( array( 'post_status' => 'draft' ) ) );
 		$pending   = $this->create_recipe_with_parents( array( array( 'post_status' => 'pending' ) ) );
-		$protected = $this->create_recipe_with_parents( array( array( 'post_password' => 'secret' ) ) );
+		$protected = $this->create_recipe_with_parents( array( array( 'post_password' => wp_generate_password( 12, false ) ) ) );
 
 		$archive_ids = $this->get_recipe_category_archive_ids();
 
@@ -297,7 +297,7 @@ EOT;
 		$hidden    = array(
 			$this->create_recipe_with_parents( array( array( 'post_status' => 'draft' ) ) ),
 			$this->create_recipe_with_parents( array( array( 'post_status' => 'pending' ) ) ),
-			$this->create_recipe_with_parents( array( array( 'post_password' => 'secret' ) ) ),
+			$this->create_recipe_with_parents( array( array( 'post_password' => wp_generate_password( 12, false ) ) ) ),
 			$this->create_recipe_with_parents( array() ),
 		);
 		$this->get_recipe_category_archive_ids();
