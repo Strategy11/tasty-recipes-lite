@@ -58,18 +58,28 @@ class Tasty_Recipes_Converter_Testcase extends Tasty_Recipes_Testcase {
 	}
 
 	/**
-	 * Makes the admin the author of the post being converted, when the seeded
-	 * author can't keep unfiltered HTML, so converted fields aren't sanitized.
+	 * Lets the author of the post being converted keep unfiltered HTML, so
+	 * converted fields aren't sanitized. Seeded authors are promoted rather than
+	 * replaced, because some converters fall back to the author's name.
 	 */
 	protected function ensure_post_author_keeps_html() {
-		if ( ! user_can( (int) get_post_field( 'post_author', $this->post_id ), 'unfiltered_html' ) ) {
-			wp_update_post(
-				array(
-					'ID'          => $this->post_id,
-					'post_author' => $this->admin_id,
-				)
-			);
+		$author_id = (int) get_post_field( 'post_author', $this->post_id );
+		if ( user_can( $author_id, 'unfiltered_html' ) ) {
+			return;
 		}
+
+		$author = get_userdata( $author_id );
+		if ( $author ) {
+			$author->add_role( 'administrator' );
+			return;
+		}
+
+		wp_update_post(
+			array(
+				'ID'          => $this->post_id,
+				'post_author' => $this->admin_id,
+			)
+		);
 	}
 
 	/**
