@@ -25,6 +25,13 @@ class Tasty_Recipes_Converter_Testcase extends Tasty_Recipes_Testcase {
 	protected static $conversion_class;
 
 	/**
+	 * Administrator who runs the conversions.
+	 *
+	 * @var int
+	 */
+	protected $admin_id;
+
+	/**
 	 * Imports SQL seed data for test when present.
 	 */
 	public function setUp(): void {
@@ -39,7 +46,30 @@ class Tasty_Recipes_Converter_Testcase extends Tasty_Recipes_Testcase {
 			}
 		}
 		parent::setUp();
+
+		// Converting needs a user who can read other users' recipes, upload
+		// files and keep unfiltered HTML. Some seeds replace the users table,
+		// so don't rely on user 1.
+		$this->admin_id = $this->factory->user->create( array( 'role' => 'administrator' ) );
+		wp_set_current_user( $this->admin_id );
+
 		$this->prime_basic_test_post();
+		if ( ! user_can( (int) get_post_field( 'post_author', $this->post_id ), 'unfiltered_html' ) ) {
+			wp_update_post(
+				array(
+					'ID'          => $this->post_id,
+					'post_author' => $this->admin_id,
+				)
+			);
+		}
+	}
+
+	/**
+	 * Resets the current user after each test.
+	 */
+	public function tearDown(): void {
+		wp_set_current_user( 0 );
+		parent::tearDown();
 	}
 
 	/**

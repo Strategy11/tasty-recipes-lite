@@ -41,7 +41,12 @@ class Test_WP_Ultimate_Recipe_Converter extends Tasty_Recipes_Converter_Testcase
 			$file          = __DIR__ . '/data/canola.jpg';
 			$attachment_id = $this->create_upload_object( $file );
 			set_post_thumbnail( 33652, $attachment_id );
-			$user_id = $this->factory->user->create( array( 'display_name' => 'Tasty Author' ) );
+			$user_id = $this->factory->user->create(
+				array(
+					'display_name' => 'Tasty Author',
+					'role'         => 'administrator',
+				)
+			);
 			wp_update_post(
 				array(
 					'ID'          => 33652,

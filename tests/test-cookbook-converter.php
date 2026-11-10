@@ -226,4 +226,58 @@ EOT;
 			),
 		);
 	}
+
+	/**
+	 * A contributor can't convert a Cookbook recipe they can't access.
+	 */
+	public function test_contributor_cannot_convert_private_cookbook_recipe() {
+		global $wpdb;
+
+		$contributor_id = $this->factory->user->create( array( 'role' => 'contributor' ) );
+		$post_id        = $this->factory->post->create(
+			array(
+				'post_author' => $contributor_id,
+				'post_status' => 'draft',
+			)
+		);
+		wp_update_post(
+			array(
+				'ID'          => 33771,
+				'post_status' => 'private',
+			)
+		);
+		$wpdb->update( $wpdb->posts, array( 'post_content' => '[cookbook_recipe id="33771"]' ), array( 'ID' => $post_id ) );
+		clean_post_cache( $post_id );
+
+		wp_set_current_user( $contributor_id );
+		$this->assertFalse( Tasty_Recipes\Converters\Cookbook::convert_post( $post_id ) );
+		$this->assertStringContainsString( '[cookbook_recipe id="33771"]', get_post_field( 'post_content', $post_id ) );
+
+		// An administrator converting the contributor's post can't copy it either.
+		wp_set_current_user( $this->admin_id );
+		$this->assertFalse( Tasty_Recipes\Converters\Cookbook::convert_post( $post_id ) );
+
+		// The contributor can convert their own private recipe.
+		wp_update_post(
+			array(
+				'ID'          => 33771,
+				'post_author' => $contributor_id,
+			)
+		);
+		wp_set_current_user( $contributor_id );
+		$this->assertInstanceOf( Recipe::class, Tasty_Recipes\Converters\Cookbook::convert_post( $post_id ) );
+	}
+
+	/**
+	 * Only Cookbook recipe posts can be converted.
+	 */
+	public function test_cookbook_converter_ignores_other_post_types() {
+		global $wpdb;
+
+		$other_id = $this->factory->post->create( array( 'post_title' => 'Not a recipe' ) );
+		$wpdb->update( $wpdb->posts, array( 'post_content' => '[cookbook_recipe id="' . $other_id . '"]' ), array( 'ID' => $this->post_id ) );
+		clean_post_cache( $this->post_id );
+
+		$this->assertFalse( Tasty_Recipes\Converters\Cookbook::convert_post( $this->post_id ) );
+	}
 }

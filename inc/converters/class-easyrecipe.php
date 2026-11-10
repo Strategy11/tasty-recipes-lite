@@ -231,7 +231,7 @@ class EasyRecipe extends Converter {
 			$value                  = html_entity_decode( $value, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
 			$converted_data[ $key ] = $value;
 		}
-		return self::save_converted_data_to_recipe( $converted_data, $recipe );
+		return self::save_converted_data_to_recipe( $converted_data, $recipe, $post_id );
 	}
 
 	/**
