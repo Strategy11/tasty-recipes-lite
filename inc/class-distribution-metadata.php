@@ -1418,9 +1418,6 @@ class Distribution_Metadata {
 	/**
 	 * Whether a top-level instruction list item is a step of its own.
 	 *
-	 * Items with only a photo or video are not, matching how the schema
-	 * attaches them to the step above.
-	 *
 	 * @since x.x
 	 *
 	 * @param string $html Inner HTML of the list item.
