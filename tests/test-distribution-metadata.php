@@ -1457,6 +1457,77 @@ EOT;
 	}
 
 	/**
+	 * Ensures list items with only a photo are not numbered as steps.
+	 */
+	public function test_apply_instruction_step_numbers_skips_photo_only_items() {
+		add_shortcode( 'tooltip', '__return_empty_string' );
+		$img = '<img src="https://example.com/a.jpg" alt="">';
+		$this->assertEquals(
+			'<ol>' .
+			'<li id="instruction-step-1">Step 1<br>' . $img . '</li>' .
+			'<li class="tasty-recipes-instruction-media">' . $img . '</li>' .
+			'<li class="tasty-recipes-instruction-media"><figure>' . $img . '<figcaption>Caption</figcaption></figure></li>' .
+			'<li class="tasty-recipes-instruction-media">[caption id="attachment_1"]' . $img . ' Caption[/caption]</li>' .
+			'<li class="tasty-recipes-instruction-media existing"><a href="https://example.com/a.jpg">' . $img . '</a></li>' .
+			'<li class="tasty-recipes-instruction-media" data-class="x">' . $img . '</li>' .
+			'<li id="instruction-step-2">[tooltip]Step 2[/tooltip]</li>' .
+			'<li id="instruction-step-3">Step 3</li>' .
+			'</ol>',
+			Distribution_Metadata::apply_instruction_step_numbers(
+				'<ol>' .
+				'<li>Step 1<br>' . $img . '</li>' .
+				'<li>' . $img . '</li>' .
+				'<li><figure>' . $img . '<figcaption>Caption</figcaption></figure></li>' .
+				'<li>[caption id="attachment_1"]' . $img . ' Caption[/caption]</li>' .
+				"<li class='existing'><a href=\"https://example.com/a.jpg\">" . $img . '</a></li>' .
+				'<li data-class="x">' . $img . '</li>' .
+				'<li>[tooltip]Step 2[/tooltip]</li>' .
+				'<li>Step 3</li>' .
+				'</ol>'
+			)
+		);
+		remove_shortcode( 'tooltip' );
+	}
+
+	/**
+	 * Ensures schema step anchors skip photo-only items, like the card does.
+	 */
+	public function test_parse_recipe_instruction_list_with_photo_only_items() {
+		$img          = '<img src="https://example.com/a.jpg" alt="">';
+		$instructions = '<ol>' .
+			'<li>Mix the dough.</li>' .
+			'<li>' . $img . '</li>' .
+			'<li><figure>' . $img . '<figcaption>Risen dough</figcaption></figure></li>' .
+			'<li>Bake the bread.</li>' .
+			'</ol>';
+		$this->assertEquals(
+			array(
+				array(
+					'type'      => 'item',
+					'value'     => 'Mix the dough.',
+					'url'       => '#instruction-step-1',
+					'image_src' => 'https://example.com/a.jpg',
+				),
+				array(
+					'type'  => 'item',
+					'value' => 'Bake the bread.',
+					'url'   => '#instruction-step-2',
+				),
+			),
+			Distribution_Metadata::parse_recipe_instruction_list( $instructions )
+		);
+	}
+
+	/**
+	 * Ensures captioned photos in paragraph-style instructions keep their step.
+	 */
+	public function test_parse_recipe_instruction_list_paragraphs_keep_captioned_photo_steps() {
+		$instructions = "Mix the dough.\n\n<figure><img src=\"https://example.com/a.jpg\" alt=\"\"><figcaption>Risen dough</figcaption></figure>\n\nBake the bread.";
+		$urls         = wp_list_pluck( Distribution_Metadata::parse_recipe_instruction_list( $instructions ), 'url' );
+		$this->assertEquals( array( '#instruction-step-1', '#instruction-step-2', '#instruction-step-3' ), $urls );
+	}
+
+	/**
 	 * Ensures nested ingredient lists stay part of their parent ingredient.
 	 */
 	public function test_parse_recipe_component_list_with_nested_list() {
