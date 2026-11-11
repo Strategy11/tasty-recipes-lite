@@ -1490,6 +1490,31 @@ EOT;
 	}
 
 	/**
+	 * Ensures a linked video URL stays a step, while a bare one is embedded media.
+	 */
+	public function test_apply_instruction_step_numbers_linked_video_url() {
+		$url = 'https://www.youtube.com/watch?v=GRtWNZwgGn8';
+		$this->assertEquals(
+			'<ol>' .
+			'<li id="instruction-step-1">Mix.</li>' .
+			'<li id="instruction-step-2"><a href="' . $url . '">' . $url . '</a></li>' .
+			'<li class="tasty-recipes-instruction-media">' . $url . '</li>' .
+			'<li class="tasty-recipes-instruction-media"><p>' . $url . '</p></li>' .
+			'<li id="instruction-step-3">Bake.</li>' .
+			'</ol>',
+			Distribution_Metadata::apply_instruction_step_numbers(
+				'<ol>' .
+				'<li>Mix.</li>' .
+				'<li><a href="' . $url . '">' . $url . '</a></li>' .
+				'<li>' . $url . '</li>' .
+				'<li><p>' . $url . '</p></li>' .
+				'<li>Bake.</li>' .
+				'</ol>'
+			)
+		);
+	}
+
+	/**
 	 * Ensures schema step anchors skip photo-only items, like the card does.
 	 */
 	public function test_parse_recipe_instruction_list_with_photo_only_items() {

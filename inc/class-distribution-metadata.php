@@ -1430,10 +1430,10 @@ class Distribution_Metadata {
 			return false;
 		}
 
-		// The card embeds a URL on its own before numbering, the schema doesn't.
-		if ( preg_match( '#^https?://\S+$#', $text ) ) {
+		// The card embeds a bare URL before numbering, the schema doesn't. Linked URLs stay links.
+		if ( preg_match( '#^\s*(?:<p(?: [^>]*)?>\s*)?(https?://[^\s<>"]+)\s*(?:</p>\s*)?$#i', $html, $matches ) ) {
 			return ! self::get_video_url_from_content( $html )
-				&& ! _wp_oembed_get_object()->get_provider( $text, array( 'discover' => false ) );
+				&& ! _wp_oembed_get_object()->get_provider( $matches[1], array( 'discover' => false ) );
 		}
 
 		return true;
