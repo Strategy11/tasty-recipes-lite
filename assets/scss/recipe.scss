@@ -230,6 +230,16 @@ body.tasty-recipes-print-view{
 	margin: 1em 0;
 }
 
+/* Photos without text belong to the step above, so they don't get a number. Designs load after this file. */
+.tasty-recipes li.tasty-recipes-instruction-media {
+	display: block !important;
+	counter-increment: none !important;
+
+	&::before {
+		content: none !important;
+	}
+}
+
 .tasty-recipes-entry-content .tasty-recipes-instructions h3 {
 	margin: 0 0 1rem 0;
 	@media only screen and (min-width: 520px) {

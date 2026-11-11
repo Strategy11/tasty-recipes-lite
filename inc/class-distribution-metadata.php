@@ -1352,14 +1352,23 @@ class Distribution_Metadata {
 		$step_set_regex = '#^(\s*)(<[a-z]+)([^>]*>)#';
 		$list_items     = self::get_top_level_list_items( $component );
 		if ( $list_items ) {
-			// Replace from the end so earlier byte offsets stay valid.
-			foreach ( array_reverse( $list_items, true ) as $index => $list_item ) {
-				$open_tag  = preg_replace(
+			$open_tags = array();
+			foreach ( $list_items as $index => $list_item ) {
+				// Photos and videos without text belong to the step above, as in the schema.
+				if ( ! self::is_step_list_item( $list_item['inner'] ) ) {
+					$open_tags[ $index ] = self::add_class_to_tag( $list_item['tag'], 'tasty-recipes-instruction-media' );
+					continue;
+				}
+				++$step;
+				$open_tags[ $index ] = preg_replace(
 					$step_set_regex,
-					'$1$2 id="instruction-step-' . ( $index + 1 ) . '"$3',
+					'$1$2 id="instruction-step-' . $step . '"$3',
 					$list_item['tag']
 				);
-				$component = substr_replace( $component, $open_tag, $list_item['offset'], strlen( $list_item['tag'] ) );
+			}
+			// Replace from the end so earlier byte offsets stay valid.
+			foreach ( array_reverse( $list_items, true ) as $index => $list_item ) {
+				$component = substr_replace( $component, $open_tags[ $index ], $list_item['offset'], strlen( $list_item['tag'] ) );
 			}
 		} elseif ( preg_match_all( self::UNSTRUCTURED_LIST_MATCH_REGEX, $component, $matches, PREG_OFFSET_CAPTURE ) > 1 ) {
 			// Intro text before the first number, so set that as the first step.
@@ -1404,6 +1413,82 @@ class Distribution_Metadata {
 			$component = implode( PHP_EOL, $bits );
 		}
 		return $component;
+	}
+
+	/**
+	 * Whether a top-level instruction list item is a step of its own.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $html Inner HTML of the list item.
+	 *
+	 * @return bool
+	 */
+	private static function is_step_list_item( $html ) {
+		$text = self::get_step_text( $html );
+		if ( '' === $text ) {
+			return false;
+		}
+
+		// The card embeds a bare URL before numbering, the schema doesn't. Linked URLs stay links.
+		if ( preg_match( '#^\s*(?:<p(?: [^>]*)?>\s*)?(https?://[^\s<>"]+)\s*(?:</p>\s*)?$#i', $html, $matches ) ) {
+			return ! self::get_video_url_from_content( $html )
+				&& ! _wp_oembed_get_object()->get_provider( $matches[1], array( 'discover' => false ) );
+		}
+
+		return true;
+	}
+
+	/**
+	 * Gets the text of an instruction, ignoring captions and shortcode tags.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $html Instruction HTML.
+	 *
+	 * @return string
+	 */
+	private static function get_step_text( $html ) {
+		$html = (string) preg_replace( '#<figcaption\b[^>]*>.*?</figcaption>|\[caption\b[^\]]*\].*?\[/caption\]#is', '', $html );
+		// Keep the text inside other enclosing shortcodes, since it shows once they run.
+		$html = (string) preg_replace_callback(
+			'/' . get_shortcode_regex() . '/',
+			function ( $matches ) {
+				return '[' === $matches[1] ? $matches[0] : $matches[5];
+			},
+			$html
+		);
+		$text = trim( wp_strip_all_tags( $html ) );
+		return self::is_empty( $text ) ? '' : $text;
+	}
+
+	/**
+	 * Adds a class to an opening HTML tag.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $tag        Opening tag.
+	 * @param string $class_name Class to add.
+	 *
+	 * @return string
+	 */
+	private static function add_class_to_tag( $tag, $class_name ) {
+		$count   = 0;
+		$updated = preg_replace_callback(
+			'#\sclass\s*=\s*(?:"([^"]*)"|\'([^\']*)\'|([^\s>]+))#i',
+			function ( $matches ) use ( $class_name ) {
+				$existing = trim( implode( '', array_slice( $matches, 1 ) ) );
+				return ' class="' . trim( $class_name . ' ' . $existing ) . '"';
+			},
+			$tag,
+			1,
+			$count
+		);
+		if ( $count ) {
+			return (string) $updated;
+		}
+
+		return (string) preg_replace( '#^(\s*<[a-z]+)#i', '$1 class="' . $class_name . '"', $tag, 1 );
 	}
 
 	/**
@@ -1666,7 +1751,11 @@ class Distribution_Metadata {
 					$processed_component['name'] = $component_item['name'];
 				}
 			}
-			$component_value = trim( wp_strip_all_tags( strip_shortcodes( $component_item['value'] ) ) );
+			$component_value = '';
+			// Instruction items not numbered as steps belong to the step above.
+			if ( ! preg_match( '#^\s*<li\b[^>]*\bclass="[^"]*\btasty-recipes-instruction-media\b#', $component_item['value'] ) ) {
+				$component_value = trim( wp_strip_all_tags( strip_shortcodes( $component_item['value'] ) ) );
+			}
 			// Don't add yet if it's an image or a video.
 			if ( empty( $component_value ) ) {
 				if ( ! isset( $processed_component['video_url'] )
