@@ -1,15 +1,146 @@
 name: Update Dependencies
 
+# Inlined from Strategy11/tasty-framework's update-npm-deps.yml: this repo is
+# public and cannot call reusable workflows that live in a private repo.
+
 on:
   schedule:
     - cron: '0 10 1,15 * *'
   workflow_dispatch:
 
+env:
+  ISSUE_REPO: Strategy11/tasty-recipes-plugin
+  ISSUE_ASSIGNEE: sorinmarta
+
 jobs:
   update:
-    uses: Strategy11/tasty-framework/.github/workflows/update-npm-deps.yml@master
-    with:
-      pnpm-version: '11.5.3'
-      issue-repo: Strategy11/tasty-recipes-plugin
-    secrets:
-      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: '11.5.3'
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+
+      - name: Configure SSH for GitHub
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+      - name: Composer install
+        env:
+          COMPOSER_AUTH: '{"github-oauth":{"github.com":"${{ secrets.GH_TOKEN }}"}}'
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Update dependencies to latest
+        run: pnpm update --latest
+
+      # Overrides live in pnpm-workspace.yaml; keep package.json in line with them.
+      - name: Restore overridden package versions
+        run: |
+          OVERRIDES=$(yq -r '.overrides // {} | to_entries[] | .key + "=" + .value' pnpm-workspace.yaml)
+          if [ -z "$OVERRIDES" ]; then
+            echo "No overrides found, skipping."
+            exit 0
+          fi
+
+          CHANGED=false
+          while IFS='=' read -r pkg version; do
+            for section in devDependencies dependencies; do
+              if jq -e --arg section "$section" --arg pkg "$pkg" '.[$section][$pkg]' package.json > /dev/null; then
+                echo "Restoring $pkg to $version in $section"
+                jq --arg section "$section" --arg pkg "$pkg" --arg version "$version" \
+                  '.[$section][$pkg] = $version' package.json > tmp.json && mv tmp.json package.json
+                CHANGED=true
+              fi
+            done
+          done <<< "$OVERRIDES"
+
+          if [ "$CHANGED" = true ]; then
+            pnpm install --no-frozen-lockfile
+          fi
+
+      - name: Build
+        run: pnpm build
+
+      - name: Sync lock files
+        env:
+          CI: false
+        run: pnpm sync-locks
+
+      - name: Create PR if changes exist
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No dependency changes detected."
+            exit 0
+          fi
+
+          BRANCH="deps/auto-update-$(date +%Y-%m-%d)"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git checkout -b "$BRANCH"
+          git add -A
+          git commit -m "Update npm dependencies to latest"
+          git push origin "$BRANCH"
+
+          EXISTING_PR=$(gh pr list --head "$BRANCH" --json number --jq '.[0].number')
+          if [ -n "$EXISTING_PR" ]; then
+            echo "PR #$EXISTING_PR already exists for branch $BRANCH."
+            exit 0
+          fi
+
+          gh pr create \
+            --title "Update npm dependencies ($(date +%Y-%m-%d))" \
+            --body "$(cat <<'EOF'
+          ## Automated dependency update
+
+          This PR was created automatically by the dependency update workflow.
+
+          **Changes:**
+          - Updated all npm dependencies to latest via `pnpm update --latest`
+          - Build passed successfully
+          - Lock files synced (`pnpm-lock.yaml` and `package-lock.json`)
+
+          Review the `package.json` and lock file diffs before merging.
+          EOF
+          )" || true
+
+      - name: Create issue on failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          gh issue create \
+            --repo "$ISSUE_REPO" \
+            --assignee "$ISSUE_ASSIGNEE" \
+            --title "Dependency update failed for ${{ github.repository }} ($(date +%Y-%m-%d))" \
+            --body "$(cat <<EOF
+          ## Automated dependency update failed
+
+          The dependency update workflow failed for **${{ github.repository }}**.
+
+          **Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+          Please check the workflow logs for details on which step failed.
+          EOF
+          )" || true
