@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Tasty Recipes Lite 1.2.11\n"
+"Project-Id-Version: Tasty Recipes Lite 1.2.12\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/tasty-recipes-lite\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-13T17:10:10+00:00\n"
+"POT-Creation-Date: 2026-11-18T08:07:36+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: tasty-recipes-lite\n"
@@ -45,21 +45,21 @@ msgstr ""
 
 #: functions.php:68
 #: inc/designs/class-template.php:581
-#: inc/objects/class-recipe.php:79
-#: assets/recipe-editor/components/RecipeForm.jsx:115
+#: inc/objects/class-recipe.php:80
+#: assets/recipe-editor/components/RecipeForm.jsx:140
 msgid "Description"
 msgstr ""
 
 #: functions.php:69
 #: inc/designs/class-template.php:585
-#: inc/objects/class-recipe.php:103
-#: assets/recipe-editor/components/RecipeForm.jsx:145
+#: inc/objects/class-recipe.php:104
+#: assets/recipe-editor/components/RecipeForm.jsx:170
 msgid "Notes"
 msgstr ""
 
 #: functions.php:70
 #: inc/designs/class-template.php:586
-#: assets/recipe-editor/components/RecipeForm.jsx:194
+#: assets/recipe-editor/components/RecipeForm.jsx:219
 msgid "Nutrition"
 msgstr ""
 
@@ -123,212 +123,213 @@ msgstr ""
 msgid "(no title)"
 msgstr ""
 
-#: inc/class-content-model.php:74
-#: inc/class-content-model.php:86
+#: inc/class-content-model.php:75
+#: inc/class-content-model.php:87
 #: inc/class-settings.php:342
 msgid "Recipes"
 msgstr ""
 
-#: inc/class-content-model.php:75
+#: inc/class-content-model.php:76
 msgid "Recipe"
 msgstr ""
 
-#: inc/class-content-model.php:76
+#: inc/class-content-model.php:77
 msgid "All Recipes"
 msgstr ""
 
-#: inc/class-content-model.php:77
+#: inc/class-content-model.php:78
 msgid "New Recipe"
 msgstr ""
 
-#: inc/class-content-model.php:78
+#: inc/class-content-model.php:79
 msgid "Add New"
 msgstr ""
 
-#: inc/class-content-model.php:79
+#: inc/class-content-model.php:80
 msgid "Add New Recipe"
 msgstr ""
 
-#: inc/class-content-model.php:80
+#: inc/class-content-model.php:81
 #: inc/integrations/elementor/class-recipe-control.php:84
-#: assets/recipe-editor/components/RecipeForm.jsx:97
+#: assets/recipe-editor/components/RecipeForm.jsx:122
 msgid "Edit Recipe"
 msgstr ""
 
-#: inc/class-content-model.php:81
+#: inc/class-content-model.php:82
 msgid "View Recipes"
 msgstr ""
 
-#: inc/class-content-model.php:82
+#: inc/class-content-model.php:83
 msgid "Search Recipes"
 msgstr ""
 
-#: inc/class-content-model.php:83
+#: inc/class-content-model.php:84
 msgid "No recipes found"
 msgstr ""
 
-#: inc/class-content-model.php:84
+#: inc/class-content-model.php:85
 msgid "No recipes found in trash"
 msgstr ""
 
-#: inc/class-content-model.php:85
+#: inc/class-content-model.php:86
 msgid "Parent recipe"
 msgstr ""
 
-#: inc/class-content-model.php:115
+#: inc/class-content-model.php:116
 msgid "category"
 msgstr ""
 
-#: inc/class-content-model.php:115
+#: inc/class-content-model.php:116
 msgid "Categories"
 msgstr ""
 
-#: inc/class-content-model.php:116
+#: inc/class-content-model.php:117
 msgid "method"
 msgstr ""
 
-#: inc/class-content-model.php:116
+#: inc/class-content-model.php:117
 msgid "Methods"
 msgstr ""
 
-#: inc/class-content-model.php:117
+#: inc/class-content-model.php:118
 msgid "cuisine"
 msgstr ""
 
-#: inc/class-content-model.php:117
+#: inc/class-content-model.php:118
 msgid "Cuisines"
 msgstr ""
 
-#: inc/class-content-model.php:118
+#: inc/class-content-model.php:119
 msgid "diet"
 msgstr ""
 
-#: inc/class-content-model.php:118
+#: inc/class-content-model.php:119
 msgid "Diets"
 msgstr ""
 
 #. translators: %s is the plural of the taxonomy.
-#: inc/class-content-model.php:168
+#: inc/class-content-model.php:169
 #, php-format
 msgid "Recipe %s"
 msgstr ""
 
 #. translators: %s is the plural of the taxonomy.
-#: inc/class-content-model.php:171
+#: inc/class-content-model.php:172
 #, php-format
 msgid "Search %s"
 msgstr ""
 
 #. translators: %s is the plural of the taxonomy.
-#: inc/class-content-model.php:173
+#: inc/class-content-model.php:174
 #, php-format
 msgid "All %s"
 msgstr ""
 
 #. translators: %s is the singular of the taxonomy.
-#: inc/class-content-model.php:175
+#: inc/class-content-model.php:176
 #, php-format
 msgid "Edit %s"
 msgstr ""
 
 #. translators: %s is the singular of the taxonomy.
-#: inc/class-content-model.php:177
+#: inc/class-content-model.php:178
 #, php-format
 msgid "Update %s"
 msgstr ""
 
 #. translators: %s is the singular of the taxonomy.
-#: inc/class-content-model.php:179
+#: inc/class-content-model.php:180
 #, php-format
 msgid "Add New %s"
 msgstr ""
 
 #. translators: %s is the singular of the taxonomy.
-#: inc/class-content-model.php:181
+#: inc/class-content-model.php:182
 #, php-format
 msgid "New %s Name"
 msgstr ""
 
 #. translators: %s is the plural of the taxonomy.
-#: inc/class-content-model.php:185
+#: inc/class-content-model.php:186
 #, php-format
 msgid "Separate %s with commas"
 msgstr ""
 
 #. translators: %s is the plural of the taxonomy.
-#: inc/class-content-model.php:187
+#: inc/class-content-model.php:188
 #, php-format
 msgid "Choose from the most used %s"
 msgstr ""
 
 #. translators: %s is the plural of the taxonomy.
-#: inc/class-content-model.php:189
+#: inc/class-content-model.php:190
 #, php-format
 msgid "No %s found"
 msgstr ""
 
-#: inc/class-content-model.php:361
+#: inc/class-content-model.php:362
 msgid "This is a default term and cannot be deleted."
 msgstr ""
 
-#: inc/class-content-model.php:362
+#: inc/class-content-model.php:363
 msgid "Cannot Delete Term"
 msgstr ""
 
 #. translators: Nutrifox HTTP error code.
-#: inc/class-content-model.php:440
+#: inc/class-content-model.php:445
+#: inc/integrations/nutrifox/class-connection.php:660
 #, php-format
 msgid "Nutrifox API request failed (HTTP code %d)"
 msgstr ""
 
-#: inc/class-content-model.php:475
+#: inc/class-content-model.php:480
 msgid "Unknown shortcode in video URL."
 msgstr ""
 
-#: inc/class-content-model.php:494
+#: inc/class-content-model.php:499
 msgid "Shortcode is missing video id."
 msgstr ""
 
-#: inc/class-content-model.php:520
+#: inc/class-content-model.php:525
 msgid "Unknown provider for URL."
 msgstr ""
 
-#: inc/class-content-model.php:541
+#: inc/class-content-model.php:546
 msgid "Invalid response from provider."
 msgstr ""
 
 #. translators: Individual hour.
-#: inc/class-distribution-metadata.php:1875
+#: inc/class-distribution-metadata.php:2257
 #, php-format
 msgid "%s hour"
 msgstr ""
 
 #. translators: Multiple hours.
-#: inc/class-distribution-metadata.php:1877
+#: inc/class-distribution-metadata.php:2259
 #, php-format
 msgid "%s hours"
 msgstr ""
 
 #. translators: Multiple hours and minutes.
-#: inc/class-distribution-metadata.php:1879
+#: inc/class-distribution-metadata.php:2261
 #, php-format
 msgid "%1$s hours %2$s minutes"
 msgstr ""
 
 #. translators: Individual hour but multiple minutes.
-#: inc/class-distribution-metadata.php:1881
+#: inc/class-distribution-metadata.php:2263
 #, php-format
 msgid "%1$s hour %2$s minutes"
 msgstr ""
 
 #. translators: Individual minute.
-#: inc/class-distribution-metadata.php:1883
+#: inc/class-distribution-metadata.php:2265
 #, php-format
 msgid "%s minute"
 msgstr ""
 
 #. translators: Multiple minutes.
-#: inc/class-distribution-metadata.php:1885
+#: inc/class-distribution-metadata.php:2267
 #, php-format
 msgid "%s minutes"
 msgstr ""
@@ -377,7 +378,7 @@ msgid "Unknown error converting recipe."
 msgstr ""
 
 #: inc/class-editor.php:423
-#: inc/class-ratings.php:632
+#: inc/class-ratings.php:866
 msgid "Invalid request"
 msgstr ""
 
@@ -386,27 +387,27 @@ msgstr ""
 msgid "No recipe found."
 msgstr ""
 
-#: inc/class-editor.php:1116
-#: inc/class-editor.php:1157
-#: inc/class-editor.php:1212
-#: inc/class-editor.php:1259
+#: inc/class-editor.php:1121
+#: inc/class-editor.php:1162
+#: inc/class-editor.php:1217
+#: inc/class-editor.php:1264
 msgid "Invalid taxonomy."
 msgstr ""
 
-#: inc/class-editor.php:1166
-#: inc/class-editor.php:1221
+#: inc/class-editor.php:1171
+#: inc/class-editor.php:1226
 msgid "Invalid term."
 msgstr ""
 
-#: inc/class-editor.php:1174
+#: inc/class-editor.php:1179
 msgid "Cannot edit default terms."
 msgstr ""
 
-#: inc/class-editor.php:1229
+#: inc/class-editor.php:1234
 msgid "Cannot delete default terms."
 msgstr ""
 
-#: inc/class-editor.php:1308
+#: inc/class-editor.php:1313
 #: assets/recipe-editor/components/taxonomy-select/useTaxonomyOptions.js:191
 #: assets/recipe-editor/components/taxonomy-select/utils.js:74
 msgid "Created by you"
@@ -437,53 +438,53 @@ msgstr ""
 msgid "Trust With Google"
 msgstr ""
 
-#: inc/class-ratings.php:279
+#: inc/class-ratings.php:425
 msgid "Recipe rating"
 msgstr ""
 
-#: inc/class-ratings.php:661
-#: inc/class-ratings.php:750
+#: inc/class-ratings.php:896
+#: inc/class-ratings.php:985
 msgid "Something went wrong. Your rating was not saved."
 msgstr ""
 
-#: inc/class-ratings.php:723
+#: inc/class-ratings.php:958
 msgid "Anonymous"
 msgstr ""
 
-#: inc/class-ratings.php:764
+#: inc/class-ratings.php:999
 msgid "Thanks. Your rating will appear after it is approved."
 msgstr ""
 
-#: inc/class-ratings.php:872
+#: inc/class-ratings.php:1173
 msgid "Thank you for rating!"
 msgstr ""
 
-#: inc/class-ratings.php:877
+#: inc/class-ratings.php:1178
 msgid "Update comment"
 msgstr ""
 
-#: inc/class-ratings.php:922
+#: inc/class-ratings.php:1223
 msgid "To leave a rating, please share your feedback."
 msgstr ""
 
 #. translators: %1$d star rating.
-#: inc/class-ratings.php:927
+#: inc/class-ratings.php:1228
 #, php-format
 msgid "To leave a %1$d-star rating, please share your feedback."
 msgstr ""
 
 #. translators: %1$d star rating.
-#: inc/class-ratings.php:944
+#: inc/class-ratings.php:1245
 #, php-format
 msgid "Rating updated to %1$d stars!"
 msgstr ""
 
-#: inc/class-ratings.php:957
+#: inc/class-ratings.php:1258
 msgid "Leave a comment"
 msgstr ""
 
 #. translators: Ratings from number of reviews.
-#: inc/class-ratings.php:1013
+#: inc/class-ratings.php:1315
 #, php-format
 msgid "%1$s from %2$s review"
 msgid_plural "%1$s from %2$s reviews"
@@ -494,12 +495,12 @@ msgstr[1] ""
 #: assets/js/recipe-explorer/components/AfterCreationForm.jsx:21
 #: assets/js/recipe-explorer/components/EmptyState.jsx:64
 #: assets/js/recipe-explorer/components/partials/Breadcrumbs.jsx:18
-#: assets/recipe-editor/components/RecipeForm.jsx:96
+#: assets/recipe-editor/components/RecipeForm.jsx:121
 msgid "Create Recipe"
 msgstr ""
 
 #: inc/class-recipe-explorer.php:243
-#: inc/objects/class-recipe.php:68
+#: inc/objects/class-recipe.php:69
 msgid "Title"
 msgstr ""
 
@@ -517,7 +518,7 @@ msgid "Last updated"
 msgstr ""
 
 #: inc/class-recipe-explorer.php:249
-#: inc/objects/class-recipe.php:173
+#: inc/objects/class-recipe.php:174
 #: assets/js/recipe-explorer/components/FiltersForm.jsx:147
 msgid "Cuisine"
 msgstr ""
@@ -527,13 +528,13 @@ msgid "Cooking Method"
 msgstr ""
 
 #: inc/class-recipe-explorer.php:251
-#: inc/objects/class-recipe.php:163
+#: inc/objects/class-recipe.php:164
 #: assets/js/recipe-explorer/components/FiltersForm.jsx:195
 msgid "Category"
 msgstr ""
 
 #: inc/class-recipe-explorer.php:252
-#: inc/objects/class-recipe.php:178
+#: inc/objects/class-recipe.php:179
 #: assets/js/recipe-explorer/components/FiltersForm.jsx:243
 msgid "Diet"
 msgstr ""
@@ -541,7 +542,7 @@ msgstr ""
 #: inc/class-recipe-explorer.php:253
 #: inc/class-shortcodes.php:603
 #: assets/js/recipe-explorer/components/FiltersForm.jsx:219
-#: assets/recipe-editor/components/RecipeForm.jsx:391
+#: assets/recipe-editor/components/RecipeForm.jsx:416
 msgid "Author"
 msgstr ""
 
@@ -667,7 +668,7 @@ msgstr ""
 
 #: inc/class-shortcodes.php:264
 #: templates/recipe-print-controls.php:23
-#: assets/settings/tabs/Settings.jsx:33
+#: assets/settings/tabs/Settings.jsx:34
 msgid "Print"
 msgstr ""
 
@@ -680,14 +681,14 @@ msgid "Recipe Card powered by"
 msgstr ""
 
 #: inc/designs/class-template.php:582
-#: inc/objects/class-recipe.php:87
-#: assets/recipe-editor/components/RecipeForm.jsx:125
+#: inc/objects/class-recipe.php:88
+#: assets/recipe-editor/components/RecipeForm.jsx:150
 msgid "Ingredients"
 msgstr ""
 
 #: inc/designs/class-template.php:583
-#: inc/objects/class-recipe.php:95
-#: assets/recipe-editor/components/RecipeForm.jsx:135
+#: inc/objects/class-recipe.php:96
+#: assets/recipe-editor/components/RecipeForm.jsx:160
 msgid "Instructions"
 msgstr ""
 
@@ -703,6 +704,50 @@ msgstr ""
 msgid "No Tasty Recipe created yet. Click 'Edit Recipe' in the widget controls to create one."
 msgstr ""
 
+#: inc/integrations/nutrifox/class-connection-routes.php:226
+msgid "Add a recipe title and at least one ingredient before building a label."
+msgstr ""
+
+#. translators: %d: Nutrifox recipe ID.
+#: inc/integrations/nutrifox/class-connection-routes.php:262
+#, php-format
+msgid "No Nutrifox recipe found with ID %d. Check the ID and try again."
+msgstr ""
+
+#: inc/integrations/nutrifox/class-connection-routes.php:310
+msgid "Please log in to WordPress as an administrator and try connecting again."
+msgstr ""
+
+#: inc/integrations/nutrifox/class-connection-routes.php:324
+msgid "Connection cancelled. You can close this tab."
+msgstr ""
+
+#: inc/integrations/nutrifox/class-connection-routes.php:327
+msgid "Nutrifox is connected. You can close this tab."
+msgstr ""
+
+#: inc/integrations/nutrifox/class-connection-routes.php:357
+#: assets/recipe-editor/components/nutrifox/NutrifoxPanel.jsx:316
+msgid "Nutrifox"
+msgstr ""
+
+#: inc/integrations/nutrifox/class-connection-routes.php:361
+msgid "Return to WordPress"
+msgstr ""
+
+#: inc/integrations/nutrifox/class-connection.php:240
+msgid "This connection request expired. Please try again."
+msgstr ""
+
+#: inc/integrations/nutrifox/class-connection.php:250
+msgid "Nutrifox did not return an authorization code."
+msgstr ""
+
+#: inc/integrations/nutrifox/class-connection.php:377
+#: inc/integrations/nutrifox/class-connection.php:456
+msgid "Nutrifox is not connected."
+msgstr ""
+
 #: inc/libs/tasty-framework/inc/Abstracts/PluginInstaller.php:292
 msgid "Failed to read file content."
 msgstr ""
@@ -711,7 +756,7 @@ msgstr ""
 msgid "Failed to write to new file."
 msgstr ""
 
-#: inc/libs/tasty-framework/inc/Abstracts/PluginInstaller.php:512
+#: inc/libs/tasty-framework/inc/Abstracts/PluginInstaller.php:521
 #: inc/libs/tasty-framework/inc/Admin/License/APIClient.php:281
 #: inc/libs/tasty-framework/inc/Admin/License/Manager.php:782
 #: inc/libs/tasty-framework/inc/Admin/License/Manager.php:820
@@ -1151,129 +1196,129 @@ msgstr ""
 msgid "%1$sSubmit a support ticket%2$s, and we'll do our best to help out."
 msgstr ""
 
-#: inc/objects/class-recipe.php:65
+#: inc/objects/class-recipe.php:66
 msgid "ID"
 msgstr ""
 
-#: inc/objects/class-recipe.php:72
+#: inc/objects/class-recipe.php:73
 msgid "Author Name"
 msgstr ""
 
-#: inc/objects/class-recipe.php:76
+#: inc/objects/class-recipe.php:77
 msgid "Image ID"
 msgstr ""
 
-#: inc/objects/class-recipe.php:83
+#: inc/objects/class-recipe.php:84
 msgid "Description Video Settings"
 msgstr ""
 
-#: inc/objects/class-recipe.php:91
+#: inc/objects/class-recipe.php:92
 msgid "Ingredients Video Settings"
 msgstr ""
 
-#: inc/objects/class-recipe.php:99
+#: inc/objects/class-recipe.php:100
 msgid "Instructions Video Settings"
 msgstr ""
 
-#: inc/objects/class-recipe.php:107
+#: inc/objects/class-recipe.php:108
 msgid "Notes Video Settings"
 msgstr ""
 
-#: inc/objects/class-recipe.php:111
+#: inc/objects/class-recipe.php:112
 #: templates/designs/snap/tasty-recipes.php:248
 #: templates/recipe/tasty-recipes.php:166
 msgid "Keywords"
 msgstr ""
 
-#: inc/objects/class-recipe.php:113
+#: inc/objects/class-recipe.php:114
 msgid "Keywords help Google find your recipes. Include keywords that are not also a category or cuisine ie summer, Halloween, quick, nutmeg crust."
 msgstr ""
 
-#: inc/objects/class-recipe.php:119
+#: inc/objects/class-recipe.php:120
 msgid "Nutrifox ID"
 msgstr ""
 
-#: inc/objects/class-recipe.php:123
+#: inc/objects/class-recipe.php:124
 msgid "Video URL or Shortcode"
 msgstr ""
 
-#: inc/objects/class-recipe.php:127
+#: inc/objects/class-recipe.php:128
 msgid "Average Rating"
 msgstr ""
 
-#: inc/objects/class-recipe.php:130
+#: inc/objects/class-recipe.php:131
 msgid "Total Reviews"
 msgstr ""
 
-#: inc/objects/class-recipe.php:143
+#: inc/objects/class-recipe.php:144
 msgid "Prep Time"
 msgstr ""
 
-#: inc/objects/class-recipe.php:149
+#: inc/objects/class-recipe.php:150
 msgid "Cook Time"
 msgstr ""
 
-#: inc/objects/class-recipe.php:153
+#: inc/objects/class-recipe.php:154
 msgid "Total Time"
 msgstr ""
 
-#: inc/objects/class-recipe.php:156
+#: inc/objects/class-recipe.php:157
 msgid "Defaults to prep + cook"
 msgstr ""
 
-#: inc/objects/class-recipe.php:159
+#: inc/objects/class-recipe.php:160
 msgid "Yield"
 msgstr ""
 
-#: inc/objects/class-recipe.php:168
+#: inc/objects/class-recipe.php:169
 msgid "Method"
 msgstr ""
 
-#: inc/objects/class-recipe.php:193
+#: inc/objects/class-recipe.php:194
 msgid "Serving Size"
 msgstr ""
 
-#: inc/objects/class-recipe.php:198
+#: inc/objects/class-recipe.php:199
 msgid "Calories"
 msgstr ""
 
-#: inc/objects/class-recipe.php:203
+#: inc/objects/class-recipe.php:204
 msgid "Sugar"
 msgstr ""
 
-#: inc/objects/class-recipe.php:208
+#: inc/objects/class-recipe.php:209
 msgid "Sodium"
 msgstr ""
 
-#: inc/objects/class-recipe.php:213
+#: inc/objects/class-recipe.php:214
 msgid "Fat"
 msgstr ""
 
-#: inc/objects/class-recipe.php:218
+#: inc/objects/class-recipe.php:219
 msgid "Saturated Fat"
 msgstr ""
 
-#: inc/objects/class-recipe.php:223
+#: inc/objects/class-recipe.php:224
 msgid "Unsaturated Fat"
 msgstr ""
 
-#: inc/objects/class-recipe.php:227
+#: inc/objects/class-recipe.php:228
 msgid "Trans Fat"
 msgstr ""
 
-#: inc/objects/class-recipe.php:232
+#: inc/objects/class-recipe.php:233
 msgid "Carbohydrates"
 msgstr ""
 
-#: inc/objects/class-recipe.php:237
+#: inc/objects/class-recipe.php:238
 msgid "Fiber"
 msgstr ""
 
-#: inc/objects/class-recipe.php:242
+#: inc/objects/class-recipe.php:243
 msgid "Protein"
 msgstr ""
 
-#: inc/objects/class-recipe.php:247
+#: inc/objects/class-recipe.php:248
 msgid "Cholesterol"
 msgstr ""
 
@@ -1445,7 +1490,7 @@ msgstr ""
 
 #: templates/designs/snap/tasty-recipes.php:182
 #: templates/recipe/tasty-recipes.php:110
-#: assets/settings/tabs/Settings.jsx:248
+#: assets/settings/tabs/Settings.jsx:249
 msgid "Off"
 msgstr ""
 
@@ -1487,12 +1532,12 @@ msgid "Cancel"
 msgstr ""
 
 #: templates/recipe-editor.php:27
-#: assets/recipe-editor/components/RecipeForm.jsx:101
+#: assets/recipe-editor/components/RecipeForm.jsx:126
 msgid "Insert Recipe"
 msgstr ""
 
 #: templates/recipe-editor.php:28
-#: assets/recipe-editor/components/RecipeForm.jsx:102
+#: assets/recipe-editor/components/RecipeForm.jsx:127
 msgid "Update Recipe"
 msgstr ""
 
@@ -1777,59 +1822,59 @@ msgstr ""
 msgid "Dismiss tip"
 msgstr ""
 
-#: assets/recipe-editor/components/FieldGroup.jsx:95
+#: assets/recipe-editor/components/FieldGroup.jsx:96
 msgid "+ Time"
 msgstr ""
 
-#: assets/recipe-editor/components/FieldGroup.jsx:96
+#: assets/recipe-editor/components/FieldGroup.jsx:97
 msgid "- Time"
 msgstr ""
 
-#: assets/recipe-editor/components/FieldGroup.jsx:98
+#: assets/recipe-editor/components/FieldGroup.jsx:99
 msgid "e.g. 15 min"
 msgstr ""
 
-#: assets/recipe-editor/components/FieldGroup.jsx:99
+#: assets/recipe-editor/components/FieldGroup.jsx:100
 msgid "e.g. 30 min"
 msgstr ""
 
-#: assets/recipe-editor/components/FieldGroup.jsx:100
+#: assets/recipe-editor/components/FieldGroup.jsx:101
 msgid "e.g. 4 servings"
 msgstr ""
 
-#: assets/recipe-editor/components/FieldGroup.jsx:101
+#: assets/recipe-editor/components/FieldGroup.jsx:102
 msgid "Select category…"
 msgstr ""
 
-#: assets/recipe-editor/components/FieldGroup.jsx:102
+#: assets/recipe-editor/components/FieldGroup.jsx:103
 msgid "Select method…"
 msgstr ""
 
-#: assets/recipe-editor/components/FieldGroup.jsx:103
+#: assets/recipe-editor/components/FieldGroup.jsx:104
 msgid "Select cuisine…"
 msgstr ""
 
-#: assets/recipe-editor/components/FieldGroup.jsx:104
+#: assets/recipe-editor/components/FieldGroup.jsx:105
 msgid "Select diet…"
 msgstr ""
 
-#: assets/recipe-editor/components/FieldGroup.jsx:105
+#: assets/recipe-editor/components/FieldGroup.jsx:106
 msgid "e.g. easy, weeknight, kid-friendly"
 msgstr ""
 
-#: assets/recipe-editor/components/FieldGroup.jsx:109
+#: assets/recipe-editor/components/FieldGroup.jsx:110
 msgid "e.g. 1 pancake"
 msgstr ""
 
-#: assets/recipe-editor/components/FieldGroup.jsx:110
+#: assets/recipe-editor/components/FieldGroup.jsx:111
 msgid "kcal"
 msgstr ""
 
-#: assets/recipe-editor/components/FieldGroup.jsx:331
+#: assets/recipe-editor/components/FieldGroup.jsx:305
 msgid "Additional Time Label"
 msgstr ""
 
-#: assets/recipe-editor/components/FieldGroup.jsx:347
+#: assets/recipe-editor/components/FieldGroup.jsx:321
 msgid "Additional Time Value"
 msgstr ""
 
@@ -1854,6 +1899,127 @@ msgstr ""
 
 #: assets/recipe-editor/components/ImageField.jsx:28
 msgid "Remove Image"
+msgstr ""
+
+#: assets/recipe-editor/components/nutrifox/NutrifoxLabelPreview.jsx:80
+msgid "Nutrifox label preview"
+msgstr ""
+
+#: assets/recipe-editor/components/nutrifox/NutrifoxPanel.jsx:10
+#: assets/settings/partials/NutrifoxConnection.jsx:83
+msgid "Open Nutrifox"
+msgstr ""
+
+#: assets/recipe-editor/components/nutrifox/NutrifoxPanel.jsx:40
+#: assets/recipe-editor/components/nutrifox/NutrifoxPanel.jsx:49
+msgid "Try free 14 day trial"
+msgstr ""
+
+#: assets/recipe-editor/components/nutrifox/NutrifoxPanel.jsx:58
+msgid "Connect Account"
+msgstr ""
+
+#. translators: %s: Nutrifox account email.
+#: assets/recipe-editor/components/nutrifox/NutrifoxPanel.jsx:69
+#, js-format
+msgid "Connected as %s"
+msgstr ""
+
+#: assets/recipe-editor/components/nutrifox/NutrifoxPanel.jsx:74
+#: assets/settings/partials/NutrifoxConnection.jsx:19
+msgid "Connected"
+msgstr ""
+
+#: assets/recipe-editor/components/nutrifox/NutrifoxPanel.jsx:85
+msgid "Unlink Label"
+msgstr ""
+
+#: assets/recipe-editor/components/nutrifox/NutrifoxPanel.jsx:97
+msgid "Edit in Nutrifox"
+msgstr ""
+
+#: assets/recipe-editor/components/nutrifox/NutrifoxPanel.jsx:112
+msgid "Nutrifox Recipe ID"
+msgstr ""
+
+#: assets/recipe-editor/components/nutrifox/NutrifoxPanel.jsx:119
+msgid "Paste recipe id from Nutrifox"
+msgstr ""
+
+#: assets/recipe-editor/components/nutrifox/NutrifoxPanel.jsx:141
+msgid "Checking…"
+msgstr ""
+
+#: assets/recipe-editor/components/nutrifox/NutrifoxPanel.jsx:142
+msgid "Add Label"
+msgstr ""
+
+#: assets/recipe-editor/components/nutrifox/NutrifoxPanel.jsx:150
+msgid "Go back"
+msgstr ""
+
+#: assets/recipe-editor/components/nutrifox/NutrifoxPanel.jsx:162
+msgid "No label yet."
+msgstr ""
+
+#: assets/recipe-editor/components/nutrifox/NutrifoxPanel.jsx:163
+msgid "Build it in Nutrifox and it appears here."
+msgstr ""
+
+#: assets/recipe-editor/components/nutrifox/NutrifoxPanel.jsx:176
+msgid "Add a recipe title and ingredients first."
+msgstr ""
+
+#: assets/recipe-editor/components/nutrifox/NutrifoxPanel.jsx:184
+msgid "Building…"
+msgstr ""
+
+#: assets/recipe-editor/components/nutrifox/NutrifoxPanel.jsx:185
+msgid "Build from this Recipe"
+msgstr ""
+
+#: assets/recipe-editor/components/nutrifox/NutrifoxPanel.jsx:192
+msgid "Link existing label"
+msgstr ""
+
+#. translators: %d: number of ingredients Nutrifox could not match.
+#: assets/recipe-editor/components/nutrifox/NutrifoxPanel.jsx:207
+#, js-format
+msgid "%d ingredient needs review in Nutrifox."
+msgid_plural "%d ingredients need review in Nutrifox."
+msgstr[0] ""
+msgstr[1] ""
+
+#: assets/recipe-editor/components/nutrifox/NutrifoxPanel.jsx:216
+msgid "Review ingredients"
+msgstr ""
+
+#: assets/recipe-editor/components/nutrifox/useLabelActions.js:66
+msgid "Enter a valid Nutrifox recipe ID."
+msgstr ""
+
+#: assets/recipe-editor/components/nutrifox/useLabelActions.js:84
+msgid "The label could not be checked. Please try again."
+msgstr ""
+
+#: assets/recipe-editor/components/nutrifox/useLabelActions.js:126
+msgid "The label could not be built. Please try again."
+msgstr ""
+
+#: assets/recipe-editor/components/nutrifox/useNutrifoxConnection.js:17
+msgid "Nutrifox was not connected because access was denied."
+msgstr ""
+
+#: assets/recipe-editor/components/nutrifox/useNutrifoxConnection.js:24
+msgid "Nutrifox could not be connected. Please try again."
+msgstr ""
+
+#: assets/recipe-editor/components/nutrifox/useNutrifoxConnection.js:190
+msgid "Your browser blocked the Nutrifox tab. Allow pop-ups for this site, or open Nutrifox manually."
+msgstr ""
+
+#: assets/recipe-editor/components/nutrifox/useNutrifoxConnection.js:223
+msgid "Nutrifox could not be disconnected. Please try again."
 msgstr ""
 
 #: assets/recipe-editor/components/recipe-row-list/bulk/BulkEditPanel.jsx:37
@@ -1992,60 +2158,40 @@ msgstr ""
 msgid "Nofollow"
 msgstr ""
 
-#: assets/recipe-editor/components/RecipeForm.jsx:108
+#: assets/recipe-editor/components/RecipeForm.jsx:133
 msgid "Recipe Title"
 msgstr ""
 
-#: assets/recipe-editor/components/RecipeForm.jsx:111
+#: assets/recipe-editor/components/RecipeForm.jsx:136
 msgid "e.g. Lemon Ricotta Pancakes"
 msgstr ""
 
-#: assets/recipe-editor/components/RecipeForm.jsx:116
+#: assets/recipe-editor/components/RecipeForm.jsx:141
 msgid "Tell us about this recipe…"
 msgstr ""
 
-#: assets/recipe-editor/components/RecipeForm.jsx:126
+#: assets/recipe-editor/components/RecipeForm.jsx:151
 msgid "Enter ingredient name or paste the full list to bulk add"
 msgstr ""
 
-#: assets/recipe-editor/components/RecipeForm.jsx:136
+#: assets/recipe-editor/components/RecipeForm.jsx:161
 msgid "Enter instruction description or paste the full list to bulk add"
 msgstr ""
 
-#: assets/recipe-editor/components/RecipeForm.jsx:146
+#: assets/recipe-editor/components/RecipeForm.jsx:171
 msgid "Add any tips, substitutions, or storage notes…"
 msgstr ""
 
-#: assets/recipe-editor/components/RecipeForm.jsx:178
+#: assets/recipe-editor/components/RecipeForm.jsx:203
 msgid "Details"
 msgstr ""
 
-#: assets/recipe-editor/components/RecipeForm.jsx:369
+#: assets/recipe-editor/components/RecipeForm.jsx:394
 msgid "Video URL"
 msgstr ""
 
-#: assets/recipe-editor/components/RecipeForm.jsx:370
+#: assets/recipe-editor/components/RecipeForm.jsx:395
 msgid "youtube.com/watch?v=…"
-msgstr ""
-
-#: assets/recipe-editor/components/RecipeForm.jsx:423
-msgid "What is this?"
-msgstr ""
-
-#: assets/recipe-editor/components/RecipeForm.jsx:427
-msgid "Pull nutrition automatically from your existing Nutrifox recipe."
-msgstr ""
-
-#: assets/recipe-editor/components/RecipeForm.jsx:438
-msgid "Nutrifox"
-msgstr ""
-
-#: assets/recipe-editor/components/RecipeForm.jsx:456
-msgid "Paste your Nutrifox recipe ID"
-msgstr ""
-
-#: assets/recipe-editor/components/RecipeForm.jsx:478
-msgid "Edit recipe in Nutrifox"
 msgstr ""
 
 #: assets/recipe-editor/components/RichTextarea.jsx:146
@@ -2184,6 +2330,32 @@ msgstr ""
 msgid "<a>Get commissions</a> when visitors order ingredients."
 msgstr ""
 
+#: assets/settings/partials/NutrifoxConnection.jsx:9
+msgid "Waiting for Nutrifox…"
+msgstr ""
+
+#: assets/settings/partials/NutrifoxConnection.jsx:13
+msgid "Not connected"
+msgstr ""
+
+#. translators: %s: Human-readable duration, e.g. "2 months".
+#: assets/settings/partials/NutrifoxConnection.jsx:18
+#, js-format
+msgid "Connected %s ago"
+msgstr ""
+
+#: assets/settings/partials/NutrifoxConnection.jsx:40
+msgid "Nutrifox Connection"
+msgstr ""
+
+#: assets/settings/partials/NutrifoxConnection.jsx:55
+msgid "Disconnect"
+msgstr ""
+
+#: assets/settings/partials/NutrifoxConnection.jsx:56
+msgid "Connect"
+msgstr ""
+
 #: assets/settings/partials/TemplateSelector.jsx:29
 msgid "Template"
 msgstr ""
@@ -2244,125 +2416,125 @@ msgstr ""
 msgid "Import complete!"
 msgstr ""
 
-#: assets/settings/tabs/Settings.jsx:38
+#: assets/settings/tabs/Settings.jsx:39
 msgid "Pin this recipe"
 msgstr ""
 
-#: assets/settings/tabs/Settings.jsx:44
+#: assets/settings/tabs/Settings.jsx:45
 msgid "Mediavine Grow.me Save"
 msgstr ""
 
-#: assets/settings/tabs/Settings.jsx:50
+#: assets/settings/tabs/Settings.jsx:51
 msgid "Slickstream Favorites"
 msgstr ""
 
-#: assets/settings/tabs/Settings.jsx:80
-#: assets/settings/tabs/Settings.jsx:88
+#: assets/settings/tabs/Settings.jsx:81
+#: assets/settings/tabs/Settings.jsx:89
 msgid "Scaling"
 msgstr ""
 
-#: assets/settings/tabs/Settings.jsx:98
+#: assets/settings/tabs/Settings.jsx:99
 msgid "Allow visitors to scale the recipe ½, 2x, or 3x."
 msgstr ""
 
-#: assets/settings/tabs/Settings.jsx:114
-#: assets/settings/tabs/Settings.jsx:125
+#: assets/settings/tabs/Settings.jsx:115
+#: assets/settings/tabs/Settings.jsx:126
 msgid "Enable How-Tos"
 msgstr ""
 
-#: assets/settings/tabs/Settings.jsx:136
+#: assets/settings/tabs/Settings.jsx:137
 msgid "When enabled, you can create and manage How-Tos  alongside Recipes."
 msgstr ""
 
-#: assets/settings/tabs/Settings.jsx:148
+#: assets/settings/tabs/Settings.jsx:149
 msgid "Quick Links"
 msgstr ""
 
-#: assets/settings/tabs/Settings.jsx:152
+#: assets/settings/tabs/Settings.jsx:153
 msgid "'Jump to Recipe' link"
 msgstr ""
 
-#: assets/settings/tabs/Settings.jsx:168
+#: assets/settings/tabs/Settings.jsx:169
 msgid "'Print Recipe' link"
 msgstr ""
 
-#: assets/settings/tabs/Settings.jsx:182
+#: assets/settings/tabs/Settings.jsx:183
 msgid "'Leave a Review' link"
 msgstr ""
 
-#: assets/settings/tabs/Settings.jsx:191
+#: assets/settings/tabs/Settings.jsx:192
 msgid "Enable or disable quick links below the post title."
 msgstr ""
 
-#: assets/settings/tabs/Settings.jsx:199
+#: assets/settings/tabs/Settings.jsx:200
 msgid "'Trust With Google' link"
 msgstr ""
 
-#: assets/settings/tabs/Settings.jsx:210
+#: assets/settings/tabs/Settings.jsx:211
 msgid "Adds a link that lets visitors set your site as a Google Preferred Source."
 msgstr ""
 
-#: assets/settings/tabs/Settings.jsx:218
+#: assets/settings/tabs/Settings.jsx:219
 msgid "Recipe Card Buttons"
 msgstr ""
 
-#: assets/settings/tabs/Settings.jsx:260
+#: assets/settings/tabs/Settings.jsx:261
 msgid "Default Author Link"
 msgstr ""
 
-#: assets/settings/tabs/Settings.jsx:277
+#: assets/settings/tabs/Settings.jsx:278
 msgid "Taxonomy Key Links"
 msgstr ""
 
-#: assets/settings/tabs/Settings.jsx:286
+#: assets/settings/tabs/Settings.jsx:287
 msgid "Allow users to click a taxonomy key and see all recipes that are tagged similarly"
 msgstr ""
 
-#: assets/settings/tabs/Settings.jsx:292
+#: assets/settings/tabs/Settings.jsx:293
 msgid "AI Scraper Prevention"
 msgstr ""
 
-#: assets/settings/tabs/Settings.jsx:301
+#: assets/settings/tabs/Settings.jsx:302
 msgid "Prevents compliant AI crawlers that honor robots.txt from scraping your site."
 msgstr ""
 
-#: assets/settings/tabs/Settings.jsx:313
-#: assets/settings/tabs/Settings.jsx:327
+#: assets/settings/tabs/Settings.jsx:315
+#: assets/settings/tabs/Settings.jsx:329
 msgid "Quick Links Style"
 msgstr ""
 
-#: assets/settings/tabs/Settings.jsx:337
+#: assets/settings/tabs/Settings.jsx:339
 msgid "Buttons"
 msgstr ""
 
-#: assets/settings/tabs/Settings.jsx:344
+#: assets/settings/tabs/Settings.jsx:346
 msgid "Links"
 msgstr ""
 
-#: assets/settings/tabs/Settings.jsx:363
-#: assets/settings/tabs/Settings.jsx:374
+#: assets/settings/tabs/Settings.jsx:365
+#: assets/settings/tabs/Settings.jsx:376
 msgid "Ingredient Checkboxes"
 msgstr ""
 
-#: assets/settings/tabs/Settings.jsx:384
+#: assets/settings/tabs/Settings.jsx:386
 msgid "Allow visitors to check off recipe ingredients."
 msgstr ""
 
-#: assets/settings/tabs/Settings.jsx:401
-#: assets/settings/tabs/Settings.jsx:412
+#: assets/settings/tabs/Settings.jsx:403
+#: assets/settings/tabs/Settings.jsx:414
 msgid "Copy to Clipboard"
 msgstr ""
 
-#: assets/settings/tabs/Settings.jsx:422
+#: assets/settings/tabs/Settings.jsx:424
 msgid "Allow visitors to copy ingredients to clipboard."
 msgstr ""
 
-#: assets/settings/tabs/Settings.jsx:438
-#: assets/settings/tabs/Settings.jsx:449
+#: assets/settings/tabs/Settings.jsx:440
+#: assets/settings/tabs/Settings.jsx:451
 msgid "Save Recipe/Newsletter"
 msgstr ""
 
-#: assets/settings/tabs/Settings.jsx:470
+#: assets/settings/tabs/Settings.jsx:472
 msgid "Allow visitors to send a recipe via email."
 msgstr ""
 

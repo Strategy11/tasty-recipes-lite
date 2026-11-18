@@ -17,14 +17,14 @@ use WP_REST_Server;
 /**
  * REST routes and OAuth callback for the Nutrifox connection.
  *
- * @since x.x
+ * @since 1.2.12
  */
 class Connection_Routes {
 
 	/**
 	 * REST namespace.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @var string
 	 */
@@ -33,7 +33,7 @@ class Connection_Routes {
 	/**
 	 * REST route base.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @var string
 	 */
@@ -42,7 +42,7 @@ class Connection_Routes {
 	/**
 	 * Registers the hooks.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @return void
 	 */
@@ -55,7 +55,7 @@ class Connection_Routes {
 	/**
 	 * Registers the REST routes.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @return void
 	 */
@@ -139,7 +139,7 @@ class Connection_Routes {
 	/**
 	 * Whether the current user may check the connection status.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @return bool
 	 */
@@ -150,7 +150,7 @@ class Connection_Routes {
 	/**
 	 * Whether the current user may build or link labels, matching the recipe modal's create and edit capability.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @return bool
 	 */
@@ -161,7 +161,7 @@ class Connection_Routes {
 	/**
 	 * Whether the current user may connect or disconnect the site.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @return bool
 	 */
@@ -172,7 +172,7 @@ class Connection_Routes {
 	/**
 	 * Returns the Nutrifox authorization URL for the popup.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param WP_REST_Request $request REST request.
 	 *
@@ -191,7 +191,7 @@ class Connection_Routes {
 	/**
 	 * Returns the connection status, confirmed with Nutrifox when stale.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @return WP_REST_Response
 	 */
@@ -210,7 +210,7 @@ class Connection_Routes {
 	/**
 	 * Builds a Nutrifox label from the recipe in the modal.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param WP_REST_Request $request REST request.
 	 *
@@ -236,7 +236,7 @@ class Connection_Routes {
 	/**
 	 * Returns a Nutrifox label's review state, or a 404 when no such label exists.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param WP_REST_Request $request REST request.
 	 *
@@ -276,7 +276,7 @@ class Connection_Routes {
 	/**
 	 * Disconnects the site from Nutrifox, revoking its access there.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @return WP_Error|WP_REST_Response
 	 */
@@ -299,7 +299,7 @@ class Connection_Routes {
 	/**
 	 * Handles the OAuth redirect from Nutrifox inside the popup.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @return void
 	 */
@@ -330,7 +330,7 @@ class Connection_Routes {
 	/**
 	 * Prints the popup page that reports the result to the recipe modal.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param string $status  Result status.
 	 * @param string $message Message shown when the popup cannot close itself.

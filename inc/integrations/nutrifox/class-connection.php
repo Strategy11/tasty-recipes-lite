@@ -14,14 +14,14 @@ use WP_Error;
 /**
  * Stores and manages the site's OAuth connection to Nutrifox.
  *
- * @since x.x
+ * @since 1.2.12
  */
 class Connection {
 
 	/**
 	 * Connection has valid tokens.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @var string
 	 */
@@ -30,7 +30,7 @@ class Connection {
 	/**
 	 * Site has never connected, was disconnected, or Nutrifox revoked access.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @var string
 	 */
@@ -39,7 +39,7 @@ class Connection {
 	/**
 	 * OAuth scopes requested from Nutrifox.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @var string
 	 */
@@ -48,7 +48,7 @@ class Connection {
 	/**
 	 * Admin-post action that receives the OAuth redirect.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @var string
 	 */
@@ -57,7 +57,7 @@ class Connection {
 	/**
 	 * Prefix for transients holding pending authorization data.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @var string
 	 */
@@ -66,7 +66,7 @@ class Connection {
 	/**
 	 * Keys stored encrypted inside the connection option.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @var string[]
 	 */
@@ -75,7 +75,7 @@ class Connection {
 	/**
 	 * Gets the current connection status without contacting Nutrifox.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @return string
 	 */
@@ -92,7 +92,7 @@ class Connection {
 	/**
 	 * Whether the site holds usable Nutrifox tokens.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @return bool
 	 */
@@ -103,7 +103,7 @@ class Connection {
 	/**
 	 * Gets the email of the connected Nutrifox account.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @return string
 	 */
@@ -114,7 +114,7 @@ class Connection {
 	/**
 	 * Gets how long the site has been connected, e.g. "2 months".
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @return string Empty when not connected or the connection date is unknown.
 	 */
@@ -127,7 +127,7 @@ class Connection {
 	/**
 	 * Gets the URL of the optional external trial page.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @return string
 	 */
@@ -135,7 +135,7 @@ class Connection {
 		/**
 		 * Filters the URL the "Try free 14 day trial" button opens.
 		 *
-		 * @since x.x
+		 * @since 1.2.12
 		 *
 		 * @param string $trial_url Trial URL. Empty starts the OAuth signup flow.
 		 */
@@ -147,7 +147,7 @@ class Connection {
 	/**
 	 * Gets the connection data used by the recipe modal.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @return array{status: string, email: string, connectedFor: string, canConnect: bool, trialUrl: string, restBase: string, nutrifoxUrl: string}
 	 */
@@ -166,7 +166,7 @@ class Connection {
 	/**
 	 * Gets the URL Nutrifox redirects back to after authorization.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @return string
 	 */
@@ -177,7 +177,7 @@ class Connection {
 	/**
 	 * Builds the Nutrifox authorization URL for the current user.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param string $intent Either "connect" or "trial".
 	 *
@@ -225,7 +225,7 @@ class Connection {
 	/**
 	 * Completes the authorization after Nutrifox redirects back.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param string $state OAuth state echoed back by Nutrifox.
 	 * @param string $code  Authorization code.
@@ -288,7 +288,7 @@ class Connection {
 	/**
 	 * Confirms the connection with Nutrifox so revoked access disconnects right away.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @return string
 	 */
@@ -303,7 +303,7 @@ class Connection {
 	/**
 	 * Sends an authenticated request to the Nutrifox API.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param string $method HTTP method.
 	 * @param string $path   Path relative to the Nutrifox URL.
@@ -338,7 +338,7 @@ class Connection {
 	/**
 	 * Disconnects the site after Nutrifox revokes its tokens.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @return true|WP_Error
 	 */
@@ -366,7 +366,7 @@ class Connection {
 	/**
 	 * Gets a valid access token, refreshing it when it is about to expire.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @return string|WP_Error
 	 */
@@ -387,7 +387,7 @@ class Connection {
 	/**
 	 * Exchanges the refresh token for a new token pair.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @return string|WP_Error New access token.
 	 */
@@ -428,7 +428,7 @@ class Connection {
 	/**
 	 * Fetches the connected account details.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @return void
 	 */
@@ -446,7 +446,7 @@ class Connection {
 	/**
 	 * Drops the tokens after Nutrifox revoked access, returning the site to not connected.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @return WP_Error
 	 */
@@ -459,7 +459,7 @@ class Connection {
 	/**
 	 * Registers this site as an OAuth client on Nutrifox when needed.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @return array{client_id: string, redirect_uri: string}|WP_Error
 	 */
@@ -513,7 +513,7 @@ class Connection {
 	/**
 	 * Saves a token response from Nutrifox.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param array $tokens Token response body.
 	 *
@@ -532,7 +532,7 @@ class Connection {
 	/**
 	 * Removes the tokens while keeping the OAuth client.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @return void
 	 */
@@ -551,7 +551,7 @@ class Connection {
 	/**
 	 * Gets the stored connection with secrets decrypted.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @return array{client_id: string, client_secret: string, redirect_uri: string, access_token: string, refresh_token: string, expires_at: int, email: string, connected_at: int}
 	 */
@@ -577,7 +577,7 @@ class Connection {
 	/**
 	 * Saves the connection, encrypting the secrets.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param array $connection Connection data.
 	 *
@@ -595,7 +595,7 @@ class Connection {
 	/**
 	 * Sends a request to Nutrifox and decodes the JSON response.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param string $method HTTP method.
 	 * @param string $path   Path relative to the Nutrifox URL.
@@ -630,7 +630,7 @@ class Connection {
 	/**
 	 * Adds the bearer token header to request arguments.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param array  $args   Request arguments.
 	 * @param string $access Access token.
@@ -646,7 +646,7 @@ class Connection {
 	/**
 	 * Converts an unexpected Nutrifox response into an error.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param array{code: int, body: array} $response Decoded response.
 	 *
@@ -666,7 +666,7 @@ class Connection {
 	/**
 	 * Builds the S256 PKCE code challenge.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param string $verifier Code verifier.
 	 *
@@ -682,7 +682,7 @@ class Connection {
 	/**
 	 * Encrypts a value with a key derived from the site salts.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param string $plain Value to encrypt.
 	 *
@@ -703,7 +703,7 @@ class Connection {
 	/**
 	 * Decrypts a value produced by encrypt().
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param string $encrypted Encrypted value.
 	 *
@@ -729,7 +729,7 @@ class Connection {
 	/**
 	 * Derives the encryption key from the site salts.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @return string
 	 */

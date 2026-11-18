@@ -318,7 +318,7 @@ class Telemetry {
 		 *
 		 * Excluded environments never load PostHog or send usage snapshots.
 		 *
-		 * @since x.x
+		 * @since 1.2.12
 		 *
 		 * @param bool $is_excluded Whether telemetry is excluded.
 		 */

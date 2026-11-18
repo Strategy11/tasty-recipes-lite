@@ -826,7 +826,7 @@ class Content_Model {
 	 * Limit the recipe taxonomy archive query to recipes embedded in at least one
 	 * published post that is not password protected.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param string    $where The WHERE clause of the query.
 	 * @param \WP_Query $query The query object.
@@ -859,7 +859,7 @@ class Content_Model {
 	/**
 	 * Get the first published, non password protected post that embeds a recipe.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param int $recipe_id The recipe post ID.
 	 *

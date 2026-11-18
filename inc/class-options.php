@@ -290,7 +290,7 @@ final class Options {
 	/**
 	 * Nutrifox OAuth connection option.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @var string
 	 */
