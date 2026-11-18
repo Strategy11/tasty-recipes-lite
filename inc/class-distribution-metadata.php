@@ -1418,7 +1418,7 @@ class Distribution_Metadata {
 	/**
 	 * Whether a top-level instruction list item is a step of its own.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param string $html Inner HTML of the list item.
 	 *
@@ -1442,7 +1442,7 @@ class Distribution_Metadata {
 	/**
 	 * Gets the text of an instruction, ignoring captions and shortcode tags.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param string $html Instruction HTML.
 	 *
@@ -1465,7 +1465,7 @@ class Distribution_Metadata {
 	/**
 	 * Adds a class to an opening HTML tag.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param string $tag        Opening tag.
 	 * @param string $class_name Class to add.
@@ -1877,7 +1877,7 @@ class Distribution_Metadata {
 	/**
 	 * ISO duration for a recipe time field.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param string $name        Cooking attribute name.
 	 * @param string $value       Stored time value.
@@ -1898,7 +1898,7 @@ class Distribution_Metadata {
 	/**
 	 * Sum prep and additional time as a seconds string.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param string $prep       Prep time.
 	 * @param string $additional Additional time.
@@ -1923,7 +1923,7 @@ class Distribution_Metadata {
 	/**
 	 * Convert a human-readable time into a duration in seconds.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param mixed $time Time to convert.
 	 *
@@ -1957,7 +1957,7 @@ class Distribution_Metadata {
 	/**
 	 * Strip notes and expand clock times before duration parsing.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param string $time Time string.
 	 *
@@ -1975,7 +1975,7 @@ class Distribution_Metadata {
 	/**
 	 * Sum integer quantities that are each followed by a known unit.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param string $time Normalized time string.
 	 *
@@ -2001,7 +2001,7 @@ class Distribution_Metadata {
 	/**
 	 * Unit word that follows a captured number.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param string $time         Time string.
 	 * @param array  $number_match Number match from preg_match_all() with PREG_OFFSET_CAPTURE.
@@ -2023,7 +2023,7 @@ class Distribution_Metadata {
 	/**
 	 * Normalize a unit word for lookup.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param string $unit Raw unit word.
 	 *
@@ -2037,7 +2037,7 @@ class Distribution_Metadata {
 	/**
 	 * Map of duration unit words to seconds.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @return array
 	 */
@@ -2074,7 +2074,7 @@ class Distribution_Metadata {
 	/**
 	 * Add unit names that share one duration length.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param array     $units   Unit map, updated in place.
 	 * @param float|int $seconds Duration length.
@@ -2092,7 +2092,7 @@ class Distribution_Metadata {
 	/**
 	 * Add unit words from the current locale's simple time formats.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param array $units Unit map.
 	 *
@@ -2114,7 +2114,7 @@ class Distribution_Metadata {
 	/**
 	 * Simple time-format keys that name a single unit.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @return array
 	 */
@@ -2130,7 +2130,7 @@ class Distribution_Metadata {
 	/**
 	 * Unit word from a `%s unit` format string.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param mixed $format Format string.
 	 *
@@ -2151,7 +2151,7 @@ class Distribution_Metadata {
 	/**
 	 * Duration in seconds from strtotime(), or null when that result is unusable.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param string $time Normalized time string.
 	 *

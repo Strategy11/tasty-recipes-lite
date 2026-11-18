@@ -48,7 +48,7 @@ final class Meta_Keys {
 	 *
 	 * Stores array( 'hash' => string ); its presence means the label syncs on save.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @var string
 	 */
@@ -147,7 +147,7 @@ final class Meta_Keys {
 	/**
 	 * Comment meta on a held rated comment with the ID of the earlier comment it replaces once approved.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @var string
 	 */

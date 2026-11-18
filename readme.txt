@@ -4,7 +4,7 @@ Tags: recipe, recipe card, recipe maker, food blogging, schema
 Requires at least: 6.3
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.2.11
+Stable tag: 1.2.12
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -216,6 +216,18 @@ The Tasty Recipes plugin installs much like any other WordPress plugin.
 With Tasty Recipes, there aren't any confusing settings to configure or customizations you need to worry about. Share your favorite recipes with the world!
 
 == Changelog ==
+= 1.2.12 (November 18, 2026) =
+* New: Connect Nutrifox from the Settings page and the recipe editor, and build nutrition labels from the recipe modal
+* Enhancement: Ratings are limited to 1-5 stars, quick ratings are tied to the browser, and a replaced rating only changes once the new one is approved
+* Enhancement: Recipe editor opens the Nutrition group by default
+* Enhancement: Recipe conversion checks user access and sanitizes imported data
+* Fix: Recipe schema and print view are hidden on password-protected posts until the password is entered
+* Fix: Taxonomy archives only list recipes from published posts
+* Fix: The recipe editor only uses the post query argument when the user can edit that post
+* Fix: Photo-only instruction items are no longer numbered as steps, and linked video URLs stay as instruction steps
+* Fix: Non-English recipe times are parsed for schema durations, and unparsed times are omitted
+* Fix: Comment form star color and selection are restored
+
 = 1.2.11 (October 13, 2026) =
 * Enhancement: Recipe editor modal improvements including bulk edit textarea with fixed height and resizable support for long ingredient/instruction lists
 * Enhancement: Nested list support in recipe editor with link popover, wpLink integration, and image detail editing

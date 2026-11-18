@@ -265,7 +265,7 @@ abstract class Converter {
 	 * both the current user and the author of the post being converted are
 	 * allowed to access it.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param int|string $source_id ID of the legacy recipe post.
 	 * @param string     $post_type Post type the legacy recipe must have.
@@ -302,7 +302,7 @@ abstract class Converter {
 	 * Meta capabilities are not used because the legacy post type is usually
 	 * not registered anymore.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param int     $user_id     User ID.
 	 * @param WP_Post $source_post Legacy recipe post.
@@ -322,7 +322,7 @@ abstract class Converter {
 	 * Only when both the current user and the author of the converted post
 	 * are allowed to save unfiltered HTML.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param int $post_id ID of the post being converted.
 	 *
@@ -339,7 +339,7 @@ abstract class Converter {
 	/**
 	 * Sanitize converted data with the same callbacks as the recipe editor.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param array $converted_data Data to be saved.
 	 *

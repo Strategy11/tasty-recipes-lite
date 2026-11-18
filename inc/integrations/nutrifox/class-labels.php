@@ -16,14 +16,14 @@ use WP_Error;
 /**
  * Builds Nutrifox labels from recipes and keeps them in sync.
  *
- * @since x.x
+ * @since 1.2.12
  */
 class Labels {
 
 	/**
 	 * Registers the hooks.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @return void
 	 */
@@ -34,7 +34,7 @@ class Labels {
 	/**
 	 * Gets the plain-text ingredient lines Nutrifox should match.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param string $ingredients Ingredients HTML.
 	 *
@@ -62,7 +62,7 @@ class Labels {
 	/**
 	 * Creates a Nutrifox recipe from a recipe title and ingredient lines.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param string   $title Recipe title.
 	 * @param string[] $lines Ingredient lines.
@@ -95,7 +95,7 @@ class Labels {
 	/**
 	 * Gets a Nutrifox recipe owned by the connected account.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param int $label_id Nutrifox recipe ID.
 	 *
@@ -118,7 +118,7 @@ class Labels {
 	/**
 	 * Whether a Nutrifox recipe with this ID exists, whichever account owns it.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param int $label_id Nutrifox recipe ID.
 	 *
@@ -148,7 +148,7 @@ class Labels {
 	/**
 	 * Pushes the recipe title and ingredients to Nutrifox after the recipe modal saves.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param array  $post_recipe Submitted recipe data (not sanitized).
 	 * @param Recipe $recipe      Saved recipe.
@@ -201,7 +201,7 @@ class Labels {
 	/**
 	 * Whether the recipe's Nutrifox label was built from it and syncs on save.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param int $recipe_id Recipe ID.
 	 *
@@ -214,7 +214,7 @@ class Labels {
 	/**
 	 * Builds JSON request arguments.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param array $data Request body.
 	 *
@@ -230,7 +230,7 @@ class Labels {
 	/**
 	 * Picks the fields the recipe modal needs from a Nutrifox recipe.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param array $body Nutrifox recipe payload.
 	 *

@@ -72,7 +72,7 @@ class Ratings {
 	/**
 	 * Cookie that holds the random token identifying a logged-out rater.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @var string
 	 */
@@ -81,7 +81,7 @@ class Ratings {
 	/**
 	 * Rater token created during this request, before the browser sends it back.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @var string
 	 */
@@ -90,7 +90,7 @@ class Ratings {
 	/**
 	 * Comment ID to remove once the new comment from the same rater is saved.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @var int
 	 */
@@ -273,7 +273,7 @@ class Ratings {
 	/**
 	 * Remove the rater's earlier comment once their new rated comment is saved.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param int        $comment_id       ID of the new comment.
 	 * @param int|string $comment_approved Approval status of the new comment.
@@ -302,7 +302,7 @@ class Ratings {
 	/**
 	 * Remove the earlier comment a held rated comment replaces once it is approved.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param string $new_status New comment status.
 	 * @param string $old_status Old comment status.
@@ -324,7 +324,7 @@ class Ratings {
 	/**
 	 * Delete an earlier comment from the same rater, and any it was waiting to replace.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param int $replaced   ID of the earlier comment.
 	 * @param int $comment_id ID of the approved comment that replaces it.
@@ -351,7 +351,7 @@ class Ratings {
 	/**
 	 * Whether a comment is a counted rating left by the rater with this hash.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param int    $comment_id Comment ID.
 	 * @param string $hash       Rater hash.
@@ -370,7 +370,7 @@ class Ratings {
 	/**
 	 * Whether a value is a whole star rating from 1 to 5.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param mixed $rating Rating value.
 	 *
@@ -639,7 +639,7 @@ class Ratings {
 	 *
 	 * Near-white card stars stay on the card. The comment form uses gold instead.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param string $star_color Card star color.
 	 *
@@ -661,7 +661,7 @@ class Ratings {
 	/**
 	 * Convert a hex color to RGB channels.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param string $color Hex color (#RGB, #RRGGBB, or #RRGGBBAA).
 	 *
@@ -690,7 +690,7 @@ class Ratings {
 	/**
 	 * Relative luminance for an sRGB color.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param int[] $rgb Red, green, and blue channels from 0 to 255.
 	 *
@@ -707,7 +707,7 @@ class Ratings {
 	/**
 	 * Convert one sRGB channel to linear light.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param int $channel Channel from 0 to 255.
 	 *
@@ -1039,7 +1039,7 @@ class Ratings {
 	/**
 	 * Get the hash to store with a new rating, creating the rater token if needed.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @param string $comment_hash Hash for the current rater, empty when there is none yet.
 	 * @param int    $post_id      Post ID.
@@ -1058,7 +1058,7 @@ class Ratings {
 	/**
 	 * Get the logged-out rater token from this request or the browser cookie.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @return string Empty when the browser has no valid token.
 	 */
@@ -1076,7 +1076,7 @@ class Ratings {
 	/**
 	 * Create a random rater token and send it to the browser in an HttpOnly cookie.
 	 *
-	 * @since x.x
+	 * @since 1.2.12
 	 *
 	 * @return void
 	 */
