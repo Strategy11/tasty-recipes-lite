@@ -58,7 +58,7 @@ jobs:
       - name: Build assets
         run: pnpm run build
 
-      - name: Start wp-env
+      - name: Start WordPress environment
         run: pnpm run env start
 
       - name: Cypress run

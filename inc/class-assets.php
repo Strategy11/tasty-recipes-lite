@@ -656,6 +656,11 @@ class Assets {
 			return;
 		}
 
+		// Password-protected posts don't load the print template, so skip its assets too.
+		if ( post_password_required( get_queried_object() ) ) {
+			return;
+		}
+
 		$recipe_ids = Tasty_Recipes::get_recipe_ids_for_post( get_queried_object_id() );
 		if ( ! in_array( $recipe_id, $recipe_ids, true ) ) {
 			return;
@@ -764,7 +769,8 @@ class Assets {
 	}
 
 	/**
-	 * Gets the current post ID from query args when global $post isn't set.
+	 * Gets the current post ID, using the `post` query arg only when the
+	 * current user can edit that post.
 	 *
 	 * @return int
 	 */
@@ -779,6 +785,12 @@ class Assets {
 
 		if ( $param_id === 0 ) {
 			return self::get_auto_draft_id();
+		}
+
+		// On init some post types aren't registered yet, so the capability can't be checked. Fall back
+		// in that case too; the editor screens localize this value again once the post is loaded.
+		if ( ! post_type_exists( (string) get_post_type( $param_id ) ) || ! current_user_can( 'edit_post', $param_id ) ) {
+			return $post ? $post->ID : self::get_auto_draft_id();
 		}
 
 		return $param_id;

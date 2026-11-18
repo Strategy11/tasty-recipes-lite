@@ -96,7 +96,6 @@ class WP_Recipe_Maker extends Converter {
 	 * @return false|Recipe
 	 */
 	public static function create_recipe_from_existing( $existing, $post_id ) { // phpcs:ignore SlevomatCodingStandard
-		$post_id = (int) $post_id; // Avoid UnusedVariable.
 		if ( preg_match( '/<!--WPRM Recipe (\d+)-->/', $existing, $matches ) ) {
 			$id = $matches[1];
 		} elseif ( preg_match( '#<!-- wp:wp-recipe-maker/recipe(.+)/?-->#Us', $existing, $matches ) ) {
@@ -109,7 +108,7 @@ class WP_Recipe_Maker extends Converter {
 			return false;
 		}
 
-		$existing_post = get_post( $id );
+		$existing_post = self::get_source_post( $id, 'wprm_recipe', $post_id );
 		if ( ! $existing_post ) {
 			return false;
 		}
@@ -304,6 +303,6 @@ class WP_Recipe_Maker extends Converter {
 		// Restore registered taxonomies.
 		$GLOBALS['wp_taxonomies'] = $backup_taxonomies; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 
-		return self::save_converted_data_to_recipe( $converted_data, $recipe );
+		return self::save_converted_data_to_recipe( $converted_data, $recipe, $post_id );
 	}
 }

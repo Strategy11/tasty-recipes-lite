@@ -63,8 +63,7 @@ class Cookbook extends Converter {
 			return false;
 		}
 
-		$post_id       = (int) $post_id; // Avoid UnusedVariable.
-		$existing_post = get_post( $id );
+		$existing_post = self::get_source_post( $id, 'cookbook_recipe', $post_id );
 		if ( ! $existing_post ) {
 			return false;
 		}
@@ -161,6 +160,6 @@ class Cookbook extends Converter {
 			}
 		}
 
-		return self::save_converted_data_to_recipe( $converted_data, $recipe );
+		return self::save_converted_data_to_recipe( $converted_data, $recipe, $post_id );
 	}
 }

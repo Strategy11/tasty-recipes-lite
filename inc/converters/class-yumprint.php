@@ -147,7 +147,7 @@ class YumPrint extends Converter {
 
 			$data = json_decode( $existing->nutrition );
 			if ( ! is_object( $data ) ) {
-				return self::save_converted_data_to_recipe( $converted_data, $recipe );
+				return self::save_converted_data_to_recipe( $converted_data, $recipe, $post_id );
 			}
 
 			foreach ( $mapping_fields as $mpp => $tr ) {
@@ -163,6 +163,6 @@ class YumPrint extends Converter {
 				$converted_data[ $tr ] = $value;
 			}
 		}
-		return self::save_converted_data_to_recipe( $converted_data, $recipe );
+		return self::save_converted_data_to_recipe( $converted_data, $recipe, $post_id );
 	}
 }

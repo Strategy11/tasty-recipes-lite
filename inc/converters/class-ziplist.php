@@ -154,6 +154,6 @@ class ZipList extends Converter {
 			update_post_meta( $recipe->get_id(), 'zrp_ratings', $ratings );
 		}
 
-		return self::save_converted_data_to_recipe( $converted_data, $recipe );
+		return self::save_converted_data_to_recipe( $converted_data, $recipe, $post_id );
 	}
 }

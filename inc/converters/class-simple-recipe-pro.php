@@ -215,6 +215,6 @@ class Simple_Recipe_Pro extends Converter {
 			update_post_meta( $recipe->get_id(), 'srp_ratings', $ratings );
 		}
 
-		return self::save_converted_data_to_recipe( $converted_data, $recipe );
+		return self::save_converted_data_to_recipe( $converted_data, $recipe, $post_id );
 	}
 }

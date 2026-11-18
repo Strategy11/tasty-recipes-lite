@@ -14,6 +14,16 @@ use Tasty_Recipes\Telemetry;
 class Test_Telemetry extends Tasty_Recipes_Testcase {
 
 	/**
+	 * Treat the test site as a production site so consent rules can be tested.
+	 *
+	 * @return void
+	 */
+	public function setUp(): void {
+		parent::setUp();
+		add_filter( 'tasty_recipes_telemetry_excluded_environment', '__return_false' );
+	}
+
+	/**
 	 * Reset consent, screen, and script state after each test.
 	 *
 	 * @return void
@@ -22,6 +32,7 @@ class Test_Telemetry extends Tasty_Recipes_Testcase {
 		delete_option( Options::ONBOARDING_USAGE_DATA );
 		$GLOBALS['current_screen'] = null;
 		remove_all_filters( 'tasty_recipes_telemetry_event_properties' );
+		remove_all_filters( 'tasty_recipes_telemetry_excluded_environment' );
 		$this->reset_posthog_scripts();
 
 		parent::tearDown();
@@ -40,6 +51,25 @@ class Test_Telemetry extends Tasty_Recipes_Testcase {
 
 		update_option( Options::ONBOARDING_USAGE_DATA, 'yes' );
 		$this->assertTrue( Telemetry::should_load_posthog() );
+	}
+
+	/**
+	 * PostHog and usage snapshots stay off in excluded environments.
+	 *
+	 * @return void
+	 */
+	public function test_excluded_environment_blocks_posthog() {
+		update_option( Options::ONBOARDING_USAGE_DATA, 'yes' );
+		add_filter( 'tasty_recipes_telemetry_excluded_environment', '__return_true', 20 );
+		set_current_screen( 'wp-tasty_page_tasty-recipes' );
+
+		Telemetry::maybe_enqueue_posthog();
+
+		$this->assertFalse( Telemetry::should_load_posthog() );
+		$this->assertFalse( Telemetry::can_send() );
+		$this->assertFalse( Telemetry::send_usage_snapshot() );
+		$this->assertFalse( wp_script_is( Telemetry::POSTHOG_SCRIPT_HANDLE, 'registered' ) );
+		$this->assertFalse( wp_script_is( Telemetry::POSTHOG_INIT_SCRIPT_HANDLE, 'registered' ) );
 	}
 
 	/**

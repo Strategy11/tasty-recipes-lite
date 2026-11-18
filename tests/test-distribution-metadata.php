@@ -152,6 +152,71 @@ class Test_Distribution_Metadata extends Tasty_Recipes_Testcase {
 	}
 
 	/**
+	 * Ensures JSON+LD is only printed for a password-protected post once the password is entered.
+	 *
+	 * @since x.x
+	 */
+	public function test_google_schema_password_protected_post() {
+		$this->prime_password_protected_recipe_post();
+
+		ob_start();
+		Distribution_Metadata::action_wp_head_google_schema();
+		$this->assertSame( '', ob_get_clean() );
+
+		$this->enter_post_password();
+
+		ob_start();
+		Distribution_Metadata::action_wp_head_google_schema();
+		$output = ob_get_clean();
+		$this->assertStringContainsString( 'application/ld+json', $output );
+		$this->assertStringContainsString( '"@type": "Recipe"', $output );
+	}
+
+	/**
+	 * Ensures the Yoast SEO graph piece is only needed once the password is entered.
+	 *
+	 * @since x.x
+	 */
+	public function test_yoast_graph_piece_password_protected_post() {
+		if ( ! class_exists( '\Yoast\WP\SEO\Context\Meta_Tags_Context' ) ) {
+			$this->markTestSkipped( 'Requires Yoast SEO.' );
+		}
+
+		$this->prime_password_protected_recipe_post();
+
+		// Yoast SEO memoizes the schema per request, so build the context directly.
+		$reflection  = new ReflectionClass( '\Yoast\WP\SEO\Context\Meta_Tags_Context' );
+		$context     = $reflection->newInstanceWithoutConstructor();
+		$context->id = $this->post_id;
+		$piece       = new \Tasty_Recipes\Integrations\Recipe_Graph_Piece_Yoast( $context );
+		$this->assertFalse( $piece->is_needed() );
+
+		$this->enter_post_password();
+		$this->assertTrue( $piece->is_needed() );
+	}
+
+	/**
+	 * Ensures the legacy Yoast SEO graph piece is only needed once the password is entered.
+	 *
+	 * @since x.x
+	 */
+	public function test_legacy_yoast_graph_piece_password_protected_post() {
+		if ( ! interface_exists( '\WPSEO_Graph_Piece' ) ) {
+			$this->markTestSkipped( 'Requires a Yoast SEO version with WPSEO_Graph_Piece.' );
+		}
+
+		$this->prime_password_protected_recipe_post();
+
+		$context     = new \WPSEO_Schema_Context();
+		$context->id = $this->post_id;
+		$piece       = new \Tasty_Recipes\Integrations\Recipe_Graph_Piece( $context );
+		$this->assertFalse( $piece->is_needed() );
+
+		$this->enter_post_password();
+		$this->assertTrue( $piece->is_needed() );
+	}
+
+	/**
 	 * Ensures expected format for JSON+LD without an author.
 	 */
 	public function test_google_schema_recipe_without_author() {
@@ -1389,6 +1454,102 @@ EOT;
 			'<ol><li id="instruction-step-1">Step 1<ul><li>a</li><li>b</li></ul></li><li id="instruction-step-2">Step 2</li></ol>',
 			Distribution_Metadata::apply_instruction_step_numbers( '<ol><li>Step 1<ul><li>a</li><li>b</li></ul></li><li>Step 2</li></ol>' )
 		);
+	}
+
+	/**
+	 * Ensures list items with only a photo are not numbered as steps.
+	 */
+	public function test_apply_instruction_step_numbers_skips_photo_only_items() {
+		add_shortcode( 'tooltip', '__return_empty_string' );
+		$img = '<img src="https://example.com/a.jpg" alt="">';
+		$this->assertEquals(
+			'<ol>' .
+			'<li id="instruction-step-1">Step 1<br>' . $img . '</li>' .
+			'<li class="tasty-recipes-instruction-media">' . $img . '</li>' .
+			'<li class="tasty-recipes-instruction-media"><figure>' . $img . '<figcaption>Caption</figcaption></figure></li>' .
+			'<li class="tasty-recipes-instruction-media">[caption id="attachment_1"]' . $img . ' Caption[/caption]</li>' .
+			'<li class="tasty-recipes-instruction-media existing"><a href="https://example.com/a.jpg">' . $img . '</a></li>' .
+			'<li class="tasty-recipes-instruction-media" data-class="x">' . $img . '</li>' .
+			'<li id="instruction-step-2">[tooltip]Step 2[/tooltip]</li>' .
+			'<li id="instruction-step-3">Step 3</li>' .
+			'</ol>',
+			Distribution_Metadata::apply_instruction_step_numbers(
+				'<ol>' .
+				'<li>Step 1<br>' . $img . '</li>' .
+				'<li>' . $img . '</li>' .
+				'<li><figure>' . $img . '<figcaption>Caption</figcaption></figure></li>' .
+				'<li>[caption id="attachment_1"]' . $img . ' Caption[/caption]</li>' .
+				"<li class='existing'><a href=\"https://example.com/a.jpg\">" . $img . '</a></li>' .
+				'<li data-class="x">' . $img . '</li>' .
+				'<li>[tooltip]Step 2[/tooltip]</li>' .
+				'<li>Step 3</li>' .
+				'</ol>'
+			)
+		);
+		remove_shortcode( 'tooltip' );
+	}
+
+	/**
+	 * Ensures a linked video URL stays a step, while a bare one is embedded media.
+	 */
+	public function test_apply_instruction_step_numbers_linked_video_url() {
+		$url = 'https://www.youtube.com/watch?v=GRtWNZwgGn8';
+		$this->assertEquals(
+			'<ol>' .
+			'<li id="instruction-step-1">Mix.</li>' .
+			'<li id="instruction-step-2"><a href="' . $url . '">' . $url . '</a></li>' .
+			'<li class="tasty-recipes-instruction-media">' . $url . '</li>' .
+			'<li class="tasty-recipes-instruction-media"><p>' . $url . '</p></li>' .
+			'<li id="instruction-step-3">Bake.</li>' .
+			'</ol>',
+			Distribution_Metadata::apply_instruction_step_numbers(
+				'<ol>' .
+				'<li>Mix.</li>' .
+				'<li><a href="' . $url . '">' . $url . '</a></li>' .
+				'<li>' . $url . '</li>' .
+				'<li><p>' . $url . '</p></li>' .
+				'<li>Bake.</li>' .
+				'</ol>'
+			)
+		);
+	}
+
+	/**
+	 * Ensures schema step anchors skip photo-only items, like the card does.
+	 */
+	public function test_parse_recipe_instruction_list_with_photo_only_items() {
+		$img          = '<img src="https://example.com/a.jpg" alt="">';
+		$instructions = '<ol>' .
+			'<li>Mix the dough.</li>' .
+			'<li>' . $img . '</li>' .
+			'<li><figure>' . $img . '<figcaption>Risen dough</figcaption></figure></li>' .
+			'<li>Bake the bread.</li>' .
+			'</ol>';
+		$this->assertEquals(
+			array(
+				array(
+					'type'      => 'item',
+					'value'     => 'Mix the dough.',
+					'url'       => '#instruction-step-1',
+					'image_src' => 'https://example.com/a.jpg',
+				),
+				array(
+					'type'  => 'item',
+					'value' => 'Bake the bread.',
+					'url'   => '#instruction-step-2',
+				),
+			),
+			Distribution_Metadata::parse_recipe_instruction_list( $instructions )
+		);
+	}
+
+	/**
+	 * Ensures captioned photos in paragraph-style instructions keep their step.
+	 */
+	public function test_parse_recipe_instruction_list_paragraphs_keep_captioned_photo_steps() {
+		$instructions = "Mix the dough.\n\n<figure><img src=\"https://example.com/a.jpg\" alt=\"\"><figcaption>Risen dough</figcaption></figure>\n\nBake the bread.";
+		$urls         = wp_list_pluck( Distribution_Metadata::parse_recipe_instruction_list( $instructions ), 'url' );
+		$this->assertEquals( array( '#instruction-step-1', '#instruction-step-2', '#instruction-step-3' ), $urls );
 	}
 
 	/**

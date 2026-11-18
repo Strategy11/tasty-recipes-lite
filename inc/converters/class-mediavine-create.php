@@ -547,7 +547,7 @@ class Mediavine_Create extends Converter {
 			);
 		}
 
-		$recipe = self::save_converted_data_to_recipe( $converted_data, $recipe );
+		$recipe = self::save_converted_data_to_recipe( $converted_data, $recipe, $post_id );
 		update_post_meta( $recipe->get_id(), self::CREATE_KEY_META, $create_id );
 
 		return $recipe;

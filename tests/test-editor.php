@@ -6,11 +6,23 @@
  */
 
 use Tasty_Recipes\Editor;
+use Tasty_Recipes\Meta_Keys;
 
 /**
  * Tests behavior of the Test_Editor class.
  */
 class Test_Editor extends Tasty_Recipes_Testcase {
+
+	/**
+	 * Restores the request, screen, global post and current user after each test.
+	 */
+	public function tearDown(): void {
+		unset( $_GET['post'] );
+		$GLOBALS['post']           = null;
+		$GLOBALS['current_screen'] = null;
+		wp_set_current_user( 0 );
+		parent::tearDown();
+	}
 
 	/**
 	 * Ensures expected message is generated for a detected Zip Recipe.
@@ -319,5 +331,64 @@ class Test_Editor extends Tasty_Recipes_Testcase {
 		}
 
 		return rest_do_request( $request );
+	}
+
+	/**
+	 * Converter notices skip a post in the query arg the user can't edit.
+	 *
+	 * @since x.x
+	 */
+	public function test_admin_notices_ignore_post_arg_user_cannot_edit() {
+		$admin_id       = $this->factory->user->create( array( 'role' => 'administrator' ) );
+		$contributor_id = $this->factory->user->create( array( 'role' => 'contributor' ) );
+		$_GET['post']   = (string) $this->create_post_with_zip_recipe( $admin_id );
+		set_current_screen( 'post' );
+
+		wp_set_current_user( $contributor_id );
+		ob_start();
+		Editor::action_admin_notices();
+		$this->assertSame( '', ob_get_clean() );
+
+		wp_set_current_user( $admin_id );
+		ob_start();
+		Editor::action_admin_notices();
+		$this->assertStringContainsString( 'tasty_recipes_convert_ziplist', ob_get_clean() );
+	}
+
+	/**
+	 * Dismissed converters skip a post in the query arg the user can't edit.
+	 *
+	 * @since x.x
+	 */
+	public function test_get_dismissed_converters_ignore_post_arg_user_cannot_edit() {
+		$admin_id       = $this->factory->user->create( array( 'role' => 'administrator' ) );
+		$contributor_id = $this->factory->user->create( array( 'role' => 'contributor' ) );
+		$post_id        = $this->create_post_with_zip_recipe( $admin_id );
+		update_post_meta( $post_id, Meta_Keys::ignore_convert( 'ziplist' ), true );
+		$_GET['post']    = (string) $post_id;
+		$GLOBALS['post'] = null;
+
+		wp_set_current_user( $contributor_id );
+		$this->assertSame( array(), Editor::get_dismissed_converters() );
+
+		wp_set_current_user( $admin_id );
+		$this->assertArrayHasKey( 'ziplist', Editor::get_dismissed_converters() );
+	}
+
+	/**
+	 * Creates a draft post with a Zip Recipes shortcode.
+	 *
+	 * @param int $author_id Post author.
+	 *
+	 * @return int
+	 */
+	private function create_post_with_zip_recipe( $author_id ) {
+		return $this->factory->post->create(
+			array(
+				'post_status'  => 'draft',
+				'post_author'  => $author_id,
+				'post_content' => '[amd-zlrecipe-recipe:1]',
+			)
+		);
 	}
 }

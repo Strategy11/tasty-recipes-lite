@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8f3fdc876b7635d15ab75494d63a011f",
+    "content-hash": "547d34de74bdecb2d21e51218ece1789",
     "packages": [
         {
             "name": "composer/installers",
@@ -154,16 +154,16 @@
         },
         {
             "name": "strategy11/tasty-framework",
-            "version": "v1.1.17",
+            "version": "v1.1.18",
             "source": {
                 "type": "git",
                 "url": "git@github.com:Strategy11/tasty-framework.git",
-                "reference": "d7d2027c1de3aa32309dd5a90b06ce2f2b1c6496"
+                "reference": "ee2b5a2f426a974c6de24d8133e0fb9b0eb9fb0b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Strategy11/tasty-framework/zipball/d7d2027c1de3aa32309dd5a90b06ce2f2b1c6496",
-                "reference": "d7d2027c1de3aa32309dd5a90b06ce2f2b1c6496",
+                "url": "https://api.github.com/repos/Strategy11/tasty-framework/zipball/ee2b5a2f426a974c6de24d8133e0fb9b0eb9fb0b",
+                "reference": "ee2b5a2f426a974c6de24d8133e0fb9b0eb9fb0b",
                 "shasum": ""
             },
             "require-dev": {
@@ -237,7 +237,7 @@
                 "issues": "https://github.com/Strategy11/tasty-framework/issues",
                 "source": "https://github.com/Strategy11/tasty-framework"
             },
-            "time": "2026-10-13T10:03:29+00:00"
+            "time": "2026-11-18T06:20:58+00:00"
         }
     ],
     "packages-dev": [
@@ -6357,5 +6357,5 @@
     "platform-overrides": {
         "php": "8.0"
     },
-    "plugin-api-version": "2.9.0"
+    "plugin-api-version": "2.11.0"
 }
