@@ -23,91 +23,449 @@ on:
     types: [closed]
     branches: [main]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: release-tasty-recipes-lite
+  cancel-in-progress: false
+
+env:
+  PLUGIN_SLUG: tasty-recipes-lite
+  BASE_BRANCH: main
+
 jobs:
+  resolve:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/'))
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.parse.outputs.version }}
+      tested_up_to: ${{ steps.parse.outputs.tested_up_to }}
+      phase: ${{ steps.parse.outputs.phase }}
+    steps:
+      - name: Resolve and validate inputs
+        id: parse
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          INPUT_VERSION: ${{ inputs.version }}
+          INPUT_TESTED_UP_TO: ${{ inputs.tested_up_to }}
+          INPUT_PHASE: ${{ inputs.phase }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+        run: |
+          set -euo pipefail
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            VERSION="$INPUT_VERSION"
+            TESTED_UP_TO="$INPUT_TESTED_UP_TO"
+            PHASE="$INPUT_PHASE"
+          else
+            VERSION="${HEAD_REF#release/}"
+            TESTED_UP_TO=""
+            PHASE="publish"
+          fi
+
+          if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+(\.[0-9]+)*(-[0-9A-Za-z.]+)?$ ]]; then
+            echo "::error::Invalid version '${VERSION}'."
+            exit 1
+          fi
+          if [ -n "$TESTED_UP_TO" ] && ! [[ "$TESTED_UP_TO" =~ ^[0-9]+(\.[0-9]+)*$ ]]; then
+            echo "::error::Invalid tested_up_to '${TESTED_UP_TO}'."
+            exit 1
+          fi
+          if [ "$PHASE" != "prepare" ] && [ "$PHASE" != "publish" ]; then
+            echo "::error::Invalid phase '${PHASE}'. Must be 'prepare' or 'publish'."
+            exit 1
+          fi
+
+          {
+            echo "version=${VERSION}"
+            echo "tested_up_to=${TESTED_UP_TO}"
+            echo "phase=${PHASE}"
+          } >> "$GITHUB_OUTPUT"
+
   prepare:
-    if: github.event_name == 'workflow_dispatch' && inputs.phase == 'prepare'
-    uses: Strategy11/tasty-framework/.github/workflows/release.yml@master
-    with:
-      plugin-slug: tasty-recipes-lite
-      version: ${{ inputs.version }}
-      tested-up-to: ${{ inputs.tested_up_to }}
-      phase: prepare
-      base-branch: main
-    secrets:
-      GH_TOKEN: ${{ secrets.GH_TOKEN }}
-      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+    needs: resolve
+    if: needs.resolve.outputs.phase == 'prepare'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      id-token: write
+    env:
+      VERSION: ${{ needs.resolve.outputs.version }}
+      TESTED_UP_TO: ${{ needs.resolve.outputs.tested_up_to }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.BASE_BRANCH }}
+          token: ${{ secrets.GH_TOKEN }}
+          fetch-depth: 0
+
+      - name: Create release branch
+        run: git checkout -b "release/${VERSION}"
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          tools: wp-cli
+
+      - name: Configure SSH for GitHub
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+      - name: Composer install
+        env:
+          COMPOSER_AUTH: '{"github-oauth":{"github.com":"${{ secrets.GH_TOKEN }}"}}'
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.5.3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+
+      - name: Install npm dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Collect changelog context
+        id: changelog-context
+        run: |
+          set -euo pipefail
+          CONTEXT="${GITHUB_WORKSPACE}/.changelog-context.txt"
+          LAST_TAG="$(git describe --tags --abbrev=0 2>/dev/null || true)"
+          {
+            echo "Release version: ${VERSION}"
+            echo "Release date: $(date '+%B %-d, %Y')"
+            echo
+            if [ -n "$LAST_TAG" ]; then
+              echo "Last tag: ${LAST_TAG}"
+              echo
+              echo "== Commits since ${LAST_TAG} =="
+              git log --no-merges --pretty=format:'%s' "${LAST_TAG}..HEAD"
+              echo
+              echo
+              echo "== Changed files =="
+              git diff --stat "${LAST_TAG}..HEAD"
+              echo
+              echo "== Name status =="
+              git diff --name-status "${LAST_TAG}..HEAD"
+            else
+              echo "No tags found."
+              echo
+              echo "== Last 50 commits =="
+              git log --no-merges --pretty=format:'%s' -50
+              echo
+            fi
+          } > "$CONTEXT"
+          echo "path=${CONTEXT}" >> "$GITHUB_OUTPUT"
+
+      - name: Generate changelog via Claude Code
+        continue-on-error: true
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            You are generating a changelog entry for a WordPress plugin release.
+            Version: ${{ needs.resolve.outputs.version }}
+
+            Use ONLY these sources:
+            1. ${{ steps.changelog-context.outputs.path }} (commits and changed-file summary)
+            2. The existing changelog in readme.txt (first 3-4 entries after `== Changelog ==`)
+
+            Do NOT run a full `git diff` of file contents. The context file is enough.
+            If you need more detail, Read at most a few individual source files named in the context.
+            Do not read binaries, lockfiles, vendor, dist, or generated assets.
+
+            Write a changelog entry and insert it into readme.txt right after the `== Changelog ==` line.
+
+            Changelog format rules:
+            - First line: = ${{ needs.resolve.outputs.version }} (<month> <day>, <year>) =
+              Use the release date from the context file
+            - Each subsequent line: * New: , * Enhancement: , or * Fix: followed by a concise user-facing description
+            - Group related changes into single entries
+            - Skip merge commits, CI/tooling changes, dependency updates, and non-user-facing changes
+            - Describe the user-facing behavior in neutral language, using the commit subject when it is already neutral
+            - Match the exact formatting style of the existing entries in readme.txt
+            - End the entry with an empty line before the next entry
+
+            Finish in as few turns as possible. Only modify readme.txt.
+          claude_args: |
+            --model claude-haiku-5-5
+            --max-turns 10
+            --allowedTools "Read,Edit,Write"
+
+      - name: Ensure changelog entry exists
+        run: |
+          set -euo pipefail
+          DATE="$(date '+%B %-d, %Y')"
+          rm -f .changelog-context.txt
+          if grep -qF "= ${VERSION} " readme.txt; then
+            echo "Changelog entry for ${VERSION} already present."
+            exit 0
+          fi
+          echo "Claude did not add a changelog entry. Inserting a fallback."
+          python3 - "$VERSION" "$DATE" <<'PY'
+          import sys
+          from pathlib import Path
+
+          version, date = sys.argv[1], sys.argv[2]
+          path = Path("readme.txt")
+          text = path.read_text()
+          marker = "== Changelog ==\n"
+          if marker not in text:
+              raise SystemExit("readme.txt is missing == Changelog ==")
+
+          fallback = (
+              f"= {version} ({date}) =\n"
+              "* Enhancement: Various improvements and fixes.\n\n"
+          )
+          path.write_text(text.replace(marker, marker + fallback, 1))
+          PY
+
+      - name: Run grunt release
+        run: npx grunt "release:${VERSION}"
+
+      - name: Update Tested up to
+        if: env.TESTED_UP_TO != ''
+        run: |
+          sed -i "s/^Tested up to: .*/Tested up to: ${TESTED_UP_TO}/" readme.txt
+
+      - name: Regenerate .pot file
+        run: pnpm run makepot
+
+      - name: Commit and push
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Prepare release ${VERSION}"
+          git push -u origin "release/${VERSION}"
+
+      - name: Create pull request
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          gh pr create \
+            --title "Release ${VERSION}" \
+            --body "## Release ${VERSION}
+
+          Automated release preparation:
+          - Version bumped in plugin file and readme.txt
+          - Changelog generated
+          - Translation .pot file regenerated
+
+          **Next steps:**
+          1. Review the changelog entry in readme.txt
+          2. Download the ZIP artifact from the workflow run and test it
+          3. Merge this PR (or run the \`publish\` phase) when ready" \
+            --base "$BASE_BRANCH"
+
+  build-zip:
+    needs: [resolve, prepare]
+    runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ needs.resolve.outputs.version }}
+    steps:
+      - name: Checkout release branch
+        uses: actions/checkout@v4
+        with:
+          ref: release/${{ needs.resolve.outputs.version }}
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+
+      - name: Configure SSH for GitHub
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+      - name: Composer install
+        env:
+          COMPOSER_AUTH: '{"github-oauth":{"github.com":"${{ secrets.GH_TOKEN }}"}}'
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.5.3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+
+      - name: Install npm dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build assets
+        run: pnpm run build
+
+      - name: Build distribution ZIP
+        run: |
+          set -euo pipefail
+          ZIP="${GITHUB_WORKSPACE}/${PLUGIN_SLUG}-${VERSION}.zip"
+          BUILD_DIR="$GITHUB_WORKSPACE"
+
+          # wp dist-archive uses the source directory name as the ZIP root.
+          if [ "$(basename "$BUILD_DIR")" != "$PLUGIN_SLUG" ]; then
+            BUILD_DIR="$(dirname "$GITHUB_WORKSPACE")/${PLUGIN_SLUG}"
+            rm -rf "$BUILD_DIR"
+            cp -al "$GITHUB_WORKSPACE" "$BUILD_DIR" || cp -a "$GITHUB_WORKSPACE" "$BUILD_DIR"
+          fi
+
+          cd "$BUILD_DIR"
+          vendor/bin/wp dist-archive ./ "$ZIP"
+
+          INNER="$(unzip -Z -1 "$ZIP" | awk -F/ 'NR==1 {print $1; exit}')"
+          if [ "$INNER" != "$PLUGIN_SLUG" ]; then
+            echo "::error::Expected ZIP root '${PLUGIN_SLUG}', got '${INNER}'."
+            exit 1
+          fi
+
+      - name: Upload ZIP artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.PLUGIN_SLUG }}-${{ needs.resolve.outputs.version }}
+          path: ./${{ env.PLUGIN_SLUG }}-${{ needs.resolve.outputs.version }}.zip
 
   notify-pr:
-    if: github.event_name == 'workflow_dispatch' && inputs.phase == 'prepare'
-    needs: prepare
+    needs: [resolve, build-zip]
     runs-on: ubuntu-latest
     permissions:
       contents: read
       pull-requests: write
       actions: read
+    env:
+      VERSION: ${{ needs.resolve.outputs.version }}
     steps:
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
-          name: tasty-recipes-lite-${{ inputs.version }}
+          name: ${{ env.PLUGIN_SLUG }}-${{ needs.resolve.outputs.version }}
           path: ./dist
 
       - name: Repackage as installable ZIP
         run: |
           cd dist
-          unzip tasty-recipes-lite-${{ inputs.version }}.zip
-          rm tasty-recipes-lite-${{ inputs.version }}.zip
+          unzip "${PLUGIN_SLUG}-${VERSION}.zip"
+          rm "${PLUGIN_SLUG}-${VERSION}.zip"
 
       - name: Upload installable artifact
         uses: actions/upload-artifact@v4
         with:
-          name: tasty-recipes-lite-${{ inputs.version }}-installable
+          name: ${{ env.PLUGIN_SLUG }}-${{ needs.resolve.outputs.version }}-installable
           path: ./dist/
 
       - name: Comment on PR
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
-          PR_NUMBER=$(gh pr list --repo "${{ github.repository }}" --head "release/${{ inputs.version }}" --json number -q '.[0].number')
+          PR_NUMBER=$(gh pr list --repo "${{ github.repository }}" --head "release/${VERSION}" --json number -q '.[0].number')
           RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           gh pr comment "$PR_NUMBER" --repo "${{ github.repository }}" --body "## Build ready for testing
 
-          **Download:** [tasty-recipes-lite-${{ inputs.version }}-installable](${RUN_URL}#artifacts)
+          **Download:** [${PLUGIN_SLUG}-${VERSION}-installable](${RUN_URL}#artifacts)
 
           Install in WordPress via **Plugins → Add New → Upload Plugin**. The downloaded ZIP is ready to install directly."
 
-  publish-manual:
-    if: github.event_name == 'workflow_dispatch' && inputs.phase == 'publish'
-    uses: Strategy11/tasty-framework/.github/workflows/release.yml@master
-    with:
-      plugin-slug: tasty-recipes-lite
-      version: ${{ inputs.version }}
-      phase: publish
-      base-branch: main
-    secrets:
-      GH_TOKEN: ${{ secrets.GH_TOKEN }}
-      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-
-  extract-version:
-    if: github.event_name == 'pull_request' && github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/')
+  publish:
+    needs: resolve
+    if: needs.resolve.outputs.phase == 'publish'
     runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.parse.outputs.version }}
+    permissions:
+      contents: write
+    env:
+      VERSION: ${{ needs.resolve.outputs.version }}
     steps:
-      - name: Extract version from branch name
-        id: parse
-        run: |
-          BRANCH="${{ github.event.pull_request.head.ref }}"
-          echo "version=${BRANCH#release/}" >> "$GITHUB_OUTPUT"
+      - name: Checkout base branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.BASE_BRANCH }}
+          token: ${{ secrets.GH_TOKEN }}
+          fetch-depth: 0
 
-  publish-on-merge:
-    needs: extract-version
-    uses: Strategy11/tasty-framework/.github/workflows/release.yml@master
-    with:
-      plugin-slug: tasty-recipes-lite
-      version: ${{ needs.extract-version.outputs.version }}
-      phase: publish
-      base-branch: main
-    secrets:
-      GH_TOKEN: ${{ secrets.GH_TOKEN }}
-      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+
+      - name: Configure SSH for GitHub
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+      - name: Composer install
+        env:
+          COMPOSER_AUTH: '{"github-oauth":{"github.com":"${{ secrets.GH_TOKEN }}"}}'
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.5.3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+
+      - name: Install npm dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build assets
+        run: pnpm run build
+
+      - name: Build distribution ZIP
+        run: |
+          set -euo pipefail
+          ZIP="${GITHUB_WORKSPACE}/${PLUGIN_SLUG}-${VERSION}.zip"
+          BUILD_DIR="$GITHUB_WORKSPACE"
+
+          # wp dist-archive uses the source directory name as the ZIP root.
+          if [ "$(basename "$BUILD_DIR")" != "$PLUGIN_SLUG" ]; then
+            BUILD_DIR="$(dirname "$GITHUB_WORKSPACE")/${PLUGIN_SLUG}"
+            rm -rf "$BUILD_DIR"
+            cp -al "$GITHUB_WORKSPACE" "$BUILD_DIR" || cp -a "$GITHUB_WORKSPACE" "$BUILD_DIR"
+          fi
+
+          cd "$BUILD_DIR"
+          vendor/bin/wp dist-archive ./ "$ZIP"
+
+          INNER="$(unzip -Z -1 "$ZIP" | awk -F/ 'NR==1 {print $1; exit}')"
+          if [ "$INNER" != "$PLUGIN_SLUG" ]; then
+            echo "::error::Expected ZIP root '${PLUGIN_SLUG}', got '${INNER}'."
+            exit 1
+          fi
+
+      - name: Create tag
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
+          git tag "v${VERSION}"
+          git push origin "v${VERSION}"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          gh release create "v${VERSION}" \
+            "./${PLUGIN_SLUG}-${VERSION}.zip" \
+            --title "v${VERSION}" \
+            --generate-notes
