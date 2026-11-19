@@ -355,6 +355,8 @@ abstract class Converter {
 			if ( 'intval' === $sanitize_callback && '' === $value ) {
 				continue;
 			}
+			// Getters decode entities, and WP 7.1.5+ shortcode_parse_atts() returns escaped tags as entities.
+			$value = wp_specialchars_decode( $value, ENT_QUOTES );
 			// wp_filter_post_kses() expects slashed data.
 			$converted_data[ $key ] = wp_unslash( call_user_func( $sanitize_callback, wp_slash( $value ) ) );
 		}
