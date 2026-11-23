@@ -4,13 +4,14 @@ on:
   pull_request:
     types: [ opened, labeled, synchronize ]
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   phpunit:
-    if: contains(github.event.pull_request.labels.*.name, 'run tests')
+    if: >-
+      contains(github.event.pull_request.labels.*.name, 'run tests')
+      && (github.event.action != 'labeled' || github.event.label.name == 'run tests')
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
     runs-on: ubuntu-latest
 
     services:
