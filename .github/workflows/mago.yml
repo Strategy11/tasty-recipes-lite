@@ -2,14 +2,15 @@ on:
   pull_request:
     types: [ opened, labeled, synchronize ]
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 name: Mago Code Analysis and Linting
 jobs:
   mago:
-    if: contains(github.event.pull_request.labels.*.name, 'run analysis')
+    if: >-
+      contains(github.event.pull_request.labels.*.name, 'run analysis')
+      && (github.event.action != 'labeled' || github.event.label.name == 'run analysis')
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
     name: Mago
 
     runs-on: ubuntu-latest

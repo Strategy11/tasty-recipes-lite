@@ -4,16 +4,17 @@ on:
   pull_request:
     types: [labeled, synchronize]
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   cypress:
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
-    if: contains(github.event.pull_request.labels.*.name, 'run tests')
+    if: >-
+      contains(github.event.pull_request.labels.*.name, 'run tests')
+      && (github.event.action != 'labeled' || github.event.label.name == 'run tests')
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
 
     name: Cypress Tests
 
