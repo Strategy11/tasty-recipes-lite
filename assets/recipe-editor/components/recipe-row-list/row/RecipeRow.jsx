@@ -17,6 +17,7 @@ import {
 
 export const RecipeRow = ( {
 	row,
+	ariaLabel,
 	placeholder,
 	groupPlaceholder,
 	canMoveUp,
@@ -181,6 +182,7 @@ export const RecipeRow = ( {
 			role="textbox"
 			tabIndex={ 0 }
 			aria-multiline={ ! isGroup }
+			aria-label={ ariaLabel }
 			data-placeholder={ isGroup ? groupPlaceholder : placeholder }
 			onKeyDown={ handleRowKeyDown }
 			onPaste={ event => onPaste( event, row.id ) }

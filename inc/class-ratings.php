@@ -478,8 +478,27 @@ class Ratings {
 			return $comment_text;
 		}
 
-		$rating = PHP_EOL . '<p class="tasty-recipes-ratings">' . self::get_rendered_rating( $rating ) . '</p>';
+		$rating = PHP_EOL . '<p class="tasty-recipes-ratings" role="img" aria-label="' . esc_attr( self::get_rated_label( $rating ) ) . '">' .
+			self::get_rendered_rating( $rating ) .
+			'</p>';
 		return $comment_text . $rating;
+	}
+
+	/**
+	 * Get the text alternative for a displayed rating.
+	 *
+	 * @since x.x
+	 *
+	 * @param float|int|string $rating Rating value.
+	 *
+	 * @return string
+	 */
+	public static function get_rated_label( $rating ) {
+		return sprintf(
+			// translators: %s: The rating value, for example 4.5.
+			__( 'Rated %s out of 5', 'tasty-recipes-lite' ),
+			(string) round( (float) $rating, 1 )
+		);
 	}
 
 	/**
@@ -566,11 +585,28 @@ class Ratings {
 		$star_sprite = Utils::get_contents( 'assets/images/' . $sprite_name, 'path' );
 
 		return array(
-			'checked'   => Utils::minify_js( $star_svg ),
+			'checked'   => self::hide_svg_from_assistive_tech( Utils::minify_js( $star_svg ) ),
 			'unchecked' => $star_svg,
 			'sprite'    => Utils::minify_js( $star_sprite ),
-			'full'      => Utils::minify_js( self::filled_star_from_sprite() ),
+			'full'      => self::hide_svg_from_assistive_tech( Utils::minify_js( self::filled_star_from_sprite() ) ),
 		);
+	}
+
+	/**
+	 * Hide a decorative star SVG from assistive technology.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $svg The SVG markup.
+	 *
+	 * @return string
+	 */
+	private static function hide_svg_from_assistive_tech( $svg ) {
+		if ( ! is_string( $svg ) || str_contains( $svg, 'aria-hidden' ) ) {
+			return $svg;
+		}
+
+		return (string) preg_replace( '/<svg\b/', '<svg aria-hidden="true" focusable="false"', $svg, 1 );
 	}
 
 	/**

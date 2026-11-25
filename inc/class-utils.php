@@ -498,6 +498,7 @@ class Utils {
 				'aria-label'                       => true,
 				'aria-hidden'                      => true,
 				'aria-labelledby'                  => true,
+				'focusable'                        => true,
 				'stroke'                           => true,
 				'data-tasty-recipes-customization' => true,
 			),
@@ -525,6 +526,9 @@ class Utils {
 		);
 
 		$allowed_html = array_replace_recursive( $add_html, $allowed_html );
+
+		// Allow the checked state on the card's star rating radios.
+		$allowed_html['i']['aria-checked'] = true;
 
 		// Allow the customization data attribute on standard HTML elements.
 		$customization_elements = array( 'span', 'img', 'li', 'div', 'footer', 'h2', 'h3', 'p' );

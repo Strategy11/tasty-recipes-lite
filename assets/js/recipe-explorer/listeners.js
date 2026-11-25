@@ -92,6 +92,11 @@ const columnsIconListener = ( e ) => {
 	screenMeta.style.display =
 		screenMeta.style.display === 'block' ? 'none' : 'block';
 	contextualHelpColumns.classList.toggle( 'hidden' );
+
+	const isExpanded = 'block' === screenMeta.style.display;
+	document.querySelectorAll( '.tasty-columns-icon' ).forEach( button => {
+		button.setAttribute( 'aria-expanded', String( isExpanded ) );
+	} );
 };
 
 const editListener = async ( e ) => {

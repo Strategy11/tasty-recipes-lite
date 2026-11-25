@@ -108,6 +108,10 @@ const formatSearchBox = ( searchBox ) => {
 	newSearchButton.id = 'search-submit';
 	newSearchButton.type = 'submit';
 	newSearchButton.classList.add( 'dashicons', 'dashicons-search' );
+	newSearchButton.setAttribute(
+		'aria-label',
+		__( 'Search recipes', 'tasty-recipes-lite' )
+	);
 
 	searchSubmit.parentNode.replaceChild( newSearchButton, searchSubmit );
 	searchInput.placeholder = __( 'Search recipes', 'tasty-recipes-lite' );
@@ -129,6 +133,13 @@ const addColumnsButton = () => {
 		const icon = document.createElement( 'button' );
 		icon.innerHTML = columnsIcon;
 		icon.classList.add( 'tasty-columns-icon' );
+		icon.setAttribute(
+			'aria-label',
+			__( 'Choose columns', 'tasty-recipes-lite' )
+		);
+		icon.setAttribute( 'aria-controls', 'screen-meta' );
+		icon.setAttribute( 'aria-expanded', 'false' );
+		icon.querySelector( 'svg' )?.setAttribute( 'aria-hidden', 'true' );
 		columnsInnerWrapper.appendChild( icon );
 
 		element.appendChild( columnsInnerWrapper );

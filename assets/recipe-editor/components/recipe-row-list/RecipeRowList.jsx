@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from '@wordpress/element';
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 import { BulkEditPanel, useRowListBulkEdit } from './bulk';
 import {
 	useRowListActions,
@@ -10,6 +10,36 @@ import {
 import { clearIsNew, parseRowsFromHtml, serializeRows } from './lib/utils';
 import { RecipeRow, RowListFooter } from './row';
 import { SelectionToolbar } from './toolbar';
+
+const getItemLabelFormat = isInstructions => {
+	if ( isInstructions ) {
+		/* translators: %d: instruction number. */
+		return __( 'Instruction %d', 'tasty-recipes-lite' );
+	}
+
+	/* translators: %d: ingredient number. */
+	return __( 'Ingredient %d', 'tasty-recipes-lite' );
+};
+
+const getRowLabels = ( rows, isInstructions ) => {
+	const itemLabelFormat = getItemLabelFormat( isInstructions );
+	let itemNumber = 0;
+	let groupNumber = 0;
+
+	return rows.map( row => {
+		if ( 'group' === row.type ) {
+			groupNumber++;
+			return sprintf(
+				/* translators: %d: section title number. */
+				__( 'Section title %d', 'tasty-recipes-lite' ),
+				groupNumber
+			);
+		}
+
+		itemNumber++;
+		return sprintf( itemLabelFormat, itemNumber );
+	} );
+};
 
 const RecipeRowList = ( {
 	name,
@@ -102,6 +132,7 @@ const RecipeRowList = ( {
 	useRowListFlip( rows, listRef, pendingFlipRef, pendingScrollRowIdRef );
 
 	const itemCount = rows.filter( entry => 'item' === entry.type ).length;
+	const rowLabels = getRowLabels( rows, isInstructions );
 
 	return (
 		<>
@@ -135,6 +166,7 @@ const RecipeRowList = ( {
 								<RecipeRow
 									key={ row.id }
 									row={ row }
+									ariaLabel={ rowLabels[ index ] }
 									mode={ mode }
 									placeholder={ placeholder }
 									groupPlaceholder={ groupPlaceholder }

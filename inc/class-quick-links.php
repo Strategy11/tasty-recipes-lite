@@ -313,9 +313,11 @@ class Quick_Links {
 				'</a>';
 		}
 		if ( in_array( 'print', $should_prepend_jump_to, true ) ) {
+			$print_label    = self::get_label_value( 'print', $recipe_id );
 			$links['print'] = '<a class="tasty-recipes-print-link' . esc_attr( $btn_class ) . '" ' .
-				'href="' . esc_url( tasty_recipes_get_print_url( $post->ID, $recipe_id ) ) . '"' . $open_new . ' target="_blank">' .
-				self::get_label_value( 'print', $recipe_id ) .
+				'href="' . esc_url( tasty_recipes_get_print_url( $post->ID, $recipe_id ) ) . '"' . $open_new . ' target="_blank"' .
+				' aria-label="' . esc_attr( self::get_new_tab_label( $print_label ) ) . '">' .
+				$print_label .
 				'</a>';
 		}
 		if ( in_array( 'trusted_source', $should_prepend_jump_to, true ) ) {
@@ -347,7 +349,7 @@ class Quick_Links {
 		self::maybe_remove_smooth_scroll( $links );
 
 		$html  = '<div class="tasty-recipes-quick-links">';
-		$html .= implode( '<span>&middot;</span>', $links );
+		$html .= implode( '<span aria-hidden="true">&middot;</span>', $links );
 		$html .= '</div>';
 
 		return $html;
@@ -416,6 +418,25 @@ class Quick_Links {
 		}
 
 		return apply_filters( 'tasty_recipes_quick_links_label', $labels[ $type ], $type, $recipe_id );
+	}
+
+	/**
+	 * Get an accessible name for a link that opens in a new tab.
+	 *
+	 * The name starts with the visible text so voice control users can still target the link.
+	 *
+	 * @since x.x
+	 *
+	 * @param string $label The visible link text. May contain HTML.
+	 *
+	 * @return string Plain text label. Escape before output.
+	 */
+	public static function get_new_tab_label( $label ) {
+		return sprintf(
+			// translators: %s: The visible link text, for example "Print Recipe".
+			__( '%s (opens in a new tab)', 'tasty-recipes-lite' ),
+			trim( wp_strip_all_tags( html_entity_decode( (string) $label, ENT_QUOTES, get_bloginfo( 'charset' ) ) ) )
+		);
 	}
 
 	/**

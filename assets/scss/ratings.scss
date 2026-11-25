@@ -78,6 +78,13 @@
 		cursor: pointer;
 	}
 
+	// Show keyboard focus on the star that belongs to the hidden radio.
+	input[type="radio"]:focus-visible + span {
+		outline: 2px solid Highlight;
+		outline: 5px auto -webkit-focus-ring-color;
+		outline-offset: 2px;
+	}
+
 	> span {
 		position: relative;
 		i {

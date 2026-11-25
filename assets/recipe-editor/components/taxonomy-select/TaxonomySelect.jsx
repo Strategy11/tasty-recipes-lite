@@ -7,6 +7,7 @@ import { formatCreateLabel } from './utils';
 
 export const TaxonomySelect = ( {
 	name,
+	labelId,
 	taxonomy,
 	placeholder = '',
 	value = '',
@@ -41,6 +42,7 @@ export const TaxonomySelect = ( {
 
 			<AsyncCreatableSelect
 				key={ selectKey }
+				aria-labelledby={ labelId }
 				isMulti
 				value={ selectedOptions }
 				loadOptions={ loadOptions }
