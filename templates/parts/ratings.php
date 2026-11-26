@@ -10,10 +10,14 @@ defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 $no_ratings   = isset( $no_ratings ) ? $no_ratings : false;
 $average      = isset( $average ) ? $average : 0;
 $rating_style = isset( $rating_style ) ? $rating_style : 'outline';
+$group_attrs  = '';
+if ( $no_ratings ) {
+	$group_attrs = 'role="radiogroup" aria-label="' . esc_attr__( 'Rate this recipe', 'tasty-recipes-lite' ) . '"';
+}
 ?>
 <span class="tasty-recipes-ratings-buttons <?php echo $no_ratings ? 'tasty-recipes-no-ratings-buttons' : ''; ?>"
 	data-tr-default-rating="<?php echo esc_attr( $average ); ?>"
-	>
+	<?php echo $group_attrs; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped above. ?>>
 <?php
 for ( $i = 5; $i >= 1; $i-- ) {
 	$is_selected = $average ? (int) ceil( $average ) === $i : false;
@@ -24,6 +28,17 @@ for ( $i = 5; $i >= 1; $i-- ) {
 		_n( 'Rate this recipe %d star', 'Rate this recipe %d stars', $i, 'tasty-recipes-lite' ),
 		$i
 	);
+
+	$star_label = sprintf(
+		// translators: The number of stars.
+		_n( '%d Star', '%d Stars', $i, 'tasty-recipes-lite' ),
+		$i
+	);
+
+	$star_attrs = '';
+	if ( $no_ratings ) {
+		$star_attrs = ' role="radio" aria-checked="false" aria-label="' . esc_attr( $star_label ) . '"';
+	}
 	?>
 	<?php if ( ! $no_ratings ) { ?>
 	<input
@@ -35,7 +50,7 @@ for ( $i = 5; $i >= 1; $i-- ) {
 		value="<?php echo absint( $i ); ?>">
 	<?php } ?>
 	<span class="tasty-recipes-rating" <?php echo $is_selected ? 'data-tr-checked="1"' : ''; ?>>
-		<i class="checked" data-rating="<?php echo esc_attr( $i ); ?>">
+		<i class="checked" data-rating="<?php echo esc_attr( $i ); ?>"<?php echo $star_attrs; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped above. ?>>
 			<span class="tasty-recipes-rating-<?php echo esc_attr( $rating_style ); ?>" data-tr-clip="<?php echo esc_attr( $percentage ); ?>">
 				<?php
 				if ( $percentage === 100 || $percentage === 0 ) {
@@ -46,13 +61,7 @@ for ( $i = 5; $i >= 1; $i-- ) {
 				?>
 			</span>
 			<span class="tasty-recipes-screen-reader">
-				<?php
-				printf(
-					// translators: The number of stars.
-					esc_html( _n( '%d Star', '%d Stars', $i, 'tasty-recipes-lite' ) ),
-					(int) $i
-				);
-				?>
+				<?php echo esc_html( $star_label ); ?>
 			</span>
 		</i>
 	</span>

@@ -30,6 +30,9 @@ window.TastyRecipes.staticTooltip = {
 		const tooltipElement = document.createElement( 'div' );
 		tooltipElement.classList.add( 'tasty-recipes-static-tooltip');
 		tooltipElement.setAttribute( 'id', 'tasty-recipes-tooltip' );
+		// Announce the rating feedback to screen readers.
+		tooltipElement.setAttribute( 'role', 'status' );
+		tooltipElement.setAttribute( 'aria-live', 'polite' );
 
 		const currentTooltipElement = document.getElementById( 'tasty-recipes-tooltip' );
 		if ( currentTooltipElement ) {
@@ -114,9 +117,107 @@ window.TastyRecipes.ratings = {
 		this.minRating = minRating;
 
 		this.formWatchRating();
+		this.cardRatingKeyboard();
 		this.closeTooltipWhenClickOutside();
 		this.addBodyClassBasedOnSelectedRating();
 		this.backwardCompFormRatingPosition();
+		this.formRatingArrowKeys();
+	},
+	cardRatingKeyboard() {
+		const groups = document.querySelectorAll( '.tasty-recipes-no-ratings-buttons[role="radiogroup"]' );
+		for ( const group of groups ) {
+			const stars = [ ...group.querySelectorAll( '[data-rating][role="radio"]' ) ];
+			if ( stars.length <= 0 ) {
+				continue;
+			}
+
+			this.setRovingTabindex( stars, this.getStarByRating( stars, 1 ) ?? stars[ 0 ] );
+
+			for ( const star of stars ) {
+				// Don't focus the star on mouse clicks, so they look and behave the same as before.
+				star.addEventListener( 'mousedown', event => {
+					event.preventDefault();
+					document.activeElement?.blur();
+				} );
+			}
+
+			group.addEventListener( 'keydown', event => this.handleCardRatingKey( event, stars ) );
+		}
+	},
+	handleCardRatingKey( event, stars ) {
+		const currentStar = event.target.closest( '[data-rating][role="radio"]' );
+		if ( ! currentStar ) {
+			return;
+		}
+
+		if ( 'Enter' === event.key || ' ' === event.key ) {
+			event.preventDefault();
+			currentStar.click();
+			return;
+		}
+
+		const rating = Number( currentStar.dataset.rating );
+		const keyTargets = {
+			ArrowRight: () => this.getSpatialNeighbor( stars, currentStar, true ),
+			ArrowLeft: () => this.getSpatialNeighbor( stars, currentStar, false ),
+			ArrowUp: () => this.getStarByRating( stars, rating + 1 ),
+			ArrowDown: () => this.getStarByRating( stars, rating - 1 ),
+			Home: () => this.getStarByRating( stars, 1 ),
+			End: () => this.getStarByRating( stars, 5 ),
+		};
+		if ( ! keyTargets[ event.key ] ) {
+			return;
+		}
+
+		event.preventDefault();
+		const nextStar = keyTargets[ event.key ]();
+		if ( nextStar ) {
+			this.setRovingTabindex( stars, nextStar );
+			nextStar.focus();
+		}
+	},
+	getStarByRating( stars, rating ) {
+		return stars.find( star => Number( star.dataset.rating ) === rating );
+	},
+	setRovingTabindex( items, activeItem ) {
+		for ( const item of items ) {
+			item.setAttribute( 'tabindex', item === activeItem ? '0' : '-1' );
+		}
+	},
+	getSpatialNeighbor( items, currentItem, toRight ) {
+		const currentLeft = currentItem.getBoundingClientRect().left;
+		const direction = toRight ? 1 : -1;
+		let neighbor = null;
+		let closestDistance = Infinity;
+
+		for ( const item of items ) {
+			const distance = ( item.getBoundingClientRect().left - currentLeft ) * direction;
+			if ( distance > 0 && distance < closestDistance ) {
+				closestDistance = distance;
+				neighbor = item;
+			}
+		}
+
+		return neighbor;
+	},
+	formRatingArrowKeys() {
+		const formRatings = document.querySelectorAll( '.tasty-recipes-ratings-buttons:not(.tasty-recipes-no-ratings-buttons)' );
+		for ( const formRating of formRatings ) {
+			const inputs = [ ...formRating.querySelectorAll( 'input.tasty-recipes-rating' ) ];
+			formRating.addEventListener( 'keydown', event => {
+				// The stars are shown in reverse DOM order, so move to the star on the visual side of the arrow.
+				if ( ! inputs.includes( event.target ) || ! [ 'ArrowLeft', 'ArrowRight' ].includes( event.key ) ) {
+					return;
+				}
+
+				event.preventDefault();
+				const nextInput = this.getSpatialNeighbor( inputs, event.target, 'ArrowRight' === event.key );
+				if ( nextInput ) {
+					nextInput.focus();
+					nextInput.click();
+				}
+			} );
+		}
 	},
 	formWatchRating() {
 		const ratings = document.querySelectorAll('.tasty-recipes-no-ratings-buttons [data-rating]');
@@ -289,6 +390,19 @@ window.TastyRecipes.ratings = {
 		const thisStar = target.closest( '.tasty-recipes-rating' );
 		thisStar.dataset.trChecked = 1;
 		thisStar.querySelector( '[data-tr-clip]' ).dataset.trClip = 100;
+
+		this.setCheckedRadio( cardRatingContainer, target.closest( '[role="radio"]' ) );
+	},
+	setCheckedRadio( container, checkedRadio ) {
+		if ( ! checkedRadio ) {
+			return;
+		}
+
+		const radios = [ ...container.querySelectorAll( '[role="radio"]' ) ];
+		for ( const radio of radios ) {
+			radio.setAttribute( 'aria-checked', radio === checkedRadio ? 'true' : 'false' );
+		}
+		this.setRovingTabindex( radios, checkedRadio );
 	},
 	maybeFillCommentForm( data ) {
 		if ( ! data.comment || ! data.comment.content ) {

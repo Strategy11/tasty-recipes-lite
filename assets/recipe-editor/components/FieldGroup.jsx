@@ -173,6 +173,11 @@ export const FieldGroup = ( {
 			return (
 				<TaxonomySelect
 					name={ name }
+					labelId={
+						showLabels
+							? `tasty-recipes-recipe-${ name }-label`
+							: undefined
+					}
 					taxonomy={ field.taxonomy }
 					placeholder={ placeholder }
 					value={ fieldValues[ field.object_key || name ] || '' }
@@ -251,7 +256,10 @@ export const FieldGroup = ( {
 				className={ `tasty-recipes-recipe-${ name }-container` }
 			>
 				{ showLabels && (
-					<label htmlFor={ `tasty-recipes-recipe-${ name }` }>
+					<label
+						id={ `tasty-recipes-recipe-${ name }-label` }
+						htmlFor={ `tasty-recipes-recipe-${ name }` }
+					>
 						{ field.label }
 						{ field.tooltip && (
 							<span

@@ -1,8 +1,10 @@
 (function(){
+	const controlsTemplate = document.querySelector( '#tmpl-tasty-recipes-print-controls' );
 	const iframe = document.createElement('iframe');
 	iframe.frameBorder = 0;
 	iframe.id = 'tasty-recipes-print-controls';
 	iframe.height = 51;
+	iframe.title = controlsTemplate.dataset.frameTitle || '';
 	document.body.prepend(iframe);
 
 	const resizeIframe = () => {
@@ -14,11 +16,37 @@
 	};
 
 	iframe.contentWindow.document.open();
-	iframe.contentWindow.document.write(document.querySelector('#tmpl-tasty-recipes-print-controls').innerHTML);
+	iframe.contentWindow.document.write( controlsTemplate.innerHTML );
 	iframe.contentWindow.document.close();
+	iframe.contentWindow.document.documentElement.lang = document.documentElement.lang;
+
+	/* Keyboard users keep focus on the control they changed. Mouse users keep the Safari workaround below. */
+	let isUsingKeyboard = false;
+	iframe.contentWindow.document.addEventListener( 'keydown', event => {
+		isUsingKeyboard = true;
+		if ( ( event.ctrlKey || event.metaKey ) && 'p' === event.key.toLowerCase() ) {
+			/* Print the recipe, not the iframe. */
+			event.preventDefault();
+			window.focus();
+			window.print();
+		}
+	} );
+	iframe.contentWindow.document.addEventListener( 'pointerdown', () => {
+		isUsingKeyboard = false;
+	} );
+
+	const maybeFocusParentWindow = () => {
+		if ( isUsingKeyboard ) {
+			return;
+		}
+		/* Prevent Safari from printing the iframe. */
+		window.focus();
+	};
 
 	const controlForm = iframe.contentWindow.document.querySelector('#tr-control-form');
 	controlForm.querySelector('#tasty-recipes-print').addEventListener('click', () => {
+		/* Prevent Safari from printing the iframe. */
+		window.focus();
 		window.print();
 	});
 	controlForm.querySelector('#tasty-recipes-options').addEventListener('click', (event) => {
@@ -31,15 +59,13 @@
 			controlForm.classList.add('tasty-recipes-show-controls');
 		}
 		resizeIframe();
-		/* Prevent Safari from printing the iframe. */
-		window.focus();
+		maybeFocusParentWindow();
 	});
 
 	controlForm.querySelectorAll('input').forEach((input) => {
 		input.addEventListener('change', () => {
 			applyPrintBodyClasses();
-			/* Prevent Safari from printing the iframe. */
-			window.focus();
+			maybeFocusParentWindow();
 		});
 	});
 

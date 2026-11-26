@@ -21,7 +21,8 @@ window.TastyRecipes.smoothScroll = {
 			}
 
 			e.preventDefault();
-			this.goToSelector( elementHref );
+			// A click with no detail comes from the keyboard. Only then move focus, so mouse users see no change.
+			this.goToSelector( elementHref, e.detail === 0 );
 		} );
 	},
 
@@ -36,17 +37,24 @@ window.TastyRecipes.smoothScroll = {
 		}
 	},
 
-	goToSelector( selector ) {
+	goToSelector( selector, moveFocus = false ) {
 		const element = document.querySelector( selector );
 		if ( ! element ) {
 			return;
 		}
-		this.scrollToElement( element );
+		this.scrollToElement( element, moveFocus ? () => this.focusElement( element ) : null );
+	},
+
+	focusElement( element ) {
+		if ( ! element.hasAttribute( 'tabindex' ) ) {
+			element.setAttribute( 'tabindex', '-1' );
+		}
+		element.focus( { preventScroll: true } );
 	},
 
 	// Uses requestAnimationFrame to recalculate target position each frame,
 	// adapting to layout shifts from dynamically loaded content like ads.
-	scrollToElement( element ) {
+	scrollToElement( element, onComplete = null ) {
 		this.cancelScroll();
 
 		const startY = window.scrollY;
@@ -86,6 +94,10 @@ window.TastyRecipes.smoothScroll = {
 				cancelEvents.forEach( ( evt ) =>
 					window.removeEventListener( evt, onUserScroll )
 				);
+
+				if ( onComplete ) {
+					onComplete();
+				}
 			}
 		};
 

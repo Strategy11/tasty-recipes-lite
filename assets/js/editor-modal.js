@@ -4,6 +4,95 @@
 		isOpen = false,
 		container = null,
 		editorInstance = null;
+	let opener = null;
+
+	const TABBABLE_SELECTOR = 'a[href], button, input:not([type="hidden"]), select, textarea, iframe, [contenteditable], [tabindex]';
+
+	const getModalElement = () => container?.[ 0 ]?.querySelector( '.tasty-recipes-modal' );
+
+	const setupDialogSemantics = () => {
+		const modal = getModalElement();
+		if ( ! modal ) {
+			return;
+		}
+
+		modal.setAttribute( 'role', 'dialog' );
+		modal.setAttribute( 'aria-modal', 'true' );
+		[ 'creating', 'editing' ].forEach( state => {
+			const title = modal.querySelector( `.tasty-recipes-frame-title .tasty-recipes-state-${ state }` );
+			if ( title && ! title.id ) {
+				title.id = `tasty-recipes-modal-title-${ state }`;
+			}
+		} );
+	};
+
+	const labelDialog = state => {
+		const title = getModalElement()?.querySelector( `.tasty-recipes-frame-title .tasty-recipes-state-${ state }` );
+		if ( title?.id ) {
+			getModalElement().setAttribute( 'aria-labelledby', title.id );
+		}
+	};
+
+	// Follows focus into same-origin iframes (e.g. the block editor canvas).
+	const getFocusedElement = () => {
+		let active = document.activeElement;
+		while ( 'IFRAME' === active?.tagName ) {
+			const innerActive = active.contentDocument?.activeElement;
+			if ( ! innerActive || innerActive === active.contentDocument.body ) {
+				break;
+			}
+			active = innerActive;
+		}
+		return active;
+	};
+
+	const restoreFocus = () => {
+		const target = opener;
+		opener = null;
+		if ( ! target?.isConnected || target === target.ownerDocument.body ) {
+			return;
+		}
+		target.focus( { preventScroll: true } );
+	};
+
+	const getTabbableElements = modal => Array.from( modal.querySelectorAll( TABBABLE_SELECTOR ) ).filter(
+		element => element.tabIndex >= 0 &&
+			! element.disabled &&
+			! element.closest( '[inert]' ) &&
+			element.getClientRects().length > 0
+	);
+
+	const isMediaModalOpen = () => Array.from( document.querySelectorAll( '.media-modal' ) ).some(
+		element => element.getClientRects().length > 0
+	);
+
+	const onModalTabKeydown = event => {
+		const modal = getModalElement();
+		if ( 'Tab' !== event.key || ! isOpen || ! modal || isMediaModalOpen() ) {
+			return;
+		}
+
+		const tabbables = getTabbableElements( modal );
+		if ( ! tabbables.length ) {
+			return;
+		}
+
+		const active = document.activeElement;
+		const hasLostFocus = ! active || active === document.body;
+		const first = tabbables[ 0 ];
+		const last = tabbables[ tabbables.length - 1 ];
+
+		if ( event.shiftKey && ( hasLostFocus || active === first ) ) {
+			event.preventDefault();
+			last.focus();
+			return;
+		}
+
+		if ( ! event.shiftKey && ( hasLostFocus || active === last ) ) {
+			event.preventDefault();
+			first.focus();
+		}
+	};
 
 	const trackUsage = ( event, properties ) => {
 		if ( 'function' !== typeof window.tastyRecipesTrackEvent ) {
@@ -75,6 +164,7 @@
 		 */
 		initEvents() {
 			container = $('.tasty-recipes-modal-container');
+			setupDialogSemantics();
 			$('.tasty-recipes-button-insert', container).on('click', $.proxy( function(){
 				this.close( true );
 			}, this ));
@@ -122,6 +212,7 @@
 				return;
 			}
 			isOpen = true;
+			opener = getFocusedElement();
 			updateCallback = callback;
 			editorInstance = document.createElement('div');
 			document.querySelector('.tasty-recipes-modal-container .tasty-recipes-frame-content').appendChild(editorInstance);
@@ -131,8 +222,10 @@
 			);
 			if ( typeof data === 'object' && typeof data.id !== 'undefined' ) {
 				container.addClass('tasty-recipes-state-editing');
+				labelDialog( 'editing' );
 			} else {
 				container.addClass('tasty-recipes-state-creating');
+				labelDialog( 'creating' );
 			}
 			if ( typeof data === 'object' && data && data.recipe_type ) {
 				container.attr( 'data-recipe-type', data.recipe_type );
@@ -143,6 +236,7 @@
 				event.preventDefault();
 			} );
 			window.addEventListener( 'keydown', onModalUndoKeydown, true );
+			document.addEventListener( 'keydown', onModalTabKeydown );
 			$(document).on('keydown.tasty-recipes-escape', $.proxy( function( event ){
 				if ( 27 !== event.keyCode ) {
 					return;
@@ -180,6 +274,7 @@
 			$('body').removeClass('tasty-recipes-modal-open');
 			container.off('dragover.tastyRecipesDrop drop.tastyRecipesDrop');
 			window.removeEventListener( 'keydown', onModalUndoKeydown, true );
+			document.removeEventListener( 'keydown', onModalTabKeydown );
 			$(document).unbind('keydown.tasty-recipes-escape');
 			$('.tasty-recipes-toolbar-primary button', container).attr('disabled', 'disabled');
 			var hideContainer = function(){
@@ -193,6 +288,7 @@
 				window.tastyRecipesDestroyRecipeEditor(
 					editorInstance
 				);
+				restoreFocus();
 			};
 			if ( save ) {
 				if ( typeof tinyMCE !== 'undefined' ) {

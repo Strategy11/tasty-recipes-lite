@@ -61,6 +61,7 @@ export const TemplateSelector = ( {
 			<div className="tasty-recipes-card-chooser">
 				<button
 					type="button"
+					aria-label={ __( 'Previous template', 'tasty-recipes-lite' ) }
 					onClick={ () =>
 						handleTemplateChange(
 							iterateTemplate( selectedTemplate, '-' )
@@ -72,6 +73,8 @@ export const TemplateSelector = ( {
 						width="5"
 						height="8"
 						fill="none"
+						aria-hidden="true"
+						focusable="false"
 					>
 						<path
 							stroke="currentColor"
@@ -96,6 +99,7 @@ export const TemplateSelector = ( {
 				</h3>
 				<button
 					type="button"
+					aria-label={ __( 'Next template', 'tasty-recipes-lite' ) }
 					onClick={ () =>
 						handleTemplateChange(
 							iterateTemplate( selectedTemplate )
@@ -107,6 +111,8 @@ export const TemplateSelector = ( {
 						width="5"
 						height="8"
 						fill="none"
+						aria-hidden="true"
+						focusable="false"
 					>
 						<path
 							stroke="currentColor"
@@ -124,6 +130,9 @@ export const TemplateSelector = ( {
 							<button
 								key={ 'variation-' + variation }
 								type="button"
+								aria-pressed={
+									variation === selectedTemplate.variation
+								}
 								onClick={ () =>
 									handleVariationChange( variation )
 								}

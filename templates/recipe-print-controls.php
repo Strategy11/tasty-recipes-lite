@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) || exit; // Exit if accessed directly.
 $show_options = apply_filters( 'tasty_recipes_show_print_options', true );
 ?>
 
-<script type="text/html" id="tmpl-tasty-recipes-print-controls">
+<script type="text/html" id="tmpl-tasty-recipes-print-controls" data-frame-title="<?php esc_attr_e( 'Print options', 'tasty-recipes-lite' ); ?>">
 	<?php
 	wp_enqueue_style( 'tasty-recipes-print-controls' );
 	wp_maybe_inline_styles();

@@ -31,6 +31,19 @@ export const Recipe = ( { attributes, setAttributes, handleModalClose } ) => {
 		window.tastyRecipesEditorModal.open( existingRecipe, handleModalClose );
 	};
 
+	const handlePreviewKeyDown = ( event ) => {
+		if ( event.target !== event.currentTarget ) {
+			return;
+		}
+
+		if ( 'Enter' !== event.key && ' ' !== event.key ) {
+			return;
+		}
+
+		event.preventDefault();
+		existingOnClickHandler();
+	};
+
 	const disableJSON = applyFilters(
 		'tasty_recipes_lite_disable_json',
 		<ToggleControl
@@ -91,8 +104,9 @@ export const Recipe = ( { attributes, setAttributes, handleModalClose } ) => {
 			<div
 				role="button"
 				tabIndex={ 0 }
+				aria-label={ __( 'Edit Tasty Recipe', 'tasty-recipes-lite' ) }
 				onClick={ existingOnClickHandler }
-				onKeyDown={ existingOnClickHandler }
+				onKeyDown={ handlePreviewKeyDown }
 			>
 				<ServerSideRender
 					block="wp-tasty/tasty-recipe"

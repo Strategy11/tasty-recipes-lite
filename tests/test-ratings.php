@@ -302,6 +302,55 @@ namespace {
 		}
 
 		/**
+		 * Displayed ratings get a text alternative and decorative star SVGs are hidden.
+		 *
+		 * @return void
+		 */
+		public function test_rendered_rating_is_accessible() {
+			$this->assertSame( 'Rated 4.5 out of 5', Ratings::get_rated_label( 4.5 ) );
+			$this->assertSame( 'Rated 4 out of 5', Ratings::get_rated_label( '4' ) );
+
+			$stars = Ratings::get_rendered_rating( 3, '', 'solid' );
+			$this->assertSame( 5, substr_count( $stars, '<svg aria-hidden="true" focusable="false" class="tasty-recipes-svg"' ) );
+			$this->assertStringNotContainsString( '<svg class="tasty-recipes-svg"', $stars );
+		}
+
+		/**
+		 * The card rating is a labelled radio group, the comment form keeps its native radios.
+		 *
+		 * @return void
+		 */
+		public function test_card_rating_stars_are_a_radio_group() {
+			$card = Tasty_Recipes::get_template_part(
+				'parts/ratings',
+				array(
+					'no_ratings' => true,
+					'icons'      => array(
+						'full'    => '<svg></svg>',
+						'checked' => '<svg></svg>',
+					),
+					'average'    => 4,
+				)
+			);
+			$this->assertStringContainsString( 'role="radiogroup" aria-label="Rate this recipe"', $card );
+			$this->assertSame( 5, substr_count( $card, 'role="radio" aria-checked="false"' ) );
+			$this->assertStringContainsString( 'aria-label="1 Star"', $card );
+
+			$form = Tasty_Recipes::get_template_part(
+				'parts/ratings',
+				array(
+					'no_ratings' => false,
+					'icons'      => array(
+						'full'    => '<svg></svg>',
+						'checked' => '<svg></svg>',
+					),
+				)
+			);
+			$this->assertStringNotContainsString( 'role="radio', $form );
+			$this->assertSame( 5, substr_count( $form, 'type="radio"' ) );
+		}
+
+		/**
 		 * Only whole ratings from 1 to 5 are valid.
 		 *
 		 * @return void
